@@ -1,0 +1,131 @@
+@import '~antd/lib/style/themes/default.less';
+
+.comment-list{
+    :global{
+        .ant-list-header{
+            border-bottom: 0 none;
+            padding: 0;
+        }
+    }
+
+    .comment-item {
+        display: block;
+        padding: 15px 0;
+        border-bottom:1px dotted #e8e8e8
+    }
+
+    .comment-item:first-child{
+        padding-top:0;
+    }
+
+    .comment-item:last-child{
+        border-bottom:1px dotted #e8e8e8
+    }
+
+    .comment-body{
+        width: 100%
+    }
+    
+    .comment-header {
+        display: flex;
+        align-items: center;
+        height: 25px;
+        margin-bottom: 6px;
+        line-height: 25px;
+        color: #586069;
+
+        .avatar{
+            margin-right: 8px;
+        }
+
+        .author{
+            color: #000;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .adopt{
+            font-size: 12px;
+            padding: 0 8px;
+            color: #ffffff;
+            border-radius: 10px;
+            background: @primary-color;
+
+            :global{
+                .anticon{
+                    margin-right: 5px;
+                }
+            }
+        }
+
+        .time {
+            color: #ccc;
+            white-space: nowrap;
+            display: flex;
+            flex: 1 1;
+            justify-content: flex-end;
+            margin: 0;
+        }
+    
+        >span{
+            margin-right: 16px;
+        }
+    }
+
+    .comment-content {
+        position: relative;
+        margin-bottom: 6px;
+        padding-left: 32px;
+    }
+
+    .comment-child{
+        border-top:1px dotted #e8e8e8;
+        margin-top: 15px;
+        padding-left:32px;
+
+        .comment-item{
+            border: 0 none;
+            padding: 15px 0 0 0;
+        }
+    }
+
+    .comment-actions{
+        font-size: 14px;
+        margin-top: 15px;
+        padding-left: 32px;
+        :global{
+            .ant-btn-link,.ant-btn-link:hover, .ant-btn-link:focus {
+                background-image: none;
+                padding: 0;
+                margin-right: 16px;
+                color: #999999;
+            }
+
+            .ant-btn-link:hover, .ant-btn-link:focus{
+                color:  @primary-color;
+            }
+
+            .ant-btn-link[disabled]{
+                color: #999999;
+            }
+
+            .ant-btn-link > .anticon + span{
+                margin-left: 4px;
+            }
+        }
+        
+        .active{
+            :global{
+                .anticon{
+                    color: @primary-color;
+                }
+            }
+            color:  @primary-color;
+        }
+    }
+
+    .comment-editor{
+        margin-top: 15px;
+        padding-left: 32px;
+    }
+}

@@ -1,0 +1,79 @@
+.tag-list{
+    margin-top: 20px;
+    padding: 0;
+
+    .tag-card{
+        :global{
+            .ant-card-head{
+                min-height: auto;
+                padding: 0;
+                border-bottom: 0 none;
+                padding: 10px 12px 0;
+
+                .ant-card-head-title{
+                    padding: 0;
+                    line-height: 24px;
+                    font-weight: bold;
+                }
+            }
+
+            .ant-card-body{
+                font-size: 13px;
+                margin: 12px;
+                padding: 0;
+                height: 92px;
+                overflow: hidden;
+            }
+
+            .ant-card-actions{
+                li{
+                    margin: 8px 0;
+                }
+            }
+        }
+        
+        .star-number,.star-number:hover{
+            color: #777777;
+
+            >strong{
+                color: #000000;
+                margin-right: 4px;
+            }
+        }
+    }
+
+    :global{
+        .ant-pagination {
+            text-align: center;
+
+            .ant-pagination-item{
+                a{
+                    display: block;
+                }
+            }
+        }
+        
+    }
+}
+
+.doc-diff del.html-diff {
+    text-decoration: none;
+    background-color: #fff1f0
+}
+
+.doc-diff del.html-diff iframe,
+.doc-diff del.html-diff img,
+.doc-diff del.html-diff video {
+    border: 2px solid #ffccc7
+}
+
+.doc-diff ins.html-diff {
+    text-decoration: none;
+    background-color: #e8fcf1
+}
+
+.doc-diff ins.html-diff iframe,
+.doc-diff ins.html-diff img,
+.doc-diff ins.html-diff video {
+    border: 2px solid #bde9d0
+}

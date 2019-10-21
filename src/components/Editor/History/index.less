@@ -1,0 +1,142 @@
+.doc-history-modal .ant-modal-body {
+    height: calc(100vh - 112px);
+    padding: 0
+}
+
+.doc-history {
+    display: -ms-flexbox;
+    display: flex;
+    height: 100%;
+    border-radius: 4px;
+    background-color: #fafafa
+}
+
+.doc-history .ant-list-split .ant-list-item {
+    border-bottom: none
+}
+
+.doc-history .doc-history-nav {
+    width: 256px;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    background: #fff;
+    border-radius: 4px 0 0 4px;
+    padding-top: 24px;
+    position: relative
+}
+
+.doc-history .doc-history-nav .version-meta {
+    width: 100%;
+    cursor: pointer
+}
+
+.doc-history .doc-history-nav .version-name .ant-tag {
+    float: right
+}
+
+.doc-history .doc-history-nav .version-name a {
+    color: #595959
+}
+
+.doc-history .doc-history-nav .version-editor {
+    font-size: 12px;
+    color: #8c8c8c
+}
+
+.doc-history .doc-history-nav .title {
+    padding: 0 24px;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 700
+}
+
+.doc-history .doc-history-nav .version-filter {
+    padding: 8px 24px;
+    border-bottom: 1px solid #e8e8e8;
+    font-size: 12px;
+    line-height: 18px;
+    color: #8c8c8c
+}
+
+.doc-history .doc-history-nav .version-filter .action {
+    float: right
+}
+
+.doc-history .doc-history-nav .version-list {
+    position: relative;
+    height: calc(100% - 58px);
+    overflow-y: auto
+}
+
+.doc-history .doc-history-nav .version {
+    padding: 8px 24px
+}
+
+.doc-history .doc-history-nav .current {
+    border-left: 3px solid #25b864;
+    background-color: #f5f5f5;
+    padding-left: 21px
+}
+
+.doc-history .doc-history-nav .current .version-name {
+    font-weight: 700
+}
+
+.doc-history .doc-history-body {
+    width: 824px;
+    padding: 24px
+}
+
+.doc-history .doc-history-body .version-viewer-content {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 2px;
+    height: calc(100% - 56px);
+    overflow-y: auto;
+    padding: 40px;
+}
+
+.doc-history .doc-history-body .version-viewer-content .doc-meta {
+    margin: 12px 0;
+    font-size: 12px;
+    color: #8c8c8c
+}
+
+.doc-history .doc-history-body .version-viewer-content .doc-meta a {
+    color: #8c8c8c
+}
+
+.doc-history .doc-history-body .version-viewer-content .doc-diff del.html-diff {
+    text-decoration: none;
+    background-color: #fff1f0
+}
+
+.doc-history .doc-history-body .version-viewer-content .doc-diff del.html-diff iframe,
+.doc-history .doc-history-body .version-viewer-content .doc-diff del.html-diff img,
+.doc-history .doc-history-body .version-viewer-content .doc-diff del.html-diff video {
+    border: 2px solid #ffccc7
+}
+
+.doc-history .doc-history-body .version-viewer-content .doc-diff ins.html-diff {
+    text-decoration: none;
+    background-color: #e8fcf1
+}
+
+.doc-history .doc-history-body .version-viewer-content .doc-diff ins.html-diff iframe,
+.doc-history .doc-history-body .version-viewer-content .doc-diff ins.html-diff img,
+.doc-history .doc-history-body .version-viewer-content .doc-diff ins.html-diff video {
+    border: 2px solid #bde9d0
+}
+
+.doc-history .doc-history-body .version-viewer-footer {
+    height: 32px;
+    margin-top: 24px
+}
+
+.doc-history .doc-history-body .version-viewer-footer button {
+    margin-left: 8px
+}
+
+.doc-history .doc-history-body .version-viewer-footer .actions {
+    float: right
+}

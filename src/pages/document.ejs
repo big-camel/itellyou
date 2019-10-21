@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <% if (context.title != null) { %>
+      <title><%= context.title %></title>
+    <% } %>
+    <link rel="icon" href="/favicon.png" type="image/x-icon" />
+    <script>
+      window.appData = {
+        book:{
+          id:1001,
+          name:'Book 1',
+          slug:'book1',
+          docs:[
+            {
+              id:10011,
+              level:0,
+              title:'库1文档1',
+              type:'DOC',
+              url:'doc11',
+            },
+            {
+              id:10012,
+              level:0,
+              title:'库1文档2',
+              type:'DOC',
+              url:'doc12',
+            }
+          ]
+        },
+        doc:{
+          id:10011,
+          level:0,
+          title:'库1文档1',
+          type:'DOC',
+          slug:'doc11',
+          description:'库1文档1内容',
+          draft_version:1,
+          word_count:5
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <noscript>Sorry, we need js to run correctly!</noscript>
+    <div id="root"></div>
+  </body>
+</html>
