@@ -5,10 +5,12 @@ import { Tooltip , Row , Col , Button , List, Avatar, Icon , message, Divider} f
 import { Viewer } from '@/components/Editor'
 import Tag from '@/components/Tag'
 import Timer from '@/components/Timer'
-import { MiniEditor } from '@itellyou/itellyou-editor'
+import Editor , { EditorBiz } from '@/components/Editor'
 import styles from './Detail.less'
 import Loading from '@/components/Loading'
 import Comment from '@/components/Comment'
+
+const { SAVE_TYPE } = EditorBiz
 
 class Detail extends React.Component {
 
@@ -23,12 +25,12 @@ class Detail extends React.Component {
     componentDidMount(){
         const { dispatch,match:{ params } } = this.props
         dispatch({
-            type:'question/getDetail',
+            type:'question/find',
             payload:{
-                question_id:params.id
+                id:params.id
             }
         }).then(res => {
-            if(res.result && res.data.answer_count === 0){
+            if(res.result && res.data.answers === 0){
                 this.setState({
                     answer_visible:true
                 })
@@ -37,26 +39,20 @@ class Detail extends React.Component {
         dispatch({
             type:'view/view',
             payload:{
-                question_id:params.id
+                id:params.id
             }
         })
         
     }
 
-    onEditorLoaded = engine => {
-        this.engine = engine
+    onEditorLoad = editor => {
+        this.editor = editor
     }
 
-    onContentChange = content => {
+    onEditorChange = content => {
         this.setState({
             content
         })
-    }
-
-    isBlank = value => {
-        if(!value || value === "")
-            return true
-        return ['<!doctype lake>', '<!doctype lake><p><br /></p>', '<!doctype lake><p><cursor /><br /></p>', '<!doctype lake><p><br /><cursor /></p>'].includes(value)
     }
 
     onCommentPublish = () => {
@@ -202,9 +198,9 @@ class Detail extends React.Component {
     renderStar = () => {
         const { detail } = this.props
         if(detail.is_star){
-            return <Button className={styles.active} icon="star" type="link" size="small" onClick={this.delStar}>已关注({ detail.star_count })</Button>
+            return <Button className={styles.active} icon="star" type="link" size="small" onClick={this.delStar}>已关注({ detail.star })</Button>
         }
-        return <Button icon="star" type="link" size="small" onClick={this.setStar}>加关注({ detail.star_count })</Button>
+        return <Button icon="star" type="link" size="small" onClick={this.setStar}>加关注({ detail.star })</Button>
     }
 
     render(){
@@ -213,41 +209,44 @@ class Detail extends React.Component {
             return <Loading />
         }
         const { content , answer_visible , editorInstanceId } = this.state
-        const disabled = this.isBlank(content)
-        
+        let disabled = true
+        const editorBiz = this.editor ? this.editor.getEditorBiz() : null
+        if(editorBiz && !editorBiz.isEmpty(content)){
+            disabled = false
+        }
         return (
             <Row gutter={50} className="box-section">
                 <Col xs={24} sm={18}>
                     <div className={styles.header}>
                         <h2 className={styles.title}>
-                            {detail.question_title}
+                            {detail.title}
                             {
-                                detail.reward && detail.reward.type > 0 && <span className={styles.reward}>{ detail.reward.type === 1 ? <Icon type="pound" /> : <Icon type="pay-circle" />}<em>{detail.reward.value}</em></span>
+                                detail.reward_type > 0 && <span className={styles.reward}>{ detail.reward_type === 1 ? <Icon type="pound" /> : <Icon type="pay-circle" />}{detail.reward_value}</span>
                             }
                         </h2>
                         <div className={styles.tags}>
                             {
                                 detail.tags && (
                                     detail.tags.map(tag => (
-                                        <span  key={tag.key} className={styles.tag}><Tag href={`/tag/${encodeURIComponent(tag.name)}`} title={tag.name} /></span>
+                                        <span  key={tag.id} className={styles.tag}><Tag href={`/tag/${encodeURIComponent(tag.name)}`} title={tag.name} /></span>
                                     ))
                                 )
                             }
-                            <span className={styles['page-view']}><em>{detail.page_view}</em>次浏览</span>
+                            <span className={styles['view']}>{detail.view}次浏览</span>
                         </div>
                     </div>
                     <article>
-                        <Viewer content={detail.question_content} />
+                        <Viewer content={detail.content} />
                     </article>
                     <div className={styles.actions}>
-                        <Button onClick={this.onAnswerVisible} className={styles['btn-answer']} type="primary" icon="edit" >我来答</Button>
+                        <Button onClick={this.onAnswerVisible} type="primary" icon="edit" >我来答</Button>
                         { this.renderStar() }
                         <Button type="link" icon="share-alt">分享</Button>
                         <Button type="link" icon="exclamation-circle">举报</Button>
                         <div className={styles.author}>
                             <Avatar size={40} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                             <div className={styles.info}>
-                                <Link to="">{detail.user ?detail.user.nickname : null}</Link>
+                                <Link to="">{detail.creator ? detail.creator.name : null}</Link>
                                 <div><Timer time={detail.created_time} />提问</div>
                             </div>
                         </div>
@@ -256,19 +255,22 @@ class Detail extends React.Component {
                         answer_visible && 
                         <div className={styles['comment-editor']}>
                             <div className={styles['editor-wrapper']}>
-                                <MiniEditor 
+                                <Editor
+                                api={{
+                                    create:"answer/create",
+                                    update:"answer/update",
+                                    publish:"answer/publish",
+                                    find:"answer/draft"
+                                }}
                                 key={editorInstanceId}
-                                value={content}
-                                defaultValue={content}
-                                toolbar={
-                                    [
-                                        ['emoji', {name:'h2',icon:'H',title:"标题"}, 'bold', 'italic', 'strikethrough'],
-                                        ['codeblock','orderedlist', 'unorderedlist', 'tasklist'],
-                                        ['link', 'image', 'file']
-                                    ]
-                                }
-                                onLoad={this.onEditorLoaded}     
-                                onChange={this.onContentChange}
+                                local={!this.question_id}
+                                onLoad={this.onEditorLoad}
+                                onDocLoad={this.onDocLoad}
+                                onChange={this.onEditorChange}
+                                onSaveBefore={this.onSaveBefore}
+                                onSaveAfter={this.onSaveAfter}
+                                onReverted={this.onReverted}
+                                onPublished={this.onPublished}
                                 />
                             </div>
                             <Button className={styles['comment-publish']} disabled={disabled} type="primary" onClick={this.onCommentPublish}>提交回答</Button>

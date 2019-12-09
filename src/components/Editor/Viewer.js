@@ -8,12 +8,16 @@ import { ContentView } from '@itellyou/itellyou-editor'
 class Viewer extends React.PureComponent { 
     renderContent() {
         const { content } = this.props
-        // Lake 内容为空时，不执行渲染
+        // 内容为空时，不执行渲染
         if (!content) return <span></span>
         return <ContentView 
             content={content}
             genAnchor={this.props.genAnchor}
             onLoad={this.props.onReady}
+            image={{
+                display:"block",
+                align:"center"
+            }}
         />
     }
 

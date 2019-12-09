@@ -2,21 +2,21 @@ import { stringify } from 'qs'
 import request from '@/utils/request';
 
 export async function loginByAccount(params) {
-    return request('/api/user/login-account',{ 
+    return request('/api/user/login/account',{ 
         method: 'POST',
         data: params,
     });
 }
 
 export async function loginByMobile(params) {
-    return request('/api/user/login-mobile',{ 
+    return request('/api/user/login/mobile',{ 
         method: 'POST',
         data: params,
     });
 }
 
-export async function checkNickname(params) {
-    return request('/api/user/check-nickname',{ 
+export async function queryName(params) {
+    return request('/api/user/query/name',{ 
         method: 'POST',
         data: params,
     });
@@ -29,8 +29,8 @@ export async function register(params) {
     });
 }
 
-export async function fetchCurrent(){
-    return request('/api/user/current');
+export async function fetchMe(){
+    return request('/api/user/me');
 }
 
 export async function logout(){

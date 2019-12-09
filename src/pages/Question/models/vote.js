@@ -1,4 +1,4 @@
-import { support , oppose } from '@/services/question/vote'
+import { support , oppose } from '@/pages/Question/services/vote'
 
 export default {
     namespace: 'vote',

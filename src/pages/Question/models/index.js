@@ -1,25 +1,14 @@
-import { create , adopt , getList , getDetail } from '@/services/question/index'
+import { adopt , list , find } from '@/pages/Question/services/index'
 
 export default {
     namespace: 'question',
 
     state: {
         list:null,
-        detail:null,
-        editStatus:null
+        detail:null
     },
 
     effects: {
-        *create({ payload }, { call , put}){
-            const response = yield call(create,payload)
-            if(response.result){
-                yield put({
-                    type:'updateDetail',
-                    payload:response.data || {}
-                })
-            }
-            return response
-        },
         *adopt({ payload }, { call , put }){
             const response = yield call(adopt,payload)
             if(response.result){
@@ -30,15 +19,15 @@ export default {
             }
             return response
         },
-        *getList({ payload }, { call,put }){
-            const response = yield call(getList,payload)
+        *list({ payload }, { call,put }){
+            const response = yield call(list,payload)
             yield put({
-                type:'listState',
+                type:'setList',
                 payload:response.data || {}
             })
         },
-        *getDetail({ payload }, { call,put }){
-            const response = yield call(getDetail,payload)
+        *find({ payload }, { call,put }){
+            const response = yield call(find,payload)
             yield put({
                 type:'updateDetail',
                 payload:response.data || {}
@@ -53,7 +42,7 @@ export default {
                 detail:payload
             }
         },
-        listState(state,{ payload }){
+        setList(state,{ payload }){
             return {
                 ...state,
                 list:payload

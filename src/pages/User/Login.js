@@ -1,9 +1,11 @@
 import React from 'react'
-import { Alert , message } from 'antd'
+import { Alert , message , Tabs } from 'antd'
+import { merge } from 'lodash'
 import LoginForm from '@/components/Form/Login'
 import { connect } from 'dva'
 import '@/utils/gt.js'
 import { Link } from 'umi';
+import styles from './Login.less'
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginForm;
 
@@ -21,7 +23,7 @@ class Login extends React.Component{
         },
         captcha:{
             status:null,
-            secondText:'重新获取 {s}s'
+            secondText:'{s}秒'
         },
         mobile:{
             status:null,
@@ -40,52 +42,54 @@ class Login extends React.Component{
 
     handleGetCaptcha = (e) => {
         e.preventDefault();
-        this.loginForm.validateFields(['mobileNumber'],(err, values) => {
+        this.loginForm.validateFields(['mobile'],(err, values) => {
             if (!err) {
-                this.setState({
-                    captcha:{...this.state.captcha,status:'loading'}
+                this.changeState({
+                    captcha:{
+                        status:'loading'
+                    }
                 })
-                this.handleGeetestInit(values['mobileNumber'],this.handleGeetestSendCaptcha)
+                this.handleGeetestInit(this.handleGeetestSendCaptcha)
             }
         });
     }
 
-    handleGeetestInit = (user_id,callback) => {
+    handleGeetestInit = callback => {
         const { dispatch } = this.props
         dispatch({
             type:'geetest/init',
             payload:{
-                user_id
+                mode:"login"
             }
         }).then(res => {
             if(res.result){
-                const geetest = res.data
+                const { key, gt , challenge , success , newCaptcha } = res.data
                 window.initGeetest({
-                    gt: geetest.gt,
-                    challenge: geetest.challenge,
-                    new_captcha: geetest.new_captcha,
+                    gt,
+                    challenge,
+                    new_captcha: newCaptcha,
+                    offline: !success,
                     product: "bind",
-                    offline: !geetest.success,
                 },gtObject => {
                     gtObject.onSuccess(() => {
-                        callback(gtObject,geetest.key,'success')
+                        callback(gtObject,key,'success')
                     })
                     gtObject.onError(() => {
-                        callback(gtObject,geetest.key,'error')
+                        callback(gtObject,key,'error')
                     })
                     gtObject.onClose(() => {
-                        callback(gtObject,geetest.key,'close')
+                        callback(gtObject,key,'close')
                     })
                     gtObject.onReady(() => {
                         gtObject.verify()
                     })
                 })
             }else{
-                this.setState({
-                    submitState:Object.assign({},this.state.submitState,{
+                this.changeState({
+                    submitState:{
                         status:false,
                         message:'服务出错啦，请刷新重试'
-                    })
+                    }
                 })
             }
         })
@@ -95,61 +99,72 @@ class Login extends React.Component{
         const validate = gtObject.getValidate()
         const { dispatch } = this.props
         if(action === "success" && validate){
-            const mobileNumber = this.loginForm.getFieldValue('mobileNumber')
+            const mobile = this.loginForm.getFieldValue('mobile')
             dispatch({
-                type:'verification/sendMobileCode',
+                type:'validation/sendMobileCode',
                 payload:{
-                    type:'login',
-                    mobile_number:mobileNumber,
-                    geetest_key:geetestKey,
-                    geetest_challenge:validate.geetest_challenge,
-                    geetest_validate:validate.geetest_validate,
-                    geetest_seccode:validate.geetest_seccode
+                    action:'login',
+                    mobile,
+                    geetest:{
+                        key:geetestKey,
+                        challenge:validate.geetest_challenge,
+                        validate:validate.geetest_validate,
+                        seccode:validate.geetest_seccode
+                    }
                 }
             }).then(res => {
                 if(res.result === true){
-                    this.setState({
-                        captcha:Object.assign({},this.state.captcha,{status:'start',time:res.data.time + 60}),
+                    this.changeState({
+                        captcha:{
+                            status:'start',
+                            time:res.data.time + 60
+                        },
                         mobileTips:{
                             hide:'onFocus',
                             show:'onBlur',
                             visible:true,
                             getContent:value => {
-                                if(value !== res.data.mobileNumber)
+                                if(value !== res.data.mobile)
                                     return null
                                 return (<span>验证码已发送，请注意查收短信，<a>收不到验证码？</a></span>)
                             }
                         }
                     })
                 }
-                if(res.result === false){
-                    if(res.code === 1006){
-                        this.setState({
-                            captcha:Object.assign({},this.state.captcha,{status:false}),
-                            mobile:Object.assign({},this.state.mobile,{
-                                status:false,
-                                message:(<span key='mobileError'>手机号尚未注册，请更换手机号或去<Link target='_blank' to="/user/register">注册</Link></span>),
-                            })
-                        })
-                    }else{
-                        this.setState({
-                            captcha:Object.assign({},this.state.captcha,{status:false})
-                        })
-                        message.error(res.message)
-                    }
+                else if(res.status === 1002){
+                    this.changeState({
+                        captcha:{
+                            status:false
+                        },
+                        mobile:{
+                            status:false,
+                            message:(<span key='mobileError'>手机号尚未注册，请更换手机号或去<Link to="/user/register">注册</Link></span>),
+                        }
+                    })
+                }else{
+                    this.changeState({
+                        captcha:{
+                            status:false
+                        }
+                    })
+                    message.error(res.message)
                 }
             })
         }else if(action === "error"){
-            this.setState({
-                captcha:{...this.state.captcha,status:false},
+            this.changeState({
+                captcha:{
+                    status:false
+                },
                 submitState:{
                     status:false,
                     message:"服务中断，请刷新重试"
                 }
             })
         }else if(action === "close"){
-            this.setState({
-                captcha:{...this.state.captcha,status:false},
+            this.changeState({
+                captcha:{
+                    status:false
+                },
             })
         }
     }
@@ -165,68 +180,73 @@ class Login extends React.Component{
                 payload:{
                     username,
                     password,
-                    geetest_key:geetestKey,
-                    geetest_challenge:validate.geetest_challenge,
-                    geetest_validate:validate.geetest_validate,
-                    geetest_seccode:validate.geetest_seccode
-                }
-            }).then(res => {
-                let state = null
-                if(!res.result){
-                    switch(res.code){
-                        case 10091:
-                        state = {
-                            username:Object.assign({},this.state.username,{
-                                status:false,
-                                message:(<span key='mobileError'>手机号尚未注册，请更换手机号或去<Link target='_blank' to="/user/register">注册</Link></span>),
-                            })
-                        }
-                        break
-                        case 10081:
-                        case 10101:
-                        state = {
-                            username:Object.assign({},this.state.username,{
-                                status:false,
-                                message:res.message,
-                            })
-                        }
-                        break
-                        case 1008:
-                        case 1009:
-                        case 1010:
-                        state = {
-                            password:Object.assign({},this.state.password,{
-                                status:false,
-                                message:res.message,
-                            })
-                        }
-                        break
-                        default:
-                        state = {
-                            loginType:'account',
-                            submitState:{
-                                status:false,
-                                message:res.message
-                            }
-                        }
+                    geetest:{
+                        key:geetestKey,
+                        challenge:validate.geetest_challenge,
+                        validate:validate.geetest_validate,
+                        seccode:validate.geetest_seccode
                     }
                 }
-                state = Object.assign({},state,{logining:false})
-                this.setState(state)
+            }).then(res => {
+                if(res && !res.result){
+                    switch(res.status){
+                        case 1002:
+                            this.changeState({
+                                username:{
+                                    status:false,
+                                    message:<span key='mobileError'>手机号尚未注册，请更换手机号或去<Link target='_blank' to="/user/register">注册</Link></span>,
+                                }
+                            })
+                        break
+                        case 1003:
+                            this.changeState({
+                                username:{
+                                    status:false,
+                                    message:<span key='emailError'>邮箱尚未注册，请更换邮箱或去<Link target='_blank' to="/user/register">注册</Link></span>,
+                                }
+                            })
+                        break
+                        case 1004:
+                            this.changeState({
+                                username:{
+                                    status:false,
+                                    message:res.message,
+                                }
+                            })
+                        break
+                        case 1005:
+                            this.changeState({
+                                password:{
+                                    status:false,
+                                    message:res.message,
+                                }
+                            })
+                        break
+                        default:
+                            this.changeState({
+                                loginType:'account',
+                                submitState:{
+                                    status:false,
+                                    message:res.message
+                                }
+                            })
+                    }
+                    this.setState({
+                        logining:false
+                    })
+                }
             })
         }else if(action === "error"){
-            this.setState({
-                logining:false,
+            this.changeState({
                 submitState:{
                     status:false,
                     message:"服务中断，请刷新重试"
                 }
             })
-        }else if(action === "close"){
-            this.setState({
-                logining:false
-            })
         }
+        this.setState({
+            logining:false
+        })
     }
 
     onTabChange = loginType => {
@@ -237,56 +257,75 @@ class Login extends React.Component{
 
     handleSubmit = (err, values) => {
         if(!err){
+            const { loginType } = this.state
             const { dispatch } = this.props
             this.setState({
                 logining:true
             })
-            if(values.hasOwnProperty('username'))
+            if(loginType === "account")
             {
-                this.handleGeetestInit(values['username'],this.handleGeetestLoginAccount)
+                this.handleGeetestInit(this.handleGeetestLoginAccount)
 
-            }else if(values.hasOwnProperty('mobileNumber')){
+            }else if(loginType === 'mobile'){
                 dispatch({
                     type:'login/loginByMobile',
                     payload:{
-                        mobileNumber:values['mobileNumber'],
+                        mobile:values['mobile'],
                         code:values['code']
                     }
                 }).then(res => {
-                    let state = null
-                    if(!res.result){
-                        switch(res.code){
-                            case 1005:
-                            state = {
-                                mobile:Object.assign({},this.state.mobile,{
-                                    status:false,
-                                    message:(<span key='mobileError'>手机号尚未注册，请更换手机号或去<a target='_blank' href='/user/register'>注册</a></span>),
+                    if(res && !res.result){
+                        switch(res.status){
+                            case 1002:
+                                this.changeState({
+                                    mobile:{
+                                        status:false,
+                                        message:(<span key='mobileError'>手机号尚未注册，请更换手机号或去<a target='_blank' href='/user/register'>注册</a></span>),
+                                    }
                                 })
-                            }
                             break
-                            case 1004:
-                            state = {
-                                code:Object.assign({},this.state.code,{
-                                    status:false,
-                                    message:res.message,
+                            case 1001:
+                                this.changeState({
+                                    code:{
+                                        status:false,
+                                        message:res.message,
+                                    }
                                 })
-                            }
                             break
                             default:
-                            state = {
-                                loginType:res.loginType,
-                                submitState:Object.assign({},this.state.submitState,{
-                                    status:false,
-                                    message:res.message,
+                                this.changeState({
+                                    loginType:"mobile",
+                                    submitState:{
+                                        status:false,
+                                        message:res.message,
+                                    }
                                 })
-                            }
                         }
+                        this.setState({
+                            logining:false
+                        })
                     }
-                    state = Object.assign({},state,{logining:false})
-                    this.setState(state)
                 })
             }
         }
+    }
+
+    changeState = data => {
+        const newState = {}
+        for (const key in data) {
+            if(typeof data[key] === "object" ){
+                newState[key] = merge({},this.state[key],data[key])
+            }else{
+                newState[key] = data[key]
+            }
+        }
+        this.setState(newState)
+    }
+
+    onTabChange = value => {
+        this.setState({
+            loginType:value
+        })
     }
 
     renderMessage = content => (
@@ -320,18 +359,13 @@ class Login extends React.Component{
                         onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)
                     }
                     />
-                    <div>
-                        <a style={{ float: 'right' }} href="">
-                            忘记密码
-                        </a>
-                    </div>
                 </Tab>
                 <Tab key="mobile" tab={'手机动态码登录'}>
                     {
                         loginType === 'account' && (submitState.status === false ? this.renderMessage(submitState.message) : null)
                     }
                     <Mobile 
-                        name='mobileNumber' 
+                        name='mobile' 
                         autoComplete='off' 
                         maxLength={11}
                         itemStatus={this.state.mobile}
@@ -348,6 +382,11 @@ class Login extends React.Component{
                     />
                 </Tab>
                 <Submit loading={logining}>{logining ? '登陆中...' : '登陆'}</Submit>
+                <div className={styles["login-footer"]}>
+                    <Link to="/">忘记密码</Link>
+                    <span></span>
+                    <Link to="/user/register">快速注册</Link>
+                </div>
             </LoginForm>
         )
     }

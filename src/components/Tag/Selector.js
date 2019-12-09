@@ -36,8 +36,8 @@ class Selector extends React.Component {
                 if(res.result){
                     if(create && res.data.length === 0 && value.trim() !== ""){
                         searchData.push({
-                            tag_id:"create",
-                            tag_name:value.trim()
+                            id:"create",
+                            name:value.trim()
                         })
                     }else{
                         searchData = res.data
@@ -86,22 +86,22 @@ class Selector extends React.Component {
 
     renderSearchOption = option => {
         let { searchValue } = this.state
-        if(option.tag_id === "create"){
+        if(option.id === "create"){
             return (
-                <Select.Option key={option.tag_id} label={option.tag_name} onClick={()=>{ this.onTagSelect({key:option.tag_id,name:option.tag_name}) }}>
-                    创建标签 <strong>{option.tag_name}</strong>
+                <Select.Option key={option.id} label={option.name} onClick={()=>{ this.onTagSelect({key:option.id,name:option.name}) }}>
+                    创建标签 <strong>{option.name}</strong>
                 </Select.Option>
             )
         }else if(searchValue){
             searchValue = searchValue.trim()
             let prefix = null
-            let name = option.tag_name
+            let name = option.name
             if(searchValue !== "" && name.indexOf(searchValue) > -1){
                 prefix = searchValue
                 name = name.substring(searchValue.length)
             }
             return (
-            <Select.Option key={option.tag_id} label={option.tag_name} onClick={()=>{ this.onTagSelect({key:option.tag_id,name:option.tag_name}) }}>
+            <Select.Option key={option.id} label={option.name} onClick={()=>{ this.onTagSelect({key:option.id,name:option.name}) }}>
                 {prefix ? <strong>{prefix}</strong> : null}{name}
             </Select.Option>
             )

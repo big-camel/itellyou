@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'dva'
 import router from 'umi/router'
-
 import GlobalHeader from '@/components/GlobalHeader'
 
 class Header extends Component{
+    
     onUserMenuClick = ({ key }) => {
         if (key === 'userCenter') {
             router.push('/user')
@@ -23,7 +23,7 @@ class Header extends Component{
 
     onActionMenuClick = ({ key }) => {
         if (key === 'questionNew') {
-            router.push('/question/new')
+            window.location.href = '/question/new'
             return
         }
     }
@@ -39,5 +39,5 @@ class Header extends Component{
     }
 }
 export default connect(({ user }) => ({
-    currentUser:user.current
+    me:user.me
 }))(Header)

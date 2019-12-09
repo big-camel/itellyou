@@ -1,34 +1,33 @@
 import React from 'react'
-import { Layout } from 'antd'
 import { connect } from 'dva'
-import DocumentTitle from 'react-document-title'
 import Header from './Header'
 import Container from '@/components/Container'
-const { Content } = Layout
+import GlobalLayout from '@/components/GlobalLayout'
 
 class BasicLayout extends React.Component {
     componentDidMount(){
-        const { dispatch , currentUser} = this.props
-        if(!currentUser){
+        const { dispatch , me } = this.props
+
+        if(!me){
             dispatch({
-                type: 'user/fetchCurrent',
+                type: 'user/fetchMe',
             })
         }
     }
 
     render(){
-        const { children } = this.props
+        const { children , ...props} = this.props
         return (
-            <DocumentTitle title='I TELL YOU'>
+            <GlobalLayout {...props}>
                 <div className="main-wrapper">
                     <Header />
                     <Container >{children}</Container>
                 </div>
-            </DocumentTitle>
+            </GlobalLayout>
         )
     }
 }
 
 export default connect(({ user }) => ({
-    currentUser:user.current
+    me:user.me
 }))(BasicLayout)

@@ -1,15 +1,17 @@
 import React from 'react'
-import DocumentTitle from 'react-document-title'
-import classNames from 'classnames'
-import { Button , Modal , message , Popover , Input , Form , Radio, InputNumber } from 'antd'
 import { connect } from 'dva'
 import router from 'umi/router'
-import Editor , { History, Doc } from '@/components/Editor'
+import { Button , Alert , message , Input , Form , Radio, InputNumber, Icon, Drawer } from 'antd'
+import Editor , { EditorBiz } from '@/components/Editor'
 import styles from './Edit.less'
 import logo from '@/assets/logo.svg'
 import moment from 'moment'
 import Timer from '@/components/Timer'
+import Loading from '@/components/Loading'
 import Tag, { TagSelector } from '@/components/Tag'
+import GlobalLayout from '../../components/GlobalLayout'
+
+const { SAVE_TYPE } = EditorBiz
 
 class Edit extends React.Component {
 
@@ -18,24 +20,35 @@ class Edit extends React.Component {
         title:"",
         content:"",
         loading:true,
-        // 是否为查看历史状态
-        versionsStatus: false,
         // 是否正在保存
         saving: false,
         // 保存时间
         saved: null,
         // 发布设置状态
         publishing:false,
-        modifyReason:"",
+        remark:"",
         //tag
         tags:[],
-        //step
-        step_type:"tag",
         // 悬赏
         reward:{
             type:0,
             value:0
+        },
+        drawerView:false
+    }
+
+    componentWillMount(){
+        const { dispatch , match:{ params } } = this.props
+        this.question_id = params.question_id
+        if(this.question_id){
+            dispatch({
+                type: 'doc/setDetail',
+                payload:{
+                    id:this.question_id
+                }
+            })
         }
+        
     }
 
     onTitleChange = event => {
@@ -47,22 +60,27 @@ class Edit extends React.Component {
 
     onTitleBlur = () => {
         const { title } = this.state
-        const { detail } = this.props
+        const { doc } = this.props
         if(title.trim() === ""){
             return
         }
-        if(detail && detail.title.trim() === title.trim()){
+        if(doc && doc.title.trim() === title.trim()){
             return
         }
         this.onSaveMeta()
     }
 
-    onEditorLoad = instance => {
-        this.editorInstance = instance
-        const { detail } = this.props
+    onEditorLoad = editor => {
+        this.editor = editor
+        const { doc } = this.props
         this.setState({
-            title:detail ? detail.title : this.state.title,
-            tags:detail ? detail.tags : [],
+            title:doc ? doc.title : this.state.title,
+            tags:doc ? doc.tags : [],
+            content:doc ? doc.content : "",
+            reward:doc ? {
+                type:doc.reward_type,
+                value:doc.reward_value
+            } : this.state.reward,
             loading:false
         })
     }
@@ -70,6 +88,14 @@ class Edit extends React.Component {
     onEditorChange = content => {
         this.setState({
             content
+        })
+    }
+
+    onDocLoad = () => {
+        const collabBiz = this.editor ? this.editor.getCollabBiz() : null
+        const document = collabBiz ? collabBiz.getInitialDocument() : null
+        this.setState({
+            content:document ? document.value : ""
         })
     }
 
@@ -81,7 +107,7 @@ class Edit extends React.Component {
         }
 
         this.save_command = true
-        this.editorInstance.onSave(Doc.SAVE_TYPE.USER_SAVE)
+        this.editor.onSave(SAVE_TYPE.FORCE)
     }
 
     onSaveBefore = () => {
@@ -97,11 +123,16 @@ class Edit extends React.Component {
         }
     }
 
-    onSaveAfter = (res,action) => {
+    onSaveAfter = res => {
         if(res && res.result){
-            if(action === "create"){
+            this.setState({
+                saving: false,
+                saved: new Date()
+            })
+            if(!this.question_id){
                 const history = window.history
-                const url = `/question/${res.data.doc_id}/edit`
+                this.question_id = res.data
+                const url = `/question/${res.data}/edit`
                 if(history){
                     history.pushState(null, null, url)
                 }else{
@@ -110,44 +141,33 @@ class Edit extends React.Component {
                     })
                 }
             }
-            this.setState({
-                saving: false,
-                saved: new Date()
-            })
         }else{
             this.setState({
                 saving: false
             })
         }
-        
     }
 
     onReverted = () => {
-        // 清空本地存储
-        this.editorInstance.editorBiz.clearCachedContent()
-        // 强制退出编辑
-        this.editorInstance.onForceLeaveEditor()
-        message.success('文档恢复成功', 1.5, () => {
-            // 关闭浮层
-            this.setState({
-                versionsStatus: false
-            })
-            // 重新加载页面
-            window.location.reload()
-        })
-    }
-
-    onCancelVersionView = () => {
-        this.setState({
-            enabledVersionConflict:false,
-            disabled:false,
-            isActive:true
-        })
+        // 重新加载页面
+        window.location.reload()
     }
 
     onShowVersion = () => {
+        if(this.editor){
+            this.editor.showHistory()
+        }
+    }
+
+    onShowDrawer = () => {
         this.setState({
-            versionsStatus:true
+            drawerView:true
+        })
+    }
+
+    onHideDrawer = () => {
+        this.setState({
+            drawerView:false
         })
     }
     
@@ -156,65 +176,19 @@ class Edit extends React.Component {
         if(saving){
             return '保存中...'
         }
-        const { detail } = this.props
-        if(saved && detail){
+        const { doc } = this.props
+        if(saved && doc){
             return <span>保存于 {moment(saved).format('H:mm:ss')}</span>
         }
        
-        if(!loading && detail){
-            return <span>最后更改于<Timer time={detail.updated_time} /></span> 
+        if(!loading && doc){
+            return <span>最后更改于<Timer time={doc.updated_time} /></span> 
         }
     }
 
     onModifyReasonChange = event => {
         this.setState({
-            modifyReason:event.target.value
-        })
-    }
-
-    onPublish = async () => {
-        const { dispatch , detail } = this.props
-        const { modifyReason , tags , reward , saving } = this.state
-        const tag_ids = tags.map(tag => {
-            return tag.key
-        })
-        this.setState({
-            publishing:true,
-        })
-
-        //如果正在保存中，等待保存
-        if(saving){
-            const savingWait = () => {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        if(!this.state.saving){
-                            resolve()
-                        }
-                    }, 10)
-                })
-            }
-            await savingWait()
-        }
-
-        dispatch({
-            type:"doc/publish",
-            payload:{
-                doc_id:detail.doc_id,
-                tag_ids,
-                reward,
-                modify_reason:modifyReason
-            }
-        }).then(res => {
-            this.setState({
-                publishing:false,
-            })
-            if(res.result){
-                this.editorInstance.onForceLeaveEditor()
-                message.success("发布成功",5)
-                //window.location.href = "/"
-            }else{
-                message.error(res.message)
-            }
+            remark:event.target.value
         })
     }
 
@@ -227,7 +201,7 @@ class Edit extends React.Component {
         const tag = tags.find(tag => tag.name === label)
         if(!tag){
             tags.push({
-                key,
+                id:key,
                 name:label
             })
             this.setState({
@@ -247,52 +221,26 @@ class Edit extends React.Component {
         }
     }
 
-    onStepChange = type => {
-        this.setState({
-            step_type:type
-        })
-    }
-
-    renderPublishStep = () => {
-        const { step_type } = this.state
-        return (
-            <div className={styles['publish-step']}>
-                { step_type === "tag" && this.renderPublishStepTag () }
-                { step_type === "reward" && this.renderPublishStepReward () }
-                { step_type === "reason" && this.renderPublishStepReason () }
-            </div>
-        )
-    }
-
-    renderPublishStepTag = () => {
-        const { detail } = this.props
+    renderTag = () => {
         const { tags } = this.state
-        const getNext = () => {
-            if(detail && detail.adopt_state === 1){
-                return this.renderStepButton('next','reason',tags.length === 0)
-            }
-            return this.renderStepButton('next','reward',tags.length === 0)
-        }
-        
         return (
-            <div className={styles['setp-layout-tag']}>
-                <p className={styles['setp-tip']}>绑定合适的标签，能方便分类检索，提问也更容易让回答者发现。</p>
-                <div className={styles['setp-tags']}>
-                {
-                    
-                    tags.map(tag => (
-                        <Tag key={tag.key} enableDelete title={tag.name} onDelete={() => { this.onTagDelete(tag.name) }} />
-                    ))
-                }
+            <Form.Item
+            label="设置标签"
+            extra="合适的标签，能方便分类检索，提问也更容易让回答者发现。"
+            colon={false}
+            >
+                <div className={styles['tag-layout']}>
+                    {
+                        tags && tags.map(tag => (
+                            <Tag key={tag.id} enableDelete title={tag.name} onDelete={() => { this.onTagDelete(tag.name) }} />
+                        ))
+                    }
                 </div>
                 <TagSelector 
                 onChange={this.onTagChange}
                 placeholder="搜索标签"
                 />
-                <div className={classNames(styles['step-actions'],'clearfix')}>
-                    { getNext() }
-                </div>
-            </div>
+            </Form.Item>
         )
     }
 
@@ -321,125 +269,175 @@ class Edit extends React.Component {
         })
     }
 
-    renderPublishStepReward = () => {
+    renderReward = () => {
         const { reward } = this.state
-        const { detail } = this.props
+        const { doc , me , rewardConfig } = this.props
+        const { cash , credit } = rewardConfig
         const getRadioDisabled = type => {
-            if(detail && detail.reward.type !== 0 && detail.reward.type !== type){
+            if(doc && doc.reward_type !== 0 && doc.reward_type !== type){
                 return true
             }
             return false
         }
+        return <Form.Item
+        label={`设置悬赏，积分：${me.bank.credit}，金额：${me.bank.cash}`}
+        extra="合理的悬赏，能快速得到解答。7天内未被回答，费用将自动退回"
+        colon={false}
+        >
+            <div className={styles['reward-layout']}>
+                {
+                    doc && doc.reward_type !== 0 && 
+                    <p>当前已设置<span>{doc.reward_type === 1 ? '积分' : '现金'}悬赏</span><span>{doc.reward_value}{doc.reward_type === 1 ? credit.unit : cash.unit}</span>，您可以继续增加悬赏</p>
+                }
+                <Radio.Group value={ reward.type } onChange={this.onRewardTypeChange}>
+                    <Radio.Button value={0}>不设置</Radio.Button>
+                    <Radio.Button disabled={getRadioDisabled(1)} value={1}>积分</Radio.Button>
+                    <Radio.Button disabled={getRadioDisabled(2)} value={2}>现金</Radio.Button>
+                </Radio.Group>
+                <div>
+                { reward.type === 2 && 
+                    <InputNumber 
+                    min={cash.min}
+                    max={me.bank.cash > cash.max ? cash.max : me.bank.cash}
+                    precision={2}
+                    value={reward.value}
+                    onChange={this.onRewardValueChange} 
+                    formatter={value => `￥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={value => value.replace(/￥\s?|(,*)/g, '')}
+                    />
+                }
 
-        return (
-            <div className={styles['setp-layout-reward']}>
-                <p className={styles['setp-tip']}>设置合理的悬赏，能快速得到解答。7天内未被回答，费用将自动退回</p>
-                <div className={styles['reward-body']}>
-                    {
-                        detail && detail.reward.type !== 0 && 
-                        <p>当前已设置<span>{detail.reward.type === 1 ? '积分' : '现金'}悬赏</span><span>{detail.reward.value}{detail.reward.type === 1 ? '' : '元'}</span>，您可以继续增加悬赏</p>
-                    }
-                    <Radio.Group value={ reward.type } onChange={this.onRewardTypeChange}>
-                        <Radio.Button value={0}>不设置</Radio.Button>
-                        <Radio.Button disabled={getRadioDisabled(1)} value={1}>积分</Radio.Button>
-                        <Radio.Button disabled={getRadioDisabled(2)} value={2}>现金</Radio.Button>
-                    </Radio.Group>
-                    <div>
-                    {
-                        reward.type === 0 && <p className={styles['setp-tip']}>设置合理的悬赏，能快速得到解答。7天内未被回答，费用将自动退回</p>
-                    }
-                    { reward.type === 2 && 
-                        <InputNumber 
-                        min={1}
-                        max={200}
-                        precision={2}
-                        value={reward.value}
-                        onChange={this.onRewardValueChange} 
-                        formatter={value => `￥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        parser={value => value.replace(/￥\s?|(,*)/g, '')}
-                        />
-                    }
-
-                    { reward.type === 1 && 
-                        <InputNumber 
-                        min={5}
-                        max={200}
-                        precision={0}
-                        value={reward.value}
-                        onChange={this.onRewardValueChange} 
-                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        parser={value => value.replace(/\s?|(,*)/g, '')}
-                        />
-                    }
-                    </div>
-                </div>
-                <div className={classNames(styles['step-actions'],'clearfix')}>
-                    { this.renderStepButton('prev','tag') }
-                    { (!detail || !detail.is_publish) && this.renderStepButton('publish') }
-                    { detail && detail.is_publish && this.renderStepButton('next','reason') }
+                { reward.type === 1 && 
+                    <InputNumber 
+                    min={credit.min}
+                    max={me.bank.credit > credit.max ? credit.max : me.bank.credit}
+                    precision={0}
+                    value={reward.value}
+                    onChange={this.onRewardValueChange} 
+                    formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={value => value.replace(/\s?|(,*)/g, '')}
+                    />
+                }
                 </div>
             </div>
-        )
+        </Form.Item>
     }
 
-    renderPublishStepReason = () => {
-        return (
-            <Form>
-                <Form.Item
-                label="修改原因"
-                colon={false}
-                >
-                    <Input.TextArea 
-                    value={this.state.modifyReason}
-                    onChange={this.onModifyReasonChange}
-                    autosize={{
-                        minRows: 3,
-                        maxRows: 6
-                    }}
-                    maxLength="150"
-                    />
-                    <p className={styles['reason-tip']}>请确保您提交的内容真实有效，您将对提供的内容负有法律责任，对虚假和恶意营销，我们将保留追究法律责任的权利！</p>
-                </Form.Item>
-                <div className={classNames(styles['step-actions'],'clearfix')}>
-                    {   this.renderStepButton('prev','reward')  }
-                    {
-                        this.renderStepButton('publish')
+    renderRemark = () => {
+        return <Form.Item
+        label="修改原因"
+        colon={false}
+        >
+            <Input.TextArea 
+            value={this.state.remark}
+            onChange={this.onModifyReasonChange}
+            autoSize={{
+                minRows: 2,
+                maxRows: 6
+            }}
+            maxLength="150"
+            />
+        </Form.Item>
+    }
+
+    getError = () => {
+        const { content , tags , remark , reward } = this.state
+        const { doc , me } = this.props
+        const title = this.state.title.trim()
+        if(title === ""){
+            return "你还没有添加标题"
+        }
+
+        if(["?","？"].indexOf(title.substr(title.length - 1,1)) < 0){
+            return "你还没有给问题添加问号"
+        }
+
+        const editorBiz = this.editor ? this.editor.getEditorBiz() : null
+        if(editorBiz && editorBiz.isEmpty(content)){
+            return "请详细说明问题"
+        }
+
+        if(tags.length === 0){
+            return "请至少添加一个标签"
+        }
+
+        if(doc && doc.published && remark === ""){
+            return "请填写修改原因"
+        }
+
+        if(reward.type === 1 && me && reward.value > me.bank.credit){
+            return "积分余额不足"
+        }
+
+        if(reward.type === 2 && me && reward.value > me.bank.cash){
+            return "现金余额不足"
+        }
+    }
+
+    onPublish = () => {
+        const { remark , tags , reward } = this.state
+        const tag_ids = tags.map(tag => {
+            return tag.id
+        })
+        this.setState({
+            publishing:true,
+        })
+        if(this.editor){
+            this.editor.onPublish({
+                tags:tag_ids,
+                reward,
+                remark
+            })
+        }
+    }
+
+    onPublished = res => {
+        this.setState({
+            publishing:false,
+        })
+        if(!res.result) {
+            if(res.status === 1001 || res.status === 1002){
+                const { dispatch } = this.props
+                const { credit , cash } = res.data
+                dispatch({
+                    type:"user/setBank",
+                    data:{
+                        credit,
+                        cash
                     }
-                </div>
-            </Form>
-        )
-    }
-
-    renderStepButton = (type , key , disabled ) => {
-        if(type === "next"){
-            return <Button disabled={disabled} className={styles['action-next']} onClick={() => {this.onStepChange(key) }}>下一步</Button>
+                })
+            }
+            return
         }
-        if(type === "prev"){
-            return <Button disabled={disabled} className={styles['action-prev']} onClick={() => {this.onStepChange(key) }}>返回</Button>
+        const collabBiz = this.editor ? this.editor.getCollabBiz() : null
+        if(collabBiz){
+            collabBiz.exit()
         }
-        if(type === "publish"){
-            const { publishing } = this.state
-            return <Button disabled={disabled} className={styles['action-publish']} loading={publishing} type="primary" onClick={() => { this.editorInstance.onSave(Doc.SAVE_TYPE.USER_PUBLISH,this.onPublish) }}>{publishing ? '提交中...' : '发布'}</Button>
-        }
+        
+        const { doc } = this.props
+        message.info("发布成功",1,() => {
+            window.location.href = "/question/" + doc.id
+        })
     }
 
     render(){
-        const { loading , content , title } = this.state
-        const { detail , match:{ params } } = this.props
-        let doc_id = params.question_id
-        if(detail){
-            doc_id = detail.question_id
+        const { drawerView , publishing } = this.state
+        const { doc , me , ...props} = this.props
+        if((this.question_id && !doc) || !me){
+            return <Loading />
         }
-        const disabled = title === "" || (this.editorInstance && this.editorInstance.editorBiz && this.editorInstance.editorBiz.isEmpty(content))
+
+        const error = this.getError()
+
         return (
-            <DocumentTitle title='I TELL YOU'>
+            <GlobalLayout {...props}>
                 <React.Fragment>
                     <header className={styles.header}>
                         <div className={styles.container}>
                             <div className={styles.logo}>
                                 <a href="/"><img src={logo} alt="" /></a>
                             </div>
-                            <small><span>·</span>编辑<span>·</span>{this.tagName}</small>
+                            <small><span>·</span>提问编辑<span>·</span>{this.tagName}</small>
                             <div className={styles['save-status']}>
                                 {
                                     this.renderSaveStatus()
@@ -447,24 +445,14 @@ class Edit extends React.Component {
                             </div>
                             <div className={styles.right}>
                                 {
-                                    detail &&
-                                    <Button type="ghost" onClick={this.onShowVersion}>历史</Button>
+                                    doc && <Button onClick={this.onShowVersion}>历史</Button>
                                 }
-                                <Popover
-                                overlayClassName={styles["publish-popover"]}
-                                title="发布提问"
-                                trigger="click"
-                                placement="bottomRight"
-                                content={this.renderPublishStep()}
-                                >
-                                    <Button disabled={disabled} type="primary">提交发布</Button>
-                                </Popover>
+                                <Button type="primary" onClick={this.onShowDrawer} >发布</Button>
                             </div>
                         </div>
                     </header>
                     <div className={styles.container}>
-                        {
-                        loading === false && <div className={styles.title}>
+                        <div className={styles.title}>
                             <Input 
                             className={styles["questions-title"]}
                             size="large"
@@ -475,53 +463,82 @@ class Edit extends React.Component {
                             maxLength={50}
                             />
                         </div>
-                        }
+                        <Alert 
+                        showIcon={false} 
+                        type="tip" 
+                        message={
+                            <div className={styles['title-tip']}>
+                                <p className={styles['tip-header']}><Icon type="question-circle" />   让你的提问获得更多解答</p>
+                                <p className={styles["tip-item"]}>· 问题是什么，你想得到什么帮助，以“？”结束</p>
+                                <p className={styles["tip-item"]}>· 保持文字简练，表述清晰问题的关键点</p>
+                                <p className={styles["tip-item"]}>· 添加合适的标签，让问题更好地流通</p>
+                            </div>
+                        } 
+                        banner 
+                        closable 
+                        />
                         <div className={styles["mini-editor"]}>
-                            <Editor 
-                            doc_id={doc_id} 
-                            type="mini"
-                            onLoad={this.onEditorLoad}
-                            onChange={this.onEditorChange}
-                            onSaveBefore={this.onSaveBefore}
-                            onSaveAfter={this.onSaveAfter}
-                            />
-                            { 
-                                this.state.versionsStatus &&  
-                                <Modal 
-                                className={styles['doc-history-modal']}
-                                width={1080}
-                                style={{
-                                    top: 56
-                                }}
-                                title={null}
-                                footer={null}
-                                visible={true}
-                                closable={false}
-                                onCancel={() => {
-                                    this.setState({
-                                        versionsStatus: false
-                                    })
-                                }}
-                                >
-                                    <History 
-                                    doc_id={detail.question_id}
-                                    onRollback={this.onReverted}
-                                    onCancel={() => {
-                                        this.setState({
-                                            versionsStatus: false
-                                        })
-                                    }}
-                                    />
-                                </Modal>
+                            {
+                                <Editor
+                                local={!this.question_id}
+                                onLoad={this.onEditorLoad}
+                                onDocLoad={this.onDocLoad}
+                                onChange={this.onEditorChange}
+                                onSaveBefore={this.onSaveBefore}
+                                onSaveAfter={this.onSaveAfter}
+                                onReverted={this.onReverted}
+                                onPublished={this.onPublished}
+                                />
                             }
                         </div>
                     </div>
+                    <Drawer
+                    title="发布提问"
+                    placement="right"
+                    visible={drawerView}
+                    onClose={this.onHideDrawer}
+                    width="430"
+                    >
+                        <Form>
+                            { this.renderTag() }
+                            { this.renderReward() }
+                            {
+                                doc && doc.published && this.renderRemark()
+                            }
+                            {
+                                error && <Alert
+                                description={error}
+                                type="error"
+                                showIcon
+                                />
+                            }
+                            {
+                                !error && <Form.Item 
+                                extra="您将对提供的内容负有法律责任，对虚假和恶意营销，我们将保留追究法律责任的权利！"
+                                colon={false}
+                                >
+                                    <Button 
+                                    disabled={error ? true : false} 
+                                    loading={publishing} 
+                                    type="primary" 
+                                    onClick={this.onPublish}
+                                    style={{width:"100%"}}
+                                    >
+                                        {publishing ? '提交中...' : '发布'}
+                                    </Button>
+                                </Form.Item>
+                            }
+                            
+                        </Form>
+                    </Drawer>
                 </React.Fragment>
-            </DocumentTitle>
+            </GlobalLayout>
         )
     }
 }
-export default connect(({ doc }) => ({
-    detail:doc.detail,
-    editStatus:doc.editStatus || {}
+
+export default connect(({ doc , user , reward }) => ({
+    doc,
+    me : user.me ,
+    rewardConfig:reward.config
 }))(Edit)

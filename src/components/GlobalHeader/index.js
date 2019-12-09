@@ -9,14 +9,14 @@ import logo from '@/assets/logo.svg'
 
 class GlobalHeader extends React.PureComponent{
     render (){
-        const {currentUser,onUserMenuClick,onActionMenuClick} = this.props
+        const {me,onUserMenuClick,onActionMenuClick} = this.props
 
         const userMenu = (
             <div className={style['user-menu']}>
-                {currentUser ? 
+                {me ? 
                 <div className={classnames(style['user-info'],'clearfix')}>
-                    <span className={style['user-info-name']}>{currentUser.nickname}</span>
-                    <span className={style['user-info-login']}>{currentUser.username}</span>
+                    <span className={style['user-info-name']}>{me.name}</span>
+                    <span className={style['user-info-login']}>{me.login}</span>
                 </div> : null
                 }
                 <Menu onClick={onUserMenuClick}>
@@ -58,7 +58,7 @@ class GlobalHeader extends React.PureComponent{
                         </nav>
                         <div className={style.user}>
                         {
-                            currentUser ? (
+                            me ? (
                                 <div className={style.action}>
                                     <div className={classnames(style.item,"itellyou-popover itellyou-popover-menu ")}>
                                         <Popover 

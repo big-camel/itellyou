@@ -27,7 +27,7 @@ class Register extends Component {
     const { className, children } = this.props;
     return (
       <FormContext.Provider value={this.getContext()}>
-        <div className={classNames(className, styles.registerForm)}>
+        <div className={classNames(className, styles.form)}>
           <Form onSubmit={this.handleSubmit}>
             {children}
           </Form>

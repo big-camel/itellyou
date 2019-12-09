@@ -30,7 +30,7 @@ class Index extends React.Component {
         const { dispatch } = this.props
         const { page , size } = this.state
         dispatch({
-            type:'question/getList',
+            type:'question/list',
             payload:{
                 page,
                 size
@@ -48,13 +48,13 @@ class Index extends React.Component {
     }
 
     getRewardTip = item => {
-        if(item.reward.type === 0)
+        if(item.reward_type === 0)
             return
         let type = "积分"
-        if(item.reward.type === 2){
+        if(item.reward_type === 2){
             type = "现金"
         }
-        return <span>悬赏 {item.reward.value} {type}</span>
+        return <span>悬赏 {item.reward_value} {type}</span>
     }
 
     renderList = () => {
@@ -86,7 +86,7 @@ class Index extends React.Component {
         dataSource={list.data}
         renderItem={item => (
             <List.Item
-            key={item.question_id}
+            key={item.id}
             >
             <div>
                 {
@@ -94,7 +94,7 @@ class Index extends React.Component {
                         <div className={styles.tags}>
                             {
                                 item.tags.map(tag => (
-                                    <Link key={tag.key} target="_blank" to={`/tag/${tag.name}`}>{tag.name}</Link>
+                                    <Link key={tag.id} target="_blank" to={`/tag/${tag.name}`}>{tag.name}</Link>
                                 ))
                             }
                             {
@@ -104,16 +104,16 @@ class Index extends React.Component {
                     )
                 }
                 <h4 className={styles.title}>
-                    <Link target="_blank" to={`/question/${item.question_id}`}>{item.question_title}</Link>
+                    <Link target="_blank" to={`/question/${item.id}`}>{item.title}</Link>
                 </h4>
                 <div className={styles.actions}>
                     <div className={styles.author}>
                         <Link to=""><Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /></Link>
-                        <Link to="">{item.user.nickname}</Link>
+                        <Link to="">{item.creator.name}</Link>
                     </div>
                     <span>发布于 <Timer time={item.created_time} /></span>
-                    <span><Icon type="eye" />{item.page_view}</span>
-                    <span><Icon type="message" />{item.answer_count}</span>
+                    <span><Icon type="eye" />{item.view}</span>
+                    <span><Icon type="message" />{item.answers}</span>
                     <span><Icon type="heart" /></span>
                 </div>
             </div>

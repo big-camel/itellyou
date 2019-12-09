@@ -6,26 +6,33 @@
 
 .header{
 
+    position: relative;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+
     .title{
-        margin: 0 0 10px 0;
-        font-size: 24px;
+        margin-bottom: 10px;
+        font-size: 18px;
+        line-height: 1.5;
+        color: #000;
 
         .reward{
-            font-size: 14px;
+            font-size: 12px;
             color: #ee5e0f;
             margin-left: 24px;
         }
     }
 
     .tags{
-        margin-bottom: 16px;
 
         .tag{
             margin-right: 5px;
         }
     }
 
-    .page-view{
+    .view{
+        font-size: 12px;
         margin-left: 5px;
     }
 }
@@ -89,6 +96,23 @@
     .editor-wrapper{
         position: relative;
 
+        :global{
+            .itellyou-mini-editor {
+                border: 1px solid #ebebeb;
+            }
+            .itellyou-mini-editor .itellyou-toolbar {
+                background-color:#ffffff;
+                border: 0 none;
+                border-radius: 0;
+                border-bottom: 1px solid #ebebeb;
+                margin-bottom: 0px;
+            }
+    
+            .itellyou-mini-editor .itellyou-content-editor {
+                padding: 20px 12px 12px;
+            }
+        }
+        
         .reply-tip{
             position: absolute;
             z-index: 1;

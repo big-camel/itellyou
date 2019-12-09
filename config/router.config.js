@@ -4,8 +4,8 @@ export default [
         path: '/user/:path(login|register)',
         component: '../layouts/PassportLayout',
         routes: [
-            { path: '/user/login', name: 'login', component: './User/Login' },
-            { path: '/user/register', name: 'register', component: './User/Register' },
+            { path: '/user/login', name: 'login.page', component: './User/Login' },
+            { path: '/user/register', name: 'register.page', component: './User/Register' },
             {
                 component: '404',
             }
@@ -23,11 +23,11 @@ export default [
     },
     //question
     {
-        path:'/question/:path(new|[\\d]+/edit)',
+        path:'/question/(new|[\\d]+/edit)',
         Routes: ['src/pages/Authorized'],
         routes:[
-            { path:'/question/new',name:'questionNew',component:'./Question/Edit', authority: ['admin', 'user'] },
-            { path:'/question/:question_id([\\d]+)/edit',name:'questionEdit',component:'./Question/Edit', authority: ['admin', 'user']},
+            { path:'/question/new',name:'question.page.new',component:'./Question/Edit', authority: ['admin', 'user'] },
+            { path:'/question/:question_id([\\d]+)/edit',name:'question.page.edit',component:'./Question/Edit', authority: ['admin', 'user']},
         ]
     },
     //tag/edit
@@ -45,10 +45,9 @@ export default [
         Routes: ['src/pages/Authorized'],
         routes:[
             { path: '/', name: 'home', component: './Home/Index' },
-            { path:'/write',name:'write',component:'./Blogs/Write', authority: ['admin', 'user'] },
             // Question
-            { path:'/question',name:'questionIndex',component:'./Question/Index' },
-            { path:'/question/:id([\\d]+)',name:'questionDetail',component:'./Question/Detail' },
+            { path:'/question',name:'question.page.index',component:'./Question/Index' },
+            { path:'/question/:id([\\d]+)',name:'question.page.detail',component:'./Question/Detail' },
             // Tag
             { path:'/tag',name:'tagIndex',component:'./Tag/Index' },
             { path:'/tag/list',name:'tagList',component:'./Tag/List' },

@@ -1,4 +1,4 @@
-import { set , del } from '@/services/question/star'
+import { set , del } from '@/pages/Question/services/star'
 
 export default {
     namespace: 'star',

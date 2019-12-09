@@ -1,8 +1,9 @@
 import React from 'react'
-import Link from 'umi/link'
 class Home extends React.Component{
 
     render(){
+        const reg = /^[\da-zA-Z_\-]{0,}$/
+        console.log(reg.test("abd.img"))
         return (
             <div style={{textAlign:'center',margin:'20px 0'}}>
                 <h2>This is Home</h2>
@@ -10,4 +11,5 @@ class Home extends React.Component{
         )
     }
 }
+
 export default Home

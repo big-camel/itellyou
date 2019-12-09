@@ -59,13 +59,13 @@ class Tag extends React.Component {
         const actionLoading = tagSetLoading || tagDelLoading
         return (
             <div className={styles['popover-layout']}>
-                <h2 className={styles['popover-title']}>{tagDetail.tag_name}</h2>
+                <h2 className={styles['popover-title']}>{tagDetail.name}</h2>
                 <div className={styles['popover-content']}>
                     {tagDetail.tag_summary || "暂无介绍"}
                 </div>
                 <div className={styles['popover-footer']}>
                     <div className={styles['popover-link']}>
-                        <Link target="_blank" to={`/tag/${encodeURIComponent(tagDetail.tag_name)}`}>查看</Link>
+                        <Link target="_blank" to={`/tag/${encodeURIComponent(tagDetail.name)}`}>查看</Link>
                         <Link target="_blank" to="">编辑</Link>
                     </div>
                     <div className={styles['popover-star']}>
@@ -85,14 +85,14 @@ class Tag extends React.Component {
             dispatch({
                 type:'user/setTag',
                 payload:{
-                    tags:[tagDetail.tag_id]
+                    tags:[tagDetail.id]
                 }
             })
         }else if(tagDetail && tagDetail.star){
             dispatch({
                 type:'user/delTag',
                 payload:{
-                    tags:[tagDetail.tag_id]
+                    tags:[tagDetail.id]
                 }
             })
         }
@@ -107,7 +107,7 @@ class Tag extends React.Component {
                 dispatch({
                     type:'tag/query',
                     payload:{
-                        tag_name:title
+                        name:title
                     }
                 })
             }

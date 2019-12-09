@@ -1,95 +1,79 @@
-import { create , get , setLock , delLock , getLock , update , rollback , publish } from '@/services/question/doc'
+import { create , draft , simple , find , update , rollback , publish } from '../services/doc'
 
 export default {
     namespace: 'doc',
 
-    state: {},
+    state:window.appData.doc || null,
 
     effects:{
-        *create({ payload }, { call , put}){
-            const response = yield call(create,payload)
-            if(response.result){
-                const { question_id , question_title , question_content  } = response.data
-                response.data = Object.assign({} , response.data , { doc_id : question_id , title : question_title , content : question_content })
-                yield put({
-                    type:'updateDetail',
-                    payload:response.data || {}
-                })
-            }
-            return response
-        }
-        ,
-        *get({ payload }, { call,put }){
-            const response = yield call(get,payload)
-            if(response.result){
-                const { question_id , question_title , question_content  } = response.data
-                response.data = Object.assign({} , response.data , { doc_id : question_id , title : question_title , content : question_content })
-                yield put({
-                    type:'updateDetail',
-                    payload:response.data || {}
-                })
+        *create({ payload }, { call }){
+            const response = yield call(create,payload.data)
+            if(!response.result){
+                payload.onError(response)
             }
             return response
         },
-        *setLock({ payload }, { call , put }){
-            const response = yield call(setLock,payload)
-            put({
-                type: 'updateEditStatus',
-                payload: response
-            })
+        *draft({ payload }, { call,put }){
+            const response = yield call(draft,payload.data)
+            if(response.result){
+                yield put({
+                    type:'setDetail',
+                    payload:response.data
+                })
+            }else{
+                payload.onError(response)
+            }
             return response
         },
-        *delLock({ payload }, { call , put}){
-            const response = yield call(delLock,payload)
-            put({
-                type: 'updateEditStatus',
-                payload: response
-            })
-            return response
-        },
-        *getLock({ payload }, { call , put }){
-            const response = yield call(getLock,payload)
-            put({
-                type: 'updateEditStatus',
-                payload: response
-            })
+        *find({ payload }, { call,put }){
+            const response = yield call(find,payload)
+            if(response.result){
+                yield put({
+                    type:'setDetail',
+                    payload:response.data
+                })
+            }
             return response
         },
         *update({ payload }, { call , put}){
-            const response = yield call(update,payload)
+            const response = yield call(update,payload.data)
             if(response.result){
-                const { question_id , question_title , question_content  } = response.data
-                response.data = Object.assign({} , response.data , { doc_id : question_id , title : question_title , content : question_content })
                 yield put({
-                    type:'updateDetail',
+                    type:'setDetail',
+                    payload:response.data
+                })
+            }else{
+                payload.onError(response)
+            }
+            return response
+        },
+        *rollback({ payload }, { call , put}){
+            const response = yield call(rollback,payload.data)
+            if(!response.result){
+                payload.onError(response)
+            }else{
+                yield put({
+                    type:'setDetail',
                     payload:response.data || {}
                 })
             }
             return response
         },
-        *rollback({ payload }, { call }){
-            const response = yield call(rollback,payload)
-            return response
-        },
         *publish({ payload }, { call }){
-            const response = yield call(publish,payload)
+            const response = yield call(publish,payload.data)
+            if(!response.result){
+                payload.onError(response)
+            }
             return response
         }
     },
 
     reducers:{
-        updateDetail(state,{ payload }){
+        setDetail(state,{ payload }){
+            state = state || {}
             return {
                 ...state,
-                detail:payload
-            }
-        },
-        updateEditStatus(state, { payload }){
-            const { data , code } = payload
-            const editStatus = { ...data , code : typeof(code) === "number" ? null : code }
-            return {
-                ...state,
-                editStatus
+                ...payload
             }
         }
     }

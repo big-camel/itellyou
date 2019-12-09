@@ -1,6 +1,12 @@
-.doc-history-modal .ant-modal-body {
-    height: calc(100vh - 112px);
-    padding: 0
+@import '~antd/lib/style/themes/default.less';
+
+.doc-history-modal {
+    :global{
+        .ant-modal-body {
+            height: calc(100vh - 112px);
+            padding: 0;
+        }
+    }
 }
 
 .doc-history {
@@ -73,7 +79,7 @@
 }
 
 .doc-history .doc-history-nav .current {
-    border-left: 3px solid #25b864;
+    border-left: 3px solid @primary-color;
     background-color: #f5f5f5;
     padding-left: 21px
 }

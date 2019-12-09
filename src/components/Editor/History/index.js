@@ -1,5 +1,6 @@
 import React from 'react'
 import nodeHtmldiff from 'node-htmldiff'
+import { Modal } from 'antd'
 import TextViewer from '../Viewer'
 import HistoryViewer from './Viewer'
 import styles from './index.less'
@@ -53,14 +54,30 @@ class History extends React.PureComponent {
     }
 
     render() {
-        const { doc_id , onRollback , onCancel } = this.props
-        return <HistoryViewer 
-        doc_id={doc_id}
-        onRollback={onRollback}
-        onCancel={onCancel}
-        renderVersion={this.renderVersion}
-        renderDiff={this.renderDiff}
-        />
+        const { doc_id , onRollbackBefore,onRollbackAfter , onCancel } = this.props
+        return (
+            <Modal 
+            className={styles['doc-history-modal']}
+            width={1080}
+            style={{
+                top: 56
+            }}
+            title={null}
+            footer={null}
+            visible={true}
+            closable={false}
+            onCancel={onCancel}
+            >
+                <HistoryViewer 
+                doc_id={doc_id}
+                onRollbackBefore={onRollbackBefore}
+                onRollbackAfter={onRollbackAfter}
+                onCancel={onCancel}
+                renderVersion={this.renderVersion}
+                renderDiff={this.renderDiff}
+                />
+            </Modal>
+        )
     }
 }
 export default History

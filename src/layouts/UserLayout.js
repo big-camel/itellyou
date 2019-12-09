@@ -1,10 +1,10 @@
 import React from 'react'
 import { Row, Col } from 'antd'
 import { connect } from 'dva'
-import DocumentTitle from 'react-document-title'
 import { ContainerQuery } from 'react-container-query'
 import Header from './Header'
 import Container from '@/components/Container'
+import GlobalLayout from '@/components/GlobalLayout'
 import UserMenu from '@/components/UserMenu'
 
 const query = {
@@ -22,14 +22,14 @@ class UserLayout extends React.Component {
         const { dispatch } = this.props
       
         dispatch({
-            type: 'user/fetchCurrent',
+            type: 'user/fetchMe',
         })
     }
 
     render(){
-        const { children } = this.props
+        const { children , ...props} = this.props
         return (
-            <DocumentTitle title='I TELL YOU'>
+            <GlobalLayout {...props}>
                 <ContainerQuery query={query}>
                     {params => (
                         <React.Fragment>
@@ -38,7 +38,7 @@ class UserLayout extends React.Component {
                                 <Container mode={params}>
                                     <Row style={{marginLeft:'-8px',marginRight:'-8px'}}>
                                         <Col xs={24} sm={4} style={{paddingLeft:'8px',paddingRight:'8px'}}>
-                                           <UserMenu />
+                                        <UserMenu />
                                         </Col>
                                         <Col xs={24} sm={20} style={{paddingLeft:'8px',paddingRight:'8px'}}>{children}</Col>
                                     </Row>
@@ -47,7 +47,7 @@ class UserLayout extends React.Component {
                         </React.Fragment>
                     )}
                 </ContainerQuery>
-            </DocumentTitle>
+            </GlobalLayout>
         )
     }
 }

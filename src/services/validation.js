@@ -1,8 +1,8 @@
 import request from '@/utils/request';
 
 export async function sendMobileCode(params) {
-    const { type , ...other } = params
-    return request(`/api/verification/mobile/${type}`,{ 
+    const { action , ...other } = params
+    return request(`/api/validation/${action}/code`,{ 
         method:'POST',
         data: other
     })

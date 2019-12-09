@@ -1,36 +1,33 @@
-import { getVersions,getVersion,getVersionDiff } from '@/services/question/version'
+import { list,find,diff } from '@/pages/Question/services/version'
 
 export default {
     namespace: 'version',
 
     state: {
-        versions:[]
+        list:[]
     },
 
     effects:{
         *list({ payload }, { call , put}){
-            const response = yield call(getVersions,payload)
+            const response = yield call(list,payload)
             if(response.result){
                 yield put({
                     type: 'updateVersions',
                     payload: response.data
                 })
             }
-            return response.data
+            return response
         },
-        *get({ payload }, { call }){
-            const response = yield call(getVersion,payload)
+        *find({ payload }, { call }){
+            const response = yield call(find,payload)
             if(response.result){
-                response.data['title'] = response.data['question_title']
-                response.data['content'] = response.data['question_content']
-              
-                return response.data
+                return response
             }
-            return response.data
+            return response
         },
         *diff({ payload }, { call }){
-            const response = yield call(getVersionDiff,payload)
-            return response.data
+            const response = yield call(diff,payload)
+            return response
         },
     },
 
@@ -38,7 +35,7 @@ export default {
         updateVersions(state,{ payload }){
             return {
                 ...state,
-                versions:payload
+                list:payload
             }
         }
     }

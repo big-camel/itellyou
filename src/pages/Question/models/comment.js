@@ -1,4 +1,4 @@
-import { create , deleteComment , editComment , getRootList , getChildList , adopt } from '@/services/question/comment'
+import { create , deleteComment , editComment , getRootList , getChildList , adopt } from '@/pages/Question/services/comment'
 
 const getItem = (comment_list,comment_id , parent_id) => {
     if(comment_list){

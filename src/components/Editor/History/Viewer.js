@@ -5,8 +5,6 @@ import { List,Tag,Switch,Radio,Button } from 'antd'
 import Timer from '@/components/Timer'
 import styles from './index.less'
 
-@connect(({  }) => ({
-}))
 class Viewer extends React.PureComponent {
 
     state = {
@@ -44,14 +42,14 @@ class Viewer extends React.PureComponent {
             payload:{
                 doc_id
             }
-        }).then(data => {
+        }).then(res => {
             this.setState({
                 loading: false,
-                versions: data.data
+                versions: res.data
             }) 
             // 展示最新的版本
-            if (data.data.length > 0) {
-                this.showVersion(data.data[0].version_id)
+            if (res.data.length > 0) {
+                this.showVersion(res.data[0].id)
             }
         })
     }
@@ -61,12 +59,12 @@ class Viewer extends React.PureComponent {
             const current = this.state.currentVersionId
             const versions = this.state.versions
             const index = this.state.versions.findIndex(item => {
-                return item.version_id === current
+                return item.id === current
             })
     
             let base = null
             if (index !== versions.length - 1) {
-                base = versions[index + 1].version_id
+                base = versions[index + 1].id
             }
     
             this.showDiff(current, base)
@@ -79,28 +77,28 @@ class Viewer extends React.PureComponent {
     }
 
     renderVersionListItem = item => {
-        if (this.state.filter === 'published' && item.draft) {
+        if (this.state.filter === 'published' && !item.published) {
             return null
         }
   
         return  <List.Item
-        className={classnames(styles.version,item.version_id === this.state.currentVersionId ? styles.current : null)}
+        className={classnames(styles.version,item.id === this.state.currentVersionId ? styles.current : null)}
         >
             <div 
             className={styles["version-meta"]} 
             onClick={() => {
-                this.showVersion(item.version_id)
+                this.showVersion(item.id)
             }}>
                 <div className={styles["version-name"]}>
                     <Timer time={item.created_time}/>
                     {
-                        item.is_publish === true && <Tag>已发布</Tag>
+                        item.published === true && <Tag>已发布</Tag>
                     }
                 </div>
                 {
-                    item.user &&
+                    item.creator &&
                     <div className={styles["version-editor"]}>
-                        {item.user.name}
+                        {item.creator.name}
                     </div>
                 }
             </div>
@@ -110,13 +108,13 @@ class Viewer extends React.PureComponent {
     // 是否最新版本
     isLatest = versionId => {
         const versions = this.state.versions
-        return versions.length > 0 && versions[0].version_id === versionId
+        return versions.length > 0 && versions[0].id === versionId
     }
 
     // 是否第一个版本
     isFirst = versionId => {
         const versions = this.state.versions
-        return versions.length > 0 && versions[versions.length - 1].version_id === versionId
+        return versions.length > 0 && versions[versions.length - 1].id === versionId
     }
 
     canRevert = () => {
@@ -144,15 +142,16 @@ class Viewer extends React.PureComponent {
         // 获取数据并展示
         const { dispatch , doc_id } = this.props
         dispatch({
-            type:'version/get',
+            type:'version/find',
             payload:{
                 version_id,
                 doc_id
             }
-        }).then(data => {
+        }).then(res => {
+            if(!res.result) return
             // 缓存数据
             this.cache[version_id] = {
-                version: data,
+                version: res.data,
                 diff: null
             }
             // 更新视图
@@ -169,18 +168,21 @@ class Viewer extends React.PureComponent {
      * @param {number}current 版本2 ID
      */
     revert(version_id) {
-        const { dispatch , doc_id } = this.props
+        const { dispatch , doc_id , onRollbackBefore,onRollbackAfter} = this.props
+        if(onRollbackBefore){
+            onRollbackBefore(version_id)
+        }
         dispatch({
             type:'doc/rollback',
             payload:{
-                doc_id,
-                version_id
+                data:{
+                    id:doc_id,
+                    version_id
+                }
             }
-        }).then(() => {
-            const version = this.cache[version_id].version
-            const { onRollback } = this.props
-            if(onRollback){
-                onRollback(version)
+        }).then(res => {
+            if(onRollbackAfter){
+                onRollbackAfter(res)
             }
         })
     }
@@ -230,7 +232,7 @@ class Viewer extends React.PureComponent {
         // 第一个版本，用当前内容版本内容处理
         if (this.isFirst(current)) {
             onDataReady({
-                current: this.cache[current].version.body_html,
+                current: this.cache[current].version.html,
                 target: ''
             })
             return
@@ -243,12 +245,11 @@ class Viewer extends React.PureComponent {
                 doc_id,
                 str:"".concat(current, "...").concat(base || '')
             }
-        }).then(data => {
-            onDataReady(data)
+        }).then(res => {
+            if(!res.result) return
+            onDataReady(res.data)
         })
     }
-
-    
 
     render() {
         let versions = this.state.versions
@@ -262,7 +263,7 @@ class Viewer extends React.PureComponent {
   
         if (this.state.filter === 'published') {
             versions = versions.filter(item => {
-                return item.is_publish === true
+                return item.published === true
             })
         }
   
@@ -314,4 +315,5 @@ class Viewer extends React.PureComponent {
     }
 }
 
-export default Viewer
+export default connect(({  }) => ({
+}))(Viewer)

@@ -1,30 +1,32 @@
-import { routerRedux } from 'dva/router'
+import { routerRedux } from 'dva'
 import { stringify } from 'qs'
 import { setAuthority } from '@/utils/authority'
 import { reloadAuthorized } from '@/utils/Authorized'
-import { checkNickname,fetchCurrent,getTag,setTag,delTag , logout } from '@/services/user'
+import { queryName,fetchMe,getTag,setTag,delTag , logout } from '@/services/user'
 export default {
     namespace: 'user',
 
-    state: {},
+    state: {
+        me:window.appData.me
+    },
 
     effects: {
-        *checkNickname({ payload }, { call }){
-            const response = yield call(checkNickname,payload)
+        *queryName({ payload }, { call }){
+            const response = yield call(queryName,payload)
             return response
         },
 
-        *fetchCurrent(_, { call,put }){
-            const response = yield call(fetchCurrent)
+        *fetchMe(_, { call,put }){
+            const response = yield call(fetchMe)
             yield put({
-                type: 'currentUserState',
+                type: 'setMe',
                 payload: response
             })
         },
         *logout(_, { call,put }){
             const response = yield call(logout)
             yield put({
-                type: 'currentUserState',
+                type: 'setMe',
                 payload: null
             })
             setAuthority({
@@ -47,7 +49,7 @@ export default {
         *getTag(_, { call,put }){
             const response = yield call(getTag)
             yield put({
-                type: 'currentTagState',
+                type: 'setTag',
                 payload: response.data
             })
         },
@@ -67,7 +69,7 @@ export default {
                 }
             }
             yield put({
-                type: 'currentTagState',
+                type: 'setTag',
                 payload: response.data
             })
             return response
@@ -88,7 +90,7 @@ export default {
                 }
             }
             yield put({
-                type: 'currentTagState',
+                type: 'setTag',
                 payload: response.data
             })
             return response
@@ -96,16 +98,24 @@ export default {
     },
 
     reducers:{
-        currentTagState(state,{ payload }){
+        setTag(state,{ payload }){
             return {
                 ...state,
                 tag:payload
             }
         },
-        currentUserState(state,{ payload }){
+        setMe(state,{ payload }){
             return {
                 ...state,
-                current:payload.data
+                me:payload.data
+            }
+        },
+        setBank(state,{payload}){
+            const { me } = state
+            me.bank = Object.assign({},me.bank,payload)
+            return {
+                ...state,
+                me
             }
         }
     }

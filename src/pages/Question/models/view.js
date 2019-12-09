@@ -1,4 +1,4 @@
-import { view } from '@/services/question/view'
+import { view } from '@/pages/Question/services/view'
 
 export default {
     namespace: 'view',

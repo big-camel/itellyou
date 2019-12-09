@@ -1,8 +1,11 @@
+
 import { register } from '@/services/user'
+
 export default {
     namespace: 'register',
 
-    state: {},
+    state: {
+    },
 
     effects: {
         *submit({ payload }, { call }){

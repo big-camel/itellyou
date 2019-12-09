@@ -1,6 +1,6 @@
-import { sendMobileCode } from '@/services/verification'
+import { sendMobileCode } from '@/services/validation'
 export default {
-    namespace: 'verification',
+    namespace: 'validation',
 
     state: {},
 
