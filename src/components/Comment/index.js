@@ -18,7 +18,6 @@ function Comment({ dataSource , className , loading , extra , title , exclude , 
     const firstLoad = useRef(true)
 
     useEffect(() => {
-        
         if(onLoad && (firstLoad.current === false || (firstLoad.current === true && !dataSource))){
             const result = onLoad(offset , limit)
             if(typeof result === "object"){

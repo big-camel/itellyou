@@ -1,8 +1,7 @@
 import React , { useState } from 'react'
 import { connect } from 'dva'
-import Comment from '@/components/Comment'
+import Comment , { Detail as CommentDetail } from '@/components/Comment'
 import { Modal } from 'antd'
-import CommentDetail from '@/components/Comment/Detail'
 
 function AnswerComment({ dispatch , rootLoading , detailLoading , questionId , answerId , answerComment }){
 
