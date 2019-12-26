@@ -47,7 +47,8 @@ export default [
             { path: '/', name: 'home', component: './Home/Index' },
             // Question
             { path:'/question',name:'question.page.index',component:'./Question/Index' },
-            { path:'/question/:id([\\d]+)',name:'question.page.detail',component:'./Question/Detail' },
+            { path:'/question/:id(\\d+)',name:'question.page.detail',component:'./Question/Detail' },
+            { path:'/question/:id(\\d+)/answer/:answerId(\\d+)',name:'question.page.detail',component:'./Question/Detail' },
             // Tag
             { path:'/tag',name:'tagIndex',component:'./Tag/Index' },
             { path:'/tag/list',name:'tagList',component:'./Tag/List' },

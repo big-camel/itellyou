@@ -1,6 +1,6 @@
-import { getRoot , getChild , deleteComment , create , vote } from '../services/comment'
+import { getRoot , getChild , deleteComment , create , vote } from '../services/answer.comment'
 export default {
-    namespace: 'comment',
+    namespace: 'answerComment',
 
     state: {},
     effects:{
@@ -10,16 +10,16 @@ export default {
                 const { replyId } = payload
                 yield put({
                     type:"addItem",
-                    payload:{ questionId:payload.questionId, detail:response.data , to:replyId}
+                    payload:{ answerId:payload.answerId, detail:response.data , to:replyId}
                 })
                 yield put({
                     type:"addItem",
-                    payload:{ questionId:"detail",detail:response.data ,to:replyId}
+                    payload:{ answerId:"detail",detail:response.data ,to:replyId}
                 })
                 yield put({
-                    type:"question/updateComments",
+                    type:"answer/updateComments",
                     payload:{
-                        id:payload.questionId
+                        id:payload.answerId
                     }
                 })
             }
@@ -31,11 +31,11 @@ export default {
             if(response && response.result){
                 yield put({
                     type:"replaceItem",
-                    payload:{ questionId:payload.questionId, detail:response.data }
+                    payload:{ answerId:payload.answerId, detail:response.data }
                 })
                 yield put({
                     type:"replaceItem",
-                    payload:{ questionId:"detail", detail:response.data }
+                    payload:{ answerId:"detail", detail:response.data }
                 })
             }
             return response
@@ -45,7 +45,7 @@ export default {
             if(response && response.result){
                 yield put({
                     type:"setList",
-                    payload:{ questionId:payload.questionId,data:response.data }
+                    payload:{ answerId:payload.answerId,data:response.data }
                 })
             }
             return response
@@ -54,11 +54,11 @@ export default {
             const { append , ...params } = payload
             const response = yield call(getChild,params)
             if(response && response.result){
-                const { questionId , id } = params
+                const { answerId , id } = params
                 yield put({
                     type:"addChild",
                     payload:{
-                        questionId,
+                        answerId,
                         id,
                         append,
                         childs:response.data
@@ -72,17 +72,17 @@ export default {
             const response = yield call(getChild,params)
             if(response && response.result){
                 const { id } = params
-                const questionId = "detail"
+                const answerId = "detail"
                 if(payload.hasDetail === true){
                     yield put({
                         type:"setList",
-                        payload:{ questionId, data:response.data }
+                        payload:{ answerId, data:response.data }
                     })
                 }else{
                     yield put({
                         type:"addChild",
                         payload:{
-                            questionId,
+                            answerId,
                             id,
                             append,
                             childs:response.data
@@ -95,7 +95,7 @@ export default {
         *vote({ payload }, { call , put , select }){
             const response = yield call(vote,payload)
             if(response && response.result){
-                const { questionId , type } = payload
+                const { answerId , type } = payload
                 const { id , parent_id , support , oppose } = response.data
                 const replaceDetail = item => {
                     return {
@@ -108,7 +108,7 @@ export default {
                 yield put({
                     type:"replaceItem",
                     payload:{
-                        questionId,
+                        answerId,
                         detail:{
                             id,
                             parent_id
@@ -119,7 +119,7 @@ export default {
                 yield put({
                     type:"replaceItem",
                     payload:{
-                        questionId:"detail",
+                        answerId:"detail",
                         detail:{
                             id,
                             parent_id
@@ -132,18 +132,18 @@ export default {
         }
     },
     reducers:{
-        setList(state,{ payload : { questionId , data } }){
+        setList(state,{ payload : { answerId , data } }){
             return {
                 ...state,
-                [questionId]:data
+                [answerId]:data
             }
         },
-        addItem(state,{ payload : { questionId , detail , to } }){
-            const list = state ? state[questionId] : null
+        addItem(state,{ payload : { answerId , detail , to } }){
+            const list = state ? state[answerId] : null
             if(list){
                 const data = list.data.concat()
                 list.comments += 1
-                if(detail.parent_id && detail.parent_id > 0 && questionId !== "detail"){
+                if(detail.parent_id && detail.parent_id > 0 && answerId !== "detail"){
                     const parent = data.find(item => item.id === detail.parent_id)
                     if(parent) {
                         if(to && to > 0){
@@ -164,25 +164,25 @@ export default {
                     }
                 }
                 const newList = { ...list , data}
-                if(questionId === "detail" && list.detail && list.detail.id === detail.id){
+                if(answerId === "detail" && list.detail && list.detail.id === detail.id){
                     newList.detail.comments += 1
                 }
                 return {
                     ...state,
-                    [questionId]:newList
+                    [answerId]:newList
                 }
             }
             return {
                 ...state
             }
         },
-        replaceItem(state,{ payload : { questionId , detail , ...payload} }){
-            const list = state ? state[questionId] : null
+        replaceItem(state,{ payload : { answerId , detail , ...payload} }){
+            const list = state ? state[answerId] : null
             if(list){
                 const { parent_id } = detail
                 const replaceCallback = payload.callback
                 const data = list.data.concat()
-                if(parent_id && parent_id > 0 && questionId !== "detail"){
+                if(parent_id && parent_id > 0 && answerId !== "detail"){
                     const parent = data.find(item => item.id === parent_id)
                     if(parent){
                         const index = parent.child.findIndex(child => child.id === detail.id)
@@ -206,7 +206,7 @@ export default {
                 }
                 
                 const newList = { ...list , data}
-                if(questionId === "detail" && list.detail && list.detail.id === detail.id){
+                if(answerId === "detail" && list.detail && list.detail.id === detail.id){
                     if(typeof replaceCallback === "function"){
                         detail = replaceCallback(list.detail)
                     }
@@ -214,22 +214,22 @@ export default {
                 }
                 return {
                     ...state,
-                    [questionId]:newList
+                    [answerId]:newList
                 }
             }
             return {
                 ...state
             }
         },
-        addChild(state,{ payload : { questionId , id , append , childs } }){
-            const list = state ? state[questionId] : null
+        addChild(state,{ payload : { answerId , id , append , childs } }){
+            const list = state ? state[answerId] : null
             if(list){
                 let data = list.data.concat()
                 const item = data.find(item => item.id === id)
-                if((item || questionId === "detail") && childs){
+                if((item || answerId === "detail") && childs){
                     if(append === true){
                         childs.data.map(child => {
-                            if(questionId === "detail"){
+                            if(answerId === "detail"){
                                 if(!data.find(c => child.id === c.id)){
                                     data.push(child)
                                 }
@@ -237,7 +237,7 @@ export default {
                                 item.child.push(child)
                             }
                         })
-                    }else if(questionId === "detail"){
+                    }else if(answerId === "detail"){
                         data = childs.data
                     }else{
                         item.child = childs.data
@@ -245,7 +245,7 @@ export default {
                     const { start , end } = childs
                     return {
                         ...state,
-                        [questionId]:{ ...list , data,start,end}
+                        [answerId]:{ ...list , data,start,end}
                     }
                 }
             }

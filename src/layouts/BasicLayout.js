@@ -5,15 +5,6 @@ import Container from '@/components/Container'
 import GlobalLayout from '@/components/GlobalLayout'
 
 class BasicLayout extends React.Component {
-    componentDidMount(){
-        const { dispatch , me } = this.props
-
-        if(!me){
-            dispatch({
-                type: 'user/fetchMe',
-            })
-        }
-    }
 
     render(){
         const { children , ...props} = this.props
@@ -28,6 +19,4 @@ class BasicLayout extends React.Component {
     }
 }
 
-export default connect(({ user }) => ({
-    me:user.me
-}))(BasicLayout)
+export default BasicLayout

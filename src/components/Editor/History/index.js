@@ -18,7 +18,7 @@ class History extends React.PureComponent {
                     version.tags && version.tags.length > 0 && <div>
                         {
                             version.tags.map(tag => {
-                                return <Tag key={tag.key} title={tag.name} />
+                                return <Tag key={tag.id} title={tag.name} />
                             })
                         }
                     </div>

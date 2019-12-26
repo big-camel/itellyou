@@ -62,7 +62,7 @@ class Login extends React.Component{
                 mode:"login"
             }
         }).then(res => {
-            if(res.result){
+            if(res && res.result){
                 const { key, gt , challenge , success , newCaptcha } = res.data
                 window.initGeetest({
                     gt,

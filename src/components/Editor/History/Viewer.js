@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import { List,Tag,Switch,Radio,Button } from 'antd'
 import Timer from '@/components/Timer'
 import styles from './index.less'
+import Loading from '@/components/Loading'
 
 class Viewer extends React.PureComponent {
 
@@ -96,9 +97,9 @@ class Viewer extends React.PureComponent {
                     }
                 </div>
                 {
-                    item.creator &&
+                    item.author &&
                     <div className={styles["version-editor"]}>
-                        {item.creator.name}
+                        {item.author.name}
                     </div>
                 }
             </div>
@@ -121,6 +122,10 @@ class Viewer extends React.PureComponent {
         const { currentVersionId , versions } = this.state
         if (versions.length === 0) 
             return false
+        
+        const { doc_id } = this.props
+        if(!doc_id)
+            return true
         // 只能恢复非当前版本
         return currentVersionId && !this.isLatest(currentVersionId)
     }
@@ -254,7 +259,7 @@ class Viewer extends React.PureComponent {
     render() {
         let versions = this.state.versions
         if (this.state.loading) {
-            return <div>加载中...</div>
+            return <Loading />
         }
   
         if (versions.length === 0) {

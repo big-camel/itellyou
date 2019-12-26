@@ -18,13 +18,6 @@ const query = {
 }
 
 class UserLayout extends React.Component {
-    componentDidMount(){
-        const { dispatch } = this.props
-      
-        dispatch({
-            type: 'user/fetchMe',
-        })
-    }
 
     render(){
         const { children , ...props} = this.props

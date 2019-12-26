@@ -1,7 +1,7 @@
 import React from 'react'
-import { ConfigProvider } from 'antd'
 import DocumentTitle from 'react-document-title'
 import getPageTitle from '@/utils/getPageTitle'
+import defaultSettings from '../../../config/defaultSettings';
 
 class GlobalLayout extends React.Component {
 
@@ -31,11 +31,16 @@ class GlobalLayout extends React.Component {
                 }
             })
             title = getPageTitle(location.pathname , breadcrumbNameMap)
+        }else{
+            title = `${title} - ${defaultSettings.title}`
         }
-     
-        return <DocumentTitle title={title}>
-                { children }
-        </DocumentTitle>
+        return (
+            <DocumentTitle title={title}>
+                <React.Fragment>
+                    { children }
+                </React.Fragment>
+            </DocumentTitle>
+        )
     }
 }
 export default GlobalLayout

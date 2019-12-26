@@ -114,9 +114,9 @@ class CollabBiz extends EventEmitter {
                 me: this.ctx.me
             })
             this.initialDocument = this.editorBiz.getInitialDocument()
-            if(isOT){
-                this.emit(EVENTS.docLoaded)
-            }else{
+
+            this.emit(EVENTS.docLoaded,res.data)
+            if(!isOT){
                 this.emit(EVENTS.ready)
             }
         })
@@ -132,7 +132,21 @@ class CollabBiz extends EventEmitter {
         })
         this.local = true
         this.initialDocument = this.editorBiz.getInitialDocument()
+        this.emit(EVENTS.docLoaded,this.doc)
         this.emit(EVENTS.ready)
+    }
+
+    reset(){
+        this.exit()
+        this.doc = null
+        this.users = []
+        this.socket = null
+        this.currentMember = null
+        if(this.editorBiz){
+            this.editorBiz.clearCachedContent()
+            this.editorBiz = null
+        }
+        
     }
 
     start(engine){
@@ -171,10 +185,7 @@ class CollabBiz extends EventEmitter {
                 }
             }
         })
-    }
-
-    reload(){
-        this.init()
+        this.bindEvents()
     }
 
     connect(){
@@ -184,6 +195,7 @@ class CollabBiz extends EventEmitter {
         }
         const url = collab.host + "/?key=" + collab.key + "&token=" + collab.token
         const socket = new WebSocket(url)
+        
         socket.addEventListener("open", () => {
             console.log("collab server connected")
         })
@@ -289,6 +301,7 @@ class CollabBiz extends EventEmitter {
             }
             if(this.local){
                 this.init(res.data)
+                this.doc.id = res.data
             }else{
                 const doc = res.data
                 this.editorBiz.onSaved(doc)
@@ -329,10 +342,9 @@ class CollabBiz extends EventEmitter {
         // 手动修改引擎value，让其同步到 ot 服务器
         this.engine.setValue(content)
         const check = debounce(() => {
-            if(this.otDoc.hasWritePending()){
+            if(this.otDoc && this.otDoc.hasWritePending()){
                 check()
             }else{
-                this.exit()
                 this.emit(EVENTS.reverted)
             }
         }, 100)

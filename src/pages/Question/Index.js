@@ -10,15 +10,15 @@ const TabPane = Tabs.TabPane
 class Index extends React.Component {
 
     state = {
-        size:10,
-        page:1,
+        limit:10,
+        offset:0,
     }
 
     componentWillMount(){
         const { location:{ query } } = this.props
-        const { page } = query
+        const { offset } = query
         this.setState({
-            page: parseInt(page || 1)
+            offset: parseInt(offset || 0)
         })
     }
 
@@ -28,12 +28,12 @@ class Index extends React.Component {
 
     getListData = () => {
         const { dispatch } = this.props
-        const { page , size } = this.state
+        const { offset , limit } = this.state
         dispatch({
             type:'question/list',
             payload:{
-                page,
-                size
+                offset,
+                limit
             }
         })
     }
@@ -109,7 +109,7 @@ class Index extends React.Component {
                 <div className={styles.actions}>
                     <div className={styles.author}>
                         <Link to=""><Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /></Link>
-                        <Link to="">{item.creator.name}</Link>
+                        <Link to="">{item.author.name}</Link>
                     </div>
                     <span>发布于 <Timer time={item.created_time} /></span>
                     <span><Icon type="eye" />{item.view}</span>

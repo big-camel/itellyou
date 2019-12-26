@@ -1,4 +1,4 @@
-import { create , draft , simple , find , update , rollback , publish } from '../services/doc'
+import { create , draft , update , rollback , publish , getQuestionId } from '../services/doc'
 
 export default {
     namespace: 'doc',
@@ -6,14 +6,22 @@ export default {
     state:window.appData.doc || null,
 
     effects:{
-        *create({ payload }, { call }){
+        *create({ payload }, { call , select }){
+            const questionId = yield getQuestionId(select)
+            if(!questionId) return
+            payload.data.questionId = questionId
+
             const response = yield call(create,payload.data)
             if(!response.result){
                 payload.onError(response)
             }
             return response
         },
-        *draft({ payload }, { call,put }){
+        *draft({ payload }, { call,put , select}){
+            const questionId = yield getQuestionId(select)
+            if(!questionId) return
+            payload.data.questionId = questionId
+
             const response = yield call(draft,payload.data)
             if(response.result){
                 yield put({
@@ -25,17 +33,11 @@ export default {
             }
             return response
         },
-        *find({ payload }, { call,put }){
-            const response = yield call(find,payload)
-            if(response.result){
-                yield put({
-                    type:'setDetail',
-                    payload:response.data
-                })
-            }
-            return response
-        },
-        *update({ payload }, { call , put}){
+        *update({ payload }, { call , put , select }){
+            const questionId = yield getQuestionId(select)
+            if(!questionId) return
+            payload.data.questionId = questionId
+
             const response = yield call(update,payload.data)
             if(response.result){
                 yield put({
@@ -47,7 +49,11 @@ export default {
             }
             return response
         },
-        *rollback({ payload }, { call , put}){
+        *rollback({ payload }, { call , put , select }){
+            const questionId = yield getQuestionId(select)
+            if(!questionId) return
+            payload.data.questionId = questionId
+
             const response = yield call(rollback,payload.data)
             if(!response.result){
                 payload.onError(response)
@@ -59,7 +65,11 @@ export default {
             }
             return response
         },
-        *publish({ payload }, { call }){
+        *publish({ payload }, { call , select }){
+           const questionId = yield getQuestionId(select)
+            if(!questionId) return
+            payload.data.questionId = questionId
+
             const response = yield call(publish,payload.data)
             if(!response.result){
                 payload.onError(response)
@@ -75,6 +85,9 @@ export default {
                 ...state,
                 ...payload
             }
+        },
+        clearDetail(){
+            return null
         }
     }
 }

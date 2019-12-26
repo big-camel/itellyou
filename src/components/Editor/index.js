@@ -30,7 +30,7 @@ class Editor extends React.Component {
     }
 
     init(){
-        const { doc , dispatch , me , api , mode , onDocLoad , onPublished , onReverted } = this.props
+        const { id , dispatch , me , api , mode , onDocLoad , onPublished , onReverted } = this.props
 
         const collabBiz = new CollabBiz( dispatch , {
             me:{
@@ -42,12 +42,12 @@ class Editor extends React.Component {
             mode
         })
 
-        collabBiz.on(EVENTS.docLoaded , () => {
+        collabBiz.on(EVENTS.docLoaded , res => {
             this.setState({
                 status: STATUS.prepare
             })
             if(onDocLoad){
-                onDocLoad()
+                onDocLoad(res)
             }
         })
 
@@ -118,13 +118,7 @@ class Editor extends React.Component {
         })
 
         collabBiz.on(EVENTS.reverted, () => {
-            this.setState({
-                status: STATUS.exit,
-            })
-            if(this.hideRollback){
-                this.hideRollback.destroy()
-                this.hideRollback = null
-            }
+            this.closeRollbackModal()
             if(onReverted){
                 onReverted()
             }
@@ -147,20 +141,16 @@ class Editor extends React.Component {
         })
 
         this.collabBiz = collabBiz
-        if(this.props.hasOwnProperty("local") && this.props.local !== false){
-            const  { local } = this.props
+        if(!id){
             let data = {
                 id:me.id + new Date().getTime(),
                 content:"",
                 draft_version:0,
                 updated_time:new Date().getTime()
             }
-            if(typeof local === "object"){
-                data = local
-            }
             this.collabBiz.initLocal(data)
         }else{
-            this.collabBiz.init(doc.id)
+            this.collabBiz.init(id)
         }
         
         window.addEventListener("beforeunload", () => {
@@ -170,9 +160,19 @@ class Editor extends React.Component {
         return collabBiz
     }
 
+    reset = () => {
+        if(this.collabBiz){
+            this.collabBiz.reset()
+            this.collabBiz = null
+        }
+        if(this.engine){
+            this.engine.setDefaultValue("")
+        }
+        this.init()
+    }
+
     onEditorLoaded = engine => {
         const { onLoad } = this.props
-     
         if(onLoad){
             if(onLoad({
                 onPublish:this.onPublish,
@@ -185,7 +185,8 @@ class Editor extends React.Component {
                 },
                 getEditorBiz:() => {
                     return this.collabBiz ? this.collabBiz.editorBiz : null
-                }
+                },
+                reset:this.reset
             }) === false){
                 return false
             }
@@ -218,16 +219,27 @@ class Editor extends React.Component {
                 style:{display:"none"}
             }
         })
+        const { id } = this.props
+        this.isReset = id ? false : true
     } 
+
+    closeRollbackModal = () => {
+        if(this.hideRollback){
+            this.hideRollback.destroy()
+            this.hideRollback = null
+        }
+    }
 
     onRollbackAfter = res => {
         if(res.result){
-            this.collabBiz.onDocReverted(res.data.content)
-        }else{
-            if(this.hideRollback){
-                this.hideRollback.destroy()
-                this.hideRollback = null
+            if(this.isReset){
+                this.reset()
+                this.closeRollbackModal()
+            }else{
+                this.collabBiz.onDocReverted(res.data.content)
             }
+        }else{
+            this.closeRollbackModal()
             message.error(res.message)
         }
     }
@@ -323,7 +335,7 @@ class Editor extends React.Component {
         const document = this.collabBiz ? this.collabBiz.getInitialDocument() : null
         const instanceId = this.collabBiz ? this.collabBiz.getCollabInstanceId() : null
         const { historyView } = this.state
-        const { doc } = this.props
+        const { id } = this.props
         return (
             <div>
                 {
@@ -339,7 +351,7 @@ class Editor extends React.Component {
                 }
                 {
                     historyView && <History 
-                    doc_id={doc.id}
+                    doc_id={id}
                     onCancel={() => {
                         this.setState({
                             historyView: false
@@ -360,7 +372,6 @@ export {
     History
 }
 
-export default connect(({ doc , user }) => ({
-    doc,
+export default connect(({ user }) => ({
     me : user.me
 }))(Editor)

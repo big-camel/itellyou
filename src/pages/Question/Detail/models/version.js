@@ -1,4 +1,5 @@
-import { list,find,diff } from '@/pages/Question/services/version'
+import { list,find,diff } from '../services/version'
+import { getQuestionId } from "../services/doc"
 
 export default {
     namespace: 'version',
@@ -8,7 +9,11 @@ export default {
     },
 
     effects:{
-        *list({ payload }, { call , put}){
+        *list({ payload }, { call , put , select }){
+            const questionId = yield getQuestionId(select)
+            if(!questionId) return
+            payload.questionId = questionId
+
             const response = yield call(list,payload)
             if(response.result){
                 yield put({
@@ -18,14 +23,19 @@ export default {
             }
             return response
         },
-        *find({ payload }, { call }){
+        *find({ payload }, { call ,select }){
+            const questionId = yield getQuestionId(select)
+            if(!questionId) return
+            payload.questionId = questionId
+
             const response = yield call(find,payload)
-            if(response.result){
-                return response
-            }
             return response
         },
-        *diff({ payload }, { call }){
+        *diff({ payload }, { call , select }){
+            const questionId = yield getQuestionId(select)
+            if(!questionId) return
+            payload.questionId = questionId
+            
             const response = yield call(diff,payload)
             return response
         },

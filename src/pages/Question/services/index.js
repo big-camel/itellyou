@@ -9,10 +9,17 @@ export async function find(params) {
     return request(`/api/question/${params.id}`)
 }
 
-export async function adopt(params) {
-    const { id , ...other } = params
+export async function adopt({ id , ...other }) {
     return request(`/api/question/${id}/adopt`,{ 
         method: 'POST',
         data: other,
     })
+}
+
+export async function answerDraft({id}) {
+    return request(`/api/question/${id}/answer/draft`)
+}
+
+export async function view({id}) {
+    return request(`/api/question/${id}/view`)
 }

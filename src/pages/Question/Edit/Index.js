@@ -3,13 +3,13 @@ import { connect } from 'dva'
 import router from 'umi/router'
 import { Button , Alert , message , Input , Form , Radio, InputNumber, Icon, Drawer } from 'antd'
 import Editor , { EditorBiz } from '@/components/Editor'
-import styles from './Edit.less'
+import styles from './Index.less'
 import logo from '@/assets/logo.svg'
 import moment from 'moment'
 import Timer from '@/components/Timer'
 import Loading from '@/components/Loading'
 import Tag, { TagSelector } from '@/components/Tag'
-import GlobalLayout from '../../components/GlobalLayout'
+import GlobalLayout from '@/components/GlobalLayout'
 
 const { SAVE_TYPE } = EditorBiz
 
@@ -38,17 +38,8 @@ class Edit extends React.Component {
     }
 
     componentWillMount(){
-        const { dispatch , match:{ params } } = this.props
+        const { match:{ params } } = this.props
         this.question_id = params.question_id
-        if(this.question_id){
-            dispatch({
-                type: 'doc/setDetail',
-                payload:{
-                    id:this.question_id
-                }
-            })
-        }
-        
     }
 
     onTitleChange = event => {
@@ -72,17 +63,6 @@ class Edit extends React.Component {
 
     onEditorLoad = editor => {
         this.editor = editor
-        const { doc } = this.props
-        this.setState({
-            title:doc ? doc.title : this.state.title,
-            tags:doc ? doc.tags : [],
-            content:doc ? doc.content : "",
-            reward:doc ? {
-                type:doc.reward_type,
-                value:doc.reward_value
-            } : this.state.reward,
-            loading:false
-        })
     }
 
     onEditorChange = content => {
@@ -92,10 +72,18 @@ class Edit extends React.Component {
     }
 
     onDocLoad = () => {
+        const { doc } = this.props
         const collabBiz = this.editor ? this.editor.getCollabBiz() : null
         const document = collabBiz ? collabBiz.getInitialDocument() : null
         this.setState({
-            content:document ? document.value : ""
+            title:doc ? doc.title : this.state.title,
+            tags:doc ? doc.tags : [],
+            content:document ? document.value : "",
+            reward:doc ? {
+                type:doc.reward_type,
+                value:doc.reward_value
+            } : this.state.reward,
+            loading:false
         })
     }
 
@@ -421,17 +409,14 @@ class Edit extends React.Component {
     }
 
     render(){
-        const { drawerView , publishing } = this.state
-        const { doc , me , ...props} = this.props
-        if((this.question_id && !doc) || !me){
-            return <Loading />
-        }
+        const { drawerView , publishing , loading} = this.state
+        const { doc , ...otherProps} = this.props
 
         const error = this.getError()
 
         return (
-            <GlobalLayout {...props}>
-                <React.Fragment>
+            <GlobalLayout {...otherProps}>
+                <Loading loading={loading}>
                     <header className={styles.header}>
                         <div className={styles.container}>
                             <div className={styles.logo}>
@@ -480,7 +465,7 @@ class Edit extends React.Component {
                         <div className={styles["mini-editor"]}>
                             {
                                 <Editor
-                                local={!this.question_id}
+                                id={this.question_id}
                                 onLoad={this.onEditorLoad}
                                 onDocLoad={this.onDocLoad}
                                 onChange={this.onEditorChange}
@@ -531,7 +516,7 @@ class Edit extends React.Component {
                             
                         </Form>
                     </Drawer>
-                </React.Fragment>
+                </Loading>
             </GlobalLayout>
         )
     }
