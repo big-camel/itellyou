@@ -1,18 +1,20 @@
 import React, { useEffect , useState } from 'react'
-import { connect } from 'dva'
+import { connect, useDispatch, useSelector } from 'dva'
 import { List } from 'antd'
 import InfiniteScroll from 'react-infinite-scroller'
 import Item from './Item'
 import styles from './Answer.less'
 import Loading from '@/components/Loading'
 
-function AnswerList({ questionId , dispatch, list , exclude , title , ...props}){
+function AnswerList({ questionId , exclude , title , ...props}){
 
     const [ page , setPage ] = useState(props.page || 1)
     const [ limit , setLimit ] = useState(props.size || 20)
     const [ offset , setOffset ] = useState((page - 1) * limit)
     const [ loading , setLoading ] = useState(false)
-
+    const dispatch = useDispatch()
+    const list = useSelector(state => state.answer ? state.answer.list : null)
+    
     useEffect(() => {
         if(questionId){
             dispatch({
@@ -87,6 +89,4 @@ function AnswerList({ questionId , dispatch, list , exclude , title , ...props})
             </InfiniteScroll>
     )
 }
-export default connect(({ answer }) => ({
-    list:answer ? answer.list : null
-}))(AnswerList)
+export default AnswerList

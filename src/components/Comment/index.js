@@ -16,11 +16,11 @@ function Comment({ dataSource , className , loading , extra , title , exclude , 
     const [ offset , setOffset ] = useState((page - 1) * limit)
     const [ moreLoading , setMoreLoading ] = useState(false)
     const firstLoad = useRef(dataSource ? true : false)
-    const load = useRef(onLoad)
+    const loadFunc = useRef(onLoad)
 
     useEffect(() => {
         if(firstLoad.current === false){
-            const result = load.current ? load.current(offset , limit) : null
+            const result = loadFunc.current ? loadFunc.current(offset , limit) : null
             if(typeof result === "object"){
                 result.then(() => {
                     setMoreLoading(false)
