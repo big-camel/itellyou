@@ -15,11 +15,12 @@ function Comment({ dataSource , className , loading , extra , title , exclude , 
     const [ limit , setLimit ] = useState(props.size || 10)
     const [ offset , setOffset ] = useState((page - 1) * limit)
     const [ moreLoading , setMoreLoading ] = useState(false)
-    const firstLoad = useRef(true)
+    const firstLoad = useRef(dataSource ? true : false)
+    const load = useRef(onLoad)
 
     useEffect(() => {
-        if(onLoad && (firstLoad.current === false || (firstLoad.current === true && !dataSource))){
-            const result = onLoad(offset , limit)
+        if(firstLoad.current === false){
+            const result = load.current ? load.current(offset , limit) : null
             if(typeof result === "object"){
                 result.then(() => {
                     setMoreLoading(false)
@@ -27,7 +28,7 @@ function Comment({ dataSource , className , loading , extra , title , exclude , 
             }
         }
         firstLoad.current = false
-    },[offset, limit, onLoad, dataSource])
+    },[offset, limit])
     const renderHeader = () => {
         if(title === false) return
         if(title) return <h2 className={styles["comment-title"]}>{title}</h2>
