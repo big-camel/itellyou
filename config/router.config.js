@@ -47,6 +47,7 @@ export default [
             { path: '/', name: 'home', component: './Home/Index' },
             // Question
             { path:'/question',name:'question.page.index',component:'./Question/Index' },
+            { path:'/question/:type(hot|reward|star)',name:'question.page.index',component:'./Question/Index' },
             { path:'/question/:id(\\d+)',name:'question.page.detail',component:'./Question/Detail' },
             { path:'/question/:id(\\d+)/answer/:answerId(\\d+)',name:'question.page.detail',component:'./Question/Detail' },
             // Tag

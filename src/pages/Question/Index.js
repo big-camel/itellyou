@@ -1,31 +1,36 @@
 import React, { useState, useEffect } from 'react'
-import { connect } from 'dva'
+import { useDispatch, useSelector } from 'dva'
 import Link from 'umi/link'
 import InfiniteScroll from 'react-infinite-scroller'
-import { Row, Col , Tabs , List, Avatar, Icon } from 'antd'
+import { Row, Col , Tabs , List, Avatar, Icon, Button } from 'antd'
 import Loading from '@/components/Loading'
 import Timer from '@/components/Timer'
 import styles from './Index.less'
 const TabPane = Tabs.TabPane
 
-function Index({dispatch , location:{ query } , list }){
+function Index({ location:{ query } , match:{ params }  }){
 
     const [offset,setOffset] = useState(parseInt(query.offset || 0))
-    const [limit,setLimit] = useState(20)
-    const [type,setType] = useState("default")
     const [loading,setLoading] = useState(false)
+    const limit = parseInt(query.limit || 20)
+    const type = params.type || "default"
+
+    const dispatch = useDispatch()
+    const list = useSelector(state => state.question ? state.question.list : null)
+    const user = useSelector(state => state.user ? state.user.me : null)
     
     useEffect(() => {
         dispatch({
             type:'question/list',
             payload:{
                 offset,
-                limit
+                limit,
+                type
             }
         }).then(() => {
             setLoading(false)
         })
-    },[offset, limit, dispatch])
+    },[offset, limit, type, dispatch])
 
     const getRewardTip = item => {
         if(item.reward_type === 0)
@@ -99,26 +104,21 @@ function Index({dispatch , location:{ query } , list }){
     return (
         <Row style={{marginLeft:'-8px',marginRight:'-8px'}}>
             <Col xs={24} sm={18} style={{paddingLeft:'8px',paddingRight:'8px'}}>
-                <Tabs>
-                    <TabPane tab="热门回答" key="1">
-                        { renderList() }
-                    </TabPane>
-                    <TabPane tab="悬赏问答" key="2">
-2
-                    </TabPane>
-                    <TabPane tab="最新问答" key="3">
-3
-                    </TabPane>
-                    <TabPane tab="我的关注" key="4">
-3
-                    </TabPane>
-                </Tabs>
+                <div>
+                    <Button icon="edit">提问题</Button>
+                    <div>
+                        <Link to="/question/hot">热门回答</Link>
+                        <Link to="/question/reward">悬赏问答</Link>
+                        <Link to="/question">最新问答</Link>
+                        <Link to="/question/star">我的关注</Link>
+                    </div>
+                </div>
+                <div>
+                    { renderList() }
+                </div>
             </Col>
             <Col xs={24} sm={6} style={{paddingLeft:'8px',paddingRight:'8px'}}>dfdfsdf</Col>
         </Row>
     )
 }
-export default connect(({ question ,loading }) => ({
-    list:question.list,
-    listLoading:loading.effects['question/getList']
-}))(Index)
+export default Index

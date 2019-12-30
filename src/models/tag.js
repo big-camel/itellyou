@@ -5,7 +5,7 @@ export default {
 
     state: {
         list:null,
-        groupList:null,
+        group:null,
         auditList:null
     },
 
@@ -38,11 +38,11 @@ export default {
             const response = yield call(search,payload)
             return response
         },
-        *groupList({ payload }, { call,put }){
+        *group({ payload }, { call,put }){
             const response = yield call(group,payload)
             yield put({
-                type:'updateGroupList',
-                payload:response.data || []
+                type:'updateGroup',
+                payload:response.data || null
             })
         },
         *list({ payload }, { call,put }){
@@ -111,10 +111,10 @@ export default {
                 auditList:payload
             }
         },
-        updateGroupList(state,{ payload }){
+        updateGroup(state,{ payload }){
             return {
                 ...state,
-                groupList:payload
+                group:payload
             }
         },
     }

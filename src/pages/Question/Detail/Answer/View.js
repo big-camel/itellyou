@@ -1,11 +1,17 @@
 import React, { useEffect } from 'react'
-import { connect } from 'dva'
-import { List, Button } from 'antd'
+import { useDispatch , useSelector } from 'dva'
+import { List } from 'antd'
 import Item from './Item'
 import styles from './Answer.less'
 import Loading from '@/components/Loading'
 
-function AnswerView({questionId , answerId ,dispatch, detail , loading , title}){
+function AnswerView({questionId , answerId , title}){
+
+    const dispatch = useDispatch()
+    const detail = useSelector(state => state.answer ? state.answer.detail : null)
+    const loadingEffect = useSelector(state => state.loading)
+    const loading = loadingEffect.effects["answer/find"]
+
     useEffect(() => {
         if(questionId && answerId){
             dispatch({
@@ -34,7 +40,4 @@ function AnswerView({questionId , answerId ,dispatch, detail , loading , title})
         </div>
     )
 }
-export default connect(({ answer , loading}) => ({
-    detail:answer ? answer.detail : null,
-    loading:loading.effects["answer/find"]
-}))(AnswerView)
+export default AnswerView

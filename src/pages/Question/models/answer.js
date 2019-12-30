@@ -184,10 +184,23 @@ export default {
                 draft:payload
             }
         },
-        setList(state,{ payload }){
+        setList(state,{ payload : { end , total , data , ...payload} }){
+            const list = state.list
+            if(!list){
+                return {
+                    ...state,
+                    list:{end , total , data , ...payload}
+                }
+            }
+            const dataList = list.data.concat()
+            data.forEach(item => {
+                if(!dataList.find(child => child.id === item.id)){
+                    dataList.push(item)
+                }
+            })
             return {
                 ...state,
-                list:payload
+                list:{...list,end,total,data:dataList}
             }
         },
         updateComments(state,{ payload:{ id, value} }){

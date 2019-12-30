@@ -1,7 +1,8 @@
 import request from '@/utils/request'
+import { stringify } from 'qs'
 
-export async function list({questionId}) {
-    return request(`/api/question/${questionId}/answer/list`)
+export async function list({questionId,...params}) {
+    return request(`/api/question/${questionId}/answer/list?${stringify(params)}`)
 }
 
 export async function findDraft({questionId}) {

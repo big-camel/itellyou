@@ -17,7 +17,7 @@ export async function query(params) {
 }
 
 export async function group() {
-    return request('/api/tag/group-list')
+    return request('/api/tag/group')
 }
 
 export async function list(params) {

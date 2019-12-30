@@ -1,5 +1,5 @@
 import React, { useEffect , useState } from 'react'
-import { connect, useDispatch, useSelector } from 'dva'
+import { useDispatch, useSelector } from 'dva'
 import { List } from 'antd'
 import InfiniteScroll from 'react-infinite-scroller'
 import Item from './Item'
@@ -9,7 +9,7 @@ import Loading from '@/components/Loading'
 function AnswerList({ questionId , exclude , title , ...props}){
 
     const [ page , setPage ] = useState(props.page || 1)
-    const [ limit , setLimit ] = useState(props.size || 20)
+    const [ limit , setLimit ] = useState(props.size || 1)
     const [ offset , setOffset ] = useState((page - 1) * limit)
     const [ loading , setLoading ] = useState(false)
     const dispatch = useDispatch()
@@ -20,7 +20,9 @@ function AnswerList({ questionId , exclude , title , ...props}){
             dispatch({
                 type:"answer/list",
                 payload:{
-                    questionId
+                    questionId,
+                    offset,
+                    limit
                 }
             }).then(() => {
                 setLoading(false)

@@ -1,11 +1,17 @@
 import React , { useState } from 'react'
-import { connect } from 'dva'
+import { useDispatch , useSelector } from 'dva'
 import Comment , { Detail as CommentDetail } from '@/components/Comment'
 import { Modal } from 'antd'
 
-function AnswerComment({ dispatch , rootLoading , detailLoading , questionId , answerId , answerComment }){
+function AnswerComment({ questionId , answerId }){
 
     const [ modelVisible , setModelVisible ] = useState(false)
+
+    const dispatch = useDispatch()
+    const answerComment = useSelector(state => state.answerComment)
+    const loadingEffect = useSelector(state => state.loading)
+    const rootLoading = loadingEffect.effects["answerComment/root"]
+    const detailLoading = loadingEffect.effects["answerComment/childDetail"]
 
     const load = (offset,limit) => {
         dispatch({
@@ -137,8 +143,4 @@ function AnswerComment({ dispatch , rootLoading , detailLoading , questionId , a
         </React.Fragment>
     )
 }
-export default connect(({ answerComment , loading }) => ({
-    answerComment ,
-    rootLoading:loading.effects["answerComment/root"],
-    detailLoading:loading.effects["answerComment/childDetail"]
-}))(AnswerComment)
+export default AnswerComment
