@@ -1,4 +1,4 @@
-import { get , getState , create,search , query ,group,list , addVersion , auditList , auditVersion , getDiffBase} from '@/services/tag'
+import { find , getState , create,search , query ,group,list , addVersion , auditList , auditVersion , getDiffBase} from '@/services/tag'
 
 export default {
     namespace: 'tag',
@@ -6,12 +6,13 @@ export default {
     state: {
         list:null,
         group:null,
+        search:null,
         auditList:null
     },
 
     effects: {
-        *get({ payload }, { call , put }){
-            const response = yield call(get,payload)
+        *find({ payload }, { call , put }){
+            const response = yield call(find,payload)
             yield put({
                 type:'updateDetail',
                 payload:response.data
@@ -34,8 +35,27 @@ export default {
             })
             return response
         },
-        *search({ payload }, { call }){
-            const response = yield call(search,payload)
+        *search({ payload }, { call , put }){
+            const { enableCreate , ...params } = payload
+            if(payload.w === "") return
+            const response = yield call(search,params)
+            if(response && response.result){
+                const { w } = payload
+                const { data } = response
+                let searchData = []
+                if(enableCreate && data.length === 0 && w.trim() !== ""){
+                    searchData.push({
+                        id:enableCreate,
+                        name:w.trim()
+                    })
+                }else{
+                    searchData = data
+                }
+                yield put({
+                    type:"setSearch",
+                    payload:searchData
+                })
+            }
             return response
         },
         *group({ payload }, { call,put }){
@@ -52,30 +72,6 @@ export default {
                 payload:response.data || []
             })
         },
-        *updateStar({ payload }, { select , put }){
-            const tag = yield select(state => state.tag)
-            const { data , ...other } = tag.list
-            const listData = data.map(item => {
-                const star = payload.find(id => id === item.id) ? true : false
-                if(item.star !== star){
-                    item.star = star
-                    if(star)
-                        item.starNumber += 1
-                    else
-                        item.starNumber -= 1
-                }
-                return item
-            })
-            const list = Object.assign(other,{data:listData})
-            yield put({
-                type:'updateList',
-                payload:list
-            })
-        },
-        *addVersion({ payload }, { call }){
-            const response = yield call(addVersion,payload)
-            return response
-        },
         *auditList({ payload }, { call , put }){
             const response = yield call(auditList,payload)
             yield put({
@@ -86,23 +82,46 @@ export default {
         *auditVersion({ payload }, { call }){
             const response = yield call(auditVersion,payload)
             return response
-        },
-        *getDiffBase({ payload }, { call }){
-            const response = yield call(getDiffBase,payload)
-            return response
         }
     },
     reducers:{
-        updateDetail(state,{ payload }){
+        setSearch(state,{ payload }){
             return {
                 ...state,
-                detail:payload
+                search:payload
+            }
+        },
+        updateDetail(state,{ payload }){
+            const { detail } = state
+            if(detail && payload && payload.id !== detail.id) return {...state,detail:payload}
+            return {
+                ...state,
+                detail:{...state.detail,...payload}
             }
         },
         updateList(state,{ payload }){
             return {
                 ...state,
                 list:payload
+            }
+        },
+        replaceItem(state,{ payload : { detail } }){
+            const list = state.list
+            if(list){
+                const data = list.data.concat()
+                const index = data.findIndex(item => item.id === detail.id)
+                if(index >= 0){
+                    const item = data[index]
+                    data.splice(index,1,{...item,...detail})
+                }
+                
+                return {
+                    ...state,
+                    list:{...list,data}
+                }
+            }
+            return {
+                ...state
             }
         },
         updateAuditList(state,{ payload }){

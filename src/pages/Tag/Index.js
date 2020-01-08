@@ -1,75 +1,32 @@
 import React , { useEffect, useState } from 'react'
-import { List , Modal , Card , PageHeader , Row , Col ,Button , Empty} from 'antd'
-import { connect, useDispatch, useSelector } from 'dva'
-import Tag , { TagSelector , TagCreateForm } from '@/components/Tag'
+import { List , Card , PageHeader , Empty , message} from 'antd'
+import { useDispatch, useSelector } from 'dva'
+import Tag , { TagSelector } from '@/components/Tag'
 import Loading from '@/components/Loading'
 import styles from './Index.less'
 import { Link } from 'umi'
 
 function Index(){
 
-    /*state = {
-        tagValues:[],
-        setTagsing:false
-    }
-
-    componentDidMount(){
-        const { dispatch } = this.props
-        dispatch({
-            type:'tag/groupList'
-        })
-        dispatch({
-            type:'user/getTag'
-        })
-        
-    }
-
-    onTagChange = values => {
-        this.setState({
-            tagValues:values
-        })
-    }
-
-    onSetTags = () => {
-        const { tagValues } = this.state
-        const tags = []
-        tagValues.forEach(tag => {
-            tags.push(tag.key)
-        })
-        if(tags.length === 0)
-            return
-        this.setState({
-            setTagsing:true
-        })
-        const { dispatch } = this.props
-        dispatch({
-            type:'user/setTag',
-            payload:{
-                tags
-            }
-        }).then(() => {
-            this.setState({
-                tagValues:[],
-                setTagsing:false
-            })
-        })
-    }*/
-
+    const [ loading , setLoading ] = useState(false)
     const dispatch = useDispatch()
     const tag = useSelector(state => state.tag)
-    const { group } = tag || {}
-    console.log(group)
+
     const user = useSelector(state => state.user)
     const loadingEffect = useSelector(state => state.loading)
-    const groupLoading = loadingEffect.effects['tag/group']
-
+    
     useEffect(() => {
         dispatch({
             type:"tag/group"
         })
+        dispatch({
+            type:"user/tag"
+        })
     },[dispatch])
 
     const renderGroupList = () => {
+        const groupLoading = loadingEffect.effects['tag/group']
+        const { group } = tag || {}
         if(!group || groupLoading){
             return <Loading />
         }
@@ -91,6 +48,7 @@ function Index(){
                         <Tag
                         className={styles['tag-item']}
                         key={tag.id} 
+                        id={tag.id}
                         href={`/tag/${tag.id}`}
                         title={tag.name}
                         />
@@ -102,40 +60,52 @@ function Index(){
         )}
         />
     }
-    const [ tagValues,setTagValues ] = useState([])
-    const [ setTagsing , setSetTagsing ] = useState(false)
-    const userTag = []
-    
-    return (
-        <div className={styles['tag-layout']}>
-            { user.me && (<PageHeader title="我的关注" className={styles['tag-header']}>
-                <Row gutter={8}>
-                    <Col span={12}>
-                        <TagSelector 
-                        values={tagValues}
-                        //onChange={this.onTagChange}
-                        placeholder="添加关注标签"
-                        />
-                    </Col>
-                    <Col span={3}>
-                        <Button icon="star" loading={setTagsing} type="primary" style={{width:'100%'}} 
-                        //onClick={this.onSetTags} 
-                        >加关注</Button>
-                    </Col>
-                </Row>
+
+    const onTagChange = values => {
+        if(values.length === 0 || loading){
+            return
+        }
+        setLoading(true)
+        const messageClose = message.loading("关注中...")
+        const { key } = values[0]
+        dispatch({
+            type:"user/followTag",
+            payload:{
+                id:key
+            }
+        }).then(() => {
+            setLoading(false)
+            messageClose()
+        })
+    }
+
+    const renderUserTag = () => {
+        if(!user.me) return
+        const userTagLoading = loadingEffect.effects['user/tag']
+        if(userTagLoading) return <Loading />
+        const userTag = user.tag || {}
+        return (
+            <PageHeader title="我的关注" className={styles['tag-header']}>
+                <div>
+                    <TagSelector 
+                    onChange={onTagChange}
+                    placeholder="添加关注标签"
+                    />
+                </div>
                 <div className={styles['tag-me-list']}>
                     {
-                        userTag.map(tag => (
+                        userTag.data && userTag.data.map(tag => (
                             <Tag 
                             className={styles['tag-item']} 
-                            key={tag.tag_id} 
-                            href={`/tag/${encodeURIComponent(tag.tag_name)}`} 
-                            title={tag.tag_name}
+                            key={tag.id} 
+                            id={tag.id}
+                            href={`/tag/${tag.id}`} 
+                            title={tag.name}
                             />
                         ))
                     }
                     {
-                        userTag.length === 0 && (
+                        !userTag.total || userTag.total === 0 && (
                             <Empty 
                             image={Empty.PRESENTED_IMAGE_SIMPLE}
                             description="您还未关注任何标签哦~"
@@ -143,14 +113,24 @@ function Index(){
                         )
                     }
                 </div>
-            </PageHeader>)}
+            </PageHeader>
+    )
+    }
+    
+    return (
+        <div className={styles['tag-layout']}>
+            { 
+                renderUserTag()
+            }
             <PageHeader 
             title="常用标签"
             subTitle={
                 <p>标签不仅能组织和归类你的内容，还能关联相似的内容。<Link to="/tag/list">查看全部</Link></p>
             }
             className={styles['tag-group-list']}>
-                { renderGroupList() }
+                { 
+                    renderGroupList() 
+                }
             </PageHeader>
         </div>
     )

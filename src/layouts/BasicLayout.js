@@ -11,7 +11,7 @@ class BasicLayout extends React.Component {
         return (
             <GlobalLayout {...props}>
                 <div className="main-wrapper">
-                    <Header />
+                    <Header {...props} />
                     <Container >{children}</Container>
                 </div>
             </GlobalLayout>

@@ -6,11 +6,12 @@ import Container from '@/components/Container'
 import localAvatar from '@/assets/touxiang.png'
 import style from './index.less'
 import logo from '@/assets/logo.svg'
+import TopSearch from '../TopSearch'
 
 class GlobalHeader extends React.PureComponent{
     render (){
-        const {me,onUserMenuClick,onActionMenuClick} = this.props
-
+        const {me,onUserMenuClick,onActionMenuClick , location } = this.props
+        
         const userMenu = (
             <div className={style['user-menu']}>
                 {me ? 
@@ -29,7 +30,7 @@ class GlobalHeader extends React.PureComponent{
                 </Menu>
             </div>
         )
-
+        
         const editMenu = (
             <Menu onClick={onActionMenuClick}>
               <Menu.Item key="questionNew"><Icon type="question" />提问</Menu.Item>
@@ -38,7 +39,6 @@ class GlobalHeader extends React.PureComponent{
               <Menu.Item key="new"><Icon type="logout" />新建知识库</Menu.Item>
             </Menu>
         )
-
         return (
             <header className={style.header}>
                 <Container mode={this.props.mode}>
@@ -51,10 +51,7 @@ class GlobalHeader extends React.PureComponent{
                             <Link to="/question">问答</Link>
                             <a>文章</a>
                             <Link to="/tag">标签</Link>
-                            <a>专栏</a>
-                            <a>程序员</a>
-                            <a>知识库</a>
-                            <Link to="/write">发布</Link>
+                            <TopSearch defaultValue={location.query.q} />
                         </nav>
                         <div className={style.user}>
                         {

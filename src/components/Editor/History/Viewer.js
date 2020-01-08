@@ -49,7 +49,7 @@ class Viewer extends React.PureComponent {
                 versions: res.data
             }) 
             // 展示最新的版本
-            if (res.data.length > 0) {
+            if (res.data && res.data.length > 0) {
                 this.showVersion(res.data[0].id)
             }
         })
@@ -262,7 +262,7 @@ class Viewer extends React.PureComponent {
             return <Loading />
         }
   
-        if (versions.length === 0) {
+        if (!versions || versions.length === 0) {
             return <div>暂无历史版本</div>
         }
   

@@ -1,166 +1,151 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Select , Modal } from 'antd'
-import { connect } from 'dva'
+
 import CreateForm from './CreateForm'
+import { useDispatch , useSelector } from 'dva'
 
-class Selector extends React.Component { 
+function Selector({ values , placeholder , mode , enableCreate , ...props }){ 
+    enableCreate = enableCreate === undefined ? "create" : enableCreate
+    mode = mode || "multiple"
+    const [ value , setValue ] = useState("")
+    const [ createVisible , setCreateVisible ] = useState(false)
+    const [ createValue , setCreateValue ] = useState("")
 
-    state = {
-        searchData:[],
-        searchValue:"",
-        createVisible:false,
-        createValue:""
-    }
+    const dispatch = useDispatch()
+    const tag = useSelector(state => state.tag)
+    const loadingEffect = useSelector(state => state.loading)
+    const loading = loadingEffect.effects['tag/search']
+    const dataSource = tag.search || []
 
-    onTagSearch = value => {
-        const { onSearch , dispatch , create } = this.props
-        this.setState({
-            searchValue:value
+    const clearData = () => {
+        dispatch({
+            type:'tag/setSearch',
+            payload:[]
         })
-        if(onSearch){
-            onSearch(value)
-        }else{
-            if(value.trim() === ""){
-                this.setState({
-                    searchData:[]
-                })
-                return
-            }
-            dispatch({
-                type:'tag/search',
-                payload:{
-                    w:value
-                }
-            }).then(res => {
-                let searchData = [];
-                if(res.result){
-                    if(create && res.data.length === 0 && value.trim() !== ""){
-                        searchData.push({
-                            id:"create",
-                            name:value.trim()
-                        })
-                    }else{
-                        searchData = res.data
-                    }
-                }
-                this.setState({
-                    searchData
-                })
-            })
-        }
     }
 
-    onTagChange = values => {
-        if(values.length > 0 && values[values.length - 1].key === "create"){
+    const onSearch = val => {
+        val = val.trim()
+        setValue(val)
+        if(val === ""){
+            if(loading){
+                setTimeout(() => {
+                    clearData()
+                }, 200)
+            }else{
+                clearData()
+            }
+            return
+        }
+        dispatch({
+            type:'tag/search',
+            payload:{
+                w:val,
+                enableCreate:enableCreate
+            }
+        })
+    }
+
+    const onChange = values => {
+        if(enableCreate && values.length > 0 && values[values.length - 1].key === enableCreate){
             values.splice(values.length - 1 , 1)
         }
-        this.setState({
-            searchData:[]
-        })
-        const { onChange } = this.props
-        if(onChange)
+        if(props.onChange)
         {
-            onChange(values)
+            props.onChange(values)
         }
     }
 
-    onTagSelect = value => {
-        const { onSelect , create } = this.props
-        if(create && value.key === "create"){
-            this.setState({
-                createVisible:true,
-                createValue:value.name
-            })
-        }else if(onSelect)
+    const onSelect = value => {
+        if(enableCreate && value.key === enableCreate){
+            setCreateVisible(true)
+            setCreateValue(value.name)
+        }else if(props.onSelect)
         {
-            onSelect(value)
+            props.onSelect(value)
         }
-    }
-
-    onTagCreateCallback = () => {
-        this.setState({
-            createVisible:false,
-            createValue:""
+        dispatch({
+            type:"tag/setSearch",
+            payload:[]
         })
     }
 
-    renderSearchOption = option => {
-        let { searchValue } = this.state
-        if(option.id === "create"){
+    const onCreateCallback = () => {
+        setCreateVisible(false)
+        setCreateValue("")
+    }
+
+    const renderOption = option => {
+        if(enableCreate && option.id === enableCreate){
             return (
-                <Select.Option key={option.id} label={option.name} onClick={()=>{ this.onTagSelect({key:option.id,name:option.name}) }}>
+                <Select.Option 
+                key={option.id} 
+                label={option.name} 
+                onClick={()=>{ 
+                    onSelect({key:option.id,name:option.name}) 
+                }}>
                     创建标签 <strong>{option.name}</strong>
                 </Select.Option>
             )
-        }else if(searchValue){
-            searchValue = searchValue.trim()
+        }else if(value){
             let prefix = null
             let name = option.name
-            if(searchValue !== "" && name.indexOf(searchValue) > -1){
-                prefix = searchValue
-                name = name.substring(searchValue.length)
+            if(value !== "" && name.indexOf(value) > -1){
+                prefix = value
+                name = name.substring(value.length)
             }
             return (
-            <Select.Option key={option.id} label={option.name} onClick={()=>{ this.onTagSelect({key:option.id,name:option.name}) }}>
+            <Select.Option 
+            key={option.id} 
+            label={option.name} 
+            onClick={()=>{ 
+                onSelect({key:option.id,name:option.name}) 
+            }}>
                 {prefix ? <strong>{prefix}</strong> : null}{name}
             </Select.Option>
             )
         }
     }
 
-    render(){
-        const { values , placeholder , create , mode , searchLoading } = this.props
-        const { searchData , createVisible , createValue } = this.state
-        return (
-            <React.Fragment>
-                <Select
-                value={values}
-                loading={searchLoading}
-                mode={mode}
-                optionLabelProp="label"
-                placeholder={placeholder}
-                labelInValue={true}
-                filterOption={false}
-                notFoundContent={null}
-                onSearch={this.onTagSearch}
-                onChange={this.onTagChange}
-                onBlur={() => {
-                    this.setState({
-                        searchData:[]
-                    })
-                }}
-                style={{ width: '100%' }}
-                >
-                    {
-                        searchData.map(data => (
-                            this.renderSearchOption(data)
-                        ))
-                    }
-                </Select>
+    return (
+        <React.Fragment>
+            <Select
+            value={values}
+            loading={loading}
+            mode={mode}
+            optionLabelProp="label"
+            placeholder={placeholder}
+            labelInValue={true}
+            filterOption={false}
+            notFoundContent={null}
+            onSearch={onSearch}
+            onChange={onChange}
+            onBlur={() => clearData()}
+            style={{ width: '100%' }}
+            >
                 {
-                    create && <Modal
-                    title="创建标签"
-                    visible={createVisible}
-                    onCancel={this.onTagCreateCallback}
-                    destroyOnClose={true}
-                    footer={null}
-                    >
-                        <CreateForm 
-                        defaultName={createValue}
-                        onCallback={this.onTagCreateCallback}
-                        />
-                    </Modal>
+                    dataSource && dataSource.map(data => (
+                        renderOption(data)
+                    ))
                 }
-            </React.Fragment>
-        )
-    }
+            </Select>
+            {
+                enableCreate && <Modal
+                title="创建标签"
+                visible={createVisible}
+                onCancel={onCreateCallback}
+                destroyOnClose={true}
+                footer={null}
+                width={800}
+                >
+                    <CreateForm 
+                    defaultName={createValue}
+                    onCallback={onCreateCallback}
+                    />
+                </Modal>
+            }
+        </React.Fragment>
+    )
 }
 
-Selector.defaultProps = {
-    create:true,
-    mode:"multiple"
-}
-
-export default connect(({ loading }) => ({
-    searchLoading:loading.effects['tag/search']
-}))(Selector)
+export default Selector

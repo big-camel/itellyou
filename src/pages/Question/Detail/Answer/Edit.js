@@ -1,27 +1,35 @@
 import React , { useState , useEffect } from 'react'
 import Editor , { EditorBiz } from '@/components/Editor'
-import { connect } from 'dva'
+import { useDispatch, useSelector } from 'dva'
 import { router } from 'umi'
 import { Button, Icon, Tooltip, Modal } from 'antd';
 import Timer from '@/components/Timer'
 import styles from "./Answer.less";
 import { useRef } from 'react';
 
-const AnswerEdit = ({ dispatch , questionId , id , doc , userAnswer , hasHistory , onSubmit, onCancel }) => {
+const AnswerEdit = ({ id , hasHistory , onSubmit, onCancel }) => {
     const editor = useRef();
     const [ content , setContent ] = useState("")
     const [ saving  , setSaving ] = useState(false)
     const [ history , setHistory ] = useState(hasHistory)
     const [ publishing , setPublishing ] = useState(false)
+
+    const dispatch = useDispatch()
+    const doc = useSelector(state => state.doc)
+    const question = useSelector(state => state.question)
+
+    const questionId = question.detail ? question.detail.id : null
+    const userAnswer = question.user_answer
+
     const docId = doc ? doc.id : 0
     useEffect(() => {
-        if(doc){
+        if(docId){
             if(editor.current){
                 editor.current.reset()
             }
         }
         
-    },[doc, docId])
+    },[docId])
 
     const onEditorChange = content => {
         setContent(content)
@@ -217,8 +225,4 @@ const AnswerEdit = ({ dispatch , questionId , id , doc , userAnswer , hasHistory
         </div>
     )
 }
-export default connect(({ doc , question }) => ({
-    doc,
-    questionId:question.detail ? question.detail.id : null,
-    userAnswer:question.user_answer
-}))(AnswerEdit)
+export default AnswerEdit

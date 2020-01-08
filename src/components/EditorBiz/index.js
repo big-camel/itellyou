@@ -24,14 +24,14 @@ const DOCUMENT_VERSION = '<meta name="doc-version" content="1" />'
 class EditorBiz {
 
     constructor(doc , dispatch , options){
-        const { me , mode } = options
+        const { me , mode } = options || {}
         // 服务端文档的最新数据
-        this.doc = doc
+        this.doc = doc || {}
         this.me = me
         this.mode = mode || MODE.NORMAL
         this.dispatch = dispatch
         // 基线版本
-        this.baseVersion = doc.draft_version 
+        this.baseVersion = this.doc.draft_version || 0
         // 用 Map，方便后续额外存储其它数据
         this.cacheKeys = this._getCacheKeys()
     }

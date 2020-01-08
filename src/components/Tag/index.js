@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect , useRef , useCallback } from 'react'
 import classnames from 'classnames'
 import { Popover, Button, Icon } from 'antd'
 import TagSelector from './Selector'
@@ -6,12 +6,29 @@ import TagCreateForm from './CreateForm'
 import Loading from '@/components/Loading'
 import styles from './index.less'
 import { Link } from 'umi'
-import { connect } from 'dva'
+import { useDispatch, useSelector } from 'dva'
 
-class Tag extends React.Component {
+function Tag ({ id , href , target , className , icon , title , enableDelete , onDelete }) {
 
-    renderLink = () => {
-        const { href , target , className , icon , title , enableDelete , onDelete } = this.props
+    const dispatch = useDispatch()
+    const { detail } = useSelector(state => state.tag) || {}
+    const loadingEffect = useSelector(state => state.loading)
+    const loading = loadingEffect.effects['tag/find']
+    const idRef = useRef(id)
+    const [ visible , setVisible ] = useState(detail && detail.id === id)
+
+    useEffect(() => {
+        if(visible && idRef.current){
+            dispatch({
+                type:'tag/find',
+                payload:{
+                    id:idRef.current
+                }
+            })
+        }
+    },[visible,dispatch])
+
+    const renderLink = () => {
         return (
             <Link
             to={href}
@@ -27,8 +44,7 @@ class Tag extends React.Component {
         )
     }
 
-    renderSpan = () => {
-        const { className , icon , title , enableDelete , onDelete } = this.props
+    const renderSpan = () => {
         return (
             <span
             className={classnames(className,styles.tag)}
@@ -42,110 +58,103 @@ class Tag extends React.Component {
         )
     }
 
-    renderTag = () => {
-        const { href } = this.props
+    const renderTag = () => {
         if(href !== undefined){
-            return this.renderLink()
+            return renderLink()
         }else{
-            return this.renderSpan()
+            return renderSpan()
         }
     }
 
-    renderPopoverContent = () => {
-        const { tagDetail,tagDetailLoading , tagSetLoading , tagDelLoading } = this.props
-        if(!tagDetail || tagDetailLoading){
+    const renderPopoverContent = () => {
+        if(!detail){
             return <Loading />
         }
-        const actionLoading = tagSetLoading || tagDelLoading
+        if(loading && detail.id !== id){
+            return <Loading />
+        }
+        const followLoading = loadingEffect.effects['user/followTag']
+        const unfollowLoading = loadingEffect.effects['user/unfollowTag']
         return (
             <div className={styles['popover-layout']}>
-                <h2 className={styles['popover-title']}>{tagDetail.name}</h2>
+                <h2 className={styles['popover-title']}>{detail.name}</h2>
                 <div className={styles['popover-content']}>
-                    {tagDetail.tag_summary || "暂无介绍"}
+                    {detail.description || "暂无介绍"}
                 </div>
                 <div className={styles['popover-footer']}>
                     <div className={styles['popover-link']}>
-                        <Link target="_blank" to={`/tag/${encodeURIComponent(tagDetail.name)}`}>查看</Link>
+                        <Link target="_blank" to={`/tag/${detail.id}`}>查看</Link>
                         <Link target="_blank" to="">编辑</Link>
                     </div>
                     <div className={styles['popover-star']}>
-                        <span>{tagDetail.star_count}人</span>
-                        <Button icon="star" loading={actionLoading} type={tagDetail.star === true ? 'primary' : 'default'} onClick={this.onSetTag}>{ tagDetail.star === true ? '已关注' : '关注'}</Button>
+                        <span>{detail.star_count}人</span>
+                        <Button 
+                        icon="star" 
+                        loading={followLoading || unfollowLoading} 
+                        type={detail.use_star === true ? 'primary' : 'default'} 
+                        onClick={onSetTag}>
+                            { 
+                                detail.use_star === true ? '已关注' : '关注'
+                            }
+                        </Button>
                     </div>
                 </div>
             </div>
         )
     }
 
-    onSetTag = () => {
-        const { onSet , tagDetail , dispatch } = this.props
-        if(onSet){
-            onSet()
-        }else if(tagDetail && !tagDetail.star){
+    const onSetTag = () => {
+       if(detail && !detail.use_star){
             dispatch({
-                type:'user/setTag',
+                type:'user/followTag',
                 payload:{
-                    tags:[tagDetail.id]
+                    id:detail.id
                 }
             })
-        }else if(tagDetail && tagDetail.star){
+        }else if(detail && detail.use_star){
             dispatch({
-                type:'user/delTag',
+                type:'user/unfollowTag',
                 payload:{
-                    tags:[tagDetail.id]
+                    id:detail.id
                 }
             })
         }
     }
     
-    onVisibleChange = visible => {
-        const { onLoad , dispatch , title } = this.props
-        if(visible){
-            if(onLoad){
-                onLoad(title)
-            }else{
-                dispatch({
-                    type:'tag/query',
-                    payload:{
-                        name:title
-                    }
-                })
-            }
-        }
+    const onVisibleChange = visible => {
+        setVisible(visible)
     }
 
-    renderPopoverTag = () => {
+    const renderPopoverTag = () => {
         return (
             <Popover
             target="hover"
             mouseEnterDelay={1}
-            onVisibleChange={this.onVisibleChange}
+            onVisibleChange={onVisibleChange}
             content={
-                this.renderPopoverContent()
+                renderPopoverContent()
             }
             >
-                {this.renderTag()}
+                {
+                    renderTag()
+                }
             </Popover>
         )
     }
 
-    render (){
-        return (
-            this.renderPopoverTag()
-        )
-    }
+    return renderPopoverTag()
 }
+
 Tag.defaultProps = {
     enableDelete:false
 }
-export default connect(({ tag ,loading }) => ({
-    tagDetail:tag.detail,
-    tagDetailLoading:loading.effects['tag/query'],
-    tagSetLoading:loading.effects['user/setTag'],
-    tagDelLoading:loading.effects['user/delTag']
-}))(Tag)
+
+Tag.Selector = TagSelector
+Tag.CreateForm = TagCreateForm
+
+export default Tag
 
 export {
-    TagSelector,
-    TagCreateForm
+    TagCreateForm,
+    TagSelector
 }

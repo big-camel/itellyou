@@ -41,16 +41,14 @@ export async function getTag(){
     return request('/api/user/tag')
 }
 
-export async function setTag(params){
-    return request('/api/user/tag-set',{ 
-        method: 'POST',
-        data: params,
+export async function followTag({id}){
+    return request(`/api/user/tag/follow?id=${id}`,{ 
+        method: 'POST'
     })
 }
 
-export async function delTag(params){
-    return request('/api/user/tag-del',{ 
-        method: 'POST',
-        data:params
+export async function unfollowTag({id}){
+    return request(`/api/user/tag/unfollow?id=${id}`,{ 
+        method: 'DELETE'
     })
 }

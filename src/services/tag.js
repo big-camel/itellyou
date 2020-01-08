@@ -28,9 +28,8 @@ export async function auditList(params) {
     return request(`/api/tag/audit-list?${stringify(params)}`)
 }
 
-export async function get(params){
-    const { tag_id } = params
-    return request(`/api/tag/${tag_id}`)
+export async function find({ id }){
+    return request(`/api/tag/${id}`)
 }
 
 export async function getState(params){

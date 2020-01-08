@@ -1,98 +1,91 @@
-import React from 'react'
+import React, { useEffect , useState } from 'react'
 import { PageHeader , Button , Row , Col , Tabs } from 'antd'
-import { connect } from 'dva'
+import { useDispatch, useSelector } from 'dva'
 import { Viewer } from '@/components/Editor'
 import styles from './Detail.less'
 import { Link } from 'umi';
+import Loading from '@/components/Loading'
 const TabPane = Tabs.TabPane
 
-class Detail extends React.Component {
+function Detail ({ match:{ params }}){
 
-    componentWillMount(){
-        const { match:{ params } } = this.props
-        this.tagName = decodeURIComponent(params.tagName)
-    }
+    const [ followLoading , setFollowLoading ] = useState(false)
 
-    componentDidMount(){
-        const { dispatch } = this.props
+    const { id } = params
+
+    const dispatch = useDispatch()
+    const detail = useSelector(state => state.tag ? state.tag.detail : null)
+    const loadingEffect = useSelector(state => state.loading)
+    const loading = loadingEffect.effects["tag/find"]
+
+    useEffect(() => {
         dispatch({
-            type:'tag/query',
+            type:'tag/find',
             payload:{
-                tag_name:this.tagName
+                id
             }
         })
+    },[dispatch, id])
+
+    const onSetTag = () => {
+        const { id , use_star} = detail
+        setFollowLoading(true)
+        let result = null
+        if(!use_star){
+            result =dispatch({
+                type:'user/followTag',
+                payload:{
+                    id
+                }
+             })
+        }else if(use_star){
+            result = dispatch({
+                type:'user/unfollowTag',
+                payload:{
+                    id
+                }
+            })
+        }
+        if(typeof result === "object"){
+            result.then(() => {
+                setFollowLoading(false)
+            })
+        }
     }
 
-    starTag = () => {
-        const { tagDetail , dispatch } = this.props
-        dispatch({
-            type:'user/setTag',
-            payload:{
-                tags:[tagDetail.tag_id]
-            }
-        })
-    }
+    if(!detail || loading) return <Loading />
 
-    delStarTag = () => {
-        const { tagDetail , dispatch } = this.props
-        dispatch({
-            type:'user/delTag',
-            payload:{
-                tags:[tagDetail.tag_id]
-            }
-        })
-    }
-
-    render(){
-        const { tagDetail , starLoading , delStarLoading , currentUser } = this.props
-        return (
-            <Row style={{marginLeft:'-8px',marginRight:'-8px'}}>
-                <Col xs={24} sm={18} style={{paddingLeft:'8px',paddingRight:'8px'}}>
+    return (
+        <Row style={{marginLeft:'-8px',marginRight:'-8px'}}>
+            <Col xs={24} sm={18} style={{paddingLeft:'8px',paddingRight:'8px'}}>
                 <div className={styles['detail-layout']}>
-                {
-                    tagDetail && (
                     <PageHeader
                     className={styles['detail-header']}
-                    title={<h2>{tagDetail.tag_name}</h2>}
+                    title={<h2>{detail.name}</h2>}
                     >
                         <div>
-                            {tagDetail.tag_summary}
+                            {detail.description}
                         </div>
                         <Button.Group>
-                            <Button icon="star" loading={tagDetail.star ? delStarLoading : starLoading} type="primary" onClick={tagDetail.star ? this.delStarTag : this.starTag}>{tagDetail.star ? '已关注' : '关注'}</Button>
-                            <Button type="primary">{tagDetail.star_count}</Button>
+                            <Button icon="star" loading={followLoading} type={detail.use_star ? "primary" : "default"}  onClick={() => onSetTag()}>{detail.use_star ? '已关注' : '关注'}</Button>
+                            <Button type="primary">{detail.star_count}</Button>
                         </Button.Group>
-                        <Link target="_blank" to={`/tag/${tagDetail.tag_id}/edit`}>
-                            <Button icon="edit" type="ghost" onClick={this.onEditClick}>编辑</Button>
+                        <Link target="_blank" to={`/tag/${detail.id}/edit`}>
+                            编辑
                         </Link>
-                        {
-                            (currentUser && currentUser.authority === "admin") && (
-                                <Link to="/tag/review">审核</Link>
-                            )
-                        }
                     </PageHeader>
-                    )
-                }
                     <Tabs>
                         <TabPane tab="简介" key="1">
                             {
-                                tagDetail && (
-                                    <Viewer content={tagDetail.body_asl} />
-                                )
+                                <Viewer content={detail.content} />
                             }
                         </TabPane>
                     </Tabs>
                 </div>
-                </Col>
-                <Col xs={24} sm={6} style={{paddingLeft:'8px',paddingRight:'8px'}}>dfdfsdf</Col>
-            </Row>
-        )
-    }
+            </Col>
+            <Col xs={24} sm={6} style={{paddingLeft:'8px',paddingRight:'8px'}}>dfdfsdf</Col>
+        </Row>
+    )
+    
 }
-export default connect(({ tag,user,loading }) => ({
-    tagDetail:tag.detail,
-    tagLoading:loading.effects['tag/query'],
-    starLoading:loading.effects['user/setTag'],
-    delStarLoading:loading.effects['user/delTag'],
-    currentUser:user.current
-}))(Detail)
+export default Detail

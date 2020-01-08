@@ -32,10 +32,10 @@ export default [
     },
     //tag/edit
     {
-        path:'/tag/:tag_name([\\u4e00-\\u9fa5_a-z0-9-\\.%&#@]+)/edit',
+        path:'/tag/:id(\\d+)/edit',
         Routes: ['src/pages/Authorized'],
         routes:[
-            { path:'/tag/:tag_name([\\u4e00-\\u9fa5_a-z0-9-\\.%&#@]+)/edit',name:'tagEdit',component:'./Tag/Edit', authority: ['admin', 'user'] }
+            { path:'/tag/:id(\\d+)/edit',name:'tag.page.edit',component:'./Tag/Edit', authority: ['admin', 'user'] }
         ]
     },
     //app
@@ -51,10 +51,12 @@ export default [
             { path:'/question/:id(\\d+)',name:'question.page.detail',component:'./Question/Detail' },
             { path:'/question/:id(\\d+)/answer/:answerId(\\d+)',name:'question.page.detail',component:'./Question/Detail' },
             // Tag
-            { path:'/tag',name:'tagIndex',component:'./Tag/Index' },
-            { path:'/tag/list',name:'tagList',component:'./Tag/List' },
+            { path:'/tag',name:'tag.page.index',component:'./Tag/Index' },
+            { path:'/tag/list',name:'tag.page.list',component:'./Tag/List' },
             { path:'/tag/review',name:'tagReview',component:'./Tag/Review', authority: ['admin'] },
-            { path:'/tag/:tagName([\\u4e00-\\u9fa5_a-z0-9-\\.%&#@]+)',name:'tagDetail',component:'./Tag/Detail' },
+            { path:'/tag/:id(\\d+)',name:'tag.page.detail',component:'./Tag/Detail' },
+            // Search
+            { path:'/search',name:'search.page.index',component:'./Search' },
             {
                 component: '404',
             }

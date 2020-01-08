@@ -21,7 +21,7 @@ export default {
             },
             {
                 pattern:/^[\u4e00-\u9fa5_A-Za-z0-9-\.#&@]*$/,
-                message:'昵称只支持中英文、数字、_、-、#、&、@'
+                message:'名称只支持中英文、数字、_、-、#、&、@'
             },
             {
                 ansyVaildate:true

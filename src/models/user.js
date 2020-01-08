@@ -2,7 +2,7 @@ import { routerRedux } from 'dva'
 import { stringify } from 'qs'
 import { setAuthority } from '@/utils/authority'
 import { reloadAuthorized } from '@/utils/Authorized'
-import { queryName,fetchMe,getTag,setTag,delTag , logout } from '@/services/user'
+import { queryName,fetchMe,getTag,followTag,unfollowTag , logout } from '@/services/user'
 export default {
     namespace: 'user',
 
@@ -46,53 +46,59 @@ export default {
             }
             return response
         },
-        *getTag(_, { call,put }){
+        *tag(_, { call,put }){
             const response = yield call(getTag)
             yield put({
                 type: 'setTag',
                 payload: response.data
             })
         },
-        *setTag({payload}, { call,put , select }){
-            const response = yield call(setTag,payload)
+        *followTag({payload}, { call , put }){
+            const response = yield call(followTag,payload)
             if(response.result){
-                const tag = yield select(state => state.tag)
-                if(tag.detail && payload.tags.indexOf(tag.detail.tag_id) >= 0){
-                    yield put({
-                        type: 'tag/updateDetail',
-                        payload:{
-                            ...tag.detail,
-                            star:true,
-                            star_count:tag.detail.star_count + 1
-                        }
-                    })
-                }
+                yield put({
+                    type: 'tag/updateDetail',
+                    payload:{
+                        ...response.data
+                    }
+                })
+                yield put({
+                    type:"tag/replaceItem",
+                    payload:{
+                        detail:response.data
+                    }
+                })
+                yield put({
+                    type:'addTag',
+                    payload:{
+                        detail:response.data
+                    }
+                })
             }
-            yield put({
-                type: 'setTag',
-                payload: response.data
-            })
             return response
         },
-        *delTag({payload}, { call,put , select }){
-            const response = yield call(delTag,payload)
+        *unfollowTag({payload}, { call , put }){
+            const response = yield call(unfollowTag,payload)
             if(response.result){
-                const tag = yield select(state => state.tag)
-                if(tag.detail && payload.tags.indexOf(tag.detail.tag_id) >= 0){
-                    yield put({
-                        type: 'tag/updateDetail',
-                        payload: {
-                            ...tag.detail,
-                            star:false,
-                            star_count:tag.detail.star_count - 1
-                        }
-                    })
-                }
+                yield put({
+                    type: 'tag/updateDetail',
+                    payload:{
+                        ...response.data
+                    }
+                })
+                yield put({
+                    type:"tag/replaceItem",
+                    payload:{
+                        detail:response.data
+                    }
+                })
+                yield put({
+                    type:'removeTag',
+                    payload:{
+                        id:response.data.id
+                    }
+                })
             }
-            yield put({
-                type: 'setTag',
-                payload: response.data
-            })
             return response
         }
     },
@@ -101,7 +107,34 @@ export default {
         setTag(state,{ payload }){
             return {
                 ...state,
-                tag:payload
+                tag:{...state.tag,...payload}
+            }
+        },
+        addTag(state,{ payload : { detail } }){
+            const tag = state.tag || {}
+            const data = tag.data ? tag.data.concat() : []
+            const index = data.findIndex(item => item.id === detail.id)
+            if(index < 0){
+                data.push(detail)
+                tag.total += 1
+            }
+            return {
+                ...state,
+                tag:{...tag,data}
+            }
+        },
+        removeTag(state,{ payload : { id } }){
+            const tag = state.tag || {}
+            const data = tag.data ? tag.data.concat() : []
+            const index = data.findIndex(item => item.id === id)
+            if(index >= 0){
+                data.splice(index,1)
+                tag.total -= 1
+            }
+            
+            return {
+                ...state,
+                tag:{...tag,data}
             }
         },
         setMe(state,{ payload }){

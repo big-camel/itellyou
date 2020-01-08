@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'dva'
 import Link from 'umi/link'
 import InfiniteScroll from 'react-infinite-scroller'
-import { Row, Col , Tabs , List, Avatar, Icon, Button } from 'antd'
+import { Row, Col , List, Avatar, Icon, Button } from 'antd'
 import Loading from '@/components/Loading'
 import Timer from '@/components/Timer'
 import styles from './Index.less'
-const TabPane = Tabs.TabPane
 
 function Index({ location:{ query } , match:{ params }  }){
 
@@ -17,7 +16,6 @@ function Index({ location:{ query } , match:{ params }  }){
 
     const dispatch = useDispatch()
     const list = useSelector(state => state.question ? state.question.list : null)
-    const user = useSelector(state => state.user ? state.user.me : null)
     
     useEffect(() => {
         dispatch({
@@ -97,6 +95,9 @@ function Index({ location:{ query } , match:{ params }  }){
                 renderItem={renderItem}
                 itemLayout="vertical"
                 />
+                {
+                    loading && <Loading />
+                }
             </InfiniteScroll>
         )
     }
