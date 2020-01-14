@@ -217,6 +217,7 @@ class WrapFormItem extends Component {
         } = this.props;
 
         const {
+            label,
             onChange,
             onBlur,
             onFocus,
@@ -277,8 +278,9 @@ class WrapFormItem extends Component {
         const tipsContent = this.state.item.tipsContent ? this.state.item.tipsContent(this.props.form.getFieldValue(name)) : null
         return (
             <FormItem
-                help={this.state.item.tipsVisible ? ( tipsContent ? tipsContent : this.props.form.getFieldError(name)) : this.props.form.getFieldError(name)}
-                hasFeedback={this.props.form.isFieldValidating(name) || (!this.props.form.getFieldError(name) && !this.state.item.isFocus) ? true : false}
+            label={label}
+            help={this.state.item.tipsVisible ? ( tipsContent ? tipsContent : this.props.form.getFieldError(name)) : this.props.form.getFieldError(name)}
+            hasFeedback={this.props.form.isFieldValidating(name) || (!this.props.form.getFieldError(name) && !this.state.item.isFocus) ? true : false}
             >
                 {getFieldDecorator(name, options)(
                     getElement()

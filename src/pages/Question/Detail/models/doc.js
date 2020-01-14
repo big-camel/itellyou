@@ -53,7 +53,7 @@ export default {
             const questionId = yield getQuestionId(select)
             if(!questionId) return
             payload.data.questionId = questionId
-
+            
             const response = yield call(rollback,payload.data)
             if(!response.result){
                 payload.onError(response)
@@ -62,6 +62,16 @@ export default {
                     type:'setDetail',
                     payload:response.data || {}
                 })
+                const userAnswer = yield select(state => state.question ? state.question.user_answer : null)
+                if(userAnswer && userAnswer.id === response.data.id){
+                    yield put({
+                        type:'question/setUserAnswer',
+                        payload:{
+                            deleted:response.data.deleted,
+                            draft:true
+                        }
+                    })
+                }
             }
             return response
         },

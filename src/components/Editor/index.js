@@ -1,5 +1,5 @@
-import React from 'react'
-import { connect } from 'dva'
+import React, { useState, useEffect, useRef, useCallback, useImperativeHandle, forwardRef } from 'react'
+import { useDispatch, useSelector } from 'dva'
 import { message , notification, Icon, Modal } from 'antd'
 
 import { MiniEditor } from '@itellyou/itellyou-editor'
@@ -9,30 +9,34 @@ import History from './History'
 import debounce from 'lodash/debounce'
 import CollabBiz from '../../components/CollabBiz'
 import EditorBiz from '../../components/EditorBiz'
+import Loading from '../Loading'
 const { STATUS , EVENTS , ERROR_CODE , ERROR_LEVEL , MESSAGE } = CollabBiz
 const { SAVE_TYPE } = EditorBiz
 
-class Editor extends React.Component {
+function Editor({ id , api , mode , ...props },ref){
+    const [ historyState , setHistoryState ] = useState(false)
+    const [ publishing , setPublishing ] = useState(false)
+    const [ saving , setSaving ] = useState(false)
+    const [ status , setStatus ] = useState(STATUS.initialize)
+    const [ collabUsers , setCollabUsers ] = useState([])
 
-    state = {
-        historyView: false,
-        collabGuideView: false,
-        publishing: false,
-        saving: false,
-        savedAt: null,
-        status: STATUS.initialize,
-        error: null,
-        collabUsers: []
-    }
+    const modalCallback = useRef()
+    const collabBiz = useRef()
+    const engine = useRef()
 
-    componentDidMount(){
-        this.init()
-    }
+    const dispatch = useDispatch()
+    const me = useSelector(state => {
+        if(state.user) return state.user.me
+    })
 
-    init(){
-        const { id , dispatch , me , api , mode , onDocLoad , onPublished , onReverted } = this.props
+    const onPublished = useCallback(props.onPublished,[])
 
-        const collabBiz = new CollabBiz( dispatch , {
+    const onReverted = useCallback(props.onReverted,[])
+
+    const init = useCallback(() => {
+        if(collabBiz.current) return
+        if(!me) return <Loading />
+        const biz = new CollabBiz(dispatch , {
             me:{
                 id:me.user_id,
                 key:me.user_name,
@@ -42,91 +46,68 @@ class Editor extends React.Component {
             mode
         })
 
-        collabBiz.on(EVENTS.docLoaded , res => {
-            this.setState({
-                status: STATUS.prepare
-            })
-            if(onDocLoad){
-                onDocLoad(res)
-            }
+        biz.on(EVENTS.docLoaded , () => {
+            setStatus(STATUS.prepare)
         })
 
-        collabBiz.on(EVENTS.ready, event => {
-            this.setState({
-                status: STATUS.active,
-                //collabGuideView: event.isEditingByOtherUser && N["a"].needDisplayGuide("doc_editor_collab")
-            })
+        biz.on(EVENTS.ready, event => {
+            setStatus(STATUS.active)
+            //collabGuideView: event.isEditingByOtherUser && N["a"].needDisplayGuide("doc_editor_collab")
         })
 
-        collabBiz.on(EVENTS.usersChange, collabUsers => {
-            this.setState({
-                collabUsers
-            })
+        biz.on(EVENTS.usersChange, users => {
+            setCollabUsers(users)
         })
 
-        collabBiz.on(EVENTS.docDeleted, () => {
-            this.setState({
-                status: STATUS.deleted
-            })
+        biz.on(EVENTS.docDeleted, () => {
+            setStatus(STATUS.deleted)
         })
 
-        collabBiz.on(EVENTS.error, error => {
+        biz.on(EVENTS.error, error => {
             const { code , level } = error
             if(code === ERROR_CODE.SAVE_FAILED){
-                this.setState({
-                    saving: false
-                })
+                setSaving(false)
                 message.error("保存失败，请稍后再试")
                 return
             }
             if(code === ERROR_CODE.PUBLISH_FAILED){
-                this.setState({
-                    publishing: false
-                })
+                setPublishing(false)
                 message.error("发布失败，请稍后再试")
                 return
             }
             if(level !== ERROR_LEVEL.WARNING){
-                this.setState({
-                    status: STATUS.error,
-                    error
-                })
+                setStatus(STATUS.error)
             }
         })
 
-        collabBiz.on(EVENTS.inactive, () => {
-            this.onSave(SAVE_TYPE.AUTO)
+        biz.on(EVENTS.inactive, () => {
+            onSave(SAVE_TYPE.AUTO)
         })
 
-        collabBiz.on(EVENTS.saving, () => {
-            this.setState({
-                saving: true
-            })
+        biz.on(EVENTS.saving, () => {
+            setSaving(true)
         })
 
-        collabBiz.on(EVENTS.saved, () => {
-            this.setState({
-                saving: false,
-                savedAt: new Date()
-            })
+        biz.on(EVENTS.saved, () => {
+            setSaving(false)
         })
 
-        collabBiz.on(EVENTS.published, res => {
+        biz.on(EVENTS.published, res => {
             if(onPublished){
                 onPublished(res)
             }
         })
 
-        collabBiz.on(EVENTS.reverted, () => {
-            this.closeRollbackModal()
+        biz.on(EVENTS.reverted, () => {
+            closeRollbackModal()
             if(onReverted){
                 onReverted()
             }
         })
 
-        collabBiz.on(EVENTS.broadcast, result => {
+        biz.on(EVENTS.broadcast, result => {
             const { type , body } = result
-           
+            
             if(type === MESSAGE.DOC_PUBLISHED){
                 notification.open({
                     message: `${body.user.name} 刚刚 发布 了文档`,
@@ -134,138 +115,147 @@ class Editor extends React.Component {
                 })
             }
             if(type === MESSAGE.DOC_DELETED){
-                this.setState({
-                    status: STATUS.deleted
-                })
+                setStatus(STATUS.deleted)
             }
         })
 
-        this.collabBiz = collabBiz
+        collabBiz.current = biz
+
         if(!id){
-            let data = {
+            biz.initLocal({
                 id:me.id + new Date().getTime(),
                 content:"",
                 draft_version:0,
                 updated_time:new Date().getTime()
-            }
-            this.collabBiz.initLocal(data)
+            })
         }else{
-            this.collabBiz.init(id)
+            biz.init(id)
         }
-        
-        window.addEventListener("beforeunload", () => {
-            this.onSave(SAVE_TYPE.AUTO)
-        })
+    },[me, dispatch, api, mode, id, onSave, onPublished, onReverted])
 
-        return collabBiz
-    }
-
-    reset = () => {
-        if(this.collabBiz){
-            this.collabBiz.reset()
-            this.collabBiz = null
+    useEffect(() => {
+        init()
+        const beforeunload = () => {
+            onSave(SAVE_TYPE.AUTO)
         }
-        if(this.engine){
-            this.engine.setDefaultValue("")
-        }
-        this.init()
-    }
 
-    onEditorLoaded = engine => {
-        const { onLoad } = this.props
-        if(onLoad){
-            if(onLoad({
-                onPublish:this.onPublish,
-                onSave:this.onSave,
-                onDeleted:this.onDeleted,
-                showHistory:this.showHistory,
-                engine,
-                getCollabBiz:() => {
-                    return this.collabBiz
-                },
-                getEditorBiz:() => {
-                    return this.collabBiz ? this.collabBiz.editorBiz : null
-                },
-                reset:this.reset
-            }) === false){
-                return false
+        window.addEventListener("beforeunload", beforeunload)
+        return () => {
+            if(collabBiz.current){
+                collabBiz.current.exit()
+                collabBiz.current.unbindEvents()
+                const { editorBiz } = collabBiz.current
+                if(editorBiz){
+                    editorBiz.clearCachedContent()
+                }
+                collabBiz.current = null
             }
+            window.removeEventListener("beforeunload", beforeunload)
         }
-        this.engine = engine
-        this.collabBiz.start(this.engine)
+    },[init, onSave])
+
+    /**const reset = () => {
+        if(collabBiz.current){
+            collabBiz.current.reset()
+            collabBiz.current = null
+        }
+        if(engine.current){
+            engine.current.setDefaultValue("")
+        }
+        init()
+    }**/
+
+    useImperativeHandle(ref,() => ({
+        onPublish,
+        onSave,
+        showHistory,
+        getEngine:() => engine.current,
+        getCollabBiz:() => {
+            return collabBiz.current
+        },
+        getEditorBiz:() => {
+            return collabBiz.current ? collabBiz.current.editorBiz : null
+        },
+        //reset
+    }))
+
+    const onEditorLoaded = inst => {
+        engine.current = inst
+        if(collabBiz.current){
+            collabBiz.current.start(inst)
+        }
     }
     
-    onEditorChange = content => {
-        const { onChange } = this.props
+    const onEditorChange = content => {
+        const { onChange } = props
         if(onChange){
             onChange(content)
         }
-        this.collabBiz.cache(content)
-        this.autoSave()
+        collabBiz.current.cache(content)
+        autoSave.current()
     }
 
-    autoSave = debounce(() => {
-        this.onSave(SAVE_TYPE.auto)
+    const autoSave = useRef()
+    autoSave.current = debounce(() => {
+        onSave(SAVE_TYPE.auto)
     }, 60000)
 
-    onRollbackBefore = () => {
-        this.setState({
-            historyView: false
-        })
-        this.hideRollback = Modal.info({
+    const isReset = useRef(false)
+    const onRollbackBefore = () => {
+        setHistoryState(false)
+        modalCallback.current = Modal.info({
             icon:<Icon type="loading" />,
             content:"正在恢复中...请稍后",
             okButtonProps:{
                 style:{display:"none"}
             }
         })
-        const { id } = this.props
-        this.isReset = id ? false : true
+        isReset.current = id ? false : true
     } 
 
-    closeRollbackModal = () => {
-        if(this.hideRollback){
-            this.hideRollback.destroy()
-            this.hideRollback = null
+    const closeRollbackModal = () => {
+        if(modalCallback.current){
+            modalCallback.current.destroy()
+            modalCallback.current = null
         }
     }
 
-    onRollbackAfter = res => {
+    const onRollbackAfter = res => {
         if(res.result){
-            if(this.isReset){
-                this.reset()
-                this.closeRollbackModal()
+            if(isReset.current){
+                closeRollbackModal()
             }else{
-                this.collabBiz.onDocReverted(res.data.content)
+                collabBiz.current.onDocReverted(res.data.content)
             }
         }else{
-            this.closeRollbackModal()
+            closeRollbackModal()
             message.error(res.message)
         }
     }
 
-    onDeleted = () => {
-        this.collabBiz.onDocDeleted()
+    const onDeleted = () => {
+        collabBiz.current.onDocDeleted()
     }
 
-    onSave = (type, callback) => {
-        const { status , saving } = this.state
+    const onSave = useCallback((type, callback) => {
         if(status !== STATUS.active) return
-
         if(saving){
             message.info("正在保存，请稍后再试")
         }else{
-            const { onSaveBefore , onSaveAfter } = this.props
-           
-            this.engine.event.trigger("save:before")
-            this.engine.asyncEvent.emitAsync("save:before").then(() => {
-                const content = this.engine.getPureContent()
-                const html = this.engine.getPureHtml()
+            if(!collabBiz.current) {
+                return
+            }
+            const { onSaveBefore , onSaveAfter } = props
+            engine.current.event.trigger("save:before")
+            engine.current.asyncEvent.emitAsync("save:before").then(() => {
+                const content = engine.current.getPureContent()
+                const html = engine.current.getPureHtml()
                 let params = null
                 if(onSaveBefore){
                     params = onSaveBefore(content , html)
                 }
-                this.collabBiz.doSaveContent({
+                
+                collabBiz.current.doSaveContent({
                     type,
                     content,
                     html,
@@ -280,18 +270,16 @@ class Editor extends React.Component {
                 })
             }).catch(error => {
                 if(type === SAVE_TYPE.USER_PUBLISH) {
-                    this.setState({
-                        publishing: false
-                    })
+                    setPublishing(false)
                     message.error(error)
                 } else {
-                    const content = this.engine.getPureContent()
-                    const html = this.engine.getPureHtml()
+                    const content = engine.current.getPureContent()
+                    const html = engine.current.getPureHtml()
                     let params = null
                     if(onSaveBefore){
                         params = onSaveBefore(content , html)
                     }
-                    this.collabBiz.doSaveContent({
+                    collabBiz.current.doSaveContent({
                         type,
                         content,
                         html,
@@ -307,63 +295,57 @@ class Editor extends React.Component {
                 }
             })
         }
+    })
+
+    const onUserSave = useRef()
+    onUserSave.current = () => {
+        onSave(SAVE_TYPE.USER_SAVE)
     }
 
-    onUserSave = () => {
-        this.onSave(SAVE_TYPE.USER_SAVE)
-    }
-
-    onPublish = params => {
-        if(this.state.publishing) return
-
-        this.setState({
-            publishing: true
-        })
-        this.onSave(SAVE_TYPE.USER_PUBLISH, () => {
-            this.collabBiz.doPublishDoc(params)
+    const onPublish = params => {
+        if(publishing) return
+        setPublishing(true)
+        onSave(SAVE_TYPE.USER_PUBLISH, () => {
+            collabBiz.current.doPublishDoc(params)
         })
     }
 
-    showHistory = () => {
-        this.onSave(SAVE_TYPE.AUTO)
-        this.setState({
-            historyView: true
-        })
+    const showHistory = () => {
+        onSave(SAVE_TYPE.AUTO)
+        setHistoryState(true)
     }
 
-    render(){
-        const document = this.collabBiz ? this.collabBiz.getInitialDocument() : null
-        const instanceId = this.collabBiz ? this.collabBiz.getCollabInstanceId() : null
-        const { historyView } = this.state
-        const { id } = this.props
-        return (
-            <div>
-                {
-                    document && <MiniEditor
-                    key={instanceId}
-                    defaultValue={document.value}
-                    onSave={this.onUserSave}
-                    onChange={this.onEditorChange}
-                    onLoad={this.onEditorLoaded}
-                    ot={true}
-                    save={true}
-                    />
-                }
-                {
-                    historyView && <History 
-                    doc_id={id}
-                    onCancel={() => {
-                        this.setState({
-                            historyView: false
-                        })
-                    }}
-                    onRollbackBefore={this.onRollbackBefore}
-                    onRollbackAfter={this.onRollbackAfter}
-                    />
-                }
-            </div>    
-        )
-    }
+    const document = collabBiz.current ? collabBiz.current.getInitialDocument() : null
+    const instanceId = collabBiz.current ? collabBiz.current.getCollabInstanceId() : null
+
+    return (
+        <div>
+            {
+                document && <MiniEditor
+                key={instanceId}
+                defaultValue={document.value}
+                onSave={() => {
+                    onUserSave.current()
+                }}
+                onChange={onEditorChange}
+                onLoad={onEditorLoaded}
+                ot={true}
+                save={true}
+                />
+            }
+            {
+                historyState && <History 
+                doc_id={id}
+                onCancel={() => {
+                    setHistoryState(false)
+                }}
+                onRollbackBefore={onRollbackBefore}
+                onRollbackAfter={onRollbackAfter}
+                />
+            }
+        </div>    
+    )
+    
 }
 export {
     EditorBiz ,
@@ -371,7 +353,5 @@ export {
     Viewer ,
     History
 }
-
-export default connect(({ user }) => ({
-    me : user.me
-}))(Editor)
+Editor = forwardRef(Editor)
+export default Editor

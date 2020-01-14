@@ -33,10 +33,8 @@ class GlobalHeader extends React.PureComponent{
         
         const editMenu = (
             <Menu onClick={onActionMenuClick}>
-              <Menu.Item key="questionNew"><Icon type="question" />提问</Menu.Item>
-              <Menu.Item key="wenzhang"><Icon type="setting" />发布文章</Menu.Item>
-              <Menu.Item key="logout"><Icon type="logout" />发布专栏</Menu.Item>
-              <Menu.Item key="new"><Icon type="logout" />新建知识库</Menu.Item>
+              <Menu.Item key="question"><Icon type="question" />提问</Menu.Item>
+              <Menu.Item key="article"><Icon type="setting" />写文章</Menu.Item>
             </Menu>
         )
         return (
@@ -47,11 +45,12 @@ class GlobalHeader extends React.PureComponent{
                             <a href="/"><img src={logo} alt="" /></a>
                         </div>
                         <nav className={style.nav}>
-                            <a href="/">首页</a>
+                            <Link to="/">首页</Link>
                             <Link to="/question">问答</Link>
-                            <a>文章</a>
+                            <Link to="/article">文章</Link>
+                            <Link to="/column">专栏</Link>
                             <Link to="/tag">标签</Link>
-                            <TopSearch defaultValue={location.query.q} />
+                            <TopSearch defaultValue={location ? location.query.q : ""} />
                         </nav>
                         <div className={style.user}>
                         {

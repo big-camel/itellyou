@@ -9,7 +9,7 @@ import Loading from '@/components/Loading'
 function AnswerList({ questionId , exclude , title , ...props}){
 
     const [ page , setPage ] = useState(props.page || 1)
-    const [ limit , setLimit ] = useState(props.size || 1)
+    const [ limit , setLimit ] = useState(props.size || 20)
     const [ offset , setOffset ] = useState((page - 1) * limit)
     const [ loading , setLoading ] = useState(false)
     const dispatch = useDispatch()
@@ -61,8 +61,10 @@ function AnswerList({ questionId , exclude , title , ...props}){
             initialLoad={false}
             pageStart={0}
             loadMore={() => {
-                setLoading(true)
-                setOffset(offset + limit)
+                if(!loading){
+                    setLoading(true)
+                    setOffset(offset + limit)
+                }
             }}
             hasMore={!loading && !list.end}
             useWindow={true}

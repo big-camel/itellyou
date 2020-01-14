@@ -1,20 +1,17 @@
-import React, { useRef, useState } from 'react'
-import { Button , Modal , message, Icon , Popover , Input , Form , Row , Col } from 'antd'
-import { connect, useSelector } from 'dva'
+import React, { useRef, useState , useEffect } from 'react'
+import { Button , message } from 'antd'
+import { useSelector } from 'dva'
 import router from 'umi/router'
-import Editor , { EditorBiz } from '@/components/Editor'
-import styles from './Index.less'
+import Editor from '@/components/Editor'
+import styles from './index.less'
 import logo from '@/assets/logo.svg'
-import { Link } from 'umi'
 import moment from 'moment'
 import Timer from '@/components/Timer'
 import Loading from '@/components/Loading'
-import GlobalLayout from '@/components/GlobalLayout'
 
-function Index({ match:{ params } , ...props }){
+function Edit({ match:{ params } }){
 
-    let { id } = params
-
+    const [ id , setId ] = useState(params.id ? parseInt(params.id) : null)
     const editor = useRef(null)
     const [ content , setContent ] = useState()
     const [ loading , setLoading ] = useState(true)
@@ -23,19 +20,15 @@ function Index({ match:{ params } , ...props }){
 
     const doc = useSelector(state => state.doc)
 
-    const onEditorLoad = engine => {
-        editor.current = engine
-    }
+    useEffect(() => {
+        setContent(doc ? doc.content : "")
+        if((id && doc) || !id){
+            setLoading(false)
+        }
+    },[doc,id])
 
     const onEditorChange = content => {
         setContent(content)
-    }
-
-    const onDocLoad = () => {
-        const collabBiz = editor ? editor.current.getCollabBiz() : null
-        const document = collabBiz ? collabBiz.getInitialDocument() : null
-        setContent(document ? document.value : "")
-        setLoading(false)
     }
 
     const onSaveBefore = () => {
@@ -47,7 +40,7 @@ function Index({ match:{ params } , ...props }){
         if(res && res.result){
             if(!id){
                 const history = window.history
-                id = res.data
+                setId(res.data)
                 const url = `/tag/${id}/edit`
                 if(history){
                     history.pushState(null, null, url)
@@ -66,7 +59,7 @@ function Index({ match:{ params } , ...props }){
     }
 
     const onShowVersion = () => {
-        if(editor){
+        if(editor.current){
             editor.current.showHistory()
         }
     }
@@ -109,50 +102,47 @@ function Index({ match:{ params } , ...props }){
         }
         
         message.info("发布成功",1,() => {
-            window.location.href = "/tag/" + id
+            window.location.href = "/tag/" + res.data.id
         })
     }
 
     return (
-        <GlobalLayout {...props}>
-            <Loading loading={loading}>
-                <header className={styles.header}>
-                    <div className={styles.container}>
-                        <div className={styles.logo}>
-                            <a href="/"><img src={logo} alt="" /></a>
-                        </div>
-                        <small><span>·</span>标签编辑<span>·</span>{doc ? doc.name : null}</small>
-                        <div className={styles['save-status']}>
-                            {
-                                renderSaveStatus()
-                            }
-                        </div>
-                        <div className={styles.right}>
-                            {
-                                doc && <Button onClick={onShowVersion}>历史</Button>
-                            }
-                            <Button type="primary" loading={publishing} onClick={onPublish} >{publishing ? "发布中..." : "发布"}</Button>
-                        </div>
-                    </div>
-                </header>
+        <Loading loading={loading}>
+            <header className={styles.header}>
                 <div className={styles.container}>
-                    <div className={styles["mini-editor"]}>
+                    <div className={styles.logo}>
+                        <a href="/"><img src={logo} alt="" /></a>
+                    </div>
+                    <small><span>·</span>标签编辑<span>·</span>{doc ? doc.name : null}</small>
+                    <div className={styles['save-status']}>
                         {
-                            <Editor
-                            id={id}
-                            onLoad={onEditorLoad}
-                            onDocLoad={onDocLoad}
-                            onChange={onEditorChange}
-                            onSaveBefore={onSaveBefore}
-                            onSaveAfter={onSaveAfter}
-                            onReverted={onReverted}
-                            onPublished={onPublished}
-                            />
+                            renderSaveStatus()
                         }
                     </div>
+                    <div className={styles.right}>
+                        {
+                            doc && <Button onClick={onShowVersion}>历史</Button>
+                        }
+                        <Button type="primary" loading={publishing} onClick={onPublish} >{publishing ? "发布中..." : "发布"}</Button>
+                    </div>
                 </div>
-            </Loading>
-        </GlobalLayout>
+            </header>
+            <div className={styles.container}>
+                <div className={styles["mini-editor"]}>
+                    {
+                        <Editor
+                        ref={editor}
+                        id={id}
+                        onChange={onEditorChange}
+                        onSaveBefore={onSaveBefore}
+                        onSaveAfter={onSaveAfter}
+                        onReverted={onReverted}
+                        onPublished={onPublished}
+                        />
+                    }
+                </div>
+            </div>
+        </Loading>
     )
 }
-export default Index
+export default Edit

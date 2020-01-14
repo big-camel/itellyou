@@ -1,22 +1,17 @@
 import React from 'react'
-import { connect } from 'dva'
 import Header from './Header'
 import Container from '@/components/Container'
-import GlobalLayout from '@/components/GlobalLayout'
+import BlankLayout from '@/layouts/BlankLayout'
 
-class BasicLayout extends React.Component {
-
-    render(){
-        const { children , ...props} = this.props
-        return (
-            <GlobalLayout {...props}>
-                <div className="main-wrapper">
-                    <Header {...props} />
-                    <Container >{children}</Container>
-                </div>
-            </GlobalLayout>
-        )
-    }
+function BasicLayout({ route , children , ...props }){
+    return (
+        <BlankLayout route={route}>
+            <div className="main-wrapper">
+                <Header {...props} />
+                <Container >{children}</Container>
+            </div>
+        </BlankLayout>
+    )
 }
 
 export default BasicLayout

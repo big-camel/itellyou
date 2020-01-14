@@ -1,4 +1,4 @@
-import { find , getState , create,search , query ,group,list , addVersion , auditList , auditVersion , getDiffBase} from '@/services/tag'
+import { find , create,search , query ,group,list , auditList , auditVersion } from '@/services/tag'
 
 export default {
     namespace: 'tag',
@@ -17,10 +17,6 @@ export default {
                 type:'updateDetail',
                 payload:response.data
             })
-            return response
-        },
-        *getState({ payload }, { call }){
-            const response = yield call( getState , payload)
             return response
         },
         *create({ payload }, { call }){

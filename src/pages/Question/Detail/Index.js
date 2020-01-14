@@ -1,25 +1,23 @@
-import React from 'react'
-import { connect } from 'dva'
+import React , { useState , useEffect } from 'react'
+import { useDispatch, useSelector } from 'dva'
 import Link from 'umi/link'
 import { Row , Col , Button , Avatar, Icon } from 'antd'
 import { Viewer } from '@/components/Editor'
 import Tag from '@/components/Tag'
 import Timer from '@/components/Timer'
-import styles from './Index.less'
-import GlobalLayout from '@/components/GlobalLayout'
+import styles from './index.less'
+import DocumentTitle from 'react-document-title'
 import Answer from './Answer'
 import Comment from './Comment'
-import { useState } from 'react'
-import { useEffect } from 'react'
 import { ShareButton, ReportButton, CommentButton } from '@/components/Button'
+import Loading from '@/components/Loading'
 
 
-function Detail({ dispatch , detail , userAnswer , match:{ params } , ...otherProps}){
-
+function Detail({ match:{ params }}){
     const id = params.id ? parseInt(params.id) : null
-    const answerId = params.answerId ? parseInt(params.answerId) : null
-    const [ editVisible , setEditVisible ] = useState(!answerId && userAnswer && userAnswer.draft && !userAnswer.published && !userAnswer.deleted)
-    const [ commentVisible , setCommentVisible ] = useState(false)
+    const dispatch = useDispatch()
+    const question = useSelector(state => state.question)
+    const { detail , user_answer } = question
     useEffect(() => {
         dispatch({
             type:'question/view',
@@ -27,7 +25,34 @@ function Detail({ dispatch , detail , userAnswer , match:{ params } , ...otherPr
                 id
             }
         })
-    },[dispatch, id])
+        dispatch({
+            type:"question/find",
+            payload:{
+                id
+            }
+        })
+        dispatch({
+            type:"answer/findDraft",
+            payload:{
+                questionId:id
+            }
+        })
+    },[dispatch,id])
+
+    const answerId = params.answerId ? parseInt(params.answerId) : null
+    const [ editVisible , setEditVisible ] = useState()
+    const [ commentVisible , setCommentVisible ] = useState(false)
+
+    useEffect(() => {
+        if(!answerId && user_answer && user_answer.draft && !user_answer.published && !user_answer.deleted){
+            setEditVisible(visible => {
+                if(!visible) return true
+                return visible
+            })
+        }
+    },[answerId,user_answer])
+    
+    if(!detail) return <Loading />
 
     const onRevoke = answerId => {
         dispatch({
@@ -40,7 +65,7 @@ function Detail({ dispatch , detail , userAnswer , match:{ params } , ...otherPr
     }
 
     const renderStar = () => {
-        if(detail.isStar){
+        if(detail.use_star){
             return <Button className={styles.active} icon="star" type="link" size="small" >已关注({ detail.star })</Button>
         }
         return <Button icon="star" type="link" size="small" >加关注({ detail.star })</Button>
@@ -48,17 +73,17 @@ function Detail({ dispatch , detail , userAnswer , match:{ params } , ...otherPr
 
     const renderStatusButton = () => {
         if(!detail) return
-        if(userAnswer && userAnswer.published){
-            if(userAnswer.deleted)
-                return <Button onClick={()  => onRevoke(userAnswer.id) } type="primary" icon="delete" >撤销删除</Button>
-            return <Link to={`/question/${id}/answer/${userAnswer.id}`}><Button type="primary" icon="eye" >查看回答</Button></Link>
+        if(user_answer && user_answer.published){
+            if(user_answer.deleted)
+                return <Button onClick={()  => onRevoke(user_answer.id) } type="primary" icon="delete" >撤销删除</Button>
+            return <Link to={`/question/${id}/answer/${user_answer.id}`}><Button type="primary" icon="eye" >查看回答</Button></Link>
         }
         return <Button onClick={()  => setEditVisible(!editVisible) } type="primary" icon="edit" >{ answerId ? "编辑回答" : "写回答"}</Button>
     }
     
     return (
-        <GlobalLayout {...otherProps} title={detail ? detail.title : ""}>
-            <Row gutter={50} className="box-section">
+        <DocumentTitle title={detail ? detail.title : ""}>
+            <Row gutter={50}>
                 <Col xs={24} sm={18}>
                     <div className={styles.header}>
                         <h2 className={styles.title}>
@@ -98,8 +123,8 @@ function Detail({ dispatch , detail , userAnswer , match:{ params } , ...otherPr
                     {
                         editVisible && 
                         <Answer.Edit 
-                        hasHistory={userAnswer && userAnswer.draft === false ? true : false}
-                        id={userAnswer && userAnswer.draft === true ? userAnswer.id : null}
+                        hasHistory={user_answer && user_answer.draft === false ? true : false}
+                        id={user_answer && user_answer.draft === true ? user_answer.id : null}
                         />
                     }
                     {
@@ -126,11 +151,8 @@ function Detail({ dispatch , detail , userAnswer , match:{ params } , ...otherPr
                 </Col>
                 <Col xs={24} sm={6}>dfdfsdf</Col>
             </Row>
-        </GlobalLayout>
+        </DocumentTitle>
     )
 }
 
-export default connect(({ question }) => ({
-    detail:question.detail,
-    userAnswer:question.user_answer
-}))(Detail)
+export default Detail

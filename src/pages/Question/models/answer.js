@@ -63,7 +63,7 @@ export default {
         },
         *delete({ payload }, { call , put , select }){
             const response = yield call(deleteAnswer,payload)
-            if(response , response.result){
+            if(response && response.result){
                 const userAnswer = yield select(state => state.question ? state.question.user_answer : null)
                 const answer = yield select(state => state.answer)
                 let detail = answer && answer.detail ? {...answer.detail, deleted : true} : null
@@ -98,7 +98,7 @@ export default {
         },
         *revoke({ payload }, { call , put , select}){
             const response = yield call(revokeDelete,payload)
-            if(response , response.result){
+            if(response && response.result){
                 const userAnswer = yield select(state => state.question ? state.question.user_answer : null)
                 const answer = yield select(state => state.answer)
                 let detail = answer && answer.detail ? {...answer.detail, deleted : false} : null
@@ -110,11 +110,13 @@ export default {
                 }else{
                     detail = response.data
                 }
+                
                 if(userAnswer && userAnswer.id === detail.id){
                     yield put({
                         type:'question/setUserAnswer',
                         payload:{
-                            deleted:detail.deleted
+                            deleted:detail.deleted,
+                            draft:true
                         }
                     })
                 }
@@ -139,7 +141,7 @@ export default {
         },
         *vote({ payload }, { call , put , select}){
             const response = yield call(vote,payload)
-            if(response , response.result){
+            if(response && response.result){
                 const answer = yield select(state => state.answer)
                 let detail = answer && answer.detail ? answer.detail : null
                 

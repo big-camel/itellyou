@@ -7,7 +7,7 @@ import Loading from '@/components/Loading'
 import Timer from '@/components/Timer'
 import styles from './Index.less'
 
-function Index({ location:{ query } , match:{ params }  }){
+function Index({ location:{ query } , match:{ params }}){
 
     const [offset,setOffset] = useState(parseInt(query.offset || 0))
     const [loading,setLoading] = useState(false)
@@ -84,8 +84,10 @@ function Index({ location:{ query } , match:{ params }  }){
             initialLoad={false}
             pageStart={0}
             loadMore={() => {
-                setLoading(true)
-                setOffset(offset + limit)
+                if(!loading){
+                    setLoading(true)
+                    setOffset(offset + limit)
+                }
             }}
             hasMore={!loading && !list.end}
             useWindow={true}

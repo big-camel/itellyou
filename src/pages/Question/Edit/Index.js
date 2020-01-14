@@ -1,125 +1,103 @@
-import React from 'react'
-import { connect } from 'dva'
+import React, { useState , useRef , useEffect , useCallback } from 'react'
+import { useSelector, useDispatch } from 'dva'
 import router from 'umi/router'
 import { Button , Alert , message , Input , Form , Radio, InputNumber, Icon, Drawer } from 'antd'
 import Editor , { EditorBiz } from '@/components/Editor'
-import styles from './Index.less'
+import styles from './index.less'
 import logo from '@/assets/logo.svg'
 import moment from 'moment'
 import Timer from '@/components/Timer'
 import Loading from '@/components/Loading'
 import Tag, { TagSelector } from '@/components/Tag'
-import GlobalLayout from '@/components/GlobalLayout'
 
 const { SAVE_TYPE } = EditorBiz
 
-class Edit extends React.Component {
+function Edit({ match:{ params }}) {
 
-    state = {
-        //标题
-        title:"",
-        content:"",
-        loading:true,
-        // 是否正在保存
-        saving: false,
-        // 保存时间
-        saved: null,
-        // 发布设置状态
-        publishing:false,
-        remark:"",
-        //tag
-        tags:[],
-        // 悬赏
-        reward:{
-            type:0,
-            value:0
-        },
-        drawerView:false
-    }
+    const editor = useRef(null)
+    const [ id , setId ] = useState(params.id ? parseInt(params.id) : null)
+    const [ title , setTitle ] = useState("")
+    const [ tags , setTags ] = useState([])
+    const [ remark , setRemark ] = useState("")
+    const [ reward , setReward ] = useState()
+    const [ content , setContent ] = useState("")
+    const [ loading , setLoading ] = useState(true)
+    const [ saving , setSaving ] = useState(false)
+    const [ publishing , setPublishing ] = useState(false)
+    const [ drawerState , setDrawerState ] = useState(false)
+    const saveCommand = useRef(false)
 
-    componentWillMount(){
-        const { match:{ params } } = this.props
-        this.question_id = params.question_id
-    }
+    const dispatch = useDispatch()
 
-    onTitleChange = event => {
-        const title = event.target.value
-        this.setState({
-            title
+    const doc = useSelector(state => state.doc)
+    const rewardConfig = useSelector(state => {
+        if(state.reward) return state.reward.config
+    })
+    const me = useSelector(state => {
+        if(state.user) return state.user.me
+    })
+
+    useEffect(() => {
+        dispatch({
+            type:"reward/findConfig"
         })
+    },[dispatch])
+    
+    useEffect(() => {
+        setTitle(doc ? doc.title : "")
+        setTags(doc ? doc.tags : [])
+        setContent(doc ? doc.content : "")
+        setReward(doc ? {
+            type:doc.reward_type,
+            value:doc.reward_value
+        } : reward)
+        if((id && doc) || !id){
+            setLoading(false)
+        }
+    },[doc, id, reward])
+
+    const onTitleChange = event => {
+        setTitle(event.target.value)
     }
 
-    onTitleBlur = () => {
-        const { title } = this.state
-        const { doc } = this.props
+    const onTitleBlur = () => {
         if(title.trim() === ""){
             return
         }
         if(doc && doc.title.trim() === title.trim()){
             return
         }
-        this.onSaveMeta()
+        onSaveMeta()
     }
 
-    onEditorLoad = editor => {
-        this.editor = editor
+    const onEditorChange = content => {
+        setContent(content)
     }
 
-    onEditorChange = content => {
-        this.setState({
-            content
-        })
-    }
-
-    onDocLoad = () => {
-        const { doc } = this.props
-        const collabBiz = this.editor ? this.editor.getCollabBiz() : null
-        const document = collabBiz ? collabBiz.getInitialDocument() : null
-        this.setState({
-            title:doc ? doc.title : this.state.title,
-            tags:doc ? doc.tags : [],
-            content:document ? document.value : "",
-            reward:doc ? {
-                type:doc.reward_type,
-                value:doc.reward_value
-            } : this.state.reward,
-            loading:false
-        })
-    }
-
-    onSaveMeta = () => {
-        const { saving } = this.state
-        
+    const onSaveMeta = () => {
         if(saving){
             return
         }
-
-        this.save_command = true
-        this.editor.onSave(SAVE_TYPE.FORCE)
+        saveCommand.current = true
+        editor.current.onSave(SAVE_TYPE.FORCE)
     }
 
-    onSaveBefore = () => {
-        this.setState({
-            saving: true
-        })
-        if(this.save_command){
-            const { title } = this.state
-            this.save_command = false
+    const onSaveBefore = useCallback(() => {
+        setSaving(true)
+        if(saveCommand.current){
+            saveCommand.current = false
             return {
                 title
             }
         }
-    }
+    },[title])
 
-    onSaveAfter = res => {
+    const onSaveAfter = res => {
+        setSaving(false)
         if(res && res.result){
-            this.setState({
-                saving: false,
-                saved: new Date()
-            })
-            if(!this.question_id){
+            if(!id){
                 const history = window.history
-                this.question_id = res.data
+                setId(res.data)
                 const url = `/question/${res.data}/edit`
                 if(history){
                     history.pushState(null, null, url)
@@ -129,44 +107,34 @@ class Edit extends React.Component {
                     })
                 }
             }
-        }else{
-            this.setState({
-                saving: false
-            })
         }
     }
 
-    onReverted = () => {
+    const onReverted = () => {
         // 重新加载页面
         window.location.reload()
     }
 
-    onShowVersion = () => {
-        if(this.editor){
-            this.editor.showHistory()
+    const onShowVersion = () => {
+        if(editor.current){
+            editor.current.showHistory()
         }
     }
 
-    onShowDrawer = () => {
-        this.setState({
-            drawerView:true
-        })
+    const onShowDrawer = () => {
+        setDrawerState(true)
     }
 
-    onHideDrawer = () => {
-        this.setState({
-            drawerView:false
-        })
+    const onHideDrawer = () => {
+        setDrawerState(false)
     }
     
-    renderSaveStatus = () => {
-        const { loading , saving , saved } = this.state
+    const renderSaveStatus = () => {
         if(saving){
             return '保存中...'
         }
-        const { doc } = this.props
-        if(saved && doc){
-            return <span>保存于 {moment(saved).format('H:mm:ss')}</span>
+        if(doc){
+            return <span>保存于 {moment(doc.updated_time).format('H:mm:ss')}</span>
         }
        
         if(!loading && doc){
@@ -174,43 +142,37 @@ class Edit extends React.Component {
         }
     }
 
-    onModifyReasonChange = event => {
-        this.setState({
-            remark:event.target.value
-        })
+    const onModifyReasonChange = event => {
+        setRemark(event.target.value)
     }
 
-    onTagChange = values => {
+    const onTagChange = values => {
         if(values.length === 0){
             return
         }
         const { key , label} = values[0]
-        const { tags } = this.state
         const tag = tags.find(tag => tag.name === label)
         if(!tag){
-            tags.push({
-                id:key,
-                name:label
-            })
-            this.setState({
-                tags
+            setTags(tags => {
+                return tags.concat({
+                    id:key,
+                    name:label
+                })
             })
         }
     }
 
-    onTagDelete = title => {
-        const { tags } = this.state
+    const onTagDelete = title => {
         const tagIndex = tags.findIndex(tag => tag.name === title)
         if(tagIndex > -1){
-            tags.splice(tagIndex,1)
-            this.setState({
-                tags
+            setTags(tags => {
+                tags.splice(tagIndex,1)
+                return tags.concat()
             })
         }
     }
 
-    renderTag = () => {
-        const { tags } = this.state
+    const renderTag = () => {
         return (
             <Form.Item
             label="设置标签"
@@ -220,46 +182,42 @@ class Edit extends React.Component {
                 <div className={styles['tag-layout']}>
                     {
                         tags && tags.map(tag => (
-                            <Tag key={tag.id} enableDelete title={tag.name} onDelete={() => { this.onTagDelete(tag.name) }} />
+                            <Tag key={tag.id} enableDelete title={tag.name} onDelete={() => { onTagDelete(tag.name) }} />
                         ))
                     }
                 </div>
                 <TagSelector 
-                onChange={this.onTagChange}
+                onChange={onTagChange}
                 placeholder="搜索标签"
                 />
             </Form.Item>
         )
     }
 
-    onRewardValueChange = value => {
-        const { reward : { type } } = this.state
-        this.setState({
-            reward:{
+    const onRewardValueChange = value => {
+        setReward(({ type }) => {
+            return {
                 type,
                 value
             }
         })
     }
 
-    onRewardTypeChange = event => {
+    const onRewardTypeChange = event => {
         const type = parseInt(event.target.value)
         let value = 0 
         if(type === 1)
             value = 5
         else if(type === 2)
             value = 1
-        this.setState({
-            reward:{
-                type,
-                value,
-            }
+        setReward({
+            type,
+            value
         })
     }
 
-    renderReward = () => {
-        const { reward } = this.state
-        const { doc , me , rewardConfig } = this.props
+    const renderReward = () => {
+        if(!rewardConfig) return
         const { cash , credit } = rewardConfig
         const getRadioDisabled = type => {
             if(doc && doc.reward_type !== 0 && doc.reward_type !== type){
@@ -277,7 +235,7 @@ class Edit extends React.Component {
                     doc && doc.reward_type !== 0 && 
                     <p>当前已设置<span>{doc.reward_type === 1 ? '积分' : '现金'}悬赏</span><span>{doc.reward_value}{doc.reward_type === 1 ? credit.unit : cash.unit}</span>，您可以继续增加悬赏</p>
                 }
-                <Radio.Group value={ reward.type } onChange={this.onRewardTypeChange}>
+                <Radio.Group value={ reward.type } onChange={onRewardTypeChange}>
                     <Radio.Button value={0}>不设置</Radio.Button>
                     <Radio.Button disabled={getRadioDisabled(1)} value={1}>积分</Radio.Button>
                     <Radio.Button disabled={getRadioDisabled(2)} value={2}>现金</Radio.Button>
@@ -289,7 +247,7 @@ class Edit extends React.Component {
                     max={me.bank.cash > cash.max ? cash.max : me.bank.cash}
                     precision={2}
                     value={reward.value}
-                    onChange={this.onRewardValueChange} 
+                    onChange={onRewardValueChange} 
                     formatter={value => `￥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                     parser={value => value.replace(/￥\s?|(,*)/g, '')}
                     />
@@ -301,7 +259,7 @@ class Edit extends React.Component {
                     max={me.bank.credit > credit.max ? credit.max : me.bank.credit}
                     precision={0}
                     value={reward.value}
-                    onChange={this.onRewardValueChange} 
+                    onChange={onRewardValueChange} 
                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                     parser={value => value.replace(/\s?|(,*)/g, '')}
                     />
@@ -311,14 +269,14 @@ class Edit extends React.Component {
         </Form.Item>
     }
 
-    renderRemark = () => {
+    const renderRemark = () => {
         return <Form.Item
         label="修改原因"
         colon={false}
         >
             <Input.TextArea 
-            value={this.state.remark}
-            onChange={this.onModifyReasonChange}
+            value={remark}
+            onChange={onModifyReasonChange}
             autoSize={{
                 minRows: 2,
                 maxRows: 6
@@ -328,19 +286,17 @@ class Edit extends React.Component {
         </Form.Item>
     }
 
-    getError = () => {
-        const { content , tags , remark , reward } = this.state
-        const { doc , me } = this.props
-        const title = this.state.title.trim()
-        if(title === ""){
+    const getError = () => {
+        const titleText = title.trim()
+        if(titleText === ""){
             return "你还没有添加标题"
         }
 
-        if(["?","？"].indexOf(title.substr(title.length - 1,1)) < 0){
+        if(["?","？"].indexOf(titleText.substr(titleText.length - 1,1)) < 0){
             return "你还没有给问题添加问号"
         }
 
-        const editorBiz = this.editor ? this.editor.getEditorBiz() : null
+        const editorBiz = editor.current ? editor.current.getEditorBiz() : null
         if(editorBiz && editorBiz.isEmpty(content)){
             return "请详细说明问题"
         }
@@ -362,16 +318,13 @@ class Edit extends React.Component {
         }
     }
 
-    onPublish = () => {
-        const { remark , tags , reward } = this.state
+    const onPublish = () => {
         const tag_ids = tags.map(tag => {
             return tag.id
         })
-        this.setState({
-            publishing:true,
-        })
-        if(this.editor){
-            this.editor.onPublish({
+        setPublishing(true)
+        if(editor.current){
+            editor.current.onPublish({
                 tags:tag_ids,
                 reward,
                 remark
@@ -379,13 +332,10 @@ class Edit extends React.Component {
         }
     }
 
-    onPublished = res => {
-        this.setState({
-            publishing:false,
-        })
+    const onPublished = res => {
+        setPublishing(false)
         if(!res.result) {
             if(res.status === 1001 || res.status === 1002){
-                const { dispatch } = this.props
                 const { credit , cash } = res.data
                 dispatch({
                     type:"user/setBank",
@@ -397,133 +347,120 @@ class Edit extends React.Component {
             }
             return
         }
-        const collabBiz = this.editor ? this.editor.getCollabBiz() : null
+        const collabBiz = editor.current ? editor.current.getCollabBiz() : null
         if(collabBiz){
             collabBiz.exit()
         }
         
-        const { doc } = this.props
         message.info("发布成功",1,() => {
-            window.location.href = "/question/" + doc.id
+            window.location.href = "/question/" + res.data.id
         })
     }
 
-    render(){
-        const { drawerView , publishing , loading} = this.state
-        const { doc , ...otherProps} = this.props
+    const error = getError()
 
-        const error = this.getError()
-
-        return (
-            <GlobalLayout {...otherProps}>
-                <Loading loading={loading}>
-                    <header className={styles.header}>
-                        <div className={styles.container}>
-                            <div className={styles.logo}>
-                                <a href="/"><img src={logo} alt="" /></a>
-                            </div>
-                            <small><span>·</span>提问编辑<span>·</span>{this.tagName}</small>
-                            <div className={styles['save-status']}>
-                                {
-                                    this.renderSaveStatus()
-                                }
-                            </div>
-                            <div className={styles.right}>
-                                {
-                                    doc && <Button onClick={this.onShowVersion}>历史</Button>
-                                }
-                                <Button type="primary" onClick={this.onShowDrawer} >发布</Button>
-                            </div>
-                        </div>
-                    </header>
-                    <div className={styles.container}>
-                        <div className={styles.title}>
-                            <Input 
-                            className={styles["questions-title"]}
-                            size="large"
-                            placeholder="一句话完整的描述你的问题" 
-                            value={this.state.title}
-                            onChange={this.onTitleChange}
-                            onBlur={this.onTitleBlur}
-                            maxLength={50}
-                            />
-                        </div>
-                        <Alert 
-                        showIcon={false} 
-                        type="tip" 
-                        message={
-                            <div className={styles['title-tip']}>
-                                <p className={styles['tip-header']}><Icon type="question-circle" />   让你的提问获得更多解答</p>
-                                <p className={styles["tip-item"]}>· 问题是什么，你想得到什么帮助，以“？”结束</p>
-                                <p className={styles["tip-item"]}>· 保持文字简练，表述清晰问题的关键点</p>
-                                <p className={styles["tip-item"]}>· 添加合适的标签，让问题更好地流通</p>
-                            </div>
-                        } 
-                        banner 
-                        closable 
-                        />
-                        <div className={styles["mini-editor"]}>
-                            {
-                                <Editor
-                                id={this.question_id}
-                                onLoad={this.onEditorLoad}
-                                onDocLoad={this.onDocLoad}
-                                onChange={this.onEditorChange}
-                                onSaveBefore={this.onSaveBefore}
-                                onSaveAfter={this.onSaveAfter}
-                                onReverted={this.onReverted}
-                                onPublished={this.onPublished}
-                                />
-                            }
-                        </div>
+    return (
+        <Loading loading={loading}>
+            <header className={styles.header}>
+                <div className={styles.container}>
+                    <div className={styles.logo}>
+                        <a href="/"><img src={logo} alt="" /></a>
                     </div>
-                    <Drawer
-                    title="发布提问"
-                    placement="right"
-                    visible={drawerView}
-                    onClose={this.onHideDrawer}
-                    width="430"
-                    >
-                        <Form>
-                            { this.renderTag() }
-                            { this.renderReward() }
-                            {
-                                doc && doc.published && this.renderRemark()
-                            }
-                            {
-                                error && <Alert
-                                description={error}
-                                type="error"
-                                showIcon
-                                />
-                            }
-                            {
-                                !error && <Form.Item 
-                                extra="您将对提供的内容负有法律责任，对虚假和恶意营销，我们将保留追究法律责任的权利！"
-                                colon={false}
-                                >
-                                    <Button 
-                                    disabled={error ? true : false} 
-                                    loading={publishing} 
-                                    type="primary" 
-                                    onClick={this.onPublish}
-                                    style={{width:"100%"}}
-                                    >
-                                        {publishing ? '提交中...' : '发布'}
-                                    </Button>
-                                </Form.Item>
-                            }
-                            
-                        </Form>
-                    </Drawer>
-                </Loading>
-            </GlobalLayout>
-        )
-    }
+                    <small><span>·</span>提问编辑</small>
+                    <div className={styles['save-status']}>
+                        {
+                            renderSaveStatus()
+                        }
+                    </div>
+                    <div className={styles.right}>
+                        {
+                            doc && <Button onClick={onShowVersion}>历史</Button>
+                        }
+                        <Button type="primary" onClick={onShowDrawer} >发布</Button>
+                    </div>
+                </div>
+            </header>
+            <div className={styles.container}>
+                <div className={styles.title}>
+                    <Input 
+                    className={styles["questions-title"]}
+                    size="large"
+                    placeholder="一句话完整的描述你的问题" 
+                    value={title}
+                    onChange={onTitleChange}
+                    onBlur={onTitleBlur}
+                    maxLength={50}
+                    />
+                </div>
+                <Alert 
+                showIcon={false} 
+                type="tip" 
+                message={
+                    <div className={styles['title-tip']}>
+                        <p className={styles['tip-header']}><Icon type="question-circle" />   让你的提问获得更多解答</p>
+                        <p className={styles["tip-item"]}>· 问题是什么，你想得到什么帮助，以“？”结束</p>
+                        <p className={styles["tip-item"]}>· 保持文字简练，表述清晰问题的关键点</p>
+                        <p className={styles["tip-item"]}>· 添加合适的标签，让问题更好地流通</p>
+                    </div>
+                } 
+                banner 
+                closable 
+                />
+                <div className={styles["mini-editor"]}>
+                    {
+                        <Editor
+                        ref={editor}
+                        id={id}
+                        onChange={onEditorChange}
+                        onSaveBefore={onSaveBefore}
+                        onSaveAfter={onSaveAfter}
+                        onReverted={onReverted}
+                        onPublished={onPublished}
+                        />
+                    }
+                </div>
+            </div>
+            <Drawer
+            title="发布提问"
+            placement="right"
+            visible={drawerState}
+            onClose={onHideDrawer}
+            width="430"
+            >
+                <Form>
+                    { renderTag() }
+                    { renderReward() }
+                    {
+                        doc && doc.published && renderRemark()
+                    }
+                    {
+                        error && <Alert
+                        description={error}
+                        type="error"
+                        showIcon
+                        />
+                    }
+                    {
+                        !error && <Form.Item 
+                        extra="您将对提供的内容负有法律责任，对虚假和恶意营销，我们将保留追究法律责任的权利！"
+                        colon={false}
+                        >
+                            <Button 
+                            disabled={error ? true : false} 
+                            loading={publishing} 
+                            type="primary" 
+                            onClick={onPublish}
+                            style={{width:"100%"}}
+                            >
+                                {publishing ? '提交中...' : '发布'}
+                            </Button>
+                        </Form.Item>
+                    }
+                    
+                </Form>
+            </Drawer>
+        </Loading>
+    )
 }
 
-export default connect(({ doc , user , reward }) => ({
-    doc,
-    me : user.me ,
-    rewardConfig:reward.config
-}))(Edit)
+export default Edit

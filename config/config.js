@@ -72,10 +72,10 @@ export default {
             changeOrigin: true,
             pathRewrite: { "^/api" : "" }
         },
-        "/?(**/)!(*.*)":{
-            target: "http://localhost:8081",
-            changeOrigin: true
-        }
+        //"/?(**/)!(*.*)":{
+        //    target: "http://localhost:8081",
+        //    changeOrigin: true
+        //}
     },
     manifest: {
         basePath: '/',

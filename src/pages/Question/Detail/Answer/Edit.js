@@ -21,22 +21,12 @@ const AnswerEdit = ({ id , hasHistory , onSubmit, onCancel }) => {
     const questionId = question.detail ? question.detail.id : null
     const userAnswer = question.user_answer
 
-    const docId = doc ? doc.id : 0
+    //const docId = doc ? doc.id : 0
     useEffect(() => {
-        if(docId){
-            if(editor.current){
-                editor.current.reset()
-            }
-        }
-        
-    },[docId])
-
-    const onEditorChange = content => {
-        setContent(content)
-    }
-
-    const onEditorLoad = e => {
-        editor.current = e
+        setContent(doc ? doc.content : "")
+    },[doc,id])
+    
+    useEffect(() => {
         if(id){
             dispatch({
                 type:"doc/setDetail",
@@ -45,19 +35,16 @@ const AnswerEdit = ({ id , hasHistory , onSubmit, onCancel }) => {
                 }
             })
         }
-    }
+    },[dispatch,id])
 
-    const onDocLoad = () => {
-        const collabBiz = editor.current ? editor.current.getCollabBiz() : null
-        const document = collabBiz ? collabBiz.getInitialDocument() : null
-        setContent(document ? document.value : "")
+    const onEditorChange = content => {
+        setContent(content)
     }
 
     const onSaveExit = () => {
         if(editor.current)
         {
             editor.current.onSave(EditorBiz.SAVE_TYPE.USER_SAVE,() => {
-                collabExit()
                 onCancel()
             })
         }else{
@@ -103,16 +90,24 @@ const AnswerEdit = ({ id , hasHistory , onSubmit, onCancel }) => {
                     dispatch({
                         type:"doc/clearDetail"
                     })
-                    if(editor.current){
-                        editor.current.reset()
+                    const engine = editor.current.getEngine()
+                    if(engine) engine.setDefaultValue("")
+                    const editorBiz = editor.current.getEditorBiz()
+                    if(editorBiz) {
+                        editorBiz.onSaved({ 
+                            content:engine.getPureContent(),
+                            draft_version:0,
+                            updated_time:new Date().getTime()
+                        })
+                        editorBiz.clearCachedContent()
                     }
                     setHistory(true)
-                }else if(onCancel){
-                    collabExit()
-                    onCancel()
                 }
             }
             callback()
+            if(onCancel){
+                onCancel()
+            }
         })
     ]
 
@@ -164,7 +159,7 @@ const AnswerEdit = ({ id , hasHistory , onSubmit, onCancel }) => {
         if(!res.result) {
             return
         }
-        collabExit()
+        //collabExit()
         if(userAnswer && userAnswer.id === parseInt(res.data.id)){
             dispatch({
                 type:'question/setUserAnswer',
@@ -183,9 +178,8 @@ const AnswerEdit = ({ id , hasHistory , onSubmit, onCancel }) => {
     return (
         <div className={styles["editor-warpper"]}>
             <Editor
-            id={doc ? doc.id : null}
-            onLoad={onEditorLoad}
-            onDocLoad={onDocLoad}
+            ref={editor}
+            id={id}
             onChange={onEditorChange}
             onSaveBefore={onSaveBefore}
             onSaveAfter={onSaveAfter}

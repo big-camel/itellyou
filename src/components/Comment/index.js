@@ -1,4 +1,4 @@
-import React , { useEffect , useState , useMemo } from 'react'
+import React , { useEffect , useState , useMemo, useCallback } from 'react'
 import { List, Pagination } from 'antd'
 import InfiniteScroll from 'react-infinite-scroller'
 import classnames from 'classnames'
@@ -16,11 +16,11 @@ function Comment({ dataSource , className , loading , extra , title , exclude , 
     const [ offset , setOffset ] = useState((page - 1) * limit)
     const [ moreLoading , setMoreLoading ] = useState(false)
     const firstLoad = useRef(dataSource ? true : false)
-    const loadFunc = useRef(onLoad)
+    const loadFunc = useCallback(onLoad,[])
 
     useEffect(() => {
         if(firstLoad.current === false){
-            const result = loadFunc.current ? loadFunc.current(offset , limit) : null
+            const result = onLoad ? loadFunc(offset , limit) : null
             if(typeof result === "object"){
                 result.then(() => {
                     setMoreLoading(false)
@@ -28,7 +28,7 @@ function Comment({ dataSource , className , loading , extra , title , exclude , 
             }
         }
         firstLoad.current = false
-    },[offset, limit])
+    },[offset, limit, onLoad, loadFunc])
     const renderHeader = () => {
         if(title === false) return
         if(title) return <h2 className={styles["comment-title"]}>{title}</h2>
@@ -79,8 +79,10 @@ function Comment({ dataSource , className , loading , extra , title , exclude , 
             initialLoad={false}
             pageStart={0}
             loadMore={() => {
-                setMoreLoading(true)
-                setOffset(offset + limit)
+                if(!loading){
+                    setMoreLoading(true)
+                    setOffset(offset + limit)
+                }
             }}
             hasMore={!moreLoading && !dataSource.end}
             useWindow={false}

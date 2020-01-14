@@ -22,9 +22,13 @@ class Header extends Component{
     }
 
     onActionMenuClick = ({ key }) => {
-        if (key === 'questionNew') {
-            window.location.href = '/question/new'
-            return
+        switch(key){
+            case 'question':
+                router.push('/question/new')
+                break;
+            case 'article':
+                router.push('/article/new')
+                break;
         }
     }
 

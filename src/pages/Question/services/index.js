@@ -16,10 +16,6 @@ export async function adopt({ id , ...other }) {
     })
 }
 
-export async function answerDraft({id}) {
-    return request(`/api/question/${id}/answer/draft`)
-}
-
 export async function view({id}) {
     return request(`/api/question/${id}/view`)
 }

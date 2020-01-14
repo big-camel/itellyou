@@ -72,6 +72,34 @@ function Search({ location:{ query } }){
         )
     }
 
+    const renderArticle = ({ highlight , object }) => {
+        return (
+            <div className={styles["search-article-item"]}>
+                <h4 className={styles['search-title']}>
+                    <Link to={`/article/${object.id}`} dangerouslySetInnerHTML={{__html:highlight.title}}></Link>
+                </h4>
+                <div className={styles['search-content']} dangerouslySetInnerHTML={{__html:highlight.content}} />
+                <div className={styles['search-footer']}>
+                    <div>{object.support}赞同</div>
+                    <div>{object.answers}回答</div>
+                    <div>由 { object.user_name } 于 <Timer time={object.created_time} /> 发布{object.column_name ? <span>在<Link to={`/column/${object.column_id}`}>{object.column_name}</Link></span> : ""}</div>
+                </div>
+            </div>
+        )
+    }
+
+    const renderColumn = ({ highlight , object }) => {
+        return (
+            <div className={styles["search-column-item"]}>
+                <h4 className={styles['search-title']}>
+                    <Link to={`/column/${object.id}`} dangerouslySetInnerHTML={{__html:highlight.name}}></Link>
+                </h4>
+                <div className={styles['search-content']} dangerouslySetInnerHTML={{__html:highlight.description}} />
+                <div className={styles['search-footer']}>This is Column</div>
+            </div>
+        )
+    }
+
     const renderTag = ({ highlight , object }) => {
         return (
             <div className={styles["search-tag-item"]}>
@@ -103,6 +131,12 @@ function Search({ location:{ query } }){
             case "answer":
                 child = renderAnswer(item)
                 break
+            case "article":
+                child = renderArticle(item)
+                break
+            case "column":
+                child = renderColumn(item)
+                break
             case "tag":
                 child = renderTag(item)
                 break
@@ -124,6 +158,8 @@ function Search({ location:{ query } }){
                         <Link className={classnames({[styles['active']]:type === ""})} to={`/search?q=${word}`}>全部</Link>
                         <Link className={classnames({[styles['active']]:type === "question"})} to={`/search?t=question&q=${word}`}>提问</Link>
                         <Link className={classnames({[styles['active']]:type === "answer"})} to={`/search?t=answer&q=${word}`}>回答</Link>
+                        <Link className={classnames({[styles['active']]:type === "article"})} to={`/search?t=article&q=${word}`}>文章</Link>
+                        <Link className={classnames({[styles['active']]:type === "column"})} to={`/search?t=column&q=${word}`}>专栏</Link>
                         <Link className={classnames({[styles['active']]:type === "tag"})} to={`/search?t=tag&q=${word}`}>标签</Link>
                         <Link className={classnames({[styles['active']]:type === "user"})} to={`/search?t=user&q=${word}`}>用户</Link>
                     </div>

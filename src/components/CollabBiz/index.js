@@ -114,7 +114,6 @@ class CollabBiz extends EventEmitter {
                 me: this.ctx.me
             })
             this.initialDocument = this.editorBiz.getInitialDocument()
-
             this.emit(EVENTS.docLoaded,res.data)
             if(!isOT){
                 this.emit(EVENTS.ready)
@@ -136,7 +135,7 @@ class CollabBiz extends EventEmitter {
         this.emit(EVENTS.ready)
     }
 
-    reset(){
+    /**reset(){
         this.exit()
         this.doc = null
         this.users = []
@@ -147,7 +146,7 @@ class CollabBiz extends EventEmitter {
             this.editorBiz = null
         }
         
-    }
+    }**/
 
     start(engine){
         this.engine = engine 
@@ -300,7 +299,7 @@ class CollabBiz extends EventEmitter {
                 return
             }
             if(this.local){
-                this.init(res.data)
+                //this.init(res.data)
                 this.doc.id = res.data
             }else{
                 const doc = res.data
@@ -430,6 +429,12 @@ class CollabBiz extends EventEmitter {
         window.addEventListener("beforeunload", this.onPageClose)
         window.addEventListener("visibilitychange", this.onVisibilityChange)
         window.addEventListener("pagehide", this.onPageClose)
+    }
+
+    unbindEvents(){
+        window.removeEventListener("beforeunload", this.onPageClose)
+        window.removeEventListener("visibilitychange", this.onVisibilityChange)
+        window.removeEventListener("pagehide", this.onPageClose)
     }
 
     addMembers(member){
