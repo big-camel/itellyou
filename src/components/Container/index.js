@@ -1,15 +1,46 @@
 import React from 'react'
+import { ContainerQuery } from 'react-container-query'
 import classnames from 'classnames'
+import Layout from './Layout'
+import Sider from './Sider'
 
-export default props => {
-    const { children } = props
-    const mode = props.mode || {}
-    const containerCls = classnames({
-        'layout-container': true,
-        'layout-container-wider': mode.wider,
-        'layout-container-middle': mode.middle,
-        'layout-container-full': mode.full,
-        clearfix: true
-    })
-    return <div className={containerCls}>{children}</div>
+const query = {
+    'middle': {
+        minWidth: 1200,
+        maxWidth: 1999,
+    },
+    'wider': {
+        minWidth: 2000,
+    },
+}
+
+export default ({ mode , children }) => {
+
+    const isContainer = (type,param) => {
+        return mode ? mode === type : param === type
+    }
+
+    return (
+        <ContainerQuery query={query}>
+            {
+                param => (
+                <div className={classnames({
+                    'layout-container': true,
+                    'layout-container-wider': isContainer("wider",param),
+                    'layout-container-middle': isContainer("middle",param),
+                    'layout-container-full':isContainer("full",param),
+                    clearfix: true
+                })}>
+                {
+                    children
+                }
+                </div>
+            )}
+         </ContainerQuery>
+    )
+}
+
+export {
+    Layout,
+    Sider
 }

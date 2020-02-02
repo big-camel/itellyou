@@ -15,8 +15,8 @@ function Detail({ match:{ params }}){
     const id = params.id ? parseInt(params.id) : null
 
     const dispatch = useDispatch()
-    const article = useSelector(state => state.article)
-    const { detail } = article
+    const { detail } = useSelector(state => state.article)
+    
     useEffect(() => {
         dispatch({
             type:'article/view',
@@ -30,10 +30,7 @@ function Detail({ match:{ params }}){
                 id
             }
         })
-    },[dispatch,id])
-
-    
-    const [ commentVisible , setCommentVisible ] = useState(false)
+    },[dispatch, id])
 
     if(!detail) return <Loading />
 
@@ -44,9 +41,9 @@ function Detail({ match:{ params }}){
         return <Button icon="star" type="link" size="small" >加关注({ detail.star_count })</Button>
     }
 
-    const { column } = detail
+    const { column , tags } = detail
     return (
-        <DocumentTitle title={detail ? detail.title : ""}>
+        <DocumentTitle title={detail.title}>
             <Row gutter={50}>
                 <Col xs={24} sm={18}>
                     <div className={styles.header}>
@@ -55,8 +52,8 @@ function Detail({ match:{ params }}){
                         </h2>
                         <div className={styles.tags}>
                             {
-                                detail.tags && (
-                                    detail.tags.map(tag => (
+                                tags && (
+                                    tags.map(tag => (
                                         <span  key={tag.id} className={styles.tag}><Tag href={`/tag/${encodeURIComponent(tag.name)}`} title={tag.name} /></span>
                                     ))
                                 )
@@ -82,13 +79,13 @@ function Detail({ match:{ params }}){
                     </article>
                     <div className={styles.actions}>
                         
-                        <CommentButton onClick={() => setCommentVisible(true)}>{detail.comments > 0 ? `${detail.comments} 条评论` : "评论"}</CommentButton>
+                        <CommentButton>{`${detail.comment_count} 条评论`}</CommentButton>
                         <ShareButton>分享</ShareButton>
                         <ReportButton>举报</ReportButton>
                         
                     </div>
                     {
-                        <Comment articleId={id} visible={commentVisible} onVisibleChange={setCommentVisible} />
+                        <Comment articleId={id} />
                     }
                 </Col>
                 <Col xs={24} sm={6}>dfdfsdf</Col>

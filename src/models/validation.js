@@ -1,12 +1,12 @@
-import { sendMobileCode } from '@/services/validation'
+import { sendCode } from '@/services/validation'
 export default {
     namespace: 'validation',
 
     state: {},
 
     effects: {
-        *sendMobileCode({ payload }, { call }){
-            const response = yield call(sendMobileCode,payload)
+        *sendCode({ payload }, { call }){
+            const response = yield call(sendCode,payload)
             return response
         }
     }

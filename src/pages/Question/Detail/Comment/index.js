@@ -1,23 +1,39 @@
-import React , { useState } from 'react'
-import { connect } from 'dva'
+import React , { useState, useCallback, useEffect } from 'react'
+import { useDispatch, useSelector } from 'dva'
 import Comment , { Detail as CommentDetail } from '@/components/Comment'
 import { Modal, Button } from 'antd'
 import styles from './index.less'
 
-function QuestionComment({ dispatch , rootLoading , questionDetail , detailLoading , questionId , comment , visible , onVisibleChange }){
+function QuestionComment({ questionId , visible , onVisibleChange }){
 
     const [ detailVisible , setDetailVisible ] = useState(false)
 
-    const load = (offset,limit) => {
-        dispatch({
-            type:"comment/root",
-            payload:{
-                questionId,
-                offset,
-                limit
-            }
-        })
-    }
+    const dispatch = useDispatch()
+    const question = useSelector(state => state.question)
+    const questionDetail = question ? question.detail : null
+    const comment = useSelector(state => state.comment)
+
+    const [ offset , setOffset ] = useState(0)
+    const [ childOffset , setChildOffset ] = useState(0)
+    const limit = 20
+    const load = useCallback((offset,limit) => {
+        if(visible){
+            dispatch({
+                type:"comment/root",
+                payload:{
+                    questionId,
+                    offset,
+                    limit,
+                    append:true
+                }
+            })
+        }
+        setOffset(offset)
+    },[questionId,visible,dispatch])
+
+    useEffect(() => {
+        load(0,limit)
+    },[load])
 
     const create = (content,html,parentId,replyId) => {
         return dispatch({
@@ -83,7 +99,7 @@ function QuestionComment({ dispatch , rootLoading , questionDetail , detailLoadi
     const childDetail = (offset,limit) => {
         const comment = comment["detail"]
         if(!comment) return
-        return dispatch({
+        dispatch({
             type:"comment/childDetail",
             payload:{
                 questionId,
@@ -93,6 +109,7 @@ function QuestionComment({ dispatch , rootLoading , questionDetail , detailLoadi
                 limit
             }
         })
+        setChildOffset(offset)
     }
     return (
         <Modal
@@ -113,37 +130,32 @@ function QuestionComment({ dispatch , rootLoading , questionDetail , detailLoadi
                     detailVisible ? 
                     <CommentDetail 
                     dataSource={comment["detail"]}
-                    loading={detailLoading}
-                    onLoad={childDetail}
+                    onChange={childDetail}
                     onCreate={create}
                     onDelete={del}
                     onVote={vote}
-                    size={20}
+                    offset={childOffset}
+                    limit={limit}
                     />
                     : 
                     <Comment 
                     className={styles["modal-comment-list"]}
                     title={false}
                     dataSource={comment[questionId]}
-                    loading={rootLoading}
-                    onLoad={load}
+                    onChange={load}
                     onCreate={create}
                     onDelete={del}
                     onVote={vote}
                     onChild={child}
                     onDetail={detail}
                     hasEdit={true}
-                    hasScroll={true}
-                    size={20}
+                    scroll={true}
+                    offset={offset}
+                    limit={limit}
                     />
                 }
             </div>
         </Modal>
     )
 }
-export default connect(({ question , comment , loading }) => ({
-    comment ,
-    questionDetail:question.detail,
-    rootLoading:loading.effects["comment/root"],
-    detailLoading:loading.effects["comment/childDetail"]
-}))(QuestionComment)
+export default QuestionComment

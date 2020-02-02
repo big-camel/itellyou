@@ -73,8 +73,8 @@ function Tag ({ id , href , target , className , icon , title , enableDelete , o
         if(loading && detail.id !== id){
             return <Loading />
         }
-        const followLoading = loadingEffect.effects['user/followTag']
-        const unfollowLoading = loadingEffect.effects['user/unfollowTag']
+        const followLoading = loadingEffect.effects['userTag/follow']
+        const unfollowLoading = loadingEffect.effects['userTag/unfollow']
         return (
             <div className={styles['popover-layout']}>
                 <h2 className={styles['popover-title']}>{detail.name}</h2>
@@ -106,14 +106,14 @@ function Tag ({ id , href , target , className , icon , title , enableDelete , o
     const onSetTag = () => {
        if(detail && !detail.use_star){
             dispatch({
-                type:'user/followTag',
+                type:'userTag/follow',
                 payload:{
                     id:detail.id
                 }
             })
         }else if(detail && detail.use_star){
             dispatch({
-                type:'user/unfollowTag',
+                type:'userTag/unfollow',
                 payload:{
                     id:detail.id
                 }

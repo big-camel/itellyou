@@ -1,6 +1,6 @@
 import { getRoot , getChild , deleteComment , create , vote } from '@/services/article/comment'
 export default {
-    namespace: 'comment',
+    namespace: 'articleComment',
     state: {},
     effects:{
         *create({ payload }, { call , put }){

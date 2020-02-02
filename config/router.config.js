@@ -4,22 +4,12 @@ export default [
         path: '/user/:path(login|register)',
         component: '../layouts/PassportLayout',
         routes: [
-            { path: '/user/login', name: 'login.page', component: './User/Login' },
-            { path: '/user/register', name: 'register.page', component: './User/Register' },
+            { path: '/user/login', name: 'login.page', component: './user/login' },
+            { path: '/user/register', name: 'register.page', component: './user/register' },
             {
                 component: '404',
             }
         ],
-    },
-    //user
-    {
-        path:'/user',
-        component:'../layouts/UserLayout',
-        Routes: ['src/pages/Authorized'],
-        routes:[
-            { path:'/user',name:'userCenter',component:'./User/Index', authority: ['admin', 'user'] },
-            { path:'/user/draft',name:'userDraft',component:'./User/Draft', authority: ['admin', 'user'] }
-        ]
     },
     //question
     {
@@ -50,6 +40,18 @@ export default [
             { path:'/article/:id(\\d+)/edit',name:'article.page.edit',component:'./Article/Edit', authority: ['admin', 'user'] }
         ]
     },
+    //user
+    {
+        path:'/user',
+        component:'../layouts/BasicLayout',
+        Routes: ['src/pages/Authorized'],
+        routes:[
+            { path:'/user',name:'user.page.center',component:'./user/Index', authority: ['admin', 'user'] },
+            { path:'/user/draft',name:'userDraft',component:'./user/Draft', authority: ['admin', 'user'] },
+            { path:'/user/settings/profile',name:'user.settings.profile',component:'./user/settings/profile', authority: ['admin', 'user'] },
+            { path:'/user/settings/account',name:'user.settings.account',component:'./user/settings/account', authority: ['admin', 'user'] }
+        ]
+    },
     //app
     {
         path:'/',
@@ -74,9 +76,9 @@ export default [
             // Search
             { path:'/search',name:'search.page.index',component:'./Search' },
             // Column
-            { path:'/column',name:'column.page.index',component:'./Column' },
-            { path:'/column/apply',name:'column.page.apply',component:'./Column/Apply' },
-            { path:'/column/:id(\\d+)',name:'column.page.detail',component:'./Column/Detail' },
+            { path:'/column',name:'column.page.index',component:'./column' },
+            { path:'/column/apply',name:'column.page.apply',component:'./column/apply' },
+            { path:'/column/:id(\\d+)',name:'column.page.detail',component:'./column/Detail' },
             {
                 component: '404',
             }

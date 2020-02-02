@@ -13,6 +13,7 @@ function Index(){
     const tag = useSelector(state => state.tag)
 
     const user = useSelector(state => state.user)
+    const userTag = useSelector(state => state.userTag)
     const loadingEffect = useSelector(state => state.loading)
     
     useEffect(() => {
@@ -20,7 +21,7 @@ function Index(){
             type:"tag/group"
         })
         dispatch({
-            type:"user/tag"
+            type:"userTag/get"
         })
     },[dispatch])
 
@@ -69,7 +70,7 @@ function Index(){
         const messageClose = message.loading("关注中...")
         const { key } = values[0]
         dispatch({
-            type:"user/followTag",
+            type:"userTag/follow",
             payload:{
                 id:key
             }
@@ -81,9 +82,8 @@ function Index(){
 
     const renderUserTag = () => {
         if(!user.me) return
-        const userTagLoading = loadingEffect.effects['user/tag']
-        if(userTagLoading) return <Loading />
-        const userTag = user.tag || {}
+        const userTagLoading = loadingEffect.effects['userTag/get']
+        if(!userTag || userTagLoading) return <Loading />
         return (
             <PageHeader title="我的关注" className={styles['tag-header']}>
                 <div>

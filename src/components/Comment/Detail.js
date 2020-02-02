@@ -4,7 +4,7 @@ import Item from './Item'
 import Comment from './index'
 import styles from './index.less'
 
-function CommentDetail({ dataSource , loading , onDelete , onCreate , onVote , onLoad , ...props}){
+function CommentDetail({ dataSource , onDelete , onCreate , onVote , onChange , ...props}){
 
     if(!dataSource) return <Loading />
     const { detail , ...data } = dataSource
@@ -21,12 +21,11 @@ function CommentDetail({ dataSource , loading , onDelete , onCreate , onVote , o
             }
             title={detail.comments + "个评论"} 
             dataSource={data}
-            loading={loading}
-            onLoad={onLoad}
+            onChange={onChange}
             onDelete={onDelete}
             onCreate={onCreate}
             onVote={onVote}
-            hasScroll={true}
+            scroll={true}
             {...props}
             />
         </div>

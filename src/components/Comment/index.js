@@ -1,4 +1,4 @@
-import React , { useEffect , useState , useMemo, useCallback } from 'react'
+import React , { useEffect , useState } from 'react'
 import { List, Pagination } from 'antd'
 import InfiniteScroll from 'react-infinite-scroller'
 import classnames from 'classnames'
@@ -7,28 +7,19 @@ import Loading from '../Loading'
 import Item from './Item'
 import Detail from './Detail'
 import styles from './index.less'
-import { useRef } from 'react'
 
-function Comment({ dataSource , className , loading , extra , title , exclude , hasScroll , hasEdit , onLoad , onChild , onCreate , onDelete , onVote , onDetail , ...props}){
+function Comment({ dataSource , className , extra , offset , limit , title , exclude , scroll , hasEdit , onChild , onCreate , onDelete , onVote , onDetail , ...props}){
+
+    const [ loading , setLoading ] = useState(false)
+    const onChange = props.onChange || function(){}
 
     const [ page , setPage ] = useState(props.page || 1)
-    const [ limit , setLimit ] = useState(props.size || 10)
-    const [ offset , setOffset ] = useState((page - 1) * limit)
-    const [ moreLoading , setMoreLoading ] = useState(false)
-    const firstLoad = useRef(dataSource ? true : false)
-    const loadFunc = useCallback(onLoad,[])
-
+    offset = offset || 0
+    limit = limit || 20
     useEffect(() => {
-        if(firstLoad.current === false){
-            const result = onLoad ? loadFunc(offset , limit) : null
-            if(typeof result === "object"){
-                result.then(() => {
-                    setMoreLoading(false)
-                })
-            }
-        }
-        firstLoad.current = false
-    },[offset, limit, onLoad, loadFunc])
+        setLoading(false)
+    },[dataSource])
+
     const renderHeader = () => {
         if(title === false) return
         if(title) return <h2 className={styles["comment-title"]}>{title}</h2>
@@ -64,7 +55,7 @@ function Comment({ dataSource , className , loading , extra , title , exclude , 
 
     const renderList = () => {
         return <List 
-        loading={loading && (firstLoad.current === true || !hasScroll)}
+        loading={loading && !scroll}
         header={renderHeader()}
         dataSource={comments}
         renderItem={renderItem}
@@ -80,11 +71,11 @@ function Comment({ dataSource , className , loading , extra , title , exclude , 
             pageStart={0}
             loadMore={() => {
                 if(!loading){
-                    setMoreLoading(true)
-                    setOffset(offset + limit)
+                    setLoading(true)
+                    onChange(offset + limit,limit)
                 }
             }}
-            hasMore={!moreLoading && !dataSource.end}
+            hasMore={!loading && !dataSource.end}
             useWindow={false}
             >
                 {
@@ -104,8 +95,11 @@ function Comment({ dataSource , className , loading , extra , title , exclude , 
             <Pagination 
             className={styles["comment-page"]}
             onChange={page => {
-                setPage(page)
-                setOffset((page - 1) * limit)
+                if(!loading){
+                    setLoading(true)
+                    onChange((page - 1) * limit,limit)
+                    setPage(page)
+                }
             }}
             current={page}
             itemRender={renderPage}
@@ -139,10 +133,10 @@ function Comment({ dataSource , className , loading , extra , title , exclude , 
                 )
             }
             {
-                comments.length > 0 && hasScroll ? renderScrollList() : renderPageList()
+                scroll ? renderScrollList() : renderPageList()
             }
             {
-                hasScroll && loading && <Loading />
+                scroll && loading && <Loading />
             }
             {
                 renderFooter()

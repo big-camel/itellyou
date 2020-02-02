@@ -7,5 +7,7 @@ export default {
     'register.capthcha.notGet':'收不到验证码？',
     'register.mobile.takeUp':'手机号已被占用，请更换手机号或去',
     
-    'login.page':"登录"
+    'login.page':"登录",
+    'user.settings.profile':'个人信息',
+    'user.settings.account':'账户管理'
 }

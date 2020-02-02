@@ -3,7 +3,6 @@ import { Menu, Popover, Icon,Avatar} from 'antd'
 import Link from 'umi/link'
 import classnames from 'classnames'
 import Container from '@/components/Container'
-import localAvatar from '@/assets/touxiang.png'
 import style from './index.less'
 import logo from '@/assets/logo.svg'
 import TopSearch from '../TopSearch'
@@ -77,7 +76,7 @@ class GlobalHeader extends React.PureComponent{
                                         }
                                         placement="bottomRight"
                                         >
-                                            <div><Avatar src={localAvatar} size={24}/></div>
+                                            <div><Avatar src={me.avatar} size={24}/></div>
                                         </Popover>
                                     </div>
                                 </div>

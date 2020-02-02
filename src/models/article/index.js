@@ -17,10 +17,12 @@ export default {
         },
         *find({ payload }, { call,put }){
             const response = yield call(find,payload)
-            yield put({
-                type:'updateDetail',
-                payload:response.data || {}
-            })
+            if(response && response.result){
+                yield put({
+                    type:'updateDetail',
+                    payload:response.data
+                })
+            }
             return response
         },
         *view({ payload }, { call }){

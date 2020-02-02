@@ -1,0 +1,31 @@
+.image-cropper {
+    display: flex;
+    justify-content: space-between;
+
+    .image-cropper-tool {
+        position: relative;
+        overflow: hidden;
+        width: 320px;
+        height: 320px;
+
+        >img{
+            display: block;
+            /* This rule is very important, please don't ignore this */
+            max-width: 100%;
+        }
+    }
+
+    .image-cropper-preview {
+        font-size: 14px;
+        color: #bfbfbf;
+        text-align: center;
+
+        .image-cropper-thumb{
+            width: 120px;
+            height: 120px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            background-color: #fafafa;
+        }
+    }
+}

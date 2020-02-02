@@ -38,6 +38,7 @@ export default {
         javascriptEnabled: true
     },
     disableRedirectHoist: true,
+    //disableCSSModules:true,
     cssLoaderOptions: {
         modules: true,
         getLocalIdent: (context , _ , localName) => {
@@ -47,7 +48,7 @@ export default {
             ) {
                 return localName
             }
-    
+            return localName
             const match = context.resourcePath.match(/src(.*)/)
             if (match && match[1]) {
                 const path = match[1].replace('.less', '');

@@ -22,6 +22,8 @@ function Edit({ match:{ params }}){
     const [ loading , setLoading ] = useState(true)
     const [ saving , setSaving ] = useState(false)
     const [ columnId , setColumnId ] = useState(0)
+    const [ sourceType , setSourceType ] = useState("original")
+    const [ sourceData , setSourceData ] = useState("")
     const [ publishing , setPublishing ] = useState(false)
     const [ drawerState , setDrawerState ] = useState(false)
     const saveCommand = useRef(false)
@@ -37,6 +39,8 @@ function Edit({ match:{ params }}){
         setTags(doc ? doc.tags || [] : [])
         setContent(doc ? doc.content || "" : "")
         setColumnId(doc && doc.column ? doc.column.id : 0)
+        setSourceType(doc ? doc.source_type : 1)
+        setSourceData(doc ? doc.source_data : "")
         if((id && doc) || !id){
             setLoading(false)
         }
@@ -229,6 +233,42 @@ function Edit({ match:{ params }}){
         )
     }
 
+    const onSourceChange = event => {
+        setSourceType(event.target.value)
+    }
+
+    const renderSource = () => {
+        return (
+            <Form.Item
+            label="文章来源"
+            colon={false}
+            >
+                <Radio.Group className={styles['source-layout']} onChange={onSourceChange} value={sourceType}>
+                    <Radio key="original" value="original">原创</Radio>
+                    <Radio key="reproduced" value="reproduced">转载</Radio>
+                    {
+                        sourceType == "reproduced" && renderSourceData()
+                    }
+                    <Radio key="translation" value="translation">翻译</Radio>
+                    {
+                        sourceType == "translation" && renderSourceData()
+                    }
+                </Radio.Group>
+                <div>
+                    <Button href="/column/apply" target="_blank" icon="plus" type="link">申请专栏</Button>
+                </div>
+            </Form.Item>
+        )
+    }
+
+    const renderSourceData = () => {
+        return (
+            <div>
+                <Input value={sourceData} onChange={event => setSourceData(event.target.value) } />
+            </div>
+        )
+    }
+
     const getError = () => {
         if(title.trim() === ""){
             return "你还没有添加标题"
@@ -257,6 +297,8 @@ function Edit({ match:{ params }}){
             editor.current.onPublish({
                 tags:tag_ids,
                 columnId,
+                sourceType,
+                sourceData,
                 remark
             })
         }
@@ -339,6 +381,9 @@ function Edit({ match:{ params }}){
                     }
                     {
                         renderColumn()
+                    }
+                    {
+                        renderSource()
                     }
                     {
                         doc && doc.published && renderRemark()

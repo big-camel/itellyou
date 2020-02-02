@@ -40,12 +40,12 @@ export default {
             }
             return response
         },
-        *root({ payload }, { call , put }){
+        *root({ payload : { append , ...payload} }, { call , put }){
             const response = yield call(getRoot,payload)
             if(response && response.result){
                 yield put({
                     type:"setList",
-                    payload:{ questionId:payload.questionId,data:response.data }
+                    payload:{ questionId:payload.questionId,append,data:response.data }
                 })
             }
             return response
@@ -132,7 +132,22 @@ export default {
         }
     },
     reducers:{
-        setList(state,{ payload : { questionId , data } }){
+        setList(state,{ payload : { questionId , append , data } }){
+            const list = state ? state[questionId] : null
+            if(append && list){
+                data.data.forEach(item => {
+                    if(!list.data.find(child => child.id === item.id)){
+                        list.data.push(item)
+                    }
+                })
+                list.total = data.total
+                //list.start = data.start
+                list.end = data.end
+                return {
+                    ...state,
+                    [questionId]:{...list}
+                }
+            }
             return {
                 ...state,
                 [questionId]:data

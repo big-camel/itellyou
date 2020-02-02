@@ -37,14 +37,14 @@ function TagList({ location : { query }}){
         let result = null
         if(!use_star){
             result =dispatch({
-                type:'user/followTag',
+                type:'userTag/follow',
                 payload:{
                     id
                 }
              })
          }else if(use_star){
             result = dispatch({
-                type:'user/unfollowTag',
+                type:'userTag/unfollow',
                 payload:{
                     id
                 }

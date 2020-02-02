@@ -1,4 +1,4 @@
-import React , { useState } from 'react'
+import React , { useState, useCallback, useEffect } from 'react'
 import { useDispatch , useSelector } from 'dva'
 import Comment , { Detail as CommentDetail } from '@/components/Comment'
 import { Modal } from 'antd'
@@ -8,25 +8,30 @@ function ArticleComment({ articleId }){
     const [ modelVisible , setModelVisible ] = useState(false)
 
     const dispatch = useDispatch()
-    const comment = useSelector(state => state.comment)
-    const loadingEffect = useSelector(state => state.loading)
-    const rootLoading = loadingEffect.effects["comment/root"]
-    const detailLoading = loadingEffect.effects["comment/childDetail"]
+    const comment = useSelector(state => state.articleComment)
+    const [ offset , setOffset ] = useState(0)
+    const [ childOffset , setChildOffset ] = useState(0)
+    const limit = 20
 
-    const load = (offset,limit) => {
+    const load = useCallback((offset,limit) => {
         dispatch({
-            type:"comment/root",
+            type:"articleComment/root",
             payload:{
                 articleId,
                 offset,
                 limit
             }
         })
-    }
+        setOffset(offset)
+    },[articleId , dispatch])
+
+    useEffect(() => {
+        load(0,limit)
+    },[load,limit])
 
     const create = (content,html,parentId,replyId) => {
         return dispatch({
-                type:"comment/create",
+                type:"articleComment/create",
                 payload:{
                     articleId,
                     content,
@@ -39,7 +44,7 @@ function ArticleComment({ articleId }){
 
     const del = id => {
         return dispatch({
-            type:"comment/delete",
+            type:"articleComment/delete",
             payload:{
                 articleId,
                 id
@@ -49,7 +54,7 @@ function ArticleComment({ articleId }){
 
     const vote = (id,type) => {
         return dispatch({
-            type:"comment/vote",
+            type:"articleComment/vote",
             payload:{
                 articleId,
                 id,
@@ -60,7 +65,7 @@ function ArticleComment({ articleId }){
 
     const child = (id,offset,limit) => {
         return dispatch({
-            type:"comment/child",
+            type:"articleComment/child",
             payload:{
                 articleId,
                 id,
@@ -73,7 +78,7 @@ function ArticleComment({ articleId }){
 
     const detail = ({ id }) => {
         dispatch({
-            type:"comment/childDetail",
+            type:"articleComment/childDetail",
             payload:{
                 articleId,
                 id,
@@ -88,8 +93,8 @@ function ArticleComment({ articleId }){
     const childDetail = (offset,limit) => {
         const detailComment = comment["detail"]
         if(!detailComment) return
-        return dispatch({
-            type:"comment/childDetail",
+        dispatch({
+            type:"articleComment/childDetail",
             payload:{
                 articleId,
                 id:detailComment.detail.id,
@@ -98,20 +103,21 @@ function ArticleComment({ articleId }){
                 limit
             }
         })
+        setChildOffset(offset)
     }
     return (
         <React.Fragment>
             <Comment 
             dataSource={comment.list}
-            loading={rootLoading}
-            onLoad={load}
+            onChange={load}
             onCreate={create}
             onDelete={del}
             onVote={vote}
             onChild={child}
             onDetail={detail}
             hasEdit={true}
-            size={20}
+            offset={offset}
+            limit={limit}
             />
             <Modal
             title="查看对话"
@@ -125,12 +131,12 @@ function ArticleComment({ articleId }){
             >
                 <CommentDetail 
                 dataSource={comment.detail}
-                loading={detailLoading}
-                onLoad={childDetail}
+                onChange={childDetail}
                 onCreate={create}
                 onDelete={del}
                 onVote={vote}
-                size={20}
+                offset={childOffset}
+                limit={limit}
                 />
             </Modal>
         </React.Fragment>

@@ -1,5 +1,5 @@
 
-import { register } from '@/services/user'
+import { register } from '../services/register'
 
 export default {
     namespace: 'register',

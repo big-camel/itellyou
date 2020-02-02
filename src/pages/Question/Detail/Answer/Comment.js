@@ -1,4 +1,4 @@
-import React , { useState } from 'react'
+import React , { useState, useEffect, useCallback } from 'react'
 import { useDispatch , useSelector } from 'dva'
 import Comment , { Detail as CommentDetail } from '@/components/Comment'
 import { Modal } from 'antd'
@@ -9,11 +9,12 @@ function AnswerComment({ questionId , answerId }){
 
     const dispatch = useDispatch()
     const answerComment = useSelector(state => state.answerComment)
-    const loadingEffect = useSelector(state => state.loading)
-    const rootLoading = loadingEffect.effects["answerComment/root"]
-    const detailLoading = loadingEffect.effects["answerComment/childDetail"]
 
-    const load = (offset,limit) => {
+    const [ offset , setOffset ] = useState(0)
+    const [ childOffset , setChildOffset ] = useState(0)
+    const limit = 20
+
+    const load = useCallback((offset,limit) => {
         dispatch({
             type:"answerComment/root",
             payload:{
@@ -23,7 +24,12 @@ function AnswerComment({ questionId , answerId }){
                 limit
             }
         })
-    }
+        setOffset(offset)
+    },[questionId,answerId,dispatch])
+
+    useEffect(() => {
+        load(0,20)
+    },[load])
 
     const create = (content,html,parentId,replyId) => {
         return dispatch({
@@ -94,7 +100,7 @@ function AnswerComment({ questionId , answerId }){
     const childDetail = (offset,limit) => {
         const comment = answerComment["detail"]
         if(!comment) return
-        return dispatch({
+        dispatch({
             type:"answerComment/childDetail",
             payload:{
                 questionId,
@@ -105,20 +111,21 @@ function AnswerComment({ questionId , answerId }){
                 limit
             }
         })
+        setChildOffset(offset)
     }
     return (
         <React.Fragment>
             <Comment 
             dataSource={answerComment[answerId]}
-            loading={rootLoading}
-            onLoad={load}
+            onChange={load}
             onCreate={create}
             onDelete={del}
             onVote={vote}
             onChild={child}
             onDetail={detail}
             hasEdit={true}
-            size={20}
+            offset={offset}
+            limit={limit}
             />
             <Modal
             title="查看对话"
@@ -132,12 +139,12 @@ function AnswerComment({ questionId , answerId }){
             >
                 <CommentDetail 
                 dataSource={answerComment["detail"]}
-                loading={detailLoading}
-                onLoad={childDetail}
+                onChange={childDetail}
                 onCreate={create}
                 onDelete={del}
                 onVote={vote}
-                size={20}
+                offset={childOffset}
+                limit={limit}
                 />
             </Modal>
         </React.Fragment>

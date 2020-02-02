@@ -1,9 +1,9 @@
-import { loginByAccount,loginByMobile } from '@/services/user'
-import { routerRedux } from 'dva/router'
+import { loginByAccount,loginByMobile } from '../services/login'
+import { router } from 'dva'
 import { setAuthority } from '@/utils/authority'
 import { getPageQuery } from '@/utils/utils'
 import { reloadAuthorized } from '@/utils/Authorized'
-
+const { routerRedux } = router
 export default {
     namespace: 'login',
 

@@ -1,10 +1,13 @@
 import React, { useState, useRef } from 'react'
-import TagForm from '@/components/Form/Tag'
 import { Form , Row , Col , Button , message } from 'antd'
 import { useDispatch } from 'dva';
 import { MiniEditor } from '@itellyou/itellyou-editor'
-import { EditorBiz } from '../Editor';
-const { TagName , Submit } = TagForm;
+import { EditorBiz } from '../Editor'
+
+import TagForm , { Submit } from '@/components/Form'
+import formMap from './formMap'
+
+const { TagName } = Form.createItem(formMap)
 
 function CreateForm({ defaultName , onCallback }){
 
