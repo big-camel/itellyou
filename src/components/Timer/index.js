@@ -1,16 +1,19 @@
 import React from 'react'
 import { Tooltip } from 'antd'
 import timeUtils from '@/utils/time'
-export default props => {
-    const placement = props.placement || 'bottom'
-    const { className,useTip,time } = props
+export default ({ placement , className , useTip , time }) => {
+    placement = placement || 'bottom'
 
     const formattedTime = timeUtils.format(time)
 
-    if (!useTip) {
-        return <span className={className}>
+    const getFormattedTime = () => {
+      return <span className={className}>
           {formattedTime}
         </span>
+    }
+
+    if (!useTip) {
+        return getFormattedTime()
     }
 
     return <Tooltip
@@ -19,8 +22,8 @@ export default props => {
     })}
     placement={placement}
     >
-        <span className={className}>
-            {formattedTime}
-        </span>
+        {
+          getFormattedTime()
+        }
     </Tooltip>
 }

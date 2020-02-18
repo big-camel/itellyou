@@ -1,4 +1,4 @@
-import { find , create,search , query ,group,list , auditList , auditVersion } from '@/services/tag'
+import { find , create,search , query ,group,list , auditList , auditVersion } from '@/services/tag/index'
 
 export default {
     namespace: 'tag',

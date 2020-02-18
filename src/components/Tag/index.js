@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useRef , useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import classnames from 'classnames'
 import { Popover, Button, Icon } from 'antd'
 import TagSelector from './Selector'
@@ -8,25 +8,25 @@ import styles from './index.less'
 import { Link } from 'umi'
 import { useDispatch, useSelector } from 'dva'
 
-function Tag ({ id , href , target , className , icon , title , enableDelete , onDelete }) {
+function Tag ({ id , href , target , className , icon , title , enableDelete , onDelete , onChange }) {
 
     const dispatch = useDispatch()
     const { detail } = useSelector(state => state.tag) || {}
     const loadingEffect = useSelector(state => state.loading)
     const loading = loadingEffect.effects['tag/find']
-    const idRef = useRef(id)
+
     const [ visible , setVisible ] = useState(detail && detail.id === id)
 
     useEffect(() => {
-        if(visible && idRef.current){
+        if(visible && id){
             dispatch({
                 type:'tag/find',
                 payload:{
-                    id:idRef.current
+                    id
                 }
             })
         }
-    },[visible,dispatch])
+    },[id,visible,dispatch])
 
     const renderLink = () => {
         return (
@@ -73,8 +73,8 @@ function Tag ({ id , href , target , className , icon , title , enableDelete , o
         if(loading && detail.id !== id){
             return <Loading />
         }
-        const followLoading = loadingEffect.effects['userTag/follow']
-        const unfollowLoading = loadingEffect.effects['userTag/unfollow']
+        const followLoading = loadingEffect.effects['tagStar/follow']
+        const unfollowLoading = loadingEffect.effects['tagStar/unfollow']
         return (
             <div className={styles['popover-layout']}>
                 <h2 className={styles['popover-title']}>{detail.name}</h2>
@@ -104,21 +104,30 @@ function Tag ({ id , href , target , className , icon , title , enableDelete , o
     }
 
     const onSetTag = () => {
-       if(detail && !detail.use_star){
+        if(!detail) return
+        const { id , name , use_star } = detail
+        const type = use_star ? "unfollow" : "follow"
+        dispatch({
+            type:`tagStar/${type}`,
+            payload:{
+                id,
+                name,
+                remove:use_star
+            }
+        }).then(res => {
             dispatch({
-                type:'userTag/follow',
+                type: 'tag/updateDetail',
                 payload:{
-                    id:detail.id
+                    id,
+                    name,
+                    use_star:!use_star,
+                    star_count:res.data
                 }
             })
-        }else if(detail && detail.use_star){
-            dispatch({
-                type:'userTag/unfollow',
-                payload:{
-                    id:detail.id
-                }
-            })
-        }
+            if(onChange){
+                onChange(!use_star,res.data)
+            }
+        })
     }
     
     const onVisibleChange = visible => {

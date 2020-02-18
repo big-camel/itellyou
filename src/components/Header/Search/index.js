@@ -4,13 +4,11 @@ import { router } from 'umi'
 import styles from './index.less'
 
 const { Search } = Input
-
-function TopSearch({ defaultValue }){
+function TopSearch({ defaultValue , type }){
     const [ word , setWord ] = useState(defaultValue || "")
-
     const onSearch = value => {
         if(value.trim() === "") return
-        router.push("/search?q=" + value)
+        router.push("/search?q=" + value + "&t=" + type)
     }
     
     return (

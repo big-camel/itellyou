@@ -26,6 +26,7 @@ export default map => {
                             hasFeedback={item.hasFeedback}
                             {...props}
                             type={key}
+                            updateActive={context.updateActive}
                             form={context.form}
                         />
                     )}

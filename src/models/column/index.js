@@ -1,4 +1,4 @@
-import { create , list , articleList , detail , userList , queryName } from '@/services/column'
+import { create , list , articleList , detail , userList , queryName } from '@/services/column/index'
 
 export default {
     namespace: 'column',

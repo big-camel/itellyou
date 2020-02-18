@@ -2,11 +2,10 @@ import React , { useState , useRef, useEffect } from 'react'
 import { useDispatch, useSelector } from 'dva'
 import { message } from 'antd'
 import Loading from '@/components/Loading'
-import { Layout , Sider } from '@/components/Container'
+import Layout from '../components/Layout'
 import UserAvatar from './components/Avatar'
 import Form , { Submit } from '@/components/Form'
 import formMap from './formMap'
-import menuData from '../menu'
 import './index.less'
 
 
@@ -86,7 +85,7 @@ function Profile(){
         }
     }
     return (
-        <Layout sider={<Sider dataSource={menuData} defaultKey="profile" />}>
+        <Layout defaultKey="profile">
             <h2>个人信息</h2>
             <div>
                 <Form

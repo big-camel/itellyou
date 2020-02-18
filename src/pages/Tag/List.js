@@ -34,32 +34,28 @@ function TagList({ location : { query }}){
                 [id]:true
             }
         })
-        let result = null
-        if(!use_star){
-            result =dispatch({
-                type:'userTag/follow',
-                payload:{
-                    id
-                }
-             })
-         }else if(use_star){
-            result = dispatch({
-                type:'userTag/unfollow',
-                payload:{
-                    id
+        const type = use_star ? "unfollow" : "follow"
+        dispatch({
+            type:`tagStar/${type}`,
+            payload:{
+                id
+            }
+        }).then(res => {
+            setFollowLoading(loading => {
+                return {
+                    ...loading,
+                    [id]:false
                 }
             })
-        }
-        if(typeof result === "object"){
-            result.then(() => {
-                setFollowLoading(loading => {
-                    return {
-                        ...loading,
-                        [id]:false
-                    }
-                })
+            dispatch({
+                type:'tag/replaceItem',
+                payload:{
+                    id,
+                    use_star:!use_star,
+                    star_count:res.data
+                }
             })
-        }
+        })
     }
 
     const renderItem = tag => {

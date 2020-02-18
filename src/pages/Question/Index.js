@@ -5,7 +5,7 @@ import InfiniteScroll from 'react-infinite-scroller'
 import { Row, Col , List, Avatar, Icon, Button } from 'antd'
 import Loading from '@/components/Loading'
 import Timer from '@/components/Timer'
-import styles from './Index.less'
+import styles from './index.less'
 
 function Index({ location:{ query } , match:{ params }}){
 

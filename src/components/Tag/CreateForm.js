@@ -7,7 +7,7 @@ import { EditorBiz } from '../Editor'
 import TagForm , { Submit } from '@/components/Form'
 import formMap from './formMap'
 
-const { TagName } = Form.createItem(formMap)
+const { TagName } = TagForm.createItem(formMap)
 
 function CreateForm({ defaultName , onCallback }){
 

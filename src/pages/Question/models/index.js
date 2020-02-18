@@ -1,4 +1,4 @@
-import { adopt , list , find , view } from '@/pages/Question/services/index'
+import { adopt , list , find , view } from '../services/index'
 
 export default {
     namespace: 'question',

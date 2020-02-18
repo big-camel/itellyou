@@ -1,0 +1,70 @@
+.recent-list{
+    .item {
+        position: relative;
+        min-height: 72px;
+        border: 1px solid #e8e8e8;
+        background: #fff;
+        padding: 14px;
+        border-radius: 2px;
+        margin-bottom: 8px;
+        transition: box-shadow .35s ease;
+        cursor: pointer;
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+
+        .content{
+            display: flex;
+
+            .icon{
+                width: 40px;
+            }
+    
+            .title {
+
+                .body {
+                    .link{
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        color: #262626;
+                        display: block;
+                    }
+    
+                    .desc{
+                        color: #8c8c8c;
+                        margin-bottom: 10px;
+                    }
+                }
+    
+                .meta {
+                    display: flex;
+                    align-items: center;
+                    margin-top: 4px;    
+                    font-size: 12px;
+                    color: #8c8c8c;
+    
+                    .author {
+                        align-items: center;
+                        font-size: 12px;
+                        color: #8c8c8c;
+                        margin-right: 8px;
+                        max-width: 200px;
+                        display: block;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+    
+                    .text {
+                        margin-left: 4px;
+                    }
+                }
+            }
+        }
+    }
+
+    .item:last-child {
+        border: 1px solid #e8e8e8;
+    }
+}

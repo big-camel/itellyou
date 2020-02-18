@@ -8,6 +8,10 @@ export async function queryName(params) {
     });
 }
 
+export async function find({ id }) {
+    return request(`/api/user/${ id }`)
+}
+
 export async function profile(params){
     return request('/api/user/profile',{ 
         method: 'PUT',

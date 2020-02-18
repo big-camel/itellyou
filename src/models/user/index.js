@@ -2,12 +2,13 @@ import { routerRedux } from 'dva'
 import { stringify } from 'qs'
 import { setAuthority } from '@/utils/authority'
 import { reloadAuthorized } from '@/utils/Authorized'
-import { queryName , fetchMe , update , profile , logout } from '@/services/user/index'
+import { queryName , fetchMe , find , update , profile , logout } from '@/services/user/index'
 export default {
     namespace: 'user',
 
     state: {
-        me:window.appData.me
+        me:window.appData.me,
+        detail:null
     },
 
     effects: {
@@ -21,6 +22,16 @@ export default {
             if(response && response.result){
                 yield put({
                     type: 'setMe',
+                    payload: response.data
+                })
+            }
+            return response
+        },
+        *find({ payload }, { call,put }){
+            const response = yield call(find,payload)
+            if(response && response.result){
+                yield put({
+                    type: 'setDetail',
                     payload: response.data
                 })
             }
@@ -56,7 +67,6 @@ export default {
                 authority:'guest'
             })
             reloadAuthorized()
-            // redirect
             if (window.location.pathname !== '/user/login') {
                 yield put(
                     routerRedux.replace({
@@ -76,6 +86,12 @@ export default {
             return {
                 ...state,
                 me:{...state.me,...payload}
+            }
+        },
+        setDetail(state,{ payload }){
+            return {
+                ...state,
+                detail:{...state.detail,...payload}
             }
         },
         setBank(state,{payload}){

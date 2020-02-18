@@ -3,7 +3,7 @@ import { List , Card , PageHeader , Empty , message} from 'antd'
 import { useDispatch, useSelector } from 'dva'
 import Tag , { TagSelector } from '@/components/Tag'
 import Loading from '@/components/Loading'
-import styles from './Index.less'
+import styles from './index.less'
 import { Link } from 'umi'
 
 function Index(){
@@ -13,7 +13,7 @@ function Index(){
     const tag = useSelector(state => state.tag)
 
     const user = useSelector(state => state.user)
-    const userTag = useSelector(state => state.userTag)
+    const tagStar = useSelector(state => state.tagStar.list)
     const loadingEffect = useSelector(state => state.loading)
     
     useEffect(() => {
@@ -21,9 +21,20 @@ function Index(){
             type:"tag/group"
         })
         dispatch({
-            type:"userTag/get"
+            type:"tagStar/list"
         })
     },[dispatch])
+
+    const onStarChange = (id,use_star,star_count) => {
+        dispatch({
+            type:'tag/replaceItem',
+            payload:{
+                id,
+                use_star,
+                star_count
+            }
+        })
+    }
 
     const renderGroupList = () => {
         const groupLoading = loadingEffect.effects['tag/group']
@@ -45,13 +56,16 @@ function Index(){
             bordered={false}
             >
                 {
-                    item.tag_list && item.tag_list.map(tag => (
+                    item.tag_list && item.tag_list.map(({ id , name }) => (
                         <Tag
                         className={styles['tag-item']}
-                        key={tag.id} 
-                        id={tag.id}
-                        href={`/tag/${tag.id}`}
-                        title={tag.name}
+                        key={id} 
+                        id={id}
+                        href={`/tag/${id}`}
+                        title={name}
+                        onChange={(star,count) => {
+                            onStarChange(id,star,count)
+                        }}
                         />
                     ))
                 }
@@ -70,9 +84,9 @@ function Index(){
         const messageClose = message.loading("关注中...")
         const { key } = values[0]
         dispatch({
-            type:"userTag/follow",
+            type:"tagStar/follow",
             payload:{
-                id:key
+                id:parseInt(key)
             }
         }).then(() => {
             setLoading(false)
@@ -82,8 +96,8 @@ function Index(){
 
     const renderUserTag = () => {
         if(!user.me) return
-        const userTagLoading = loadingEffect.effects['userTag/get']
-        if(!userTag || userTagLoading) return <Loading />
+        const tagStarLoading = loadingEffect.effects['tagStar/list']
+        if(!tagStar || tagStarLoading) return <Loading />
         return (
             <PageHeader title="我的关注" className={styles['tag-header']}>
                 <div>
@@ -94,18 +108,21 @@ function Index(){
                 </div>
                 <div className={styles['tag-me-list']}>
                     {
-                        userTag.data && userTag.data.map(tag => (
+                        tagStar.data && tagStar.data.map(({ tag : { id , name }}) => (
                             <Tag 
                             className={styles['tag-item']} 
-                            key={tag.id} 
-                            id={tag.id}
-                            href={`/tag/${tag.id}`} 
-                            title={tag.name}
+                            key={`u_${id}`} 
+                            id={id}
+                            href={`/tag/${id}`} 
+                            title={name}
+                            onChange={(star,count) => {
+                                onStarChange(id,star,count)
+                            }}
                             />
                         ))
                     }
                     {
-                        !userTag.total || userTag.total === 0 && (
+                        !tagStar.total || tagStar.total === 0 && (
                             <Empty 
                             image={Empty.PRESENTED_IMAGE_SIMPLE}
                             description="您还未关注任何标签哦~"

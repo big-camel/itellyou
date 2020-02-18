@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Form,Tabs } from 'antd';
-import classNames from 'classnames';
 import Tab from './Tab';
 import formItem from './formItem'
 import FormContext from './formContext';
@@ -84,7 +83,7 @@ class TabForm extends Component {
         })
         return (
         <FormContext.Provider value={this.getContext()}>
-            <div className={classNames(className, styles.loginForm)}>
+            <div className={className}>
             <Form onSubmit={this.handleSubmit}>
                 {tabs.length ? (
                     <React.Fragment>

@@ -1,12 +1,11 @@
 import React , { useEffect , useState } from 'react'
 import { Card, Button } from 'antd'
 import { useSelector, useDispatch } from 'dva'
-import { Layout , Sider } from '@/components/Container'
+import Layout from '../components/Layout'
 import Loading from '@/components/Loading'
 import Mobile from './components/Mobile'
 import Email from './components/Email'
 import Password from './components/Password'
-import menuData from '../menu'
 import './index.less'
 
 function Account(){
@@ -34,7 +33,7 @@ function Account(){
     if(!me || loading) return <Loading />
 
     return (
-        <Layout sider={<Sider dataSource={menuData} defaultKey="account" />}>
+        <Layout defaultKey="account">
             <Card title="账户管理" className="settings-form">
                 <div className="form-item">
                     <div className="text">

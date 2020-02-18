@@ -1,4 +1,3 @@
-import slash from 'slash2'
 import defaultSettings from './defaultSettings'
 import routes from './router.config'
 const { primaryColor , title } = defaultSettings
@@ -38,30 +37,6 @@ export default {
         javascriptEnabled: true
     },
     disableRedirectHoist: true,
-    //disableCSSModules:true,
-    cssLoaderOptions: {
-        modules: true,
-        getLocalIdent: (context , _ , localName) => {
-            if (
-                    context.resourcePath.includes('node_modules') ||
-                    context.resourcePath.includes('global.less')
-            ) {
-                return localName
-            }
-            return localName
-            const match = context.resourcePath.match(/src(.*)/)
-            if (match && match[1]) {
-                const path = match[1].replace('.less', '');
-                const arr = slash(path)
-                .split('/')
-                .map(a => a.replace(/([A-Z])/g, '-$1'))
-                .map(a => a.toLowerCase())
-
-                return `ity${arr.join('-')}-${localName}`.replace(/--/g, '-');
-            }
-            return localName
-        }
-    },
     proxy: {
         "/api/(latex|puml|graphviz|flowchart|mermaid)": {
             target: "http://g.itellyou.com/",

@@ -1,47 +1,20 @@
-import React, { Component } from 'react'
-import { connect } from 'dva'
-import router from 'umi/router'
-import GlobalHeader from '@/components/GlobalHeader'
+import React from 'react'
+import Header from '@/components/Header'
+import { useDispatch , useSelector } from 'dva'
+import Loading from '@/components/Loading'
 
-class Header extends Component{
-    
-    onUserMenuClick = ({ key }) => {
-        if (key === 'userCenter') {
-            router.push('/user')
-            return
-        }
-        else if(key === 'logout'){
-            const { dispatch } = this.props
-            dispatch({
-                type:'user/logout'
-            })
-        } else if(key === 'userDraft'){
-            router.push('/user/draft')
-            return
-        }
-    }
+export default props => {
+    const dispatch = useDispatch()
+    const me = useSelector(state => state.user.me)
 
-    onActionMenuClick = ({ key }) => {
-        switch(key){
-            case 'question':
-                router.push('/question/new')
-                break;
-            case 'article':
-                router.push('/article/new')
-                break;
-        }
-    }
+    if(!me) return <Loading />
 
-    render(){
-        return (
-            <GlobalHeader 
-            onUserMenuClick={this.onUserMenuClick}
-            onActionMenuClick={this.onActionMenuClick}
-            {...this.props}
-            />
-        )
+    const onLogout = () => {
+        dispatch({
+            type:"user/logout"
+        })
     }
+    return (
+        <Header me={me} onLogout={onLogout} {...props} />
+    )
 }
-export default connect(({ user }) => ({
-    me:user.me
-}))(Header)

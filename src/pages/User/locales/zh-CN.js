@@ -9,5 +9,12 @@ export default {
     
     'login.page':"登录",
     'user.settings.profile':'个人信息',
-    'user.settings.account':'账户管理'
+    'user.settings.account':'账户管理',
+    'user.dashboard.recent':'工作台',
+    'user.dashboard.article':'我的文章',
+    'user.dashboard.question':'我的提问',
+    'user.dashboard.answer':'我的回答',
+    'user.dashboard.follows':'我的关注',
+    'user.dashboard.collections':'我的收藏',
+    'user.dashboard.history':'最近浏览'
 }

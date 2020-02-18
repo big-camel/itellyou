@@ -66,9 +66,9 @@ function Detail({ match:{ params }}){
 
     const renderStar = () => {
         if(detail.use_star){
-            return <Button className={styles.active} icon="star" type="link" size="small" >已关注({ detail.star })</Button>
+            return <Button className={styles.active} icon="star" type="link" size="small" >已关注({ detail.star_count })</Button>
         }
-        return <Button icon="star" type="link" size="small" >加关注({ detail.star })</Button>
+        return <Button icon="star" type="link" size="small" >加关注({ detail.star_count })</Button>
     }
 
     const renderStatusButton = () => {
