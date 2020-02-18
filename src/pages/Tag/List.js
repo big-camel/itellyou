@@ -50,9 +50,11 @@ function TagList({ location : { query }}){
             dispatch({
                 type:'tag/replaceItem',
                 payload:{
-                    id,
-                    use_star:!use_star,
-                    star_count:res.data
+                    detail:{
+                        id,
+                        use_star:!use_star,
+                        star_count:res.data
+                    }
                 }
             })
         })
@@ -76,7 +78,7 @@ function TagList({ location : { query }}){
                     size="small" 
                     onClick={()=> onSetTag(tag.id,tag.use_star)}>
                     { 
-                        tag.star ? "已关注" : "加关注"
+                        tag.use_star ? "已关注" : "加关注"
                     }
                     </Button>,
                     <span className={styles['star-number']}><strong>{tag.star_count}</strong>关注</span>

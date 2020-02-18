@@ -51,6 +51,7 @@ export default [
             { path:'/user/dashboard/question',name:'user.dashboard.question',component:'./user/dashboard/question', authority: ['admin', 'user'] },
             { path:'/user/dashboard/answer',name:'user.dashboard.answer',component:'./user/dashboard/answer', authority: ['admin', 'user'] },
             { path:'/user/dashboard/follows',name:'user.dashboard.follows',component:'./user/dashboard/follows', authority: ['admin', 'user'] },
+            { path:'/user/dashboard/finance',name:'user.dashboard.finance',component:'./user/dashboard/finance', authority: ['admin', 'user'] },
             { path:'/user/dashboard/collections',name:'user.dashboard.collections',component:'./user/dashboard/collections', authority: ['admin', 'user'] },
             { path:'/user/dashboard/history',name:'user.dashboard.history',component:'./user/dashboard/history', authority: ['admin', 'user'] },
             { path:'/user/settings/profile',name:'user.settings.profile',component:'./user/settings/profile', authority: ['admin', 'user'] },

@@ -21,7 +21,6 @@ const AnswerEdit = ({ id , hasHistory , onSubmit, onCancel }) => {
     const questionId = question.detail ? question.detail.id : null
     const userAnswer = question.user_answer
 
-    //const docId = doc ? doc.id : 0
     useEffect(() => {
         setContent(doc ? doc.content : "")
     },[doc,id])
@@ -135,13 +134,6 @@ const AnswerEdit = ({ id , hasHistory , onSubmit, onCancel }) => {
         })
     }
 
-    const collabExit = () => {
-        const collabBiz = editor.current ? editor.current.getCollabBiz() : null
-        if(collabBiz){
-            collabBiz.exit()
-        }
-    }
-
     const onPublish = () => {
         const editorBiz = editor.current ? editor.current.getEditorBiz() : null
         if(!editorBiz || publishing) return
@@ -159,7 +151,7 @@ const AnswerEdit = ({ id , hasHistory , onSubmit, onCancel }) => {
         if(!res.result) {
             return
         }
-        //collabExit()
+
         if(userAnswer && userAnswer.id === parseInt(res.data.id)){
             dispatch({
                 type:'question/setUserAnswer',

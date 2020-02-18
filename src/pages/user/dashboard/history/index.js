@@ -27,16 +27,6 @@ export default () => {
         })
     },[offset, limit, dispatch])
 
-    const renderPage = (_, type, originalElement) => {
-        if (type === 'prev') {
-            return <a>上一页</a>
-        }
-        if (type === 'next') {
-            return <a>下一页</a>
-        }
-        return originalElement
-    }
-
     const renderUrl = (type,key) => {
         switch(type){
             case "article":return `/article/${key}`

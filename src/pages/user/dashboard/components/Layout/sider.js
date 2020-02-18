@@ -20,6 +20,11 @@ export default [
         to:"/user/dashboard/answer"
     },
     {
+        key:"finance",
+        title:"我的资产",
+        to:"/user/dashboard/finance"
+    },
+    {
         key:"divider"
     },
     {

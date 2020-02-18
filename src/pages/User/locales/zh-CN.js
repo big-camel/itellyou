@@ -15,6 +15,7 @@ export default {
     'user.dashboard.question':'我的提问',
     'user.dashboard.answer':'我的回答',
     'user.dashboard.follows':'我的关注',
+    'user.dashboard.finance':'我的资产',
     'user.dashboard.collections':'我的收藏',
     'user.dashboard.history':'最近浏览'
 }

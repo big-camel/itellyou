@@ -71,7 +71,7 @@ export default {
         updateDetail(state,{ payload }){
             return {
                 ...state,
-                detail:payload
+                detail:{ ...state.detail , ...payload}
             }
         },
         replaceItem(state,{ payload : { detail } }){

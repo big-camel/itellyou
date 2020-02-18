@@ -34,6 +34,9 @@ function ArticleList({ dataSource , offset , limit , ...props}){
                 <h4 className={styles.title}>
                     <Link target="_blank" to={`/article/${id}`}>{title}</Link>
                 </h4>
+                <div>
+                    {item.description}
+                </div>
                 <div className={styles.actions}>
                     <div className={styles.author}>
                         <Link to=""><Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /></Link>
@@ -42,7 +45,7 @@ function ArticleList({ dataSource , offset , limit , ...props}){
                     <span>发布于 <Timer time={item.created_time} /></span>
                     <span><Icon type="eye" />{item.view}</span>
                     <span><Icon type="message" />{item.comment_count}</span>
-                    <span><Icon type="heart" /></span>
+                    <span><Icon type="heart" />{item.star_count}</span>
                 </div>
             </List.Item>
         )

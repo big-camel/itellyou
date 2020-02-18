@@ -73,7 +73,7 @@ export default {
                     [key]:{end , total , data , ...payload}
                 }
             }
-            
+
             total = list.total
             const dataList = list.data.concat()
             data.forEach(item => {

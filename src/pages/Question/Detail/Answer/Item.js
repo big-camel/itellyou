@@ -1,5 +1,6 @@
 import React , { useState } from 'react'
-import { List , Avatar, Button , Icon, Popover, Menu , Modal } from 'antd'
+import { List , Avatar, Button , Popover, Menu , Modal } from 'antd'
+import { useSelector } from 'dva'
 import { Viewer } from '@/components/Editor'
 import Timer from '@/components/Timer'
 import { SupportButton , OpposeButton , FavoriteButton, CommentButton, ShareButton , EllipsisButton, AdoptButton} from '@/components/Button'
@@ -7,6 +8,7 @@ import styles from './Answer.less'
 import { Link, router } from 'umi'
 import Edit from './Edit'
 import Comment from './Comment'
+
 const { Item } = List
 
 function AnswerItem({ dispatch , questionId , item }){
@@ -16,6 +18,8 @@ function AnswerItem({ dispatch , questionId , item }){
     const [ actionMoreVisible , setActionMoreVisible ] = useState(false)
     const [ commentVisible , setCommentVisible ] = useState(false)
     const [ adopting , setAdopting ] = useState(false)
+    const loading = useSelector(state => state.loading)
+    const followLoading = loading.effects['answerStar/follow'] || loading.effects['answerStar/unfollow']
 
     const onDelete = id => {
         setActionMoreVisible(false)
@@ -43,7 +47,7 @@ function AnswerItem({ dispatch , questionId , item }){
             },
         })
     }
-    const { author } = item
+    const { author , use_star } = item
 
     const doEdit = () => {
         setActionMoreVisible(false)
@@ -79,6 +83,16 @@ function AnswerItem({ dispatch , questionId , item }){
         })
     }
 
+    const onStar = () => {
+        const type = !use_star ? "follow" : "unfollow"
+        dispatch({
+            type:`answerStar/${type}`,
+            payload:{
+                id:item.id
+            }
+        })
+    }
+
     const renderAction = () => {
         return <div className={styles["answer-action"]}>
                 {
@@ -104,7 +118,7 @@ function AnswerItem({ dispatch , questionId , item }){
                 }
                 </CommentButton>
                 <ShareButton >分享</ShareButton>
-                <FavoriteButton >收藏</FavoriteButton>
+                <FavoriteButton loading={followLoading} onClick={onStar} >{use_star ? "取消收藏" : "收藏"}</FavoriteButton>
                 <Popover
                 content={
                     <Menu>

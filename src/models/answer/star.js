@@ -31,6 +31,14 @@ export default {
                         }]
                     }
                 })
+                yield put({
+                    type:'answer/updateListItem',
+                    payload:{
+                        id:payload.id,
+                        use_star:true,
+                        star_count:response.data
+                    }
+                })
             }
             return response
         },
@@ -54,6 +62,14 @@ export default {
                     yield put({
                         type:'replaceItem',
                         payload:detail
+                    })
+                    yield put({
+                        type:'answer/updateListItem',
+                        payload:{
+                            id:payload.id,
+                            use_star:false,
+                            star_count:response.data
+                        }
                     })
                 }
             }

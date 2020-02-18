@@ -31,6 +31,14 @@ export default {
                         }]
                     }
                 })
+                yield put({
+                    type:'article/updateDetail',
+                    payload:{
+                        id:payload.id,
+                        use_star:true,
+                        star_count:response.data
+                    }
+                })
             }
             return response
         },
@@ -53,6 +61,10 @@ export default {
                 }else{
                     yield put({
                         type:'replaceItem',
+                        payload:detail
+                    })
+                    yield put({
+                        type:'article/updateDetail',
                         payload:detail
                     })
                 }

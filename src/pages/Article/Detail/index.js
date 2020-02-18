@@ -16,6 +16,8 @@ function Detail({ match:{ params }}){
 
     const dispatch = useDispatch()
     const { detail } = useSelector(state => state.article)
+    const loading = useSelector(state => state.loading)
+    const followLoading = loading.effects['articleStar/follow'] || loading.effects['articleStar/unfollow']
     
     useEffect(() => {
         dispatch({
@@ -34,21 +36,24 @@ function Detail({ match:{ params }}){
 
     if(!detail) return <Loading />
 
-    const renderStar = () => {
-        if(detail.use_star){
-            return <Button className={styles.active} icon="star" type="link" size="small" >已关注({ detail.star_count })</Button>
-        }
-        return <Button icon="star" type="link" size="small" >加关注({ detail.star_count })</Button>
+    const onStar = () => {
+        const type = !use_star ? "follow" : "unfollow"
+        dispatch({
+            type:`articleStar/${type}`,
+            payload:{
+                id
+            }
+        })
     }
 
-    const { column , tags } = detail
+    const { title , column , tags , use_star } = detail
     return (
-        <DocumentTitle title={detail.title}>
+        <DocumentTitle title={title}>
             <Row gutter={50}>
                 <Col xs={24} sm={18}>
                     <div className={styles.header}>
                         <h2 className={styles.title}>
-                            {detail.title}
+                            {title}
                         </h2>
                         <div className={styles.tags}>
                             {
@@ -72,7 +77,6 @@ function Detail({ match:{ params }}){
                                 </div>
                             </div>
                         </div>
-                        { renderStar() }
                     </div>
                     <article>
                         <Viewer content={detail.content} />
@@ -80,6 +84,7 @@ function Detail({ match:{ params }}){
                     <div className={styles.actions}>
                         
                         <CommentButton>{`${detail.comment_count} 条评论`}</CommentButton>
+                        <FavoriteButton loading={followLoading} onClick={onStar} >{use_star ? "取消收藏" : "收藏"}</FavoriteButton>
                         <ShareButton>分享</ShareButton>
                         <ReportButton>举报</ReportButton>
                         

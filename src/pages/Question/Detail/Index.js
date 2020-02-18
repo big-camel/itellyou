@@ -2,6 +2,7 @@ import React , { useState , useEffect } from 'react'
 import { useDispatch, useSelector } from 'dva'
 import Link from 'umi/link'
 import { Row , Col , Button , Avatar, Icon } from 'antd'
+import classNames from 'classnames'
 import { Viewer } from '@/components/Editor'
 import Tag from '@/components/Tag'
 import Timer from '@/components/Timer'
@@ -42,6 +43,8 @@ function Detail({ match:{ params }}){
     const answerId = params.answerId ? parseInt(params.answerId) : null
     const [ editVisible , setEditVisible ] = useState()
     const [ commentVisible , setCommentVisible ] = useState(false)
+    const loading = useSelector(state => state.loading)
+    const followLoading = loading.effects['questionStar/follow'] || loading.effects['questionStar/unfollow']
 
     useEffect(() => {
         if(!answerId && user_answer && user_answer.draft && !user_answer.published && !user_answer.deleted){
@@ -53,7 +56,7 @@ function Detail({ match:{ params }}){
     },[answerId,user_answer])
     
     if(!detail) return <Loading />
-
+    const { title , use_star , star_count , use_author } = detail
     const onRevoke = answerId => {
         dispatch({
             type:"answer/revoke",
@@ -64,11 +67,28 @@ function Detail({ match:{ params }}){
         })
     }
 
+    const onStar = () => {
+        const type = !use_star ? "follow" : "unfollow"
+        dispatch({
+            type:`questionStar/${type}`,
+            payload:{
+                id
+            }
+        })
+    }
+
     const renderStar = () => {
-        if(detail.use_star){
-            return <Button className={styles.active} icon="star" type="link" size="small" >已关注({ detail.star_count })</Button>
-        }
-        return <Button icon="star" type="link" size="small" >加关注({ detail.star_count })</Button>
+        return <Button 
+        icon="star" 
+        type="link" 
+        size="small" 
+        onClick={onStar}
+        className={classNames({[styles.active]:use_star})}
+        loading={followLoading}
+        >
+        {
+            use_star ? "已关注" : "加关注"
+        }({ star_count })</Button>
     }
 
     const renderStatusButton = () => {
@@ -82,12 +102,14 @@ function Detail({ match:{ params }}){
     }
     
     return (
-        <DocumentTitle title={detail ? detail.title : ""}>
+        <DocumentTitle title={title}>
             <Row gutter={50}>
                 <Col xs={24} sm={18}>
                     <div className={styles.header}>
                         <h2 className={styles.title}>
-                            {detail.title}
+                            {
+                                title
+                            }
                             {
                                 detail.reward_type > 0 && <span className={styles.reward}>{ detail.reward_type === 1 ? <Icon type="pound" /> : <Icon type="pay-circle" />}{detail.reward_value}</span>
                             }

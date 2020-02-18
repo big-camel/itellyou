@@ -25,19 +25,32 @@ export default {
                         created_time:new Date()
                     }
                 })
+                yield put({
+                    type:'column/updateDetail',
+                    payload:{
+                        id:payload.id,
+                        use_star:true,
+                        star_count:response.data
+                    }
+                })
             }
             return response
         },
         *unfollow({payload:{ name , ...payload }}, { call , put }){
             const response = yield call(unfollow,payload)
             if(response.result){
+                const detail = {
+                    id:payload.id,
+                    use_star:false,
+                    star_count:response.data
+                }
                 yield put({
                     type:'replaceItem',
-                    payload:{
-                        id:payload.id,
-                        use_star:false,
-                        star_count:response.data
-                    }
+                    payload:detail
+                })
+                yield put({
+                    type:'column/updateDetail',
+                    payload:detail
                 })
             }
             return response

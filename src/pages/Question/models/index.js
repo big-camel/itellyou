@@ -51,7 +51,7 @@ export default {
         updateDetail(state,{ payload }){
             return {
                 ...state,
-                detail:payload
+                detail:{...state.detail,...payload}
             }
         },
         setList(state,{ payload }){
