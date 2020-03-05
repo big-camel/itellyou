@@ -1,4 +1,4 @@
-import { mobile , email } from '../services/verify'
+import { mobile , email } from './service'
 
 export default {
     namespace: 'verify',

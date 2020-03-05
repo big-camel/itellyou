@@ -15,6 +15,7 @@ function Detail({ match:{ params }}){
     const id = params.id ? parseInt(params.id) : null
 
     const dispatch = useDispatch()
+    const [ voting , setVoting ] = useState(false)
     const { detail } = useSelector(state => state.article)
     const loading = useSelector(state => state.loading)
     const followLoading = loading.effects['articleStar/follow'] || loading.effects['articleStar/unfollow']
@@ -43,6 +44,20 @@ function Detail({ match:{ params }}){
             payload:{
                 id
             }
+        })
+    }
+
+    const doVote = type => {
+        if(voting) return
+        setVoting(true)
+        dispatch({
+            type:"article/vote",
+            payload:{
+                id,
+                type
+            }
+        }).then(() => {
+            setVoting(false)
         })
     }
 
@@ -82,7 +97,19 @@ function Detail({ match:{ params }}){
                         <Viewer content={detail.content} />
                     </article>
                     <div className={styles.actions}>
-                        
+                        <Button.Group>
+                            <SupportButton 
+                            active={detail.use_support} 
+                            disabled={!detail.allow_support}
+                            onClick={() => doVote('support')}
+                            >
+                                赞同{detail.support}
+                            </SupportButton>
+                            {
+                                detail.allow_oppose && <OpposeButton active={detail.use_oppose} onClick={() => doVote('oppose')} />
+                            }
+                            
+                        </Button.Group>
                         <CommentButton>{`${detail.comment_count} 条评论`}</CommentButton>
                         <FavoriteButton loading={followLoading} onClick={onStar} >{use_star ? "取消收藏" : "收藏"}</FavoriteButton>
                         <ShareButton>分享</ShareButton>

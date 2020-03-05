@@ -8,7 +8,7 @@ export default {
     effects: {
         *findConfig({ payload }, { call , put }){
             const response = yield call(findConfig,payload)
-            if(response.reuslt){
+            if(response.result){
                 yield put({
                     type: 'setConfig',
                     payload: response.data

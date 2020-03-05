@@ -67,7 +67,7 @@ export default () => {
             key:"title",
             ellipsis:true,
             width:150,
-            render:(_,{ answer : { question_id , title }}) => {
+            render:(_,{ answer : { question_id , question:{ title } }}) => {
                 return <Link to={`/question/${question_id}`} target="_blank">{title}</Link>
             }
         },

@@ -12,3 +12,9 @@ export async function find(params) {
 export async function view({id}) {
     return request(`/api/article/${id}/view`)
 }
+
+export async function vote({ id , type }){
+    return request(`/api/article/${id}/${type}`,{ 
+        method: 'POST'
+    })
+}

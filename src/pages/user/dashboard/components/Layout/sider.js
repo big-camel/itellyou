@@ -2,27 +2,27 @@ export default [
     {
         key:"recent",
         title:"最近编辑",
-        to:"/user/dashboard"
+        to:"/dashboard"
     },
     {
         key:"article",
         title:"我的文章",
-        to:"/user/dashboard/article"
+        to:"/dashboard/article"
     },
     {
         key:"question",
         title:"我的提问",
-        to:"/user/dashboard/question"
+        to:"/dashboard/question"
     },
     {
         key:"answer",
         title:"我的回答",
-        to:"/user/dashboard/answer"
+        to:"/dashboard/answer"
     },
     {
         key:"finance",
         title:"我的资产",
-        to:"/user/dashboard/finance"
+        to:"/dashboard/finance"
     },
     {
         key:"divider"
@@ -30,16 +30,16 @@ export default [
     {
         key:"follows",
         title:"关注",
-        to:"/user/dashboard/follows"
+        to:"/dashboard/follows"
     },
     {
         key:"collections",
         title:"收藏",
-        to:"/user/dashboard/collections"
+        to:"/dashboard/collections"
     },
     {
         key:"history",
         title:"最近浏览",
-        to:"/user/dashboard/history"
+        to:"/dashboard/history"
     }
 ]

@@ -6,7 +6,7 @@ import Layout from '../components/Layout'
 import UserAvatar from './components/Avatar'
 import Form , { Submit } from '@/components/Form'
 import formMap from './formMap'
-import './index.less'
+import styles from './index.less'
 
 
 const { Avatar , Name , Gender , Description , Introduction , Address , Profession } = Form.createItem(formMap)

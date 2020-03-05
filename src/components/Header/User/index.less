@@ -1,0 +1,36 @@
+.user {
+    flex: 1;
+    justify-content: flex-end;
+    display: flex;
+    align-items: center;
+
+    .action{
+        display: flex;
+        
+        .item{
+            cursor: pointer;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    .user-menu {
+        width: 210px;
+
+        .info{
+            height: 38px;
+            padding: 16px 12px 0;
+
+            .name{
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                display: inline-block;
+                max-width: 88px;
+                font-weight: 700;
+                font-size: 16px;
+            }
+        }
+    }
+}

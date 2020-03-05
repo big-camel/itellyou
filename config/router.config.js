@@ -40,24 +40,6 @@ export default [
             { path:'/article/:id(\\d+)/edit',name:'article.page.edit',component:'./article/edit', authority: ['admin', 'user'] }
         ]
     },
-    //user
-    {
-        path:'/user',
-        component:'../layouts/BasicLayout',
-        Routes: ['src/pages/Authorized'],
-        routes:[
-            { path:'/user/dashboard',name:'user.dashboard.recent',component:'./user/dashboard/recent', authority: ['admin', 'user'] },
-            { path:'/user/dashboard/article',name:'user.dashboard.article',component:'./user/dashboard/article', authority: ['admin', 'user'] },
-            { path:'/user/dashboard/question',name:'user.dashboard.question',component:'./user/dashboard/question', authority: ['admin', 'user'] },
-            { path:'/user/dashboard/answer',name:'user.dashboard.answer',component:'./user/dashboard/answer', authority: ['admin', 'user'] },
-            { path:'/user/dashboard/follows',name:'user.dashboard.follows',component:'./user/dashboard/follows', authority: ['admin', 'user'] },
-            { path:'/user/dashboard/finance',name:'user.dashboard.finance',component:'./user/dashboard/finance', authority: ['admin', 'user'] },
-            { path:'/user/dashboard/collections',name:'user.dashboard.collections',component:'./user/dashboard/collections', authority: ['admin', 'user'] },
-            { path:'/user/dashboard/history',name:'user.dashboard.history',component:'./user/dashboard/history', authority: ['admin', 'user'] },
-            { path:'/user/settings/profile',name:'user.settings.profile',component:'./user/settings/profile', authority: ['admin', 'user'] },
-            { path:'/user/settings/account',name:'user.settings.account',component:'./user/settings/account', authority: ['admin', 'user'] }
-        ]
-    },
     //app
     {
         path:'/',
@@ -85,6 +67,19 @@ export default [
             { path:'/column',name:'column.page.index',component:'./column' },
             { path:'/column/apply',name:'column.page.apply',component:'./column/apply' },
             { path:'/column/:id(\\d+)',name:'column.page.detail',component:'./column/detail' },
+            // User
+            { path:'/dashboard',name:'user.dashboard.recent',component:'./user/dashboard/recent', authority: ['admin', 'user'] },
+            { path:'/dashboard/article',name:'user.dashboard.article',component:'./user/dashboard/article', authority: ['admin', 'user'] },
+            { path:'/dashboard/question',name:'user.dashboard.question',component:'./user/dashboard/question', authority: ['admin', 'user'] },
+            { path:'/dashboard/answer',name:'user.dashboard.answer',component:'./user/dashboard/answer', authority: ['admin', 'user'] },
+            { path:'/dashboard/follows',name:'user.dashboard.follows',component:'./user/dashboard/follows', authority: ['admin', 'user'] },
+            { path:'/dashboard/finance',name:'user.dashboard.finance',component:'./user/dashboard/finance', authority: ['admin', 'user'] },
+            { path:'/dashboard/collections',name:'user.dashboard.collections',component:'./user/dashboard/collections', authority: ['admin', 'user'] },
+            { path:'/dashboard/history',name:'user.dashboard.history',component:'./user/dashboard/history', authority: ['admin', 'user'] },
+            { path:'/settings/profile',name:'user.settings.profile',component:'./user/settings/profile', authority: ['admin', 'user'] },
+            { path:'/settings/account',name:'user.settings.account',component:'./user/settings/account', authority: ['admin', 'user'] },
+            { path:'/settings/notifications',name:'user.settings.notifications',component:'./user/settings/notifications', authority: ['admin', 'user'] },
+            { path:'/notifications',name:'user.notifications',component:'./user/notifications', authority: ['admin', 'user'] },
             {
                 component: '404',
             }

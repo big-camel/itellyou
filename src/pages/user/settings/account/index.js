@@ -6,7 +6,7 @@ import Loading from '@/components/Loading'
 import Mobile from './components/Mobile'
 import Email from './components/Email'
 import Password from './components/Password'
-import './index.less'
+import styles from './index.less'
 
 function Account(){
 
@@ -34,23 +34,23 @@ function Account(){
 
     return (
         <Layout defaultKey="account">
-            <Card title="账户管理" className="settings-form">
-                <div className="form-item">
-                    <div className="text">
+            <Card title="账户管理" className={styles["settings-form"]}>
+                <div className={styles["form-item"]}>
+                    <div className={styles["text"]}>
                         <h3>手机号码</h3>
                         <span>{ me.mobile || "未设置"}</span>
                     </div>
                     <Button onClick={() => setMobileVisible(true)}>{ me.mobile ? "更改" : "设置"}</Button>
                 </div>
-                <div className="form-item">
-                    <div className="text">
+                <div className={styles["form-item"]}>
+                    <div className={styles["text"]}>
                         <h3>邮箱</h3>
                         <span>{ me.email || "未设置" }</span>
                     </div>
                     <Button onClick={() => setEmailVisible(true)}>{ me.email ? "更改" : "设置"}</Button>
                 </div>
-                <div className="form-item">
-                    <div className="text">
+                <div className={styles["form-item"]}>
+                    <div className={styles["text"]}>
                         <h3>登录密码</h3>
                         <span>{ me.is_set_pwd ? "已设置，可通过密码登录" : "未设置" }</span>
                     </div>

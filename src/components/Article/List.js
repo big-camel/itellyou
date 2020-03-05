@@ -25,14 +25,14 @@ function ArticleList({ dataSource , offset , limit , ...props}){
                         <div className={styles.tags}>
                             {
                                 tags.map(tag => (
-                                    <Link key={tag.id} target="_blank" to={`/tag/${tag.name}`}>{tag.name}</Link>
+                                    <Link key={tag.id} to={`/tag/${tag.name}`}>{tag.name}</Link>
                                 ))
                             }
                         </div>
                     )
                 }
                 <h4 className={styles.title}>
-                    <Link target="_blank" to={`/article/${id}`}>{title}</Link>
+                    <Link to={`/article/${id}`}>{title}</Link>
                 </h4>
                 <div>
                     {item.description}

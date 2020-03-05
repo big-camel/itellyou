@@ -1,5 +1,5 @@
 import React from 'react'
-import Header from './Header'
+import Header from '@/components/Header'
 import Container from '@/components/Container'
 import BlankLayout from '@/layouts/BlankLayout'
 

@@ -1,4 +1,4 @@
-import { loginByAccount,loginByMobile } from '../services/login'
+import { loginByAccount,loginByMobile } from './service'
 import { router } from 'umi'
 import { setAuthority } from '@/utils/authority'
 import { getPageQuery } from '@/utils/utils'

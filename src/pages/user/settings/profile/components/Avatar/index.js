@@ -1,7 +1,7 @@
 import React , { useState , useRef } from 'react'
 import ImageCropper from '../ImageCropper'
 import { Upload , Button, Icon, Modal, message } from 'antd'
-import './index.less'
+import styles from './index.less'
 
 const { Dragger } = Upload
 
@@ -61,15 +61,15 @@ export default ({ url , onChange }) => {
     }
 
     return (
-        <div className="profile-avatar">
-            <div className="upload-area">
+        <div className={styles["profile-avatar"]}>
+            <div className={styles["upload-area"]}>
                 <img 
                 src={url}
                 style={{borderRadius:28}} 
                 />
                 <Dragger {...getUploadConfig}/>
             </div>
-            <div className="upload-btn">
+            <div className={styles["upload-btn"]}>
                 <Upload {...getUploadConfig}>
                     <Button><Icon type="upload" />上传头像</Button>
                 </Upload>

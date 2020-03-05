@@ -42,8 +42,8 @@ export default () => {
             key:"title",
             ellipsis:true,
             width:250,
-            render:(text,{ question_id }) => {
-                return <Link to={`/question/${question_id}`} target="_blank">{text}</Link>
+            render:(_,{ question:{ title } , question_id }) => {
+                return <Link to={`/question/${question_id}`} target="_blank">{title}</Link>
             }
         },
         {

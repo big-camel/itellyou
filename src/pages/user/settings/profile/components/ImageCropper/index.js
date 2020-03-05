@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useImperativeHandle, forwardRef } from 'react'
 import Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.css'
-import './index.less'
+import styles from './index.less'
 
 function ImageCropper({ src , width, height },ref){
 
@@ -32,12 +32,12 @@ function ImageCropper({ src , width, height },ref){
     },[height, src, width])
 
     return (
-        <div className="image-cropper">
-            <div className="image-cropper-tool">
+        <div className={styles["image-cropper"]}>
+            <div className={styles["image-cropper-tool"]}>
                 <img ref={imgRef} src={src} />
             </div>
-            <div className="image-cropper-preview">
-                <div ref={previewRef} className="image-cropper-thumb" />
+            <div className={styles["image-cropper-preview"]}>
+                <div ref={previewRef} className={styles["image-cropper-thumb"]} />
                 <p>预览</p>
             </div>
         </div>
