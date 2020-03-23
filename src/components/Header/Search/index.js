@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Input } from 'antd'
 import { router } from 'umi'
 import styles from './index.less'
@@ -10,6 +10,10 @@ function TopSearch({ defaultValue , type }){
         if(value.trim() === "") return
         router.push("/search?q=" + value + "&t=" + type)
     }
+
+    useEffect(() => {
+        setWord(defaultValue)
+    },[defaultValue])
     
     return (
         <div className={styles["top-search"]}>

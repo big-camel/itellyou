@@ -72,20 +72,21 @@ function Apply(){
         <div>
             <Form
             layout="vertical"
+            hideRequiredMark={true}
             onSubmit={handleSubmit}
             wrappedComponentRef ={wrappedComponent => {
                 form.current = wrappedComponent ? wrappedComponent.props.form : null;
             }}
             >
                 <Name 
-                label="专栏名称"
+                label="名称"
                 name='name' 
                 autoComplete='off' 
                 itemStatus={nameState} 
                 ansyVaildate={queryName} 
                 />
                 <Desc 
-                label="申请理由"
+                label="简介"
                 name="description"
                 autoComplete='off' 
                 itemStatus={descState} 

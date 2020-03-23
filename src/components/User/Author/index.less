@@ -1,0 +1,44 @@
+.author {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .avatar {
+        margin-right: 14px;
+        cursor: pointer;
+    }
+
+    .title{
+        .name{
+            line-height: 1.1;
+            display: flex;
+            flex-shrink: 0;
+            align-items:center;
+            
+            > a {
+                font-weight: 600;
+                color: #444;
+                font-size: 15px;
+            }
+        }
+
+        .desc{
+            display: flex;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 18px;
+            margin-bottom: 0;
+            margin-top: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #646464;
+        }
+    }
+}
+
+.small {
+    .avatar {
+        margin-right: 10px;
+    }
+}

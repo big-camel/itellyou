@@ -14,7 +14,7 @@ const query = {
     },
 }
 
-export default ({ mode , children }) => {
+export default ({ mode , children , className }) => {
 
     const isContainer = (type,param) => {
         return mode ? mode === type : param === type
@@ -30,7 +30,7 @@ export default ({ mode , children }) => {
                     'layout-container-middle': isContainer("middle",param),
                     'layout-container-full':isContainer("full",param),
                     clearfix: true
-                })}>
+                },className)}>
                 {
                     children
                 }

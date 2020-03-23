@@ -1,9 +1,9 @@
-import React from 'react';
-import Redirect from 'umi/redirect';
-import pathToRegexp from 'path-to-regexp';
-import Authorized from '@/utils/Authorized';
-import { getAuthority } from '@/utils/authority';
-import Exception403 from '@/pages/Exception/403';
+import React from 'react'
+import Redirect from 'umi/redirect'
+import pathToRegexp from 'path-to-regexp'
+import Authorized from '@/utils/Authorized'
+import { getAuthority } from '@/utils/authority'
+import Exception from '@/components/Exception'
 
 function AuthComponent({ children, location, route: { routes} }) {
   const auth = getAuthority();
@@ -27,7 +27,7 @@ function AuthComponent({ children, location, route: { routes} }) {
   return (
     <Authorized
       authority={getRouteAuthority(location.pathname, routes)}
-      noMatch={isLogin ? <Exception403 /> : <Redirect to="/user/login" />}
+      noMatch={isLogin ? <Exception status={403} title="403" subTitle="无权限" /> : <Redirect to="/login" />}
     >
       {children}
     </Authorized>

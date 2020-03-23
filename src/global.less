@@ -1,10 +1,18 @@
-html, body, #root {
-    height: 100%;
-    background-color: #ffffff;
-}
-
 body {
     margin: 0;
+    width: 100%;
+    background: #fafafa;
+    font-family: Chinese Quote,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+    color: #595959;
+}
+
+ol, ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 .layout-container , .layout-container-wider , .layout-container-middle , .layout-container-full{
@@ -39,8 +47,8 @@ body {
 
 .main-wrapper {
     width: 100%;
-    min-height: calc(100vh);
-    background: #ffffff;
+    min-height: calc(100vh - 136px);
+    background: #fafafa;
 }
 
 .ant-alert-tip {
@@ -74,67 +82,3 @@ body {
         border: 0 none;
     }
 }
-
-.itellyou-popover .ant-popover-open {
-    color: #347EFF
-}
-
-.itellyou-popover .ant-popover-open.ant-btn-primary {
-    color: #fff
-}
-
-.itellyou-popover .ant-popover-arrow {
-    width: 11.3137085px;
-    height: 11.3137085px;
-    border-width: 5.65685425px;
-    border-top-left-radius: 2px;
-    margin-top: -1px
-}
-
-.itellyou-popover .ant-popover-inner .ant-menu {
-    border-radius: 4px
-}
-
-.itellyou-popover .ant-popover-content {
-    min-width: 140px
-}
-
-.itellyou-popover.itellyou-popover-menu .ant-popover-inner-content {
-    padding: 0
-}
-
-.itellyou-popover .ant-popover .ant-menu {
-    padding: 8px 0;
-    border: none
-}
-
-.itellyou-popover .ant-popover .ant-menu .ant-menu-item {
-    height: 32px;
-    line-height: 32px;
-    color: #595959
-}
-
-.itellyou-popover .ant-popover .ant-menu .ant-menu-item:hover {
-  color: #595959;
-  background-color: #e9f7ec
-}
-
-.itellyou-popover .ant-popover .ant-menu .ant-menu-item a {
-  color: #595959
-}
-
-.itellyou-popover .ant-popover .ant-menu .ant-menu-item a:hover {
-  color: #595959
-}
-
-.itellyou-popover .ant-popover .ant-menu .ant-menu-item-divider {
-  margin: 4px 0
-}
-
-.itellyou-popover .ant-popover .ant-menu .text {
-  margin-left: 8px
-}
-
-.details-reset>summary{list-style:none;}
-.details-reset>summary:before{display:none}
-.details-reset>summary::-webkit-details-marker{display:none}

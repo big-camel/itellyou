@@ -122,9 +122,9 @@ function Search({ location:{ query } }){
     }
 
     const renderItem = item => {
-        const { object } = item
+        const {  type } = item
         let child = <div>Unknow type</div>
-        switch(object && object.type){
+        switch(type){
             case "question":
                 child = renderQuestion(item)
                 break

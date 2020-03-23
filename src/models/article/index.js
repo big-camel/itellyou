@@ -1,4 +1,5 @@
-import { list , find , view , vote } from '@/services/article/index'
+import { list , related , find , view , vote } from '@/services/article/index'
+import { setList, replaceItem } from '@/utils/model'
 
 export default {
     namespace: 'article',
@@ -8,11 +9,18 @@ export default {
     },
 
     effects: {
-        *list({ payload }, { call,put }){
+        *list({ payload : { append , ...payload} }, { call,put }){
             const response = yield call(list,payload)
             yield put({
                 type:'setList',
-                payload:response.data || {}
+                payload:{...response.data || {} , append }
+            })
+        },
+        *related({ payload : { append , ...payload}}, { call,put }){
+            const response = yield call(related,payload)
+            yield put({
+                type:'setRelated',
+                payload:{append , ...response.data || {}}
             })
         },
         *find({ payload }, { call,put }){
@@ -64,24 +72,11 @@ export default {
                 detail:{...state.detail,...payload}
             }
         },
-        setList(state,{ payload : { end , total , data , ...payload} }){
-            const list = state.list
-            if(!list){
-                return {
-                    ...state,
-                    list:{end , total , data , ...payload}
-                }
-            }
-            const dataList = list.data.concat()
-            data.forEach(item => {
-                if(!dataList.find(child => child.id === item.id)){
-                    dataList.push(item)
-                }
-            })
-            return {
-                ...state,
-                list:{...list,end,total,data:dataList}
-            }
+        setList(state,{ payload }){
+            return setList("list",payload,state)
+        },
+        setRelated(state,{ payload }){
+            return setList("related",payload,state)
         },
         updateComments(state,{ payload:{ id, value} }){
             const { detail } = state
@@ -93,15 +88,7 @@ export default {
             }
         },
         updateListItem(state,{ payload }){
-            const data = state.list ? state.list.data || [] : [];
-            const index = data.findIndex(item => item.id === payload.id)
-            if(index >= 0){
-                data.splice(index,1,{...data[index],...payload})
-            }
-            return {
-                ...state,
-                list:{...state.list,data}
-            }
+            return replaceItem("list",payload,state)
         }
     }
 }

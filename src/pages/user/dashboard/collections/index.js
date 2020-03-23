@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import Layout from '../components/Layout'
-import { Menu } from 'antd'
+import { Menu, Card } from 'antd'
 import { Link } from 'umi'
 import Article from './Article'
 import Answer from './Answer'
@@ -27,8 +27,10 @@ export default ({ location : { query } }) => {
     }
 
     return (
-        <Layout defaultKey="star">
-            <Menu>
+        <Layout defaultKey="collections">
+            <Card
+            title={
+                <Menu mode="horizontal">
                 {
                     menus.map(({ key , title }) => <Menu.Item 
                     key={key} 
@@ -36,10 +38,13 @@ export default ({ location : { query } }) => {
                         <Link to={`collections?type=${key}`}>{ title }</Link>
                     </Menu.Item>)
                 }
-            </Menu>
+                </Menu>
+            }
+            >
             {
                 render()
             }
+            </Card>
         </Layout>
         
     )

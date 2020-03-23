@@ -26,8 +26,8 @@ export default () => {
                 )
                 : (
                     <div>
-                        <Link to="/user/login">登录</Link>
-                        <Link to="/user/register">注册</Link>
+                        <Link to="/login">登录</Link>
+                        <Link to="/register">注册</Link>
                     </div>
                 )
             }

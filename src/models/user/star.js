@@ -78,14 +78,28 @@ export default {
         *follow({ payload }, { call , put }){
             const response = yield call(follow,payload)
             if(response.result){
+                const detail = {
+                    id:payload.id,
+                    use_star:true,
+                    follower_count:response.data
+                }
                 yield put({
                     type:'replaceStarItem',
                     payload:{
-                        id:payload.id,
-                        use_star:true,
-                        follower_count:response.data,
+                        ...detail,
                         created_time:new Date()
                     }
+                })
+                yield put({
+                    type:'replaceFollowerItem',
+                    payload:{
+                        ...detail,
+                        created_time:new Date()
+                    }
+                })
+                yield put({
+                    type:'user/setDetail',
+                    payload:detail
                 })
             }
             return response
@@ -93,13 +107,22 @@ export default {
         *unfollow({payload:{ name , ...payload }}, { call , put }){
             const response = yield call(unfollow,payload)
             if(response.result){
+                const detail = {
+                    id:payload.id,
+                    use_star:false,
+                    follower_count:response.data
+                }
                 yield put({
                     type:'replaceStarItem',
-                    payload:{
-                        id:payload.id,
-                        use_star:false,
-                        follower_count:response.data
-                    }
+                    payload:detail
+                })
+                yield put({
+                    type:'replaceFollowerItem',
+                    payload:detail
+                })
+                yield put({
+                    type:'user/setDetail',
+                    payload:detail
                 })
             }
             return response

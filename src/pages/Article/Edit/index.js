@@ -31,7 +31,7 @@ function Edit({ match:{ params }}){
     const columnList = useSelector(state => {
         if(state.column.user) return state.column.user.data
     })
-
+    const me = useSelector(state => state.user.me)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -39,18 +39,21 @@ function Edit({ match:{ params }}){
         setTags(doc ? doc.tags || [] : [])
         setContent(doc ? doc.content || "" : "")
         setColumnId(doc && doc.column ? doc.column.id : 0)
-        setSourceType(doc ? doc.source_type : 1)
+        setSourceType(doc ? doc.source_type : sourceType)
         setSourceData(doc ? doc.source_data : "")
         if((id && doc) || !id){
             setLoading(false)
         }
-    },[doc,id])
+    },[doc, id, sourceType])
 
     useEffect(() => {
         dispatch({
-            type:"column/userList"
+            type:"column/list",
+            payload:{
+                member_id:me ? me.id : null
+            }
         })
-    },[dispatch])
+    },[dispatch, me])
 
     const onTitleChange = event => {
         setTitle(event.target.value)
@@ -243,7 +246,7 @@ function Edit({ match:{ params }}){
             label="文章来源"
             colon={false}
             >
-                <Radio.Group className={styles['source-layout']} onChange={onSourceChange} value={sourceType}>
+                <Radio.Group className={styles['source-layout']} onChange={onSourceChange} value={sourceType} defaultValue={sourceType}>
                     <Radio key="original" value="original">原创</Radio>
                     <Radio key="reproduced" value="reproduced">转载</Radio>
                     {

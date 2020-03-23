@@ -1,9 +1,16 @@
 import React from 'react'
-import { Icon } from 'antd'
 import BaseButton from './BaseButton'
 
-function CommentButton({ children , ...props }){
+function CommentButton({ count , children , ...props }){
 
-    return <BaseButton {...props}><Icon type="message" theme="filled" />{children}</BaseButton>
+    const getContent = () => {
+        if(children) return children
+        return count === 0 || !count ? "添加评论" : `${count}条评论`
+    }
+    return <BaseButton icon="message" {...props}>
+        {
+            getContent()
+        }
+    </BaseButton>
 }
 export default CommentButton

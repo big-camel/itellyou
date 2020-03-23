@@ -3,7 +3,6 @@ import { Badge , Icon , Popover, Tabs, Button } from 'antd'
 import { useSelector, useDispatch } from 'dva'
 import NotificationsList from './List'
 import styles from './index.less'
-import { Link } from 'umi'
 
 const { TabPane } = Tabs
 
@@ -14,6 +13,7 @@ export default ({ overflowCount }) => {
     const { groupCount } = useSelector(state => state.notifications)
 
     const [ visible , setVisible ] = useState(false)
+    const [ force , setForce ] = useState(false)
     const [ activeKey , setActiveKey ] = useState("default")
 
     const dispatch = useDispatch()
@@ -38,6 +38,9 @@ export default ({ overflowCount }) => {
             }
             webSocket.onmessage = event => {
                 const { notifications : { count , group }} = JSON.parse(event.data)
+                if(count > 0){
+                    setForce(!force)
+                }
                 dispatch({
                     type:"notifications/setGroupCount",
                     payload:{
@@ -56,7 +59,7 @@ export default ({ overflowCount }) => {
                 socket.current.close()
             }
         }
-    },[dispatch])
+    },[dispatch, force])
 
     useEffect(() => {
         if(visible === true && groupCount.count > 0){
@@ -76,13 +79,13 @@ export default ({ overflowCount }) => {
             onChange={activeKey => setActiveKey(activeKey)}
             >
                 <TabPane key="default" tab="默认">
-                    <NotificationsList action="default" />
+                    <NotificationsList action="default" force={force} />
                 </TabPane>
                 <TabPane key="follow" tab="关注">
-                    <NotificationsList action="follow" type="user" />
+                    <NotificationsList action="follow" force={force} type="user" />
                 </TabPane>
                 <TabPane key="like" tab="喜欢">
-                    <NotificationsList action="like" />
+                    <NotificationsList action="like" force={force} />
                 </TabPane>
             </Tabs>
             <div className={styles['footer']}>

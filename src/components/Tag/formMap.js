@@ -27,7 +27,7 @@ export default {
         elementType:"textarea",
         props: {
             id: 'tagDesc',
-            autosize:{minRows: 4, maxRows: 8},
+            autoSize:{minRows: 4, maxRows: 8},
             placeholder: '请对此标签补充一些描述资料, 以供他人参考',
         }
         ,

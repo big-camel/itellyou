@@ -1,14 +1,11 @@
 export default [
      // user passport
     {
-        path: '/user/:path(login|register)',
+        path: '/:path(login|register)',
         component: '../layouts/PassportLayout',
         routes: [
-            { path: '/user/login', name: 'login.page', component: './user/login' },
-            { path: '/user/register', name: 'register.page', component: './user/register' },
-            {
-                component: '404',
-            }
+            { path: '/login', name: 'login.page', component: './user/login' },
+            { path: '/register', name: 'register.page', component: './user/register' }
         ],
     },
     //question
@@ -46,7 +43,7 @@ export default [
         component:'../layouts/BasicLayout',
         Routes: ['src/pages/Authorized'],
         routes:[
-            { path: '/', name: 'home', component: './home' },
+            { path: '/', name: 'home.page.index', component: './home' },
             // Question
             { path:'/question',name:'question.page.index',component:'./question' },
             { path:'/question/:type(hot|reward|star)',name:'question.page.index',component:'./question' },
@@ -66,7 +63,6 @@ export default [
             // Column
             { path:'/column',name:'column.page.index',component:'./column' },
             { path:'/column/apply',name:'column.page.apply',component:'./column/apply' },
-            { path:'/column/:id(\\d+)',name:'column.page.detail',component:'./column/detail' },
             // User
             { path:'/dashboard',name:'user.dashboard.recent',component:'./user/dashboard/recent', authority: ['admin', 'user'] },
             { path:'/dashboard/article',name:'user.dashboard.article',component:'./user/dashboard/article', authority: ['admin', 'user'] },
@@ -80,6 +76,8 @@ export default [
             { path:'/settings/account',name:'user.settings.account',component:'./user/settings/account', authority: ['admin', 'user'] },
             { path:'/settings/notifications',name:'user.settings.notifications',component:'./user/settings/notifications', authority: ['admin', 'user'] },
             { path:'/notifications',name:'user.notifications',component:'./user/notifications', authority: ['admin', 'user'] },
+            // Path
+            { path:'/:path([a-zA-Z0-9_.]{4,50}|[a-zA-Z0-9_.]{4,50}/.*)',name:'sys.path',component:'./path'},
             {
                 component: '404',
             }

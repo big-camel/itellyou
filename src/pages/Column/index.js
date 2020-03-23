@@ -27,16 +27,16 @@ function Column({ location:{ query } }){
         if(state.column) return state.column.list
     })
 
-    const renderItem = ({ id , name , description , star_count , article_count }) => {
+    const renderItem = ({ id , path , name , avatar , description , star_count , article_count }) => {
         return (
             <List.Item
             key={id}
             >
                 <div>
-                    <Link to={`/column/${id}`}><Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /></Link>
+                    <Link to={`/${path}`}><Avatar src={avatar} /></Link>
                 </div>
                 <h4 className={styles.title}>
-                    <Link target="_blank" to={`/column/${id}`}>{name}</Link>
+                    <Link to={`/${path}`}>{name}</Link>
                 </h4>
                 <div>
                     { description }
@@ -44,7 +44,7 @@ function Column({ location:{ query } }){
                 <div>
                     <span>{ star_count }人关注</span>|<span>{ article_count }篇文章</span>
                 </div>
-                <div><Button href={`/column/${id}`}>进入专栏</Button></div>
+                <div><Button href={`/${path}`}>进入专栏</Button></div>
             </List.Item>
         )
     }
@@ -52,6 +52,7 @@ function Column({ location:{ query } }){
     const renderList = () => {
         return (
             <List 
+            grid={{ gutter: 16, column: 4 }}
             loading={loading}
             dataSource={list ? list.data : []}
             renderItem={renderItem}

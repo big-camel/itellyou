@@ -96,7 +96,7 @@ class Register extends React.Component{
                         },
                         mobile:{
                             status:false,
-                            message:(<span key='mobileError'>{formatMessage({id:'register.mobile.takeUp'})}<a target='_blank' href='/user/login'>{formatMessage({id:'login.page'})}</a></span>),
+                            message:(<span key='mobileError'>{formatMessage({id:'register.mobile.takeUp'})}<a target='_blank' href='/login'>{formatMessage({id:'login.page'})}</a></span>),
                         }
                     })
                 }else{
@@ -181,7 +181,7 @@ class Register extends React.Component{
                     return
                 }
                 if(res.result === true){
-                    window.location.href = "/user/login"
+                    window.location.href = "/login"
                 }else if(res.result === false){
                     switch(res.status){
                         case 1001:
@@ -199,7 +199,7 @@ class Register extends React.Component{
                             },
                             mobile:{
                                 status:false,
-                                message:(<span key='mobileError'>{formatMessage({id:'register.mobile.takeUp'})}<a target='_blank' href='/user/login'>{formatMessage({id:'login.page'})}</a></span>),
+                                message:(<span key='mobileError'>{formatMessage({id:'register.mobile.takeUp'})}<a target='_blank' href='/login'>{formatMessage({id:'login.page'})}</a></span>),
                             }
                         })
                         break

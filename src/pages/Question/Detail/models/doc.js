@@ -7,9 +7,9 @@ export default {
 
     effects:{
         *create({ payload }, { call , select }){
-            const questionId = yield getQuestionId(select)
-            if(!questionId) return
-            payload.data.questionId = questionId
+            const question_id = yield getQuestionId(select)
+            if(!question_id) return
+            payload.data.question_id = question_id
 
             const response = yield call(create,payload.data)
             if(!response.result){
@@ -18,9 +18,9 @@ export default {
             return response
         },
         *draft({ payload }, { call,put , select}){
-            const questionId = yield getQuestionId(select)
-            if(!questionId) return
-            payload.data.questionId = questionId
+            const question_id = yield getQuestionId(select)
+            if(!question_id) return
+            payload.data.question_id = question_id
 
             const response = yield call(draft,payload.data)
             if(response.result){
@@ -34,9 +34,9 @@ export default {
             return response
         },
         *update({ payload }, { call , put , select }){
-            const questionId = yield getQuestionId(select)
-            if(!questionId) return
-            payload.data.questionId = questionId
+            const question_id = yield getQuestionId(select)
+            if(!question_id) return
+            payload.data.question_id = question_id
 
             const response = yield call(update,payload.data)
             if(response.result){
@@ -50,9 +50,9 @@ export default {
             return response
         },
         *rollback({ payload }, { call , put , select }){
-            const questionId = yield getQuestionId(select)
-            if(!questionId) return
-            payload.data.questionId = questionId
+            const question_id = yield getQuestionId(select)
+            if(!question_id) return
+            payload.data.question_id = question_id
             
             const response = yield call(rollback,payload.data)
             if(!response.result){
@@ -76,9 +76,9 @@ export default {
             return response
         },
         *publish({ payload }, { call , select }){
-           const questionId = yield getQuestionId(select)
-            if(!questionId) return
-            payload.data.questionId = questionId
+           const question_id = yield getQuestionId(select)
+            if(!question_id) return
+            payload.data.question_id = question_id
 
             const response = yield call(publish,payload.data)
             if(!response.result){

@@ -44,9 +44,11 @@ function BlankLayout({ route , children , location , title }){
 
     return (
         <DocumentTitle title={title}>
+            <React.Fragment>
             {
                 children
             }
+            </React.Fragment>
         </DocumentTitle>
     )
 }

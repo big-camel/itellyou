@@ -19,7 +19,7 @@ function Edit({ match:{ params }}) {
     const [ title , setTitle ] = useState("")
     const [ tags , setTags ] = useState([])
     const [ remark , setRemark ] = useState("")
-    const [ reward , setReward ] = useState()
+    const [ reward , setReward ] = useState({})
     const [ content , setContent ] = useState("")
     const [ loading , setLoading ] = useState(true)
     const [ saving , setSaving ] = useState(false)
@@ -33,13 +33,14 @@ function Edit({ match:{ params }}) {
     const rewardConfig = useSelector(state => {
         if(state.reward) return state.reward.config
     })
-    const me = useSelector(state => {
-        if(state.user) return state.user.me
-    })
+    const bank = useSelector(state => state.bank.detail) || {}
 
     useEffect(() => {
         dispatch({
             type:"reward/findConfig"
+        })
+        dispatch({
+            type:"bank/info"
         })
     },[dispatch])
     
@@ -47,14 +48,16 @@ function Edit({ match:{ params }}) {
         setTitle(doc ? doc.title : "")
         setTags(doc ? doc.tags : [])
         setContent(doc ? doc.content : "")
-        setReward(doc ? {
-            type:doc.reward_type,
-            value:doc.reward_value
-        } : reward)
+        setReward(value => {
+            return doc ? {
+                type:doc.reward_type,
+                value:doc.reward_value
+            } : value
+        })
         if((id && doc) || !id){
             setLoading(false)
         }
-    },[doc, id, reward])
+    },[doc, id])
 
     const onTitleChange = event => {
         setTitle(event.target.value)
@@ -226,7 +229,7 @@ function Edit({ match:{ params }}) {
             return false
         }
         return <Form.Item
-        label={`设置悬赏，积分：${me.bank.credit}，金额：${me.bank.cash}`}
+        label={`设置悬赏，积分：${bank.credit}，金额：${bank.cash}`}
         extra="合理的悬赏，能快速得到解答。7天内未被回答，费用将自动退回"
         colon={false}
         >
@@ -244,7 +247,7 @@ function Edit({ match:{ params }}) {
                 { reward.type === 2 && 
                     <InputNumber 
                     min={cash.min}
-                    max={me.bank.cash > cash.max ? cash.max : me.bank.cash}
+                    max={bank.cash > cash.max ? cash.max : bank.cash}
                     precision={2}
                     value={reward.value}
                     onChange={onRewardValueChange} 
@@ -256,7 +259,7 @@ function Edit({ match:{ params }}) {
                 { reward.type === 1 && 
                     <InputNumber 
                     min={credit.min}
-                    max={me.bank.credit > credit.max ? credit.max : me.bank.credit}
+                    max={bank.credit > credit.max ? credit.max : bank.credit}
                     precision={0}
                     value={reward.value}
                     onChange={onRewardValueChange} 
@@ -309,11 +312,11 @@ function Edit({ match:{ params }}) {
             return "请填写修改原因"
         }
 
-        if(reward.type === 1 && me && reward.value > me.bank.credit){
+        if(reward.type === 1 && reward.value > bank.credit){
             return "积分余额不足"
         }
 
-        if(reward.type === 2 && me && reward.value > me.bank.cash){
+        if(reward.type === 2 && reward.value > bank.cash){
             return "现金余额不足"
         }
     }

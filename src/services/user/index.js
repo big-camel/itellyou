@@ -31,6 +31,11 @@ export async function fetchMe(params){
     return request(`/api/user/me${param}`)
 }
 
+export async function fetchAccount(params){
+    const param = params ? `?${stringify(params)}` : ""
+    return request(`/api/user/account${param}`)
+}
+
 export async function logout(){
     return request('/api/user/logout')
 }

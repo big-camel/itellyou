@@ -2,7 +2,7 @@ import React , { useRef , useState } from 'react'
 import { Modal, message } from 'antd'
 import '@/utils/gt.js'
 import { useDispatch, useSelector } from 'dva'
-import Verify from '@/pages/user/components/Verify'
+import Verify from '@/components/User/Verify'
 import Form , { Submit } from '@/components/Form'
 import formMap from './formMap'
 

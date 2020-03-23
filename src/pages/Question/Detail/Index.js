@@ -8,10 +8,13 @@ import Tag from '@/components/Tag'
 import Timer from '@/components/Timer'
 import styles from './index.less'
 import DocumentTitle from 'react-document-title'
-import Answer from './Answer'
-import Comment from './Comment'
+import Answer from './components/Answer'
+import AnswerAction from '@/components/Answer/Action'
+import Comment from './components/Comment'
 import { ShareButton, ReportButton, CommentButton } from '@/components/Button'
 import Loading from '@/components/Loading'
+import { UserAuthor } from '@/components/User'
+import Related from './components/Related'
 
 
 function Detail({ match:{ params }}){
@@ -35,34 +38,34 @@ function Detail({ match:{ params }}){
         dispatch({
             type:"answer/findDraft",
             payload:{
-                questionId:id
+                question_id:id
             }
         })
     },[dispatch,id])
 
-    const answerId = params.answerId ? parseInt(params.answerId) : null
+    const answer_id = params.answer_id ? parseInt(params.answer_id) : null
     const [ editVisible , setEditVisible ] = useState()
     const [ commentVisible , setCommentVisible ] = useState(false)
     const loading = useSelector(state => state.loading)
     const followLoading = loading.effects['questionStar/follow'] || loading.effects['questionStar/unfollow']
 
     useEffect(() => {
-        if(!answerId && user_answer && user_answer.draft && !user_answer.published && !user_answer.deleted){
+        if(!answer_id && user_answer && user_answer.draft && !user_answer.published && !user_answer.deleted){
             setEditVisible(visible => {
                 if(!visible) return true
                 return visible
             })
         }
-    },[answerId,user_answer])
+    },[answer_id,user_answer])
     
     if(!detail) return <Loading />
     const { title , use_star , star_count , use_author } = detail
-    const onRevoke = answerId => {
+    const onRevoke = answer_id => {
         dispatch({
             type:"answer/revoke",
             payload:{
-                questionId:id,
-                id:answerId
+                question_id:id,
+                id:answer_id
             }
         })
     }
@@ -98,7 +101,7 @@ function Detail({ match:{ params }}){
                 return <Button onClick={()  => onRevoke(user_answer.id) } type="primary" icon="delete" >撤销删除</Button>
             return <Link to={`/question/${id}/answer/${user_answer.id}`}><Button type="primary" icon="eye" >查看回答</Button></Link>
         }
-        return <Button onClick={()  => setEditVisible(!editVisible) } type="primary" icon="edit" >{ answerId ? "编辑回答" : "写回答"}</Button>
+        return <Button onClick={()  => setEditVisible(!editVisible) } type="primary" icon="edit" >{ answer_id ? "编辑回答" : "写回答"}</Button>
     }
     
     return (
@@ -133,45 +136,46 @@ function Detail({ match:{ params }}){
                         { renderStar() }
                         <CommentButton onClick={() => setCommentVisible(true)}>{detail.comments > 0 ? `${detail.comments} 条评论` : "评论"}</CommentButton>
                         <ShareButton>分享</ShareButton>
-                        <ReportButton>举报</ReportButton>
-                        <div className={styles.author}>
-                            <Avatar size={40} shape="square" src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                            <div className={styles.info}>
-                                <Link to="">{detail.author ? detail.author.name : null}</Link>
-                                <div><Timer time={detail.created_time} />提问</div>
-                            </div>
-                        </div>
+                        <ReportButton />
+                        <UserAuthor 
+                        info={detail.author}
+                        extra={
+                            <div><Timer time={detail.created_time} />提问</div>
+                        }
+                        />
                     </div>
                     {
                         editVisible && 
-                        <Answer.Edit 
+                        <AnswerAction.Edit 
                         hasHistory={user_answer && user_answer.draft === false ? true : false}
                         id={user_answer && user_answer.draft === true ? user_answer.id : null}
                         />
                     }
                     {
-                        answerId && (
+                        answer_id && (
                             <React.Fragment>
                                 <Link to={`/question/${detail.id}`}>查看全部 {detail.answers} 个回答</Link>
                                 <Answer.View
-                                questionId={id}
-                                answerId={answerId}
+                                question_id={id}
+                                answer_id={answer_id}
                                 />
                             </React.Fragment>
                         )
                     }
                     {
                         <Answer.List
-                        title={answerId ? "更多回答" : null}
-                        questionId={id}
-                        exclude={[answerId]}
+                        title={answer_id ? "更多回答" : null}
+                        question_id={id}
+                        exclude={[answer_id]}
                         />
                     }
                     {
-                        <Comment questionId={id} visible={commentVisible} onVisibleChange={setCommentVisible} />
+                        <Comment question_id={id} visible={commentVisible} onVisibleChange={setCommentVisible} />
                     }
                 </Col>
-                <Col xs={24} sm={6}>dfdfsdf</Col>
+                <Col xs={24} sm={6}>
+                    <Related id={id} />
+                </Col>
             </Row>
         </DocumentTitle>
     )

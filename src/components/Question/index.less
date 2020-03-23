@@ -1,0 +1,52 @@
+.item {
+    width: 100%;
+    .header {
+        display: flex;
+    
+        .info {
+            .title {
+                font-size: 18px;
+                font-weight: 600;
+                margin-bottom: 0;
+        
+                > a,> a:hover,> a:focus {
+                    color: #1a1a1a;
+                }
+            }
+    
+            .tags {
+                font-size: 12px;
+            }
+        }
+    
+        .data {
+            margin-right: 15px;
+    
+            > a{
+                display: block;
+                padding: 5px 5px 0;
+                width: 46px;
+                height: 46px;
+                border-radius: 2px;
+                background-color: #E1EEFA;
+                line-height: 1.2;
+                color: #00a4ff;
+                text-align: center;
+                cursor: pointer;
+    
+                .count{
+                    display: block;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    font-size: 16px;
+                }
+    
+                .name {
+                    display: block;
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+}

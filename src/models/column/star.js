@@ -1,4 +1,5 @@
 import { list ,follow,unfollow } from '@/services/column/star'
+import { setList, removeItem , replaceItem} from '@/utils/model'
 
 export default {
     namespace: 'columnStar',
@@ -6,11 +7,11 @@ export default {
     state: {},
 
     effects: {
-        *list({ payload }, { call,put }){
+        *list({ payload : { append , ...payload } }, { call,put }){
             const response = yield call(list,payload)
             yield put({
                 type: 'setList',
-                payload: response.data
+                payload: {append,...response.data}
             })
         },
         *follow({ payload }, { call , put }){
@@ -58,57 +59,22 @@ export default {
     },
 
     reducers:{
-        setList(state , {payload:{ append , end , total , data , ...payload }}){
-            const key = "list"
-            const list = state[key]
-            if(!list || !append){
-                return {
-                    ...state,
-                    [key]:{end , total , data , ...payload}
-                }
-            }
-            const dataList = list.data.concat()
-            data.forEach(item => {
-                if(!dataList.find(child => child.column.id === item.id)){
-                    dataList.push(item)
-                }
+        setList(state , { payload } ){
+            return setList("list",payload,state,(child,item) => {
+                return child.column.id === item.column.id
             })
-            return {
-                ...state,
-                [key]:{...list,end,total,data:dataList}
-            }
         },
         removeItem(state , { payload } ){
-            const key = "list"
-            const data = state[key] ? state[key].data || [] : [];
-            const index = data.findIndex(item => item.column.id === payload.id)
-            if(index >= 0){
-                data.splice(index,1)
-            }
-            return {
-                ...state,
-                [key]:{...state[key],data}
-            }
+            return removeItem("list",payload.id,state,item => {
+                return item.column.id === payload.id
+            })
         },
-        replaceItem(state , { payload : { created_time , ...payload} } ){
-            const key = "list"
-            const list = state[key]
-            if(list){
-                const data = list.data.concat()
-                const index = data.findIndex(item => item.column.id === payload.id)
-                if(index >= 0){
-                    const item = data[index]
-                    data.splice(index,1,{...item ,column:{...item.column,...payload} , created_time })
-                }
-                
-                return {
-                    ...state,
-                    [key]:{...list,data}
-                }
-            }
-            return {
-                ...state
-            }
+        replaceItem(state , { payload:{ created_time , ...payload }} ){
+            return replaceItem("list",payload,state,item => {
+                return item.column.id === payload.id
+            },item => {
+                return {...item ,column:{...item.column,...payload} , created_time }
+            })
         }
     }
 }

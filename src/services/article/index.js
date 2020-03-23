@@ -5,6 +5,10 @@ export async function list(params) {
     return request(`/api/article/list?${stringify(params)}`)
 }
 
+export async function related(params) {
+    return request(`/api/article/related?${stringify(params)}`)
+}
+
 export async function find(params) {
     return request(`/api/article/${params.id}`)
 }

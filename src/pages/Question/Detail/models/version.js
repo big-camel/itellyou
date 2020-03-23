@@ -10,9 +10,9 @@ export default {
 
     effects:{
         *list({ payload }, { call , put , select }){
-            const questionId = yield getQuestionId(select)
-            if(!questionId) return
-            payload.questionId = questionId
+            const question_id = yield getQuestionId(select)
+            if(!question_id) return
+            payload.question_id = question_id
 
             const response = yield call(list,payload)
             if(response.result){
@@ -24,17 +24,17 @@ export default {
             return response
         },
         *find({ payload }, { call ,select }){
-            const questionId = yield getQuestionId(select)
-            if(!questionId) return
-            payload.questionId = questionId
+            const question_id = yield getQuestionId(select)
+            if(!question_id) return
+            payload.question_id = question_id
 
             const response = yield call(find,payload)
             return response
         },
         *diff({ payload }, { call , select }){
-            const questionId = yield getQuestionId(select)
-            if(!questionId) return
-            payload.questionId = questionId
+            const question_id = yield getQuestionId(select)
+            if(!question_id) return
+            payload.question_id = question_id
             
             const response = yield call(diff,payload)
             return response

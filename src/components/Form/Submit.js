@@ -1,13 +1,9 @@
-import React from 'react';
-import { Button, Form } from 'antd';
-
-const FormItem = Form.Item;
+import React from 'react'
+import { Button } from 'antd'
 
 const SubmitButton = ({ className, ...rest }) => {
   return (
-    <FormItem>
       <Button block size="large" type="primary" htmlType="submit" {...rest} />
-    </FormItem>
   );
 };
 

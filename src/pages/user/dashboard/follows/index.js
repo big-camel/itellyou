@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import Layout from '../components/Layout'
-import { Menu } from 'antd'
+import { Menu, Card } from 'antd'
 import User from './User'
 import { Link } from 'umi'
 import Follower from './Follower'
@@ -45,19 +45,24 @@ export default ({ location : { query } }) => {
     }
 
     return (
-        <Layout defaultKey="star">
-            <Menu>
-                {
-                    menus.map(({ key , title }) => <Menu.Item 
-                    key={key} 
-                    className={classNames({"active" : key === type})}>
-                        <Link to={`follows?type=${key}`}>{ title }</Link>
-                    </Menu.Item>)
-                }
-            </Menu>
+        <Layout defaultKey="follows">
+            <Card
+            title={
+                <Menu mode="horizontal">
+                    {
+                        menus.map(({ key , title }) => <Menu.Item 
+                        key={key} 
+                        className={classNames({"active" : key === type})}>
+                            <Link to={`follows?type=${key}`}>{ title }</Link>
+                        </Menu.Item>)
+                    }
+                </Menu>
+            }
+            >
             {
                 render()
             }
+            </Card>
         </Layout>
         
     )

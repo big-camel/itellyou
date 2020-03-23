@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'dva'
-import { List, Button } from 'antd'
-import Loading from '@/components/Loading'
-import NotificationsAction from '@/components/NotificationsAction'
+import { Link } from 'umi'
+import { MoreList } from '@/components/List'
+import mergeUser from '@/utils/operational/mergeUser'
+import getVerb from '@/utils/operational/getVerb'
 
 export default () => {
     const [ offset , setOffset ] = useState(0)
@@ -10,8 +11,6 @@ export default () => {
     const action = "default"
     const dispatch = useDispatch()
     const dataSource = useSelector(state => state.notifications.list[action])
-    const loadingEffect = useSelector(state => state.loading)
-    const loading = loadingEffect.effects['notifications/list']
 
     useEffect(() => {
         dispatch({
@@ -25,39 +24,68 @@ export default () => {
         })
     },[offset, limit, dispatch])
 
-    const renderItem = item => {
-        return <List.Item>
-            {
-                <NotificationsAction display="complete" dataSource={item} />
-            }
-        </List.Item>
+    const renderColumn = (verb , { id , name }) => {
+        return <span>{verb}<Link to={`/column/${id}`}>{ name }</Link></span>
     }
 
-    const renderList = () => {
-        if(!dataSource) return <Loading />
-        
-        return <List 
-                dataSource={dataSource.data}
-                renderItem={renderItem}
-                itemLayout="vertical"
-                />
+    const renderAnswer = (verb , { id , question : { question_id=id,title } }) => {
+        return <span>{verb}<Link to={`/question/${question_id}/answer/${id}`}>{ title }</Link></span>
     }
 
-    const renderLoadMore = () => {
-        if(dataSource && !dataSource.end){
-            return <Button loading={loading} onClick={() => setOffset(offset => offset+=limit)}>加载更多</Button>
+    const renderCommon = (type,verb , { id , title }) => {
+        return <span>{verb}<Link to={`/${type}/${id}`}>{ title }</Link></span>
+    }
+
+    const renderAnswerComment = (verb , { content , reply }) => {
+        const { answer : { id , question : { title , question_id=id } } } = reply
+        return <span>{verb}<Link to={`/question/${question_id}/answer/${id}`}>{ title }</Link></span>
+    }
+
+    const renderCommentCommon = (type , verb , { content , reply , ...target }) => {
+        const { [type] : { id , title } } = reply ? reply : target
+        return <span>{verb}<Link to={`/${type}/${id}`}>{ title }</Link></span>
+    }
+    
+    const renderOperational = ({ action , type , target }) => {
+        const verb = getVerb(action,type,"你的")
+        switch(type){
+            case "user":
+                return verb
+            case "column":
+                return renderColumn(verb,target)
+            case "answer":
+                if(action === "comment") renderAnswerComment(verb,target)
+                return renderAnswer(verb,target)
+            case "question":
+            case "article":
+                if(action === "comment") return renderCommentCommon(type,verb,target)
+                return renderCommon(type,verb,target)
+            case "answer_comment":
+                return renderAnswerComment(verb,target)
+            case "question_comment":
+            case "article_comment":
+                return renderCommentCommon(type,verb,target)
         }
-        return null
+    }
+
+    const renderItem = ({ actors , merge_count , ...item }) => {
+        return <MoreList.Item>
+            {
+                mergeUser(actors,merge_count)
+            }
+            {
+                renderOperational(item)
+            }
+        </MoreList.Item>
     }
 
     return (
-        <div>
-            {
-                renderList()
-            }
-            {
-                renderLoadMore()
-            }
-        </div>
+        <MoreList
+        offset={offset}
+        limit={limit}
+        renderItem={renderItem}
+        dataSource={dataSource}
+        onChange={offset => setOffset(offset)}
+        />
     )
 }

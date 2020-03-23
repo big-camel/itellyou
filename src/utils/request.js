@@ -1,10 +1,9 @@
 /**
  * request 网络请求工具
- * 更详细的api文档: https://bigfish.alipay.com/doc/api#request
+ * 更详细的api文档: https://github.com/umijs/umi-request
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
-import router from 'umi/router';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -28,37 +27,22 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = error => {
-  const { response = {} } = error;
-  const errortext = codeMessage[response.status] || response.statusText;
-  const { status, url } = response;
+  const { response } = error;
+  if (response && response.status) {
+    const errorText = codeMessage[response.status] || response.statusText;
+    const { status, url } = response;
 
-  if (status === 401) {
     notification.error({
-      message: '未登录或登录已过期，请重新登录。',
+      message: `请求错误 ${status}: ${url}`,
+      description: errorText,
     });
-    // @HACK
-    /* eslint-disable no-underscore-dangle */
-    window.g_app._store.dispatch({
-      type: 'user/logout',
+  } else if (!response) {
+    notification.error({
+      description: '您的网络发生异常，无法连接服务器',
+      message: '网络异常',
     });
-    return;
   }
-  notification.error({
-    message: `请求错误 ${status}: ${url}`,
-    description: errortext,
-  });
-  // environment should not be used
-  if (status === 403) {
-    router.push('/exception/403');
-    return;
-  }
-  if (status <= 504 && status >= 500) {
-    router.push('/exception/500');
-    return;
-  }
-  if (status >= 404 && status < 422) {
-    router.push('/exception/404');
-  }
+  return response;
 };
 
 /**

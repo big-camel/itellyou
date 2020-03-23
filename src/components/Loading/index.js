@@ -1,5 +1,6 @@
 import React from 'react'
 import { Spin , Icon } from 'antd'
+import LoadingButton from './Button'
 import styles from './index.less'
 
 export default ({ tip , loading , children }) => (
@@ -9,3 +10,7 @@ export default ({ tip , loading , children }) => (
     spinning={loading === undefined || loading === null ? true : loading}
     >{children}</Spin>
 )
+
+export {
+    LoadingButton
+}

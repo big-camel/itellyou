@@ -1,4 +1,5 @@
-import { create , list , articleList , detail , userList , queryName } from '@/services/column/index'
+import { create , list , setting , detail , queryName } from '@/services/column/index'
+import { setList, replaceItem } from '@/utils/model'
 
 export default {
     namespace: 'column',
@@ -12,28 +13,19 @@ export default {
         *create({ payload }, { call , put , select }){
             const response = yield call(create,payload)
             if(response && response.result){
-                const user = yield select(state => state.column.user)
-                if(user){
-                    const data = user.data.concat()
-                    data.push(response.data)
-                    yield  put({
-                        type:'updateUserList',
-                        payload:{...user,data,total:user.total+1}
-                    })
-                }else{
-                    yield put({
-                        type:'updateUserList',
-                        payload:{total:1,data:[response.data]}
-                    })
-                }
+                const list = yield select(state => state.column.list)
+                yield put({
+                    type: 'setList',
+                    payload: {append:true,total:list.total ? list.total+=1 : 1 ,data:response.data}
+                })
             }
             return response
         },
-        *list({ payload } , { call , put }){
+        *list({ payload : { append , ...payload } }, { call,put }){
             const response = yield call(list,payload)
             yield put({
-                type:'updateList',
-                payload:response.data || {}
+                type: 'setList',
+                payload: {append,...response.data}
             })
         },
         *detail({ payload } , { call , put }){
@@ -43,12 +35,13 @@ export default {
                 payload:response.data || {}
             })
         },
-        *userList({ payload } , { call , put }){
-            const response = yield call(userList,payload)
+        *setting({ payload } , { call , put }){
+            const response = yield call(setting,payload)
             yield put({
-                type:'updateUserList',
+                type:'updateDetail',
                 payload:response.data || {}
             })
+            return response
         },
         *queryName({ payload }, { call }){
             const response = yield call(queryName,payload)
@@ -56,17 +49,8 @@ export default {
         }
     },
     reducers:{
-        updateList(state,{ payload }){
-            return {
-                ...state,
-                list:payload
-            }
-        },
-        updateUserList(state,{ payload }){
-            return {
-                ...state,
-                user:payload
-            }
+        setList(state , { payload } ){
+            return setList("list",payload,state)
         },
         updateDetail(state,{ payload }){
             return {
@@ -75,23 +59,7 @@ export default {
             }
         },
         replaceItem(state,{ payload : { detail } }){
-            const list = state.list
-            if(list){
-                const data = list.data.concat()
-                const index = data.findIndex(item => item.id === detail.id)
-                if(index >= 0){
-                    const item = data[index]
-                    data.splice(index,1,{...item,...detail})
-                }
-                
-                return {
-                    ...state,
-                    list:{...list,data}
-                }
-            }
-            return {
-                ...state
-            }
+            return replaceItem("list",detail,state)
         }
     }
 }

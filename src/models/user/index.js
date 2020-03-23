@@ -2,13 +2,13 @@ import { routerRedux } from 'dva'
 import { stringify } from 'qs'
 import { setAuthority } from '@/utils/authority'
 import { reloadAuthorized } from '@/utils/Authorized'
-import { queryName , fetchMe , find , update , profile , logout } from '@/services/user/index'
+import { queryName , fetchMe , find , update , profile , logout, fetchAccount } from '@/services/user/index'
 export default {
     namespace: 'user',
 
     state: {
         me:window.appData.me,
-        detail:null
+        detail:{}
     },
 
     effects: {
@@ -16,9 +16,18 @@ export default {
             const response = yield call(queryName,payload)
             return response
         },
-
         *fetchMe({ payload }, { call,put }){
             const response = yield call(fetchMe,payload)
+            if(response && response.result){
+                yield put({
+                    type: 'setMe',
+                    payload: response.data
+                })
+            }
+            return response
+        },
+        *fetchAccount({ payload }, { call,put }){
+            const response = yield call(fetchAccount,payload)
             if(response && response.result){
                 yield put({
                     type: 'setMe',
@@ -67,10 +76,10 @@ export default {
                 authority:'guest'
             })
             reloadAuthorized()
-            if (window.location.pathname !== '/user/login') {
+            if (window.location.pathname !== '/login') {
                 yield put(
                     routerRedux.replace({
-                        pathname: '/user/login',
+                        pathname: '/login',
                         search: stringify({
                             redirect: window.location.href,
                         }),
@@ -91,7 +100,7 @@ export default {
         setDetail(state,{ payload }){
             return {
                 ...state,
-                detail:{...state.detail,...payload}
+                detail:{...state.detail,[payload.id]:{...state.detail[payload.id],...payload}}
             }
         },
         setBank(state,{payload}){

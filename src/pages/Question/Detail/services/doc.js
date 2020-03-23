@@ -1,33 +1,33 @@
 import request from '@/utils/request'
 
-export async function create({questionId,...params}) {
-    return request(`/api/question/${questionId}/answer/create`,{ 
+export async function create({question_id,...params}) {
+    return request(`/api/question/${question_id}/answer/create`,{ 
         method: 'POST',
         data: params,
     })
 }
 
-export async function draft({questionId,id}) {
-    return request(`/api/question/${questionId}/answer/${id}/draft`)
+export async function draft({question_id,id}) {
+    return request(`/api/question/${question_id}/answer/${id}/draft`)
 }
 
-export async function update({ id , questionId, ...other}){
-    return request(`/api/question/${questionId}/answer/${id}/content`,{ 
+export async function update({ id , question_id, ...other}){
+    return request(`/api/question/${question_id}/answer/${id}/content`,{ 
         method: 'PUT',
         data:other
     })
 }
 
-export async function rollback({ id , questionId,...other}){
+export async function rollback({ id , question_id,...other}){
     const docUrl = id ? `/${id}` : ""
-    return request(`/api/question/${questionId}/answer${docUrl}/rollback`,{ 
+    return request(`/api/question/${question_id}/answer${docUrl}/rollback`,{ 
         method: 'PUT',
         data:other
     })
 }
 
-export async function publish({ id , questionId ,...other}){
-    return request(`/api/question/${questionId}/answer/${id}/publish`,{ 
+export async function publish({ id , question_id ,...other}){
+    return request(`/api/question/${question_id}/answer/${id}/publish`,{ 
         method: 'PUT',
         data:other
     })
