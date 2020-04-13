@@ -1,4 +1,3 @@
-
 export default {
-    'search.page.index':"搜索"
-}
+    'search.page.index': '搜索',
+};
