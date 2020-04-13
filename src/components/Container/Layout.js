@@ -1,50 +1,31 @@
-import React from 'react'
-import { Row, Col } from 'antd'
-import Sider from './Sider'
+import React from 'react';
+import { Row, Col } from 'antd';
+import Sider from './Sider';
 
-function Layout({ span , siderData , siderKey, children , contents }){
-    contents = contents || []
-    span = span || 7
-    if(!Array.isArray(span)) span = [span]
-    if(span.length === 1){
-        span.push(24 - span)
-    }
-    const getSider = () => {
-        if(contents.length > 0) return contents[0]
-        return <Sider dataSource={siderData} defaultKey={siderKey} />
-    }
+function Layout({ spans = 17, gutter = 24, children }) {
+    const spanData = 24;
 
-    const getContents = () => {
-        const contentArry = []
-        for(let i = 2;i < span.length;i++){
-            contentArry.push(
-                <Col span={span[i]}>
-                    {
-                        contents[i - 2]
-                    }
-                </Col>
-            )        
+    if (!Array.isArray(spans)) spans = [spans, spanData - spans];
+
+    const childLength = React.Children.toArray(children).length;
+    if (childLength < 2) return children;
+    if (childLength != spans.length) {
+        spans = [];
+        for (let i = 0; i < childLength; i++) {
+            spans[i] = spanData / childLength;
         }
-        return contentArry
     }
-
     return (
-        <Row gutter={16}>
-            <Col span={span[0]}>
-                { 
-                    getSider() 
-                }
-            </Col>
-            <Col span={span[1]}>
-                {
-                    contents.length > 1 ? contents[1] : children
-                }
-            </Col>
-            {
-                getContents()
-            }
+        <Row gutter={gutter}>
+            {React.Children.map(children, (child, index) => {
+                return (
+                    <Col key={index} span={spans[index]}>
+                        {child}
+                    </Col>
+                );
+            })}
         </Row>
-    )
+    );
 }
 
-export default Layout
+export default Layout;

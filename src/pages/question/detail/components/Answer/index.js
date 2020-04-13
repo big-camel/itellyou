@@ -1,7 +1,9 @@
-import List from './List'
-import View from './View'
+import List from './List';
+import View from './View';
+import { Answer } from '@/components/Content';
 
 export default {
     List,
-    View
-}
+    View,
+    Edit: Answer.Edit,
+};

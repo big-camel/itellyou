@@ -1,0 +1,73 @@
+.toc {
+    position: fixed;
+    top: 60px;
+    will-change: top;
+    transition: top 0.2s ease 0.2s;
+    padding-top: 24px;
+    min-width: 200px;
+    max-width: 480px;
+    font-size: 14px;
+
+    .directory {
+        width: 100%;
+        overflow: auto;
+        font-size: 14px;
+        margin-bottom: 0;
+
+        .item {
+            padding: 0 10px 0 16px;
+            line-height: 24px;
+            border-left: 2px solid #e8e8e8;
+            color: #595959;
+
+            .link {
+                width: 100%;
+                display: block;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                color: #595959;
+            }
+
+            .link:hover {
+                color: #8c8c8c;
+            }
+
+            .link-1 {
+                padding-left: 0;
+            }
+
+            .link-2 {
+                padding-left: 1.2em;
+            }
+
+            .link-3 {
+                padding-left: 2.4em;
+            }
+
+            .link-4 {
+                padding-left: 3.6em;
+            }
+
+            .link-5 {
+                padding-left: 4.8em;
+            }
+        }
+
+        .item.active {
+            border-left: 2px solid @primary-color;
+
+            a {
+                color: @primary-color;
+            }
+
+            a:hover {
+                color: @primary-color;
+            }
+        }
+    }
+}
+
+.toc.fixed {
+    top: 0;
+}

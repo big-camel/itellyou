@@ -1,4 +1,4 @@
-import moment from 'moment'
+import moment from 'moment';
 const Time = {
     /**
      * 日期时间格式化
@@ -13,34 +13,38 @@ const Time = {
      *   MM-DD HH:mm (今年)
      *   YYYY-MM-DD HH:mm (今年以前, 以及今天以后)
      */
-    format: function (datetime) {
-        const opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {}
-        const dateTime = moment(datetime)
-    
+    format: function(datetime) {
+        if (typeof datetime === 'string') datetime = new Date(datetime.replace(/-/g, '/'));
+        const opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        const dateTime = moment(datetime);
+
         if (opts.full) {
-            return dateTime.format('YYYY-MM-DD HH:mm:ss')
-        } 
+            return dateTime.format('YYYY-MM-DD HH:mm:ss');
+        }
+        if (opts.tpl) {
+            return dateTime.format(opts.tpl);
+        }
 
         // 基于某个时间点
-        const basetime = opts.base ? moment(opts.base) : moment()
-        const isSameYear = dateTime.isSame(basetime, 'year')
-        const isSameDay = dateTime.isSame(basetime, 'day')
-        const isYesterday = dateTime.isSame(basetime.add(-1, 'day'), 'day')
-        let timeTpl = 'MM-DD HH:mm'
-        let prefix = ''
-    
+        const basetime = opts.base ? moment(opts.base) : moment();
+        const isSameYear = dateTime.isSame(basetime, 'year');
+        const isSameDay = dateTime.isSame(basetime, 'day');
+        const isYesterday = dateTime.isSame(basetime.add(-1, 'day'), 'day');
+        let timeTpl = 'MM-DD HH:mm';
+        let prefix = '';
+
         if (isSameDay) {
             timeTpl = 'HH:mm';
-            prefix = "".concat('今天', " ")
+            prefix = ''.concat('今天', ' ');
         } else if (isYesterday) {
             timeTpl = 'HH:mm';
-            prefix = "".concat('昨天', " ")
+            prefix = ''.concat('昨天', ' ');
         } else if (!isSameYear) {
-            timeTpl = 'YYYY-MM-DD HH:mm'
+            timeTpl = 'YYYY-MM-DD HH:mm';
         } else {
-            timeTpl = 'MM-DD HH:mm'
+            timeTpl = 'MM-DD HH:mm';
         }
-        return "".concat(prefix).concat(dateTime.format(timeTpl))
-    }
-}
-export default Time
+        return ''.concat(prefix).concat(dateTime.format(timeTpl));
+    },
+};
+export default Time;

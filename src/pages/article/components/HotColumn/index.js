@@ -1,40 +1,51 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'dva'
-import { Card } from 'antd'
-import Loading from '@/components/Loading'
-import { Link } from 'umi'
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'umi';
+import { Card, Avatar } from 'antd';
+import Loading from '@/components/Loading';
+import { Link } from 'umi';
+import List from '@/components/List';
+import styles from './index.less';
 
 export default () => {
-
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch({
-            type:'column/list',
-            payload:{
-                type:'hot',
-                offset:0,
-                limit:5
-            }
-        })
-    },[dispatch])
+            type: 'column/list',
+            payload: {
+                type: 'hot',
+                offset: 0,
+                limit: 5,
+            },
+        });
+    }, [dispatch]);
 
-    const dataSource = useSelector(state => state.column.list)
-    if(!dataSource) return <Loading />
+    const renderItem = ({ id, avatar, name, path, star_count, article_count }) => {
+        return (
+            <List.Item key={id}>
+                <div className={styles['hot-item']}>
+                    <div className={styles['avatar']}>
+                        <Avatar shape="circle" src={avatar} size={38} />
+                    </div>
+                    <div className={styles['info']}>
+                        <h2 className={styles['title']}>
+                            <Link to={`/${path}`}>{name}</Link>
+                        </h2>
+                        <div className={styles['data']}>
+                            <span>{article_count} 文章</span>
+                            <span>{star_count} 关注</span>
+                        </div>
+                    </div>
+                </div>
+            </List.Item>
+        );
+    };
+
+    const dataSource = useSelector(state => state.column.list);
+    if (!dataSource) return <Loading />;
     return (
-        <Card
-        title="热门专栏"
-        >
-        <ul>
-        {
-            dataSource.data.map(({ id , name , path , description}) => {
-                return <li key={id}>
-                    <h2><Link to={`/${path}`}>{name}</Link></h2>
-                    <p>{ description }</p>
-                </li>
-            })
-        }
-        </ul>
+        <Card title="热门专栏">
+            {<List dataSource={dataSource.data} renderItem={renderItem} />}
         </Card>
-    )
-}
+    );
+};

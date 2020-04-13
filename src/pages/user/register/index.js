@@ -1,307 +1,229 @@
-import React from 'react'
-import { Alert } from 'antd'
-import { merge } from 'lodash'
-import { connect } from 'dva'
-import { formatMessage } from 'umi-plugin-react/locale'
-import Form , { Submit } from '@/components/Form'
-import formMap from './formMap'
-import '@/utils/gt.js'
-import { Link } from 'umi'
+import React, { useState } from 'react';
+import { Alert, message } from 'antd';
+import { history, useIntl, Link, useSelector, useDispatch } from 'umi';
+import Form, { Submit } from '@/components/Form';
+import formMap from './formMap';
+import '@/utils/gt.js';
+import { sendCaptcha } from '@/services/validation';
+import styles from './index.less';
 
-const { Name,Password,Mobile,Captcha } = Form.createItem(formMap)
+const { Name, Password, Mobile, Captcha } = Form.createItem(formMap);
 
-class Register extends React.Component{
+export default () => {
+    const intl = useIntl();
+    const [form] = Form.useForm();
+    const [filedErrors, setFiledErrors] = useState({});
+    const [mobileHelp, setMobileHelp] = useState();
+    const [captcha, setCaptcha] = useState({
+        time: null,
+        sending: false,
+    });
 
-    state = {
-        name:{
-            status:null,
-            message:null,
-        },
-        captcha:{
-            status:null,
-            secondText:formatMessage({id:'register.capthcha.secondText'},{s:'{s}'})
-        },
-        mobile:{
-            status:null,
-            message:null,
-        },
-        mobileTips:null,
-        code:{
-            status:null,
-            message:null,
-        },
-        registerButton:{
-            text:formatMessage({id:'register.submit.text'}),
-            loadingText:formatMessage({id:'register.submit.loadingText'})
-        },
-        submitState:{
-            status:true,
-            message:null,
-        }
-    }
+    const [submit, setSubmit] = useState({});
 
-    handleGetCaptcha = e => {
+    const loadingState = useSelector(state => state.loading);
+    const submiting = loadingState.effects['register/submit'];
+
+    const dispatch = useDispatch();
+
+    const renderMobileError = () => (
+        <span key="mobileError">
+            {intl.formatMessage({ id: 'register.mobile.takeUp' })}
+            <Link to="/login">{intl.formatMessage({ id: 'login.page' })}</Link>
+        </span>
+    );
+
+    const sendMobileCaptcha = e => {
         e.preventDefault();
-        this.registerForm.validateFieldsAndScroll(['mobile'],(err, values) => {
-            if (!err) {
-                this.changeState({
-                    captcha:{
-                        status:'loading'
+        form.validateFields(['mobile']).then(values => {
+            setCaptcha({ sending: true });
+            sendCaptcha({
+                action: 'register',
+                mobile: values['mobile'],
+            })
+                .then(({ result, status, data, ...res }) => {
+                    setCaptcha({ sending: false });
+                    if (result) {
+                        setCaptcha({ ...captcha, time: data.time + 60 });
+                        setMobileHelp({
+                            trigger: 'blur',
+                            visible: true,
+                            content: value => {
+                                if (value !== data.mobile) return null;
+                                return (
+                                    <span>
+                                        {intl.formatMessage({
+                                            id: 'validation.capthcha.sendSuccess',
+                                        })}
+                                        <Link to="help">
+                                            {intl.formatMessage({
+                                                id: 'validation.capthcha.notGet',
+                                            })}
+                                        </Link>
+                                    </span>
+                                );
+                            },
+                        });
+                    } else if (status === 1002) {
+                        setFiledErrors({
+                            mobile: renderMobileError(),
+                        });
+                    } else {
+                        message.error(res.message);
                     }
                 })
-                this.handleGeetestInit(this.handleGeetestCallback);
+                .catch(error => {
+                    setCaptcha({ sending: false });
+                    if (!error) return;
+
+                    setSubmit({
+                        status: false,
+                        message: error,
+                    });
+                });
+        });
+    };
+
+    const handleSubmit = values => {
+        setSubmit({
+            status: true,
+            message: null,
+        });
+        setFiledErrors(() => {
+            return {};
+        });
+        dispatch({
+            type: 'register/submit',
+            payload: {
+                name: values['name'],
+                loginPassword: values['password'],
+                mobile: values['mobile'],
+                code: values['code'],
+            },
+        }).then(res => {
+            if (res.result === true) {
+                history.push('/login');
+            } else if (res.result === false) {
+                switch (res.status) {
+                    case 1001:
+                        setFiledErrors(value => {
+                            return {
+                                ...value,
+                                code: res.message,
+                            };
+                        });
+                        break;
+                    case 1002:
+                        setFiledErrors(value => {
+                            return {
+                                ...value,
+                                mobile: renderMobileError(),
+                            };
+                        });
+                        break;
+                    case 1003:
+                        setFiledErrors(value => {
+                            return {
+                                ...value,
+                                name: res.message,
+                            };
+                        });
+                        break;
+                    default:
+                        setSubmit({
+                            status: false,
+                            message: res.message,
+                        });
+                }
             }
         });
-    }
+    };
 
-    handleGeetestCallback = (gtObject,geetestKey,action) => {
-        const validate = gtObject.getValidate();
-        if(action === "success" && validate){
-            const { dispatch } = this.props
-            const mobile = this.registerForm.getFieldValue('mobile')
-            dispatch({
-                type:'validation/sendCode',
-                payload:{
-                    action:'register',
-                    mobile,
-                    geetest:{
-                        key:geetestKey,
-                        challenge:validate.geetest_challenge,
-                        validate:validate.geetest_validate,
-                        seccode:validate.geetest_seccode
-                    }
-                }
-            }).then(res => {
-                if(res.result){
-                    this.changeState({
-                        captcha:{
-                            status:'start',
-                            time:res.data.time + 60
-                        },
-                        mobileTips:{
-                            hide:'onFocus',
-                            show:'onBlur',
-                            visible:true,
-                            getContent:value => {
-                                if(value !== res.data.mobile)
-                                    return null
-                                return (<span>{formatMessage({id:'register.capthcha.sendSuccess'})}<a>{formatMessage({id:'register.capthcha.notGet'})}</a></span>)
-                            }
-                        }
-                    })
-                }else if(res.status === 1002){
-                    this.changeState({
-                        captcha:{
-                            status:false
-                        },
-                        mobile:{
-                            status:false,
-                            message:(<span key='mobileError'>{formatMessage({id:'register.mobile.takeUp'})}<a target='_blank' href='/login'>{formatMessage({id:'login.page'})}</a></span>),
-                        }
-                    })
-                }else{
-                    this.changeState({
-                        captcha:{
-                            status:false,
-                            message:res.message
-                        }
-                    })
-                }
-            })
-        }else if(action === "close"){
-            this.changeState({
-                captcha:{
-                    status:false
-                }
-            })
-        }
-        gtObject.reset()
-    }
+    const renderErrorMessage = () => {
+        const { status, message } = submit;
+        if (status === false)
+            return <Alert style={{ marginBottom: 24 }} message={message} type="error" showIcon />;
+        return null;
+    };
 
-    handleGeetestInit = callback => {
-        const { dispatch } = this.props
-        dispatch({
-            type:'geetest/init',
-            payload:{
-                mode:"register"
-            }
-        }).then(res => {
-            if(res.result){
-                const { key, gt , challenge , success , newCaptcha } = res.data
-                window.initGeetest({
-                    gt,
-                    challenge,
-                    new_captcha: newCaptcha,
-                    offline: !success,
-                    product: "bind",
-                },gtObject => {
-                    gtObject.onSuccess(() => {
-                        callback(gtObject,key,'success')
-                    })
-                    gtObject.onError(() => {
-                        callback(gtObject,key,'error')
-                    })
-                    gtObject.onClose(() => {
-                        callback(gtObject,key,'close')
-                    })
-                    gtObject.onReady(() => {
-                        gtObject.verify()
-                    })
-                })
-            }else{
-                this.changeState({
-                    submitState:{
-                        status:false,
-                        message:'服务出错啦，请刷新重试'
-                    }
-                })
-            }
-        })
-    }
-
-    handleSubmit = (err, values) => {
-        if(!err){
-            const { dispatch } = this.props
-            dispatch({
-                type:'register/submit',
-                payload:{
-                    name:values['name'],
-                    loginPassword:values['password'],
-                    mobile:values['mobile'],
-                    code:values['code']
-                }
-            }).then(res => {
-                if(!res){
-                    this.changeState({
-                        submitState:{
-                            status:false,
-                            message:"系统错误"
-                        }
-                    })
-                    return
-                }
-                if(res.result === true){
-                    window.location.href = "/login"
-                }else if(res.result === false){
-                    switch(res.status){
-                        case 1001:
-                        this.changeState({
-                            code:{
-                                status:false,
-                                message:res.message
-                            }
-                        })
-                        break
-                        case 1002:
-                        this.changeState({
-                            captcha:{
-                                status:false
-                            },
-                            mobile:{
-                                status:false,
-                                message:(<span key='mobileError'>{formatMessage({id:'register.mobile.takeUp'})}<a target='_blank' href='/login'>{formatMessage({id:'login.page'})}</a></span>),
-                            }
-                        })
-                        break
-                        case 1003:
-                        this.changeState({
-                            name:{
-                                status:false,
-                                message:res.message
-                            }
-                        })
-                        break
-                        default:
-                        this.changeState({
-                            submitState:{
-                                status:false,
-                                message:res.message
-                            }
-                        })
-                    }
-                }
-            })
-        }
-    }
-
-    queryName = name => {
-        const { dispatch } = this.props
-        this.changeState({
-            name:{
-                status:"loading"
-            }
-        })
-        dispatch({
-            type:'user/queryName',
-            payload:{
-                name
-            }
-        }).then(res => {
-            this.changeState({
-                name:{
-                    status:res.result,
-                    data:res.data,
-                    message:res.message
-                }
-            })
-        })
-    }
-
-    changeState = data => {
-        const newState = {}
-        for (const key in data) {
-            newState[key] = merge({},this.state[key],data[key])
-        }
-        this.setState(newState)
-    }
-
-    renderMessage = content => (
-        <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />
-    )
-
-
-    render(){
-        const { registerButton , name ,mobile ,mobileTips , captcha ,code} = this.state
-        const { submiting } = this.props
-        return(
-            <Form
-                onSubmit={this.handleSubmit}
-                wrappedComponentRef ={wrappedComponent => {
-                    this.registerForm = wrappedComponent ? wrappedComponent.props.form : null;
+    return (
+        <Form onSubmit={handleSubmit} form={form}>
+            {renderErrorMessage()}
+            <Name
+                name="name"
+                errors={filedErrors['name']}
+                onBlur={e => {
+                    if (e.change)
+                        setFiledErrors(value => {
+                            return {
+                                ...value,
+                                name: null,
+                            };
+                        });
                 }}
-            >
-                {
-                    this.state.submitState.status === false ? this.renderMessage(this.state.submitState.message) : null
-                }
-                <Name 
-                    name='name' 
-                    autoComplete='off' 
-                    itemStatus={name} 
-                    ansyVaildate={this.queryName} 
-                />
-                <Password name='password' autoComplete='off' />
-                <Mobile 
-                    name='mobile' 
-                    autoComplete='off' 
-                    maxLength={11}
-                    itemStatus={mobile}
-                    tips={mobileTips}
-                />
-                <Captcha 
-                    name='code' 
-                    autoComplete='off' 
-                    captchaStatus={captcha} 
-                    onGetCaptcha={this.handleGetCaptcha} 
-                    itemStatus={code}
-                    onPressEnter={() => this.registerForm.validateFields(this.handleSubmit)}
-                />
-                <p>点击“注册”，即代表您已同意<Link to="" _target="_blank">《ITELLYOU用户协议》</Link></p>
-                <Submit loading={submiting}>{submiting ? registerButton.loadingText : registerButton.text}</Submit>
-            </Form>
-        )
-    }
-}
-
-export default connect(({ loading })=>({
-    submiting:loading.effects["register/submit"]
-}))(Register)
+                autoComplete="off"
+                asyncValidator={(_, value) => {
+                    return new Promise((resolve, reject) => {
+                        dispatch({
+                            type: 'user/queryName',
+                            payload: {
+                                name: value,
+                            },
+                        }).then(res => {
+                            if (res.result) return resolve();
+                            reject(res.message);
+                        });
+                    });
+                }}
+            />
+            <Password name="password" autoComplete="off" />
+            <Mobile
+                name="mobile"
+                autoComplete="off"
+                maxLength={11}
+                errors={filedErrors['mobile']}
+                onBlur={e => {
+                    if (e.change)
+                        setFiledErrors(value => {
+                            return {
+                                ...value,
+                                mobile: null,
+                            };
+                        });
+                }}
+                help={mobileHelp}
+            />
+            <Captcha
+                name="code"
+                autoComplete="off"
+                onSend={sendMobileCaptcha}
+                onPressEnter={form.submit}
+                errors={filedErrors['code']}
+                onBlur={e => {
+                    if (e.change)
+                        setFiledErrors(value => {
+                            return {
+                                ...value,
+                                code: null,
+                            };
+                        });
+                }}
+                {...captcha}
+            />
+            <Submit loading={submiting}>
+                {submiting
+                    ? intl.formatMessage({ id: 'register.submit.loadingText' })
+                    : intl.formatMessage({ id: 'register.submit.text' })}
+            </Submit>
+            <Form.Item>
+                <p className={styles['protocol']}>
+                    注册即表明同意
+                    <Link to="">《ITELLYOU用户协议》</Link>
+                </p>
+                <div className={styles['register-footer']}>
+                    <Link to="/login">去登陆</Link>
+                </div>
+            </Form.Item>
+        </Form>
+    );
+};

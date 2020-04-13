@@ -1,9 +1,12 @@
-import React from 'react'
-import { Icon } from 'antd'
-import BaseButton from './BaseButton'
+import React from 'react';
+import BaseButton from './BaseButton';
+import { DislikeOutlined } from '@ant-design/icons';
 
-function OpposeButton({ children , ...props }){
-
-    return <BaseButton {...props}><Icon type="dislike" theme="filled" />{children}</BaseButton>
+function OpposeButton({ children, ...props }) {
+    return (
+        <BaseButton {...props} icon={<DislikeOutlined />}>
+            {children}
+        </BaseButton>
+    );
 }
-export default OpposeButton
+export default OpposeButton;

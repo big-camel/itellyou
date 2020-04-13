@@ -1,21 +1,103 @@
-.notifications{
+.popover {
+    :global {
+        .ant-popover-inner-content {
+            padding: 0;
+        }
+    }
+}
+
+.notifications {
     width: 360px;
 
-    .tabs{
-        height: 350px;
-        overflow-x: hidden;
-        overflow-y: auto;
+    .tabs {
+        :global {
+            .ant-tabs-bar {
+                margin: 0;
+            }
+
+            .ant-tabs-nav {
+                display: block;
+                > div {
+                    display: flex;
+                    width: 100%;
+
+                    .ant-tabs-tab {
+                        display: block;
+                        text-align: center;
+                        flex: 1 1;
+                        margin: 0;
+                        padding: 10px 0;
+                        font-size: 18px;
+                    }
+                }
+
+                .ant-tabs-ink-bar {
+                    background: transparent;
+                }
+            }
+
+            .ant-tabs-tabpane {
+                height: 350px;
+                overflow-x: hidden;
+                overflow-y: auto;
+                padding: 0 15px;
+            }
+        }
     }
 
-    .footer{
-        padding: 12px 0 0 0;
+    .footer {
+        padding: 12px 15px;
         background: #fff;
         border-top: 1px solid #ebebeb;
         display: flex;
         justify-content: space-between;
+        align-items: center;
 
         > a {
             padding: 0;
+            color: #262626;
         }
     }
+}
+
+.badge {
+    :global {
+        .ant-badge-count {
+            min-width: 16px;
+            height: 16px;
+            line-height: 16px;
+            padding: 0 2px;
+        }
+
+        .ant-badge-multiple-words {
+            padding: 0 4px;
+        }
+    }
+}
+
+.notifications-list {
+    :global {
+        .ant-list-item {
+            justify-content: start;
+            color: #262626;
+        }
+    }
+}
+
+.follower-list-title {
+    position: relative;
+    height: 54px;
+    font-size: 14px;
+    line-height: 54px;
+    color: #8590a6;
+    text-align: center;
+}
+
+.follower-list-title:after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-bottom: 1px solid #ebebeb;
+    content: '';
 }

@@ -1,15 +1,42 @@
 .column-layout {
     .header {
         background-color: #fff;
-        box-shadow: 0 1px 3px 0 rgba(26,26,26,.1);
+        border-bottom: 1px solid #f0f0f0;
         color: #1a1a1a;
-        padding: 20px 0 16px;
+        padding: 24px 0;
 
         .header-inner {
             position: relative;
             width: 690px;
             margin: 0 auto;
             min-height: 124px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .info {
+                .title {
+                    font-size: 28px;
+
+                    a {
+                        color: #262626;
+                    }
+                }
+
+                .description {
+                    margin-bottom: 12px;
+                }
+
+                .count {
+                    color: #888888;
+                    margin-bottom: 8px;
+                }
+            }
         }
+    }
+
+    .body {
+        width: 690px;
+        margin: 24px auto 0 auto;
     }
 }

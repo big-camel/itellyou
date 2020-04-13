@@ -1,0 +1,115 @@
+.notifications-list {
+    .notifications-item {
+        .body {
+            display: flex;
+
+            .icon {
+                font-size: 16px;
+                color: #ffffff;
+                margin-right: 12px;
+                padding-top: 4px;
+
+                .bg {
+                    width: 34px;
+                    height: 34px;
+                    line-height: 34px;
+                    border-radius: 50%;
+                    background: @primary-color;
+                    text-align: center;
+                }
+            }
+
+            .info {
+                width: 100%;
+
+                .title {
+                    margin-bottom: 0;
+                    color: #8c8c8c;
+                }
+
+                .content {
+                    .actors {
+                        margin-right: 8px;
+                    }
+
+                    .op-body {
+                        .target {
+                            font-size: 14px;
+                            font-weight: 600;
+                            color: #262626;
+                        }
+                    }
+
+                    .op-block {
+                        margin-top: 16px;
+
+                        .target {
+                            display: block;
+                            color: #595959;
+                        }
+
+                        .op-block-content {
+                            margin-top: 8px;
+                            background: #fafafa;
+                            padding: 8px;
+                            border-radius: 4px;
+
+                            .op-block-content-inside {
+                                margin-top: 8px;
+                                background: #ffffff;
+                                padding: 8px;
+                                border-radius: 4px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .like-body,
+        .comment-body,
+        .publish-body {
+            :global(.user-author-name) {
+                font-weight: normal;
+            }
+            .info {
+                .content {
+                    .op-block {
+                        margin-top: 0;
+                    }
+                }
+            }
+
+            .icon {
+                .bg {
+                    background-color: #dc143c;
+                }
+            }
+        }
+
+        .comment-body {
+            .icon {
+                .bg {
+                    background-color: #d2691e;
+                }
+            }
+        }
+
+        .publish-body {
+            .icon {
+                .bg {
+                    background-color: #228b22;
+                }
+            }
+        }
+
+        .time {
+            position: relative;
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #595959;
+            margin-bottom: 16px;
+        }
+    }
+}

@@ -1,45 +1,64 @@
-import React from 'react'
-import { Avatar } from 'antd'
-import { Link } from 'umi'
-import classnames from 'classnames'
+import React from 'react';
+import { Avatar } from 'antd';
+import { Link } from 'umi';
+import classnames from 'classnames';
+import UserBrand from '../Brand';
+import './index.less';
 
-import styles from './index.less'
-import UserBrand from '../Brand'
-
-export default ({info : { id , path , name , avatar , description , use_author } , size , extra , className , onlyAvatar}) => {
-    size = size || "default"
-    let avatarShape = "square"
-    let avatarSize = 40
-    if(size === "small"){
-        avatarShape = "circle"
-        avatarSize = 24
-        description = undefined
+export default ({
+    info: { id, path, name, avatar, description, use_author },
+    size,
+    extra,
+    className,
+    model,
+    brand = true,
+}) => {
+    size = size || 'default';
+    let avatarShape = 'circle'; //"square"
+    let avatarSize = 40;
+    if (size === 'small') {
+        avatarShape = 'circle';
+        avatarSize = 24;
+        description = undefined;
     }
+    if (size === 'middle') avatarSize = 32;
+    const getLink = () => {
+        return (
+            <Link to={`/${path}`}>
+                <span dangerouslySetInnerHTML={{ __html: name }} />
+                {use_author && <span>(作者)</span>}
+            </Link>
+        );
+    };
     return (
-        <div className={classnames(styles["author"],styles[size],className)}>
-            <div className={styles['avatar']}>
-                <UserBrand id={id}>
-                    <Avatar shape={avatarShape} size={avatarSize} src={avatar} />
-                </UserBrand>
-            </div>
-            {
-                !onlyAvatar && (
-                    <div className={styles["title"]}>
-                        <div className={styles["name"]} >
-                            <UserBrand id={id}>
-                                <Link to={`/${path}`}>{name}{ use_author && <span>(作者)</span>}</Link>
-                            </UserBrand>
-                        </div>
-                        {
-                            description && <div className={styles["desc"]}>{description}</div>
-                        }
+        <div className={classnames('user-author', `user-author-${size}`, className)}>
+            {(!model || model === 'avatar') && (
+                <div className="user-author-avatar">
+                    <UserBrand id={id}>
+                        <Avatar
+                            shape={avatarShape}
+                            size={avatarSize}
+                            src={avatar || 'http://cdn-object.itellyou.com/avatar/default.png'}
+                        />
+                    </UserBrand>
+                </div>
+            )}
+            {(!model || model === 'name') && (
+                <div className="user-author-content">
+                    <div className="user-author-name">
+                        {brand && <UserBrand id={id}>{getLink()}</UserBrand>}
+                        {!brand && getLink()}
                     </div>
-                )
-            }
-            
-            {
-                extra
-            }
+                    {description && (
+                        <p
+                            className="user-author-desc"
+                            dangerouslySetInnerHTML={{ __html: description }}
+                        />
+                    )}
+                </div>
+            )}
+
+            {extra}
         </div>
-    )
-}
+    );
+};

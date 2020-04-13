@@ -1,0 +1,47 @@
+.history-list {
+    .history-item {
+        .time {
+            position: relative;
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #262626;
+            padding-top: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            background: #ffffff;
+        }
+
+        .content {
+            padding: 12px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px dashed #f0f0f0;
+
+            > h2 {
+                font-size: 14px;
+                font-weight: normal;
+                margin: 0;
+
+                a {
+                    color: #595959;
+                }
+            }
+        }
+
+        .content:hover {
+            background: #f5f5f5;
+        }
+    }
+
+    .history-item:global(.ant-list-item) {
+        padding: 0;
+    }
+
+    .history-item:first-child {
+        .time {
+            padding-top: 0;
+        }
+    }
+}

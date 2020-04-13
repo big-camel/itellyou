@@ -1,0 +1,32 @@
+.layout-sider.ant-menu {
+    border: 1px solid #f0f0f0;
+
+    .ant-menu-item {
+        padding-left: 0;
+        border-bottom: 1px solid #e8e8e8;
+        height: 48px;
+        line-height: 48px;
+        color: #595959;
+        margin-bottom: 0;
+
+        > a {
+            color: #595959;
+            padding-left: 24px;
+            border-left: 2px solid rgba(0, 0, 0, 0);
+        }
+    }
+
+    .ant-menu-item.ant-menu-item-selected {
+        background-color: transparent;
+        > a {
+            border-left-color: @primary-color;
+            font-weight: 500;
+            color: #262626;
+        }
+    }
+
+    .ant-menu-item:not(:last-child) {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+}

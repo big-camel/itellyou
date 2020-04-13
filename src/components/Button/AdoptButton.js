@@ -1,9 +1,12 @@
-import React from 'react'
-import { Icon } from 'antd'
-import BaseButton from './BaseButton'
+import React from 'react';
+import BaseButton from './BaseButton';
+import { CheckCircleOutlined } from '@ant-design/icons';
 
-function AdoptButton({ children , active, ...props }){
-
-    return <BaseButton type={active ? "primary" : "default"} {...props}><Icon type="check-circle" />{children}</BaseButton>
+function AdoptButton({ children, active, ...props }) {
+    return (
+        <BaseButton type={active ? 'primary' : 'default'} icon={<CheckCircleOutlined />} {...props}>
+            {children}
+        </BaseButton>
+    );
 }
-export default AdoptButton
+export default AdoptButton;

@@ -1,69 +1,50 @@
-import React from 'react'
-import classNames from 'classnames'
-import Layout from '../components/Layout'
-import { Menu, Card } from 'antd'
-import User from './User'
-import { Link } from 'umi'
-import Follower from './Follower'
-import Column from './Column'
-import Question from './Question'
-import Tag from './Tag'
+import React from 'react';
+import Layout from '../components/Layout';
+import User from './User';
+import Follower from './Follower';
+import Column from './Column';
+import Question from './Question';
+import Tag from './Tag';
+import CardMenu from '../components/CardMenu';
 
 const menus = [
     {
-        key:"user",
-        title:"关注的人"
+        key: 'user',
+        title: '关注的人',
+        to: 'follows?type=user',
+        component: <User />,
     },
     {
-        key:"follower",
-        title:"关注我的人"
+        key: 'follower',
+        title: '关注我的人',
+        to: 'follows?type=follower',
+        component: <Follower />,
     },
     {
-        key:"column",
-        title:"关注的专栏"
+        key: 'column',
+        title: '关注的专栏',
+        to: 'follows?type=column',
+        component: <Column />,
     },
     {
-        key:"question",
-        title:"关注的提问"
+        key: 'question',
+        title: '关注的问题',
+        to: 'follows?type=question',
+        component: <Question />,
     },
     {
-        key:"tag",
-        title:"关注的标签"
-    }
-]
-export default ({ location : { query } }) => {
-    const type = query.type || "user"
-
-    const render = () => {
-        switch(type){
-            case "user": return <User />
-            case "follower": return <Follower />
-            case "column": return <Column />
-            case "question": return <Question />
-            case "tag": return <Tag />
-        }
-    }
+        key: 'tag',
+        title: '关注的标签',
+        to: 'follows?type=tag',
+        component: <Tag />,
+    },
+];
+export default ({ location: { query } }) => {
+    const type = query.type || 'user';
 
     return (
         <Layout defaultKey="follows">
-            <Card
-            title={
-                <Menu mode="horizontal">
-                    {
-                        menus.map(({ key , title }) => <Menu.Item 
-                        key={key} 
-                        className={classNames({"active" : key === type})}>
-                            <Link to={`follows?type=${key}`}>{ title }</Link>
-                        </Menu.Item>)
-                    }
-                </Menu>
-            }
-            >
-            {
-                render()
-            }
-            </Card>
+            <CardMenu dataSource={menus} defaultKey={type} />
         </Layout>
-        
-    )
-}
+    );
+};

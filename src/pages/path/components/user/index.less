@@ -1,6 +1,5 @@
-.info-card{
-
-    :global(.ant-card-body){
+.info-card {
+    :global(.ant-card-body) {
         position: relative;
         padding: 32px 0 0;
     }
@@ -12,7 +11,7 @@
         align-items: center;
         text-align: center;
         color: #8c8c8c;
-    
+
         h2 {
             display: block;
             overflow: hidden;
@@ -23,7 +22,7 @@
             color: #262626;
             margin-top: 20px;
         }
-    
+
         .description {
             margin: 0 auto;
             padding: 0 16px;
@@ -31,25 +30,25 @@
             word-wrap: break-word;
         }
     }
-    
-    .info-follow{
+
+    .info-follow {
         margin-top: 16px;
         text-align: center;
-    
-        .btn{
+
+        .btn {
             width: 100%;
             max-width: 208px;
         }
-    
-        .info{
+
+        .info {
             position: relative;
             overflow: hidden;
             margin: 4px 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-    
-            >.split{
+
+            > .split {
                 position: absolute;
                 left: 50%;
                 top: 50%;
@@ -58,12 +57,12 @@
                 height: 32px;
                 background-color: #e8e8e8;
             }
-    
-            >a{
+
+            > a {
                 width: 50%;
                 padding: 16px;
                 color: #8c8c8c;
-    
+
                 .count {
                     font-size: 20px;
                     font-weight: 700;
@@ -72,11 +71,17 @@
             }
         }
     }
-    
+
     .info-detail {
         border-top: 1px solid #e8e8e8;
         padding: 16px;
         font-size: 14px;
         color: #8c8c8c;
+    }
+}
+
+.content-card {
+    :global(.ant-card-head-title) {
+        padding: 0;
     }
 }

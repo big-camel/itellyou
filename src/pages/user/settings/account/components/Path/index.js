@@ -1,106 +1,91 @@
-import React , { useRef , useState } from 'react'
-import { Modal, message } from 'antd'
-import '@/utils/gt.js'
-import { useDispatch, useSelector } from 'dva'
-import Verify from '@/components/User/Verify'
-import Form , { Submit } from '@/components/Form'
-import formMap from './formMap'
+import React from 'react';
+import { Modal, message } from 'antd';
+import '@/utils/gt.js';
+import { useDispatch, useSelector } from 'umi';
+import Verify from '@/components/User/Verify';
+import Form, { Submit } from '@/components/Form';
+import formMap from './formMap';
 
-const { Path } = Form.createItem(formMap)
+const { Path } = Form.createItem(formMap);
 
-export default ({ onClose , visible , defaultValue }) => {
+export default ({ onClose, visible, defaultValue }) => {
+    const [form] = Form.useForm();
 
-    const form = useRef()
+    const dispatch = useDispatch();
+    const loadingEffect = useSelector(state => state.loading);
+    const submiting = loadingEffect.effects['user/update'];
 
-    const [ pathState , setPathState ] = useState({})
-
-    const dispatch = useDispatch()
-    const loadingEffect = useSelector(state => state.loading)
-    const submiting = loadingEffect.effects['user/update']
-
-    const findPath = path => {
-        if(path === "") return
-        if(path === defaultValue){
-            setPathState(state => {
-                return { ...state,status:true,data:defaultValue,message:"" }
-            })
-            return
-        }
-        setPathState(state => {
-            return {...state,status:"loading"}
-        })
-
-        dispatch({
-            type:'path/find',
-            payload:{
-                path
+    const findPath = (_, path) => {
+        return new Promise((resolve, reject) => {
+            if (path === defaultValue) {
+                return resolve();
             }
-        }).then(res => {
-            setPathState(state => {
-                if(res.result)
-                    return { ...state,status:!res.result,data:res.data.path,message:"不可用的路径或已被使用" }
-                return {...state,status:true,data:res.data,message:null}
-            })
-        })
-    }
 
-    const handleSubmit = (err, values) => {
-        if(!err){
             dispatch({
-                type:"user/update",
-                payload:{
-                    action:"path",
-                    ...values
-                }
-            }).then(res => {
-                if(!res) {
-                    message.error("服务出错啦，请刷新重试")
-                    return
-                }
-                if(res.result){
-                    message.success("更新成功")
-                    if(onClose) onClose()
-                }else{
-                    message.error(res.message)
-                }
-            })
-        }
-    }
+                type: 'path/find',
+                payload: {
+                    path,
+                },
+            }).then(({ result }) => {
+                if (result) return reject('不可用的路径或已被使用');
+                resolve();
+            });
+        });
+    };
+
+    const handleSubmit = values => {
+        dispatch({
+            type: 'user/update',
+            payload: {
+                action: 'path',
+                ...values,
+            },
+        }).then(res => {
+            if (res.result) {
+                message.success('更新成功');
+                if (onClose) onClose();
+            } else {
+                message.error(res.message);
+            }
+        });
+    };
 
     return (
-        <Verify 
-        visible={visible} 
-        onClose={() => {
-            if(onClose) onClose()
-        }}>
-            <Modal
-            title="更改个人路径"
+        <Verify
+            form={form}
             visible={visible}
-            footer={null}
-            destroyOnClose={true}
-            onCancel={() => {
-                if(onClose) onClose()
+            onClose={() => {
+                if (onClose) onClose();
             }}
+        >
+            <Modal
+                title="更改个人路径"
+                visible={visible}
+                footer={null}
+                destroyOnClose={true}
+                onCancel={() => {
+                    if (onClose) onClose();
+                }}
             >
                 <Form
-                layout="vertical"
-                hideRequiredMark={true}
-                onSubmit={handleSubmit}
-                wrappedComponentRef ={wrappedComponent => {
-                    form.current = wrappedComponent ? wrappedComponent.props.form : null;
-                }}
+                    form={form}
+                    layout="vertical"
+                    hideRequiredMark={true}
+                    onSubmit={handleSubmit}
+                    initialValues={{
+                        path: defaultValue,
+                    }}
                 >
                     <Path
-                    name='path' 
-                    autoComplete='off' 
-                    placeholder={defaultValue}
-                    defaultValue={defaultValue}
-                    itemStatus={pathState}
-                    ansyVaildate={findPath}
+                        name="path"
+                        autoComplete="off"
+                        placeholder={defaultValue}
+                        defaultValue={defaultValue}
+                        asyncValidator={findPath}
                     />
-                    <Submit loading={submiting}>{ submiting ? "提交中...": "确认" }</Submit>
+                    <Submit loading={submiting}>{submiting ? '提交中...' : '确认'}</Submit>
                 </Form>
             </Modal>
         </Verify>
-    )
-}
+    );
+};

@@ -1,226 +1,270 @@
-import { find , findDraft , deleteDraft , deleteAnswer , revokeDelete , list , vote } from '@/services/answer/index'
-import { setList } from '@/utils/model'
+import {
+    find,
+    findDraft,
+    deleteDraft,
+    deleteAnswer,
+    revokeDelete,
+    list,
+    vote,
+} from '@/services/answer/index';
+import { setList } from '@/utils/model';
 
 export default {
     namespace: 'answer',
 
     state: {
-        ...window.appData.answer
+        ...window.appData.answer,
     },
 
     effects: {
-        *list({ payload : { append , ...payload } }, { call , put}){
-            const response = yield call(list,payload)
-            if(response && response.result){
+        *list({ payload: { append, ...payload } }, { call, put }) {
+            const response = yield call(list, payload);
+            if (response && response.result) {
                 yield put({
-                    type:'setList',
-                    payload:{...response.data,append}
-                })
+                    type: 'setList',
+                    payload: { ...response.data, append },
+                });
             }
-            return response
+            return response;
         },
-        *find({ payload }, { call , put }){
-            const response = yield call(find,payload)
-            if(response && response.result){
-                const detail = response.data
+        *find({ payload }, { call, put }) {
+            const response = yield call(find, payload);
+            if (response && response.result) {
+                const detail = response.data;
                 yield put({
-                    type:'setDetail',
-                    payload:detail
-                })
+                    type: 'setDetail',
+                    payload: detail,
+                });
             }
-            return response
+            return response;
         },
-        *findDraft({ payload }, { call , put , select}){
-            if(!payload){
-                const question = yield select(state => state.question)
-                const detail = question ? question.detail : null
-                if(!detail) return
-                payload = {question_id : detail.id}
+        *findDraft({ payload }, { call, put, select }) {
+            if (!payload) {
+                const question = yield select(state => state.question);
+                const detail = question ? question.detail : null;
+                if (!detail) return;
+                payload = { question_id: detail.id };
             }
-            const response = yield call(findDraft,payload)
-            if(response && response.result){
+            const response = yield call(findDraft, payload);
+            if (response && response.result) {
                 yield put({
-                    type:'question/setUserAnswer',
-                    payload:response.data
-                })
+                    type: 'question/setUserAnswer',
+                    payload: response.data,
+                });
             }
-            return response
+            return response;
         },
-        *deleteDraft({ payload }, { call , put , select }){
-            const question = yield select(state => state.question)
-            const detail = question ? question.detail : null
-            if(!detail) return
-            payload.question_id = detail.id
-            const response = yield call(deleteDraft,payload)
-            if(response && response.result){
+        *deleteDraft({ payload }, { call, put, select }) {
+            const question = yield select(state => state.question);
+            const detail = question ? question.detail : null;
+            if (!detail) return;
+            payload.question_id = detail.id;
+            const response = yield call(deleteDraft, payload);
+            if (response && response.result) {
                 yield put({
-                    type:'question/setUserAnswer',
-                    payload:{
-                        draft:false
+                    type: 'question/setUserAnswer',
+                    payload: {
+                        draft: false,
+                    },
+                });
+            }
+            return response;
+        },
+        *delete({ payload }, { call, put, select }) {
+            const response = yield call(deleteAnswer, payload);
+            if (response && response.result) {
+                const userAnswer = yield select(state =>
+                    state.question ? state.question.user_answer : null,
+                );
+                const answer = yield select(state => state.answer);
+                let detail = answer && answer.detail ? { ...answer.detail, deleted: true } : null;
+                if (detail && userAnswer && userAnswer.id === detail.id) {
+                    yield put({
+                        type: 'setDetail',
+                        payload: detail,
+                    });
+                } else {
+                    detail = response.data;
+                }
+                if (userAnswer && userAnswer.id === detail.id) {
+                    yield put({
+                        type: 'question/setUserAnswer',
+                        payload: {
+                            deleted: detail.deleted,
+                        },
+                    });
+                }
+                const list = answer ? answer.list : null;
+                if (list) {
+                    const data = list.data;
+                    const index = data.findIndex(item => item.id === detail.id);
+                    data.splice(index, 1, detail);
+                    yield put({
+                        type: 'setList',
+                        payload: { ...list, data, total: list.total - 1 },
+                    });
+                }
+            }
+            return response;
+        },
+        *revoke({ payload }, { call, put, select }) {
+            const response = yield call(revokeDelete, payload);
+            if (response && response.result) {
+                const userAnswer = yield select(state =>
+                    state.question ? state.question.user_answer : null,
+                );
+                const answer = yield select(state => state.answer);
+                let detail = answer && answer.detail ? { ...answer.detail, deleted: false } : null;
+                if (detail && userAnswer && userAnswer.id === detail.id) {
+                    yield put({
+                        type: 'setDetail',
+                        payload: detail,
+                    });
+                } else {
+                    detail = response.data;
+                }
+
+                if (userAnswer && userAnswer.id === detail.id) {
+                    yield put({
+                        type: 'question/setUserAnswer',
+                        payload: {
+                            deleted: detail.deleted,
+                            draft: true,
+                        },
+                    });
+                }
+
+                const list = answer ? answer.list : null;
+                if (list) {
+                    let data = list.data;
+                    const index = data.findIndex(item => item.id === detail.id);
+
+                    if (index >= 0) {
+                        data.splice(index, 1, detail);
+                    } else {
+                        data.push(detail);
                     }
-                })
-            }
-            return response
-        },
-        *delete({ payload }, { call , put , select }){
-            const response = yield call(deleteAnswer,payload)
-            if(response && response.result){
-                const userAnswer = yield select(state => state.question ? state.question.user_answer : null)
-                const answer = yield select(state => state.answer)
-                let detail = answer && answer.detail ? {...answer.detail, deleted : true} : null
-                if(detail && userAnswer && userAnswer.id === detail.id){
                     yield put({
-                        type:'setDetail',
-                        payload:detail
-                    })
-                }else{
-                    detail = response.data
-                }
-                if(userAnswer && userAnswer.id === detail.id){
-                    yield put({
-                        type:'question/setUserAnswer',
-                        payload:{
-                            deleted:detail.deleted
-                        }
-                    })
-                }
-                const list = answer ? answer.list : null
-                if(list){
-                    const data = list.data
-                    const index = data.findIndex(item => item.id === detail.id)
-                    data.splice(index,1,detail)
-                    yield put({
-                        type:'setList',
-                        payload:{ ...list , data , total:list.total-1}
-                    })
+                        type: 'setList',
+                        payload: { ...list, data, total: list.total + 1 },
+                    });
                 }
             }
-            return response
+            return response;
         },
-        *revoke({ payload }, { call , put , select}){
-            const response = yield call(revokeDelete,payload)
-            if(response && response.result){
-                const userAnswer = yield select(state => state.question ? state.question.user_answer : null)
-                const answer = yield select(state => state.answer)
-                let detail = answer && answer.detail ? {...answer.detail, deleted : false} : null
-                if(detail && userAnswer && userAnswer.id === detail.id){
+        *vote({ payload }, { call, put, select }) {
+            const response = yield call(vote, payload);
+            if (response && response.result) {
+                const answer = yield select(state => state.answer);
+                let detail = answer && answer.detail ? answer.detail : null;
+
+                const setUse = item => {
+                    response.data['use_support'] =
+                        payload.type === 'support' ? !item.use_support : false;
+                    response.data['use_oppose'] =
+                        payload.type === 'oppose' ? !item.use_oppose : false;
+                    return response.data;
+                };
+
+                if (detail && response.data.id === detail.id) {
+                    response.data = setUse(detail);
                     yield put({
-                        type:'setDetail',
-                        payload:detail
-                    })
-                }else{
-                    detail = response.data
+                        type: 'setDetail',
+                        payload: { ...detail, ...response.data },
+                    });
                 }
-                
-                if(userAnswer && userAnswer.id === detail.id){
-                    yield put({
-                        type:'question/setUserAnswer',
-                        payload:{
-                            deleted:detail.deleted,
-                            draft:true
-                        }
-                    })
-                }
-                
-                const list = answer ? answer.list : null
-                if(list){
-                    let data = list.data
-                    const index = data.findIndex(item => item.id === detail.id)
-                    
-                    if(index >= 0){
-                        data.splice(index,1,detail)
-                    }else{
-                        data = [detail]
-                    }
-                    yield put({
-                        type:'setList',
-                        payload:{ ...list , data,total:list.total+1}
-                    })
-                }
-            }
-            return response
-        },
-        *vote({ payload }, { call , put , select}){
-            const response = yield call(vote,payload)
-            if(response && response.result){
-                const answer = yield select(state => state.answer)
-                let detail = answer && answer.detail ? answer.detail : null
-                
-                if(detail && response.data.id === detail.id){
-                    response.data['use_support'] = payload.type === "support" ? !detail.use_support : false
-                    response.data['use_oppose'] = payload.type === "oppose" ? !detail.use_oppose : false
-                    yield put({
-                        type:'setDetail',
-                        payload:{...detail,...response.data}
-                    })
-                }
-                const list = yield select(state => state.answer ? state.answer.list : {})
-                const dataItem = list.data.find(item => item.id === response.data.id)
-                if(dataItem){
-                    response.data['use_support'] = payload.type === "support" ? !dataItem.use_support : false
-                    response.data['use_oppose'] = payload.type === "oppose" ? !dataItem.use_oppose : false
+                let list = yield select(state => (state.answer ? state.answer.list : {}));
+
+                let dataItem = list ? list.data.find(item => item.id === response.data.id) : null;
+                if (dataItem) {
+                    response.data = setUse(dataItem);
                 }
                 yield put({
-                    'type':'updateListItem',
-                    payload:response.data
-                })
+                    type: 'updateListItem',
+                    payload: response.data,
+                });
+
+                list = yield select(state => (state.explore ? state.explore.recommends : null));
+                dataItem = list
+                    ? list.data.find(item => {
+                          const { type, object } = item;
+                          if (type === 'question') {
+                              const answer = object.answer_list.find(
+                                  answer => answer.id === payload.id,
+                              );
+                              if (answer) return answer;
+                          }
+                      })
+                    : null;
+                if (dataItem) {
+                    response.data = setUse(dataItem);
+                    yield put({
+                        type: 'explore/replaceRecommendsArticle',
+                        payload: {
+                            ...response.data,
+                        },
+                    });
+                }
             }
-            return response
-        }
+            return response;
+        },
     },
-    reducers:{
-        setDetail(state,{ payload }){
+    reducers: {
+        setDetail(state, { payload }) {
             return {
                 ...state,
-                detail:payload
-            }
+                detail: payload,
+            };
         },
-        updateDetail(state,{ payload }){
+        updateDetail(state, { payload }) {
             return {
                 ...state,
-                detail:{...state.detail,...payload}
-            }
+                detail: { ...state.detail, ...payload },
+            };
         },
-        setDraft(state,{ payload }){
+        setDraft(state, { payload }) {
             return {
                 ...state,
-                draft:payload
-            }
+                draft: payload,
+            };
         },
-        setList(state,{ payload }){
-            return setList("list",payload,state)
+        setList(state, { payload }) {
+            return setList('list', payload, state);
         },
-        updateComments(state,{ payload:{ id, value} }){
+        updateComments(state, { payload: { id, value } }) {
             const data = state.list ? state.list.data || [] : [];
-            const index = data.findIndex(item => item.id === id)
-            if(index >= 0){
-                data.splice(index,1,{...data[index],comments:data[index].comments + (value || 1)})
+            const index = data.findIndex(item => item.id === id);
+            if (index >= 0) {
+                data.splice(index, 1, {
+                    ...data[index],
+                    comments: data[index].comments + (value || 1),
+                });
             }
             return {
                 ...state,
-                list:{...state.list,data}
-            }
+                list: { ...state.list, data },
+            };
         },
-        updateListItem(state,{ payload }){
+        updateListItem(state, { payload }) {
             const data = state.list ? state.list.data || [] : [];
-            const index = data.findIndex(item => item.id === payload.id)
-            if(index >= 0){
-                data.splice(index,1,{...data[index],...payload})
+            const index = data.findIndex(item => item.id === payload.id);
+            if (index >= 0) {
+                data.splice(index, 1, { ...data[index], ...payload });
             }
             return {
                 ...state,
-                list:{...state.list,data}
-            }
+                list: { ...state.list, data },
+            };
         },
-        updateListAll(state,{ payload }){
+        updateListAll(state, { payload }) {
             let data = state.list ? state.list.data || [] : [];
             data = data.map(item => {
-                return {...item,...payload}
-            })
+                return { ...item, ...payload };
+            });
             return {
                 ...state,
-                list:{...state.list,data}
-            }
+                list: { ...state.list, data },
+            };
         },
-    }
-}
+    },
+};

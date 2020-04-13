@@ -1,49 +1,89 @@
-import React, { Component } from 'react'
-import { Form } from 'antd';
-import classNames from 'classnames'
-import Submit from './Submit'
-import Tab from './Tab'
-import TabForm from './TabForm'
-import FormContext from './formContext'
-import formItem from './formItem'
-import styles from './index.less'
+import React, { useState } from 'react';
+import { Form, Tabs } from 'antd';
+import classNames from 'classnames';
+import Submit from './Submit';
+import Tab from './Tab';
+import FormContext from './FormContext';
+import formItem from './FormItem';
+import styles from './index.less';
 
-class FormComponent extends Component {
+const FormComponent = ({ defaultActiveKey, onChange, onSubmit, className, children, ...props }) => {
+    const [form] = Form.useForm(props.form);
+    const [tabs, setTabs] = useState([]);
+    const [active, setActive] = useState({});
+    const [type, setType] = useState(defaultActiveKey);
 
-    getContext = () => {
-        const { form } = this.props;
-        return {
-            form,
+    const TabChildren = [];
+    const otherChildren = [];
+    React.Children.forEach(children, item => {
+        if (!item) {
+            return;
         }
-    };
+        // eslint-disable-next-line
+        if (item.type.typeName === 'FormTab') {
+            TabChildren.push(item);
+        } else {
+            otherChildren.push(item);
+        }
+    });
 
-    handleSubmit = e => {
-        e.preventDefault()
-        const { form, onSubmit } = this.props
-        form.validateFields((err, values) => {
-            onSubmit(err, values)
-        })
-    };
-
-    render() {
-        const { className, children , onSubmit , form , ...props} = this.props;
-        return (
-            <FormContext.Provider value={this.getContext()}>
-                <div className={classNames(className, styles.tagForm)}>
-                <Form onSubmit={this.handleSubmit} {...props}>
-                    {children}
+    return (
+        <FormContext.Provider
+            value={{
+                form,
+                tabUtil: {
+                    addTab: id => {
+                        setTabs([...tabs, id]);
+                    },
+                    removeTab: id => {
+                        setTabs(tabs.filter(currentId => currentId !== id));
+                    },
+                },
+                updateActive: activeItem => {
+                    if (!active) return;
+                    if (active[type]) {
+                        active[type].push(activeItem);
+                    } else {
+                        active[type] = [activeItem];
+                    }
+                    setActive(active);
+                },
+            }}
+        >
+            <div className={classNames(styles.formWarp, className)}>
+                <Form
+                    scrollToFirstError
+                    form={form}
+                    onFinish={values => {
+                        if (onSubmit) {
+                            onSubmit(values);
+                        }
+                    }}
+                    {...props}
+                >
+                    {tabs.length ? (
+                        <React.Fragment>
+                            <Tabs
+                                activeKey={type}
+                                onChange={activeKey => {
+                                    setType(activeKey);
+                                    if (onChange) onChange(activeKey);
+                                }}
+                            >
+                                {TabChildren}
+                            </Tabs>
+                            {otherChildren}
+                        </React.Fragment>
+                    ) : (
+                        children
+                    )}
                 </Form>
-                </div>
-            </FormContext.Provider>
-        )
-    }
-}
-
-FormComponent.createItem = formItem
-
-export default Form.create()(FormComponent)
-export {
-    Submit,
-    Tab,
-    TabForm
-}
+            </div>
+        </FormContext.Provider>
+    );
+};
+FormComponent.useForm = Form.useForm;
+FormComponent.Item = Form.Item;
+FormComponent.createItem = formItem;
+export default FormComponent;
+export { Submit, Tab };

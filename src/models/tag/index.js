@@ -1,136 +1,129 @@
-import { find , create,search , query ,group,list , auditList , auditVersion } from '@/services/tag/index'
+import {
+    find,
+    create,
+    search,
+    query,
+    group,
+    list,
+    auditList,
+    auditVersion,
+} from '@/services/tag/index';
+import { setList, replaceItem } from '@/utils/model';
 
 export default {
     namespace: 'tag',
 
     state: {
-        list:null,
-        group:null,
-        search:null,
-        auditList:null
+        list: null,
+        group: null,
+        search: null,
+        auditList: null,
+        detail: {},
     },
 
     effects: {
-        *find({ payload }, { call , put }){
-            const response = yield call(find,payload)
+        *find({ payload }, { call, put }) {
+            const response = yield call(find, payload);
             yield put({
-                type:'updateDetail',
-                payload:response.data
-            })
-            return response
+                type: 'updateDetail',
+                payload: response.data,
+            });
+            return response;
         },
-        *create({ payload }, { call }){
-            const response = yield call(create,payload)
-            return response
+        *create({ payload }, { call }) {
+            const response = yield call(create, payload);
+            return response;
         },
-        *query({ payload }, { call , put}){
-            const response = yield call(query,payload)
+        *query({ payload }, { call, put }) {
+            const response = yield call(query, payload);
             yield put({
-                type:'updateDetail',
-                payload:response.data
-            })
-            return response
+                type: 'updateDetail',
+                payload: response.data,
+            });
+            return response;
         },
-        *search({ payload }, { call , put }){
-            const { enableCreate , ...params } = payload
-            if(payload.w === "") return
-            const response = yield call(search,params)
-            if(response && response.result){
-                const { w } = payload
-                const { data } = response
-                let searchData = []
-                if(enableCreate && data.length === 0 && w.trim() !== ""){
+        *search({ payload }, { call, put }) {
+            const { create, ...params } = payload;
+            if (payload.w === '') return;
+            const response = yield call(search, params);
+            if (response && response.result) {
+                const { w } = payload;
+                const { data } = response;
+                let searchData = [];
+                if (create && data.length === 0 && w.trim() !== '') {
                     searchData.push({
-                        id:enableCreate,
-                        name:w.trim()
-                    })
-                }else{
-                    searchData = data
+                        id: create,
+                        name: w.trim(),
+                    });
+                } else {
+                    searchData = data;
                 }
                 yield put({
-                    type:"setSearch",
-                    payload:searchData
-                })
+                    type: 'setSearch',
+                    payload: searchData,
+                });
             }
-            return response
+            return response;
         },
-        *group({ payload }, { call,put }){
-            const response = yield call(group,payload)
+        *group({ payload }, { call, put }) {
+            const response = yield call(group, payload);
             yield put({
-                type:'updateGroup',
-                payload:response.data || null
-            })
+                type: 'updateGroup',
+                payload: response.data || null,
+            });
         },
-        *list({ payload }, { call,put }){
-            const response = yield call(list,payload)
+        *list({ payload: { append, ...payload } }, { call, put }) {
+            const response = yield call(list, payload);
             yield put({
-                type:'updateList',
-                payload:response.data || []
-            })
+                type: 'updateList',
+                payload: { ...(response.data || {}), append },
+            });
         },
-        *auditList({ payload }, { call , put }){
-            const response = yield call(auditList,payload)
+        *auditList({ payload }, { call, put }) {
+            const response = yield call(auditList, payload);
             yield put({
-                type:'updateAuditList',
-                payload:response.data || []
-            })
+                type: 'updateAuditList',
+                payload: response.data || [],
+            });
         },
-        *auditVersion({ payload }, { call }){
-            const response = yield call(auditVersion,payload)
-            return response
-        }
+        *auditVersion({ payload }, { call }) {
+            const response = yield call(auditVersion, payload);
+            return response;
+        },
     },
-    reducers:{
-        setSearch(state,{ payload }){
+    reducers: {
+        setSearch(state, { payload }) {
             return {
                 ...state,
-                search:payload
-            }
+                search: payload,
+            };
         },
-        updateDetail(state,{ payload }){
-            const { detail } = state
-            if(detail && payload && payload.id !== detail.id) return {...state,detail:payload}
+        updateDetail(state, { payload }) {
             return {
                 ...state,
-                detail:{...state.detail,...payload}
-            }
+                detail: {
+                    ...state.detail,
+                    [payload.id]: { ...state.detail[payload.id], ...payload },
+                },
+            };
         },
-        updateList(state,{ payload }){
+        updateList(state, { payload }) {
+            return setList('list', payload, state);
+        },
+        replaceItem(state, { payload }) {
+            return replaceItem('list', payload, state);
+        },
+        updateAuditList(state, { payload }) {
             return {
                 ...state,
-                list:payload
-            }
+                auditList: payload,
+            };
         },
-        replaceItem(state,{ payload : { detail } }){
-            const list = state.list
-            if(list){
-                const data = list.data.concat()
-                const index = data.findIndex(item => item.id === detail.id)
-                if(index >= 0){
-                    const item = data[index]
-                    data.splice(index,1,{...item,...detail})
-                }
-                
-                return {
-                    ...state,
-                    list:{...list,data}
-                }
-            }
-            return {
-                ...state
-            }
-        },
-        updateAuditList(state,{ payload }){
+        updateGroup(state, { payload }) {
             return {
                 ...state,
-                auditList:payload
-            }
+                group: payload,
+            };
         },
-        updateGroup(state,{ payload }){
-            return {
-                ...state,
-                group:payload
-            }
-        },
-    }
-}
+    },
+};

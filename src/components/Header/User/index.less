@@ -1,36 +1,67 @@
+.popover-menu {
+    :global {
+        .ant-popover-inner-content {
+            padding: 0;
+        }
+    }
+
+    :global {
+        .ant-menu {
+            padding: 8px 0;
+
+            .ant-menu-item {
+                height: 32px;
+                line-height: 32px;
+            }
+        }
+
+        .ant-menu-vertical .ant-menu-item:not(:last-child) {
+            margin: 0;
+        }
+    }
+}
+
 .user {
     flex: 1;
     justify-content: flex-end;
     display: flex;
     align-items: center;
 
-    .action{
+    .action {
         display: flex;
-        
-        .item{
+
+        .item {
             cursor: pointer;
-            padding: 0 10px;
+            padding: 0 13px;
             display: flex;
             align-items: center;
+
+            :global(.anticon) {
+                font-size: 18px;
+            }
+        }
+        .item:last-child {
+            padding-right: 0;
         }
     }
+}
 
-    .user-menu {
-        width: 210px;
+.user-menu {
+    width: 162px;
+    font-size: 12px;
 
-        .info{
-            height: 38px;
-            padding: 16px 12px 0;
+    .info {
+        height: 38px;
+        padding: 16px 12px 0;
 
-            .name{
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                display: inline-block;
-                max-width: 88px;
-                font-weight: 700;
-                font-size: 16px;
-            }
+        .name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: inline-block;
+            max-width: 88px;
+            font-weight: 700;
+            font-size: 16px;
         }
     }
 }

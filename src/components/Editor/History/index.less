@@ -1,7 +1,5 @@
-@import '~antd/lib/style/themes/default.less';
-
 .doc-history-modal {
-    :global{
+    :global {
         .ant-modal-body {
             height: calc(100vh - 112px);
             padding: 0;
@@ -14,11 +12,11 @@
     display: flex;
     height: 100%;
     border-radius: 4px;
-    background-color: #fafafa
+    background-color: #fafafa;
 }
 
 .doc-history .ant-list-split .ant-list-item {
-    border-bottom: none
+    border-bottom: none;
 }
 
 .doc-history .doc-history-nav {
@@ -28,32 +26,34 @@
     background: #fff;
     border-radius: 4px 0 0 4px;
     padding-top: 24px;
-    position: relative
+    position: relative;
 }
 
 .doc-history .doc-history-nav .version-meta {
     width: 100%;
-    cursor: pointer
+    cursor: pointer;
 }
 
-.doc-history .doc-history-nav .version-name .ant-tag {
-    float: right
+.doc-history .doc-history-nav .version-name {
+    :global(.ant-tag) {
+        float: right;
+    }
 }
 
 .doc-history .doc-history-nav .version-name a {
-    color: #595959
+    color: #595959;
 }
 
 .doc-history .doc-history-nav .version-editor {
     font-size: 12px;
-    color: #8c8c8c
+    color: #8c8c8c;
 }
 
 .doc-history .doc-history-nav .title {
     padding: 0 24px;
     font-size: 16px;
     line-height: 22px;
-    font-weight: 700
+    font-weight: 700;
 }
 
 .doc-history .doc-history-nav .version-filter {
@@ -61,36 +61,36 @@
     border-bottom: 1px solid #e8e8e8;
     font-size: 12px;
     line-height: 18px;
-    color: #8c8c8c
+    color: #8c8c8c;
 }
 
 .doc-history .doc-history-nav .version-filter .action {
-    float: right
+    float: right;
 }
 
 .doc-history .doc-history-nav .version-list {
     position: relative;
     height: calc(100% - 58px);
-    overflow-y: auto
+    overflow-y: auto;
 }
 
 .doc-history .doc-history-nav .version {
-    padding: 8px 24px
+    padding: 8px 24px;
 }
 
 .doc-history .doc-history-nav .current {
     border-left: 3px solid @primary-color;
     background-color: #f5f5f5;
-    padding-left: 21px
+    padding-left: 21px;
 }
 
 .doc-history .doc-history-nav .current .version-name {
-    font-weight: 700
+    font-weight: 700;
 }
 
 .doc-history .doc-history-body {
     width: 824px;
-    padding: 24px
+    padding: 24px;
 }
 
 .doc-history .doc-history-body .version-viewer-content {
@@ -105,44 +105,44 @@
 .doc-history .doc-history-body .version-viewer-content .doc-meta {
     margin: 12px 0;
     font-size: 12px;
-    color: #8c8c8c
+    color: #8c8c8c;
 }
 
 .doc-history .doc-history-body .version-viewer-content .doc-meta a {
-    color: #8c8c8c
+    color: #8c8c8c;
 }
 
 .doc-history .doc-history-body .version-viewer-content .doc-diff del.html-diff {
     text-decoration: none;
-    background-color: #fff1f0
+    background-color: #fff1f0;
 }
 
 .doc-history .doc-history-body .version-viewer-content .doc-diff del.html-diff iframe,
 .doc-history .doc-history-body .version-viewer-content .doc-diff del.html-diff img,
 .doc-history .doc-history-body .version-viewer-content .doc-diff del.html-diff video {
-    border: 2px solid #ffccc7
+    border: 2px solid #ffccc7;
 }
 
 .doc-history .doc-history-body .version-viewer-content .doc-diff ins.html-diff {
     text-decoration: none;
-    background-color: #e8fcf1
+    background-color: #e8fcf1;
 }
 
 .doc-history .doc-history-body .version-viewer-content .doc-diff ins.html-diff iframe,
 .doc-history .doc-history-body .version-viewer-content .doc-diff ins.html-diff img,
 .doc-history .doc-history-body .version-viewer-content .doc-diff ins.html-diff video {
-    border: 2px solid #bde9d0
+    border: 2px solid #bde9d0;
 }
 
 .doc-history .doc-history-body .version-viewer-footer {
     height: 32px;
-    margin-top: 24px
+    margin-top: 24px;
 }
 
 .doc-history .doc-history-body .version-viewer-footer button {
-    margin-left: 8px
+    margin-left: 8px;
 }
 
 .doc-history .doc-history-body .version-viewer-footer .actions {
-    float: right
+    float: right;
 }

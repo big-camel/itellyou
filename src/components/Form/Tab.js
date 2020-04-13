@@ -1,41 +1,36 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { Tabs } from 'antd';
-import FormContext from './formContext';
+import FormContext from './FormContext';
 
 const { TabPane } = Tabs;
 
 const generateId = (() => {
-  let i = 0;
-  return (prefix = '') => {
-    i += 1;
-    return `${prefix}${i}`;
-  };
+    let i = 0;
+    return (prefix = '') => {
+        i += 1;
+        return `${prefix}${i}`;
+    };
 })();
 
-class FormTab extends Component {
-  constructor(props) {
-    super(props);
-    this.uniqueId = generateId('form-tab-');
-  }
+const FormTab = props => {
+    useEffect(() => {
+        const uniqueId = generateId('form-tab-');
+        const { tabUtil } = props;
+        if (tabUtil) {
+            tabUtil.addTab(uniqueId);
+        }
+    }, []);
+    const { children } = props;
+    return <TabPane {...props}>{props.active && children}</TabPane>;
+};
 
-  componentDidMount() {
-    const { tabUtil } = this.props;
-    tabUtil.addTab(this.uniqueId);
-  }
-
-  render() {
-    const { children } = this.props;
-    return <TabPane {...this.props}>{children}</TabPane>;
-  }
-}
-
-const wrapContext = props => (
-  <FormContext.Consumer>
-    {value => <FormTab tabUtil={value.tabUtil} {...props} />}
-  </FormContext.Consumer>
+const WrapContext = props => (
+    <FormContext.Consumer>
+        {value => <FormTab tabUtil={value.tabUtil} {...props} />}
+    </FormContext.Consumer>
 );
 
 // 标志位 用来判断是不是自定义组件
-wrapContext.typeName = 'FormTab';
+WrapContext.typeName = 'FormTab';
 
-export default wrapContext;
+export default WrapContext;

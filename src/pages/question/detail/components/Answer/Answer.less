@@ -1,117 +1,13 @@
-.answer-list{
-    border: 1px solid #ebebeb;
-    box-shadow: 0 1px 3px rgba(26,26,26,.1);
-    background: #fff;
-    margin-top: 12px;
-    overflow: visible;
-    border-radius: 4px;
-
-    >:global(.ant-list>){
-        :global{
-            .ant-list-header{
-                border: 0 none;
-                position: relative;
-                background: #fff;
-                justify-content: space-between;
-                line-height: 48px;
-                padding: 0 20px;
-                border-top: 1px solid #f6f6f6;
-                border-bottom: 1px solid #f6f6f6;
-            }
-
-            .ant-spin-nested-loading .ant-list-item-meta-title{
-                margin-bottom: 0;
-            }
-        }
-    }
-
-    >:global(.ant-list:first-child > .ant-list-header){
-        border-top: 0 none;
-        border-top-left-radius: 4px;
-        border-top-right-radius: 4px;
-    }
-
-    .answer-title {
-        display: inline-block;
-        font-size: 15px;
-        font-weight: 600;
-        color: #1a1a1a;
-        margin-bottom: 0;
-    }
-
-    .answer-item {
-        position: relative;
-        flex-shrink: 0;
-        padding: 12px 20px 6px;
-        font-size: 15px;
-        border-bottom:0 none;
-
-        .answer-meta {
-            position: relative;
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-
-            :global {
-                .ant-list-item-meta-avatar{
-                    margin-right: 14px;
-                }
-            }
-
-            .answer-meta-title{
-
-                .answer-meta-author{
-                    line-height: 1.1;
-                    display: flex;
-                    flex-shrink: 0;
-                    align-items:center;
-                }
-
-                .answer-meta-desc{
-                    display: flex;
-                    font-size: 14px;
-                    font-weight: normal;
-                    line-height: 18px;
-                    margin-bottom: 0;
-                    margin-top: 4px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    color: #646464;
-                }
-            }
-            
-        }
-
-        .answer-body{
-            margin-top: 10px;
-        }
-
-        .answer-action {
-            margin-top: 4px;
-            button {
-                margin-right: 14px;
-            }
-            :global(button.ant-btn-ghost) {
-                padding-left: 0;
-            }
-        }
-    }
-
-    .answer-item:not(:last-child):after {
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        display: block;
-        margin: 0 20px;
-        border-bottom: 1px solid #f6f6f6;
-        content: "";
-    }
+.answer-title {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0;
 }
 
-.editor-warpper{
-    .footer{
+.editor-warpper {
+    .footer {
         display: flex;
 
         .status {
@@ -122,4 +18,8 @@
             display: flex;
         }
     }
+}
+
+.adopted-card {
+    margin-bottom: 20px;
 }

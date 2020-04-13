@@ -1,49 +1,51 @@
-import React from 'react'
-import { Input , Radio} from 'antd'
-import formMap from '@/components/Form/map'
-const { Name } = formMap
+import React from 'react';
+import { Input, Radio } from 'antd';
+import formMap from '@/components/Form/map';
+const { Name } = formMap;
 
 export default {
     Name,
-    Avatar:{
-        element:<Input type="hidden" />,
-        hasFeedback:false
-    },
-    Gender:{
-        hasFeedback:false,
-        element:<Radio.Group>
-                    <Radio value={0}>保密</Radio>
-                    <Radio value={1}>先生</Radio>
-                    <Radio value={2}>女士</Radio>
-                </Radio.Group>
-    },
-    Address:{
+    Avatar: {
         props: {
-            id: 'address'
-        }
+            type: 'hidden',
+        },
     },
-    Profession:{
+    Gender: {
+        component: (
+            <Radio.Group>
+                <Radio value={0}>保密</Radio>
+                <Radio value={1}>先生</Radio>
+                <Radio value={2}>女士</Radio>
+            </Radio.Group>
+        ),
+    },
+    Address: {
         props: {
-            id: 'profession'
-        }
+            id: 'address',
+        },
+    },
+    Profession: {
+        props: {
+            id: 'profession',
+        },
     },
     Description: {
         props: {
-            id: 'description'
+            id: 'description',
         },
-        rules:[
+        rules: [
             {
-                min:1,
-                max:200,
-                message:`一句话介绍长度为1-200个字符`
-            }
-        ]
+                min: 1,
+                max: 200,
+                message: `一句话介绍长度为1-200个字符`,
+            },
+        ],
     },
     Introduction: {
-        elementType:"textarea",
+        component: Input.TextArea,
         props: {
             id: 'introduction',
-            autoSize:{minRows: 4, maxRows: 8},
-        }
-    }
-}
+            autoSize: { minRows: 4, maxRows: 8 },
+        },
+    },
+};

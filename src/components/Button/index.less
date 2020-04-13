@@ -1,9 +1,37 @@
-@import '~antd/lib/style/themes/default.less';
-
-button.button:global(.ant-btn-ghost),button.button[disabled],button.button[disabled]:hover,button.button[disabled]:focus {
-    background-color:transparent;
+.button:global(.ant-btn-ghost),
+.button[disabled],
+.button[disabled]:hover,
+.button[disabled]:focus {
+    background-color: transparent;
 }
 
-button.button.active {
+.button:global(:not(.ant-btn-primary)) {
+    padding: 0;
+
+    :global {
+        .anticon {
+            + span {
+                margin-left: 4px;
+            }
+        }
+        span {
+            + .anticon {
+                margin-left: 4px;
+            }
+        }
+    }
+}
+
+.button:not([disabled]):global(:not(.ant-btn-primary)),
+.button:focus:global(:not(.ant-btn-primary)) {
+    color: #595959;
+}
+
+.button:not([disabled]):global(:not(.ant-btn-primary)).active {
+    color: @primary-color;
+}
+
+.button:not([disabled]):global(:not(.ant-btn-primary)):hover {
+    background-image: none;
     color: @primary-color;
 }

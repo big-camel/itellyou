@@ -1,0 +1,31 @@
+.nav {
+    .divider {
+        display: block;
+        height: 1px;
+        background: #e8e8e8;
+        margin-top: 10px;
+        margin-left: 0;
+        margin-bottom: 10px;
+        width: 25px;
+    }
+
+    a {
+        display: block;
+        line-height: 40px;
+        padding-left: 0;
+        color: #8c8c8c;
+
+        :global(.anticon) {
+            margin-right: 10px;
+        }
+    }
+
+    a:hover {
+        background: #f5f5f5;
+        box-shadow: -10px 0 #f5f5f5;
+    }
+
+    a.active {
+        color: @primary-color;
+    }
+}

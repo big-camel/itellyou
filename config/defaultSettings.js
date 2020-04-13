@@ -1,7 +1,4 @@
-module.exports = {
+export default {
     primaryColor: '#347EFF',
-    title:'ITELLYOU',
-    menu: {
-        disableLocal: false,
-    }
-}
+    title: 'ITELLYOU',
+};

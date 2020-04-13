@@ -1,0 +1,75 @@
+.item {
+    width: 100%;
+    .header {
+        display: flex;
+        margin-bottom: 1em;
+
+        .info {
+            .title {
+                font-size: 18px;
+                font-weight: 600;
+                line-height: 28px;
+                margin-bottom: 0;
+                align-items: center;
+                display: flex;
+
+                > a,
+                > a:hover,
+                > a:focus {
+                    color: #1a1a1a;
+                }
+
+                :global(.ant-tag) {
+                    margin-left: 8px;
+                }
+            }
+
+            .tags {
+                display: flex;
+                align-items: center;
+                color: #595959;
+
+                :global(.anticon) {
+                    display: inherit;
+                    font-size: 12px;
+                }
+
+                .tag {
+                    padding: 0;
+                    background: transparent;
+                    color: #595959;
+                }
+            }
+        }
+
+        .data {
+            margin-right: 15px;
+
+            > a {
+                display: block;
+                width: 50px;
+                height: 50px;
+                padding-top: 9px;
+                border-radius: 2px;
+                background-color: #e1eefa;
+                line-height: 1.2;
+                color: #00a4ff;
+                text-align: center;
+                cursor: pointer;
+
+                .count {
+                    display: block;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    font-size: 16px;
+                }
+
+                .name {
+                    display: block;
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+}

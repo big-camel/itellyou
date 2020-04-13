@@ -1,7 +1,4 @@
-import menu from './zh-CN/menu'
-import userLogin from './zh-CN/user/login'
 export default {
-    ...menu,
-    ...userLogin,
-    home:"Test"
-}
+    'sys.path': '无标题',
+    'preview.page': '预览',
+};

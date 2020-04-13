@@ -1,38 +1,37 @@
-import React from 'react'
-import WrapItem from '@/components/Form/WrapItem'
-import FormContext from '@/components/Form/formContext'
+import React from 'react';
+import WrapItem from '@/components/Form/WrapItem';
+import FormContext from '@/components/Form/FormContext';
 
 export default map => {
-    const Items = {}
+    const Items = {};
     Object.keys(map).forEach(key => {
-        const item = map[key]
-        Items[key] = ({ rules , ...props }) => {
-            if(rules && Array.isArray(rules)){
+        const item = map[key];
+        Items[key] = ({ rules, ...props }) => {
+            const newRules = (item.rules || []).concat();
+            if (rules) {
                 rules.forEach(rule => {
-                    if(!item.rules) item.rules = []
-                    item.rules.push(rule)
-                })
+                    newRules.push(rule);
+                });
             }
             return (
                 <FormContext.Consumer>
-                    {
-                        context => (
-                            <WrapItem
-                            customprops={item.props}
-                            rules={item.rules}
-                            tips={item.tips}
-                            elementType={item.elementType}
-                            element={item.element}
-                            hasFeedback={item.hasFeedback}
+                    {context => (
+                        <WrapItem
+                            component={item.component}
+                            customProps={item.props}
+                            rules={newRules}
+                            help={item.help}
+                            validateFirst={item.validateFirst}
+                            validateTrigger={item.validateTrigger}
                             {...props}
                             type={key}
+                            {...context}
                             updateActive={context.updateActive}
-                            form={context.form}
                         />
                     )}
                 </FormContext.Consumer>
-            )
-        }
-    })
-    return Items
-}
+            );
+        };
+    });
+    return Items;
+};

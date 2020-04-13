@@ -1,51 +1,29 @@
-import React from 'react'
-import classNames from 'classnames'
-import Layout from '../components/Layout'
-import { Menu, Card } from 'antd'
-import { Link } from 'umi'
-import Article from './Article'
-import Answer from './Answer'
+import React from 'react';
+import Layout from '../components/Layout';
+import Article from './Article';
+import Answer from './Answer';
+import CardMenu from '../components/CardMenu';
 
 const menus = [
     {
-        key:"article",
-        title:"收藏的文章"
+        key: 'article',
+        title: '收藏的文章',
+        to: 'collections?type=article',
+        component: <Article />,
     },
     {
-        key:"answer",
-        title:"收藏的回答"
-    }
-]
-export default ({ location : { query } }) => {
-    const type = query.type || "article"
-
-    const render = () => {
-        switch(type){
-            case "article": return <Article />
-            case "answer": return <Answer />
-        }
-    }
+        key: 'answer',
+        title: '收藏的回答',
+        to: 'collections?type=answer',
+        component: <Answer />,
+    },
+];
+export default ({ location: { query } }) => {
+    const type = query.type || 'article';
 
     return (
         <Layout defaultKey="collections">
-            <Card
-            title={
-                <Menu mode="horizontal">
-                {
-                    menus.map(({ key , title }) => <Menu.Item 
-                    key={key} 
-                    className={classNames({"active" : key === type})}>
-                        <Link to={`collections?type=${key}`}>{ title }</Link>
-                    </Menu.Item>)
-                }
-                </Menu>
-            }
-            >
-            {
-                render()
-            }
-            </Card>
+            <CardMenu dataSource={menus} defaultKey={type} />
         </Layout>
-        
-    )
-}
+    );
+};

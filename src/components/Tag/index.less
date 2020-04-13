@@ -1,16 +1,16 @@
 .tag {
     display: inline-block;
-    padding: 0 6px;
+    padding: 2px 8px;
     color: #0084ff;
-    background-color: rgba(0,132,255,.1);
-    line-height: 1.5;
+    background-color: rgba(0, 132, 255, 0.1);
     font-weight: normal;
-    font-size: 12px;
+    font-size: 14px;
     text-align: center;
     cursor: pointer;
+    border-radius: 4px;
 
-    :global{
-        .anticon{
+    :global {
+        .anticon {
             font-size: 12px;
             margin-left: 10px;
         }
@@ -20,42 +20,41 @@
 .popover-layout {
     width: 276px;
 
-    .popover-title{
+    .popover-title {
         font-size: 14px;
         font-weight: bold;
         padding: 0;
         margin: 0 0 10px 0;
     }
 
-    .popover-content{
-        color:#666;
+    .popover-content {
+        color: #666;
         min-height: 50px;
     }
 
-    .popover-footer{
-        border-top:1px solid #e8e8e8;
+    .popover-footer {
+        border-top: 1px solid #e8e8e8;
         margin-top: 10px;
         padding: 10px 0 0 0;
         display: flex;
         align-items: center;
 
-        .popover-link{
+        .popover-link {
             a {
                 margin-right: 10px;
             }
         }
 
-        .popover-star{
+        .popover-star {
             justify-content: flex-end;
             flex: 1 1;
             display: flex;
             align-items: center;
 
-            >span {
+            > span {
                 margin-right: 10px;
                 color: #888888;
             }
         }
     }
-    
 }

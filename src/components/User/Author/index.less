@@ -1,28 +1,28 @@
-.author {
+.user-author {
     position: relative;
     display: flex;
     align-items: center;
 
-    .avatar {
+    .user-author-avatar {
         margin-right: 14px;
         cursor: pointer;
     }
 
-    .title{
-        .name{
+    .user-author-content {
+        .user-author-name {
             line-height: 1.1;
             display: flex;
             flex-shrink: 0;
-            align-items:center;
-            
+            align-items: center;
+            font-weight: 600;
+            font-size: 15px;
+
             > a {
-                font-weight: 600;
-                color: #444;
-                font-size: 15px;
+                color: #262626;
             }
         }
 
-        .desc{
+        .user-author-desc {
             display: flex;
             font-size: 14px;
             font-weight: normal;
@@ -32,13 +32,27 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            color: #646464;
+            color: #8c8c8c;
         }
     }
 }
 
-.small {
-    .avatar {
+.user-author-middle {
+    .user-author-title {
+        .user-author-name {
+            > a {
+                font-size: 14px;
+            }
+        }
+
+        .user-author-desc {
+            font-size: 12px;
+        }
+    }
+}
+
+.user-author-small {
+    .user-author-avatar {
         margin-right: 10px;
     }
 }

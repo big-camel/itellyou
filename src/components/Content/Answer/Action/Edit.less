@@ -1,0 +1,71 @@
+.edit-warpper {
+    .answer-editor {
+        :global {
+            .itellyou-mini-editor {
+                .itellyou-toolbar {
+                    min-width: auto;
+                    height: 40px;
+                    align-items: center;
+                    display: flex;
+                    border: 0 none;
+                    border-bottom: 1px solid #f0f0f0;
+                    background: #fff;
+                    margin-bottom: 18px;
+
+                    .itellyou-toolbar-content {
+                        height: auto;
+
+                        .itellyou-button {
+                            min-width: auto;
+                            height: auto;
+                            line-height: inherit;
+                            font-size: 14px;
+                        }
+
+                        .itellyou-button-inner-text {
+                            font-size: 14px;
+                        }
+
+                        .itellyou-button:first-child {
+                            margin-left: 0;
+                        }
+
+                        .itellyou-toolbar-area:first-child {
+                            padding-left: 0;
+                        }
+
+                        .itellyou-button-set-trigger .itellyou-icon-arrow {
+                            top: 10px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .footer {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 16px;
+        align-items: center;
+
+        .status {
+            :global(.ant-btn) {
+                padding-left: 0;
+            }
+        }
+
+        .action {
+            :global(.ant-btn) {
+                margin-left: 10px;
+            }
+        }
+    }
+}
+
+.edit-new {
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    padding: 24px;
+    margin-top: 24px;
+}

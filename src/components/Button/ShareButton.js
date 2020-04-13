@@ -1,9 +1,12 @@
-import React from 'react'
-import { Icon } from 'antd'
-import BaseButton from './BaseButton'
+import React from 'react';
+import BaseButton from './BaseButton';
+import { ShareAltOutlined } from '@ant-design/icons';
 
-function ShareButton({ children , ...props }){
-
-    return <BaseButton {...props}><Icon type="share-alt" />{children}</BaseButton>
+function ShareButton({ children, ...props }) {
+    return (
+        <BaseButton {...props} icon={<ShareAltOutlined />}>
+            {children}
+        </BaseButton>
+    );
 }
-export default ShareButton
+export default ShareButton;

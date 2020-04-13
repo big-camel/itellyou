@@ -1,47 +1,45 @@
-import React , { useState , useEffect } from 'react'
-import { Card } from 'antd'
-import { useDispatch , useSelector } from 'dva'
-import { MoreList } from '@/components/List'
-import { UserAuthor } from '@/components/User'
+import React, { useState, useEffect } from 'react';
+import { Card } from 'antd';
+import { useDispatch, useSelector } from 'umi';
+import { MoreList } from '@/components/List';
+import { UserAuthor } from '@/components/User';
 
-export default () => {
+export default ({ className }) => {
+    const [offset, setOffset] = useState(0);
+    const limit = 20;
 
-    const [ offset , setOffset ] = useState(0)
-    const limit = 20
-
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch({
-            type:"explore/writer",
-            payload:{
+            type: 'explore/writer',
+            payload: {
                 offset,
-                limit
-            }
-        })
-    },[offset,limit,dispatch])
+                limit,
+            },
+        });
+    }, [offset, limit, dispatch]);
 
-    const dataSource = useSelector(state => state.explore.writer)
+    const dataSource = useSelector(state => state.explore.writer);
 
     const renderItem = item => {
         return (
             <MoreList.Item>
-                <UserAuthor info={item} size="small" />
+                <UserAuthor info={item} size="middle" />
             </MoreList.Item>
-        )
-    }
+        );
+    };
 
     return (
-        <Card
-        title="作者推荐"
-        >
+        <Card title="优秀创作者" className={className}>
             <MoreList
-            offset={offset}
-            limit={limit}
-            dataSource={dataSource}
-            onChange={offset => setOffset(offset)}
-            renderItem={renderItem}
+                offset={offset}
+                limit={limit}
+                dataSource={dataSource}
+                onChange={offset => setOffset(offset)}
+                renderItem={renderItem}
+                split={false}
             />
         </Card>
-    )
-}
+    );
+};

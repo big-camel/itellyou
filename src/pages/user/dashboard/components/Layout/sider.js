@@ -1,45 +1,67 @@
+import {
+    SnippetsOutlined,
+    FileTextOutlined,
+    BugOutlined,
+    FormOutlined,
+    BankOutlined,
+    HeartOutlined,
+    StarOutlined,
+    HistoryOutlined,
+} from '@ant-design/icons';
+
 export default [
     {
-        key:"recent",
-        title:"最近编辑",
-        to:"/dashboard"
+        key: 'recent',
+        title: '最近编辑',
+        icon: <SnippetsOutlined />,
+        to: '/dashboard',
     },
     {
-        key:"article",
-        title:"我的文章",
-        to:"/dashboard/article"
+        type: 'divider',
     },
     {
-        key:"question",
-        title:"我的提问",
-        to:"/dashboard/question"
+        key: 'article',
+        title: '文章',
+        icon: <FileTextOutlined />,
+        to: '/dashboard/article',
     },
     {
-        key:"answer",
-        title:"我的回答",
-        to:"/dashboard/answer"
+        key: 'question',
+        title: '问题',
+        icon: <BugOutlined />,
+        to: '/dashboard/question',
     },
     {
+        key: 'answer',
+        title: '回答',
+        icon: <FormOutlined />,
+        to: '/dashboard/answer',
+    },
+    /**{
         key:"finance",
-        title:"我的资产",
+        title:"钱包",
+        icon:<BankOutlined />,
         to:"/dashboard/finance"
+    },**/
+    {
+        type: 'divider',
     },
     {
-        key:"divider"
+        key: 'follows',
+        title: '关注',
+        icon: <HeartOutlined />,
+        to: '/dashboard/follows',
     },
     {
-        key:"follows",
-        title:"关注",
-        to:"/dashboard/follows"
+        key: 'collections',
+        title: '收藏',
+        icon: <StarOutlined />,
+        to: '/dashboard/collections',
     },
     {
-        key:"collections",
-        title:"收藏",
-        to:"/dashboard/collections"
+        key: 'history',
+        title: '最近浏览',
+        icon: <HistoryOutlined />,
+        to: '/dashboard/history',
     },
-    {
-        key:"history",
-        title:"最近浏览",
-        to:"/dashboard/history"
-    }
-]
+];

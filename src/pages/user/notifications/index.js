@@ -1,91 +1,95 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'dva'
-import { Link } from 'umi'
-import { MoreList } from '@/components/List'
-import mergeUser from '@/utils/operational/mergeUser'
-import getVerb from '@/utils/operational/getVerb'
+import React, { useEffect, useState, useRef } from 'react';
+import { useDispatch, useSelector } from 'umi';
+import { Card } from 'antd';
+import { MoreList } from '@/components/List';
+import Container from '@/components/Container';
+import Layout from './components/Layout';
+import timeUtils from '@/utils/time';
+import Follow from './components/Follow';
+import styles from './index.less';
+import Like from './components/Like';
+import Comment from './components/Comment';
+import Publish from './components/Publish';
 
-export default () => {
-    const [ offset , setOffset ] = useState(0)
-    const limit = 20
-    const action = "default"
-    const dispatch = useDispatch()
-    const dataSource = useSelector(state => state.notifications.list[action])
+export default ({ match: { params } }) => {
+    const path = params.path || '/default';
+    const menuKey = path.substr(1);
+    const prevMenuKey = useRef(menuKey);
+    const prevTime = useRef();
+    const [offset, setOffset] = useState(0);
+    const limit = 20;
+    const dispatch = useDispatch();
+    const dataSource = useSelector(state => state.notifications.list[menuKey]);
 
     useEffect(() => {
         dispatch({
-            type:'notifications/list',
-            payload:{
-                append:true,
-                action,
-                offset,
-                limit
-            }
-        })
-    },[offset, limit, dispatch])
-
-    const renderColumn = (verb , { id , name }) => {
-        return <span>{verb}<Link to={`/column/${id}`}>{ name }</Link></span>
-    }
-
-    const renderAnswer = (verb , { id , question : { question_id=id,title } }) => {
-        return <span>{verb}<Link to={`/question/${question_id}/answer/${id}`}>{ title }</Link></span>
-    }
-
-    const renderCommon = (type,verb , { id , title }) => {
-        return <span>{verb}<Link to={`/${type}/${id}`}>{ title }</Link></span>
-    }
-
-    const renderAnswerComment = (verb , { content , reply }) => {
-        const { answer : { id , question : { title , question_id=id } } } = reply
-        return <span>{verb}<Link to={`/question/${question_id}/answer/${id}`}>{ title }</Link></span>
-    }
-
-    const renderCommentCommon = (type , verb , { content , reply , ...target }) => {
-        const { [type] : { id , title } } = reply ? reply : target
-        return <span>{verb}<Link to={`/${type}/${id}`}>{ title }</Link></span>
-    }
-    
-    const renderOperational = ({ action , type , target }) => {
-        const verb = getVerb(action,type,"你的")
-        switch(type){
-            case "user":
-                return verb
-            case "column":
-                return renderColumn(verb,target)
-            case "answer":
-                if(action === "comment") renderAnswerComment(verb,target)
-                return renderAnswer(verb,target)
-            case "question":
-            case "article":
-                if(action === "comment") return renderCommentCommon(type,verb,target)
-                return renderCommon(type,verb,target)
-            case "answer_comment":
-                return renderAnswerComment(verb,target)
-            case "question_comment":
-            case "article_comment":
-                return renderCommentCommon(type,verb,target)
+            type: 'notifications/list',
+            payload: {
+                append: true,
+                action: menuKey,
+                offset: prevMenuKey.current !== menuKey ? 0 : offset,
+                limit,
+            },
+        });
+        if (prevMenuKey.current !== menuKey) {
+            prevTime.current = '';
         }
-    }
+        prevMenuKey.current = menuKey;
+    }, [offset, limit, menuKey, dispatch]);
 
-    const renderItem = ({ actors , merge_count , ...item }) => {
-        return <MoreList.Item>
-            {
-                mergeUser(actors,merge_count)
+    const renderItem = item => {
+        const { created_time, action, type } = item;
+        const time = timeUtils.format(created_time, { tpl: 'YYYY-MM-DD' });
+        const getTime = () => {
+            if (time !== prevTime.current) {
+                prevTime.current = time;
+                return <time className={styles['time']}>{time}</time>;
             }
-            {
-                renderOperational(item)
+            return null;
+        };
+
+        const getChild = () => {
+            switch (action) {
+                case 'follow':
+                    return (
+                        <Follow
+                            {...item}
+                            text={['article', 'answer'].includes(type) ? '新增收藏' : '新增关注'}
+                        />
+                    );
+                case 'like':
+                    return <Like {...item} />;
+                case 'comment':
+                    return <Comment {...item} />;
+                case 'publish':
+                    return <Publish {...item} />;
+                default:
+                    return null;
             }
-        </MoreList.Item>
-    }
+        };
+        return (
+            <MoreList.Item className={styles['notifications-item']}>
+                {getTime()}
+                {getChild()}
+            </MoreList.Item>
+        );
+    };
 
     return (
-        <MoreList
-        offset={offset}
-        limit={limit}
-        renderItem={renderItem}
-        dataSource={dataSource}
-        onChange={offset => setOffset(offset)}
-        />
-    )
-}
+        <Container>
+            <Layout defaultKey={menuKey}>
+                <Card title="通知中心">
+                    <MoreList
+                        className={styles['notifications-list']}
+                        itemLayout="vertical"
+                        offset={offset}
+                        limit={limit}
+                        renderItem={renderItem}
+                        dataSource={dataSource}
+                        onChange={offset => setOffset(offset)}
+                    />
+                </Card>
+            </Layout>
+        </Container>
+    );
+};

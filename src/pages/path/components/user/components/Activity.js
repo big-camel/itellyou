@@ -1,127 +1,120 @@
-import React, { useEffect , useState } from 'react'
-import { useDispatch , useSelector } from 'dva'
-import { Link } from 'umi'
-import { MoreList } from '@/components/List'
-import Article from '@/components/Article'
-import getVerb from '@/utils/operational/getVerb'
-import Timer from '@/components/Timer'
-import Question from '@/components/Question'
-import Answer from '@/components/Answer'
-import Author from '@/components/User/Author'
+import React, { useEffect, useState } from 'react';
+import { Link, useDispatch, useSelector } from 'umi';
+import { MoreList } from '@/components/List';
+import getVerb from '@/utils/operational/getVerb';
+import Timer from '@/components/Timer';
+import { Article, Answer } from '@/components/Content';
+import { Space, Avatar } from 'antd';
+import styles from './Activity.less';
 
 export default ({ id }) => {
-    const [ offset , setOffset ] = useState(0)
-    const limit = 20
+    const [offset, setOffset] = useState(0);
+    const limit = 20;
 
-    const dispatch = useDispatch()
-    const dataSource = useSelector(state => state.userActivity.list)
+    const dispatch = useDispatch();
+    const dataSource = useSelector(state => state.userActivity.list);
 
     useEffect(() => {
         dispatch({
-            type:'userActivity/list',
-            payload:{
+            type: 'userActivity/list',
+            payload: {
+                append: true,
                 offset,
                 limit,
-                id
-            }
-        })
-    },[id,offset, limit, dispatch])
+                id,
+            },
+        });
+    }, [id, offset, limit, dispatch]);
 
-    /*const renderUser = (verb , target, { created_time }) => {
+    const renderColumn = ({ name, avatar, path, description }) => {
         return (
-            <div>
-                <div>{verb}<Timer time={created_time} /></div>
-                <Author 
-                info={target}
-                />
-            </div>
-        )
-    }*/
-
-    const renderColumn = (verb , { id , name , path }, { created_time }) => {
-        return (
-            <div>
-                <div>{verb}<Timer time={created_time} /></div>
-                <div><Link to={`/${path}`}>{ name }</Link></div>
-            </div>
-        )
-    }
-
-    const renderTag = (verb , { id , name }, { created_time }) => {
-        return (
-            <div>
-                <div>{verb}<Timer time={created_time} /></div>
-                <div><Link to={`/tag/${id}`}>{ name }</Link></div>
-            </div>
-        )
-    }
-
-    const renderAnswer = (verb , { id , question : { question_id=id,title } , ...target }, { created_time }) => {
-        return (
-            <div>
-                <div>{verb}<Timer time={created_time} /></div>
-                <h2><Link to={`/question/${question_id}/answer/${id}`}>{ title }</Link></h2>
-                <Answer data={{...target,id}} desc={true} />
-            </div>
-        )
-    }
-
-    const renderArticle = (verb , target , { created_time }) => {
-        return (
-            <div>
-                <div>{verb}<Timer time={created_time} /></div>
-                <div>
-                    <Article 
-                    data={target} 
-                    />
+            <div className={styles['column']}>
+                <div className={styles['avatar']}>
+                    <Avatar src={avatar} size={38} shape="circle" />
+                </div>
+                <div className={styles['content']}>
+                    <h2>
+                        <Link to={`/${path}`}>{name}</Link>
+                    </h2>
+                    <p>{description}</p>
                 </div>
             </div>
-        )
-    }
+        );
+    };
 
-    const renderQuestion = (verb , { id,title } , { created_time }) => {
+    const renderTag = ({ id, name }) => {
+        return (
+            <div className={styles['tag']}>
+                <h2>
+                    <Link to={`/tag/${id}`}>{name}</Link>
+                </h2>
+                <p>{description}</p>
+            </div>
+        );
+    };
+
+    const renderAnswer = ({ id, question: { title, ...question }, ...target }) => {
         return (
             <div>
-                <div>{verb}<Timer time={created_time} /></div>
-                <h2><Link to={`/question/${id}`}>{ title }</Link></h2>
+                <h2>
+                    <Link to={`/question/${question.id}/answer/${id}`}>{title}</Link>
+                </h2>
+                <Answer data={{ ...target, id }} desc={true} />
             </div>
-        )
-    }
+        );
+    };
 
-    const renderOperational = ({ action , type , target , ...operational }) => {
-        const verb = getVerb(action,type)
-        switch(type){
-            //case "user":
-            //    return renderUser(verb,target,operational)
-            case "column":
-                return renderColumn(verb,target,operational)
-            case "tag":
-                return renderTag(verb,target,operational)
-            case "answer":
-                return renderAnswer(verb,target,operational)
-            case "question":
-                return renderQuestion(verb,target,operational)
-            case "article":
-                return renderArticle(verb,target,operational)
-        }
-    }
+    const renderArticle = target => {
+        return <Article data={target} desc={true} />;
+    };
 
-    const renderItem = ({ actors , merge_count , ...item }) => {
+    const renderQuestion = ({ id, title }) => {
         return (
-            <MoreList.Item key={item.id}>
-            {
-                renderOperational(item)
-            }
+            <h2>
+                <Link to={`/question/${id}`}>{title}</Link>
+            </h2>
+        );
+    };
+
+    const renderOperational = (type, target) => {
+        switch (type) {
+            case 'column':
+                return renderColumn(target);
+            case 'tag':
+                return renderTag(target);
+            case 'answer':
+                return renderAnswer(target);
+            case 'question':
+                return renderQuestion(target);
+            case 'article':
+                return renderArticle(target);
+        }
+    };
+
+    const renderItem = ({ id, created_time, action, type, target }) => {
+        const verb = getVerb(action, type);
+        return (
+            <MoreList.Item key={id}>
+                <div className={styles['verb']}>
+                    {
+                        <Space>
+                            {verb}
+                            <Timer time={created_time} />
+                        </Space>
+                    }
+                </div>
+                {renderOperational(type, target)}
             </MoreList.Item>
-        )
-    }
+        );
+    };
     return (
-        <MoreList 
-        offset={offset}
-        limit={limit}
-        renderItem={renderItem}
-        dataSource={dataSource}
-        onChange={offset => setOffset(offset)}
+        <MoreList
+            itemLayout="vertical"
+            offset={offset}
+            limit={limit}
+            renderItem={renderItem}
+            dataSource={dataSource}
+            onChange={offset => setOffset(offset)}
         />
-    )
-}
+    );
+};
