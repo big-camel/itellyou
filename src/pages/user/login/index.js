@@ -197,6 +197,7 @@ export default () => {
     };
 
     const handleSubmit = values => {
+        if (submit.loading) return;
         setSubmit({
             loading: true,
             status: true,

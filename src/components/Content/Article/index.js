@@ -36,17 +36,22 @@ const Article = ({
     const [fullVisible, setFullVisible] = useState(false);
     const [commentVisible, setCommentVisible] = useState(defaultComment);
     const allowEdit = !desc && allow_edit;
-
+    description = description.trim();
+    const hasMore = description.length > 3 && description.substr(description.length - 3) === '...';
     const renderContent = () => {
         if (desc && !fullVisible) {
             return (
                 <div className={styles['description']}>
                     <span dangerouslySetInnerHTML={{ __html: description }} />
-                    {
-                        <Button type="link" onClick={() => setFullVisible(true)}>
+                    {hasMore && (
+                        <Button
+                            className={styles['read-more']}
+                            type="link"
+                            onClick={() => setFullVisible(true)}
+                        >
                             阅读全文
                         </Button>
-                    }
+                    )}
                 </div>
             );
         }

@@ -1,16 +1,24 @@
 import React from 'react';
 import { Result, Button } from 'antd';
-import { history } from 'umi';
+import { history, useIntl } from 'umi';
 
-export default ({ status, title, subTitle, go }) => (
-    <Result
-        status={status || 404}
-        title={title || '404'}
-        subTitle={subTitle || 'Sorry, the page you visited does not exist.'}
-        extra={
-            <Button type="primary" onClick={() => history.push(go || '/')}>
-                Back Home
-            </Button>
-        }
-    />
-);
+export default ({ status = 404, title, subTitle, go }) => {
+    const intl = useIntl();
+    return (
+        <Result
+            status={status}
+            title={title || status}
+            subTitle={
+                subTitle ||
+                intl.formatMessage({
+                    id: `${status}`,
+                })
+            }
+            extra={
+                <Button type="primary" onClick={() => history.push(go || '/')}>
+                    Back Home
+                </Button>
+            }
+        />
+    );
+};

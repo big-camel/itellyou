@@ -7,11 +7,11 @@ export default {
     state: {},
 
     effects: {
-        *list({ payload }, { call, put }) {
+        *list({ payload: { append, ...payload } }, { call, put }) {
             const response = yield call(list, payload);
             yield put({
                 type: 'setList',
-                payload: response.data,
+                payload: { append, ...response.data },
             });
         },
         *follow({ payload: { name, ...payload } }, { call, put, select }) {

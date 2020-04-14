@@ -69,17 +69,25 @@ const Answer = ({
     const allowEdit = !desc && allow_edit;
 
     const renderContent = () => {
-        if (desc && !fullVisible)
+        if (desc && !fullVisible) {
+            description = description.trim();
+            const hasMore =
+                description.length > 3 && description.substr(description.length - 3) === '...';
             return (
                 <div className={styles['description']}>
                     <span dangerouslySetInnerHTML={{ __html: description }} />
-                    {readFull && (
-                        <Button type="link" onClick={() => setFullVisible(true)}>
+                    {readFull && hasMore && (
+                        <Button
+                            className={styles['read-more']}
+                            type="link"
+                            onClick={() => setFullVisible(true)}
+                        >
                             阅读全文
                         </Button>
                     )}
                 </div>
             );
+        }
         return (
             <div className={styles['content']}>
                 <div>{<Editor.Viewer key={id} content={item.content} />}</div>

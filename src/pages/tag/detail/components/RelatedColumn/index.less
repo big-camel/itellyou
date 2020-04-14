@@ -1,0 +1,49 @@
+.hot-item {
+    display: flex;
+    align-items: center;
+
+    .avatar {
+        margin-right: 12px;
+    }
+
+    .info {
+        .title {
+            font-size: 16px;
+            line-height: 22px;
+            color: #000;
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0;
+
+            a {
+                color: #262626;
+            }
+        }
+
+        .data {
+            > span {
+                color: #999;
+            }
+
+            > span:before {
+                content: '';
+                position: relative;
+                top: -1px;
+                display: inline-block;
+                vertical-align: middle;
+                overflow: hidden;
+                margin: 0 8px;
+                width: 2px;
+                height: 2px;
+                border-radius: 50%;
+                background: #999;
+            }
+
+            > span:first-child:before {
+                display: none;
+            }
+        }
+    }
+}

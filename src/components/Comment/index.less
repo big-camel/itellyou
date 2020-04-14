@@ -1,5 +1,5 @@
 .comment-list {
-    border: 1px solid #ebebeb;
+    border: 1px solid #f0f0f0;
     background: #fff;
     margin-top: 16px;
     overflow: visible;
@@ -154,7 +154,7 @@
         padding: 16px 20px;
         text-align: center;
         margin: 0 auto;
-        border-top: 1px solid #ebebeb;
+        border-top: 1px solid #f0f0f0;
 
         :global {
             .ant-pagination-item {
@@ -182,34 +182,39 @@
 
     .comment-footer {
         padding: 0 20px;
-        background: #fff;
-        border-top: 1px solid #ebebeb;
+        background: transparent;
+        border-top: 1px solid #f0f0f0;
+    }
+}
+
+.comment-editor {
+    padding: 16px 0;
+
+    .comment-not-login {
+        text-align: center;
+        font-weight: 700;
     }
 
-    .comment-editor {
-        padding: 16px 0;
+    :global {
+        .itellyou-line-editor {
+            border: 1px solid #8590a6;
+            border-radius: 4px;
 
-        :global {
-            .itellyou-line-editor {
-                border: 1px solid #8590a6;
+            .itellyou-content-editor {
+                border: 1px solid transparent;
                 border-radius: 4px;
+            }
 
-                .itellyou-content-editor {
-                    border: 1px solid transparent;
-                    border-radius: 4px;
-                }
-
-                .itellyou-toolbar {
-                    height: 32px;
-                    line-height: 32px;
-                    padding: 0 6px;
-                }
+            .itellyou-toolbar {
+                height: 32px;
+                line-height: 32px;
+                padding: 0 6px;
             }
         }
+    }
 
-        .comment-editor-submit {
-            width: 100%;
-        }
+    .comment-editor-submit {
+        width: 100%;
     }
 }
 

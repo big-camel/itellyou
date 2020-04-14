@@ -12,7 +12,7 @@ export default [
     {
         path: '/question/(new|[\\d]+/edit)',
         component: '../layouts/BlankLayout',
-        //Routes: ['src/pages/Authorized'],
+        wrappers: ['Authorized'],
         routes: [
             {
                 path: '/question/new',
@@ -32,7 +32,7 @@ export default [
     {
         path: '/tag/:id(\\d+)/edit',
         component: '../layouts/BlankLayout',
-        //Routes: ['src/pages/Authorized'],
+        wrappers: ['Authorized'],
         routes: [
             {
                 path: '/tag/:id(\\d+)/edit',
@@ -46,7 +46,7 @@ export default [
     {
         path: '/article/(new|[\\d]+/edit)',
         component: '../layouts/BlankLayout',
-        //Routes: ['src/pages/Authorized'],
+        wrappers: ['Authorized'],
         routes: [
             {
                 path: '/article/new',
@@ -78,7 +78,7 @@ export default [
     {
         path: '/',
         component: '../layouts/BasicLayout',
-        //Routes: ['src/pages/Authorized'],
+        wrappers: ['Authorized'],
         routes: [
             { path: '/', name: 'home.page.index', component: './home' },
             // Question
@@ -129,7 +129,12 @@ export default [
             { path: '/search', name: 'search.page.index', component: './search' },
             // Column
             { path: '/column', name: 'column.page.index', component: './column' },
-            { path: '/column/apply', name: 'column.page.apply', component: './column/apply' },
+            {
+                path: '/column/apply',
+                name: 'column.page.apply',
+                component: './column/apply',
+                authority: ['admin', 'user'],
+            },
             // User
             {
                 path: '/dashboard',
@@ -202,6 +207,16 @@ export default [
                 name: 'user.notifications',
                 component: './user/notifications',
                 authority: ['admin', 'user'],
+            },
+            {
+                path: '/403',
+                name: '403.page',
+                component: './403',
+            },
+            {
+                path: '/500',
+                name: '500.page',
+                component: './500',
             },
             // Path
             {

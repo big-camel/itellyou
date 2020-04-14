@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './index.less';
-import { Link, useSelector } from 'umi';
+import { useSelector } from 'umi';
 import UserMenu from './UserMenu';
 import ActionMenu from './ActionMenu';
 import Notifications from './Notifications';
@@ -24,9 +24,11 @@ export default () => {
                 </div>
             ) : (
                 <Space>
-                    <Button href="/login">登录</Button>
+                    <Button type="ghost" href="/login">
+                        立即登录
+                    </Button>
                     <Button type="primary" href="/register">
-                        快速注册
+                        免费注册
                     </Button>
                 </Space>
             )}

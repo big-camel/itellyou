@@ -18,9 +18,9 @@ function BlankLayout({ route, children, location, title }) {
         }
     }
 
-    const {
-        initialState: { me },
-    } = useModel('@@initialState');
+    const { initialState } = useModel('@@initialState');
+    const me = initialState ? initialState.me : null;
+
     const dispatch = useDispatch();
 
     useEffect(() => {
