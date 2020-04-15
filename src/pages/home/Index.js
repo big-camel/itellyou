@@ -10,9 +10,11 @@ export default () => {
     return (
         <Container>
             <Layout>
-                <Card>
-                    <Recommends />
-                </Card>
+                <div className={styles['recommends']}>
+                    <Card>
+                        <Recommends />
+                    </Card>
+                </div>
                 <React.Fragment>
                     <Writer />
                     <Answerer className={styles['sider-answerer']} />

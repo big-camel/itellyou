@@ -6,17 +6,25 @@ import getPageTitle from '@/utils/getPageTitle';
 import 'nprogress/nprogress.css';
 
 function BlankLayout({ route, children, location, title }) {
-    const { href } = window.location;
+    const href = location.pathname;
     const hrefRef = useRef();
     const settings = useSelector(state => state.settings);
     const loading = useSelector(state => state.loading);
-    if (hrefRef.current !== href) {
-        NProgress.start();
-        if (!loading.global) {
-            NProgress.done();
-            hrefRef.current = href;
+
+    useEffect(() => {
+        if (hrefRef.current !== href) {
+            if (loading.global && !NProgress.status) {
+                NProgress.start();
+            }
+            if (!loading.global && NProgress.status) {
+                NProgress.done();
+                hrefRef.current = href;
+                if (window.app && window.app.done) {
+                    window.app.done();
+                }
+            }
         }
-    }
+    }, [href, loading]);
 
     const { initialState } = useModel('@@initialState');
     const me = initialState ? initialState.me : null;

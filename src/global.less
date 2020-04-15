@@ -113,6 +113,20 @@ ul {
 }
 
 body {
+    #nprogress .bar {
+        background: @primary-color;
+    }
+
+    #nprogress .spinner-icon {
+        border-top-color: @primary-color;
+        border-left-color: @primary-color;
+    }
+
+    #nprogress .peg {
+        //box-shadow: 0 0 10px @primary-color, 0 0 5px @primary-color;
+        box-shadow: none;
+    }
+
     .ant-btn,
     .ant-btn:focus,
     .ant-btn:hover {
