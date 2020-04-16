@@ -18,17 +18,18 @@ export default ({ overflowCount }) => {
     overflowCount = overflowCount || 99;
 
     const { groupCount } = useSelector(state => state.notifications);
-
+    const settings = useSelector(state => state.settings);
     const [visible, setVisible] = useState(false);
     const [force, setForce] = useState(false);
     const [activeKey, setActiveKey] = useState('default');
-
+    const connectionCount = useRef(0);
     const dispatch = useDispatch();
     const socket = useRef();
 
     useEffect(() => {
         const connection = () => {
-            const webSocket = new WebSocket('ws://localhost:8082');
+            if (!settings.ws) return;
+            const webSocket = new WebSocket(settings.ws);
             webSocket.onopen = () => {
                 const message = {
                     action: 'ready',
@@ -37,7 +38,10 @@ export default ({ overflowCount }) => {
             };
             webSocket.onclose = () => {
                 setTimeout(() => {
-                    connection();
+                    if (connectionCount.current < 5) {
+                        connection();
+                        connectionCount.current++;
+                    }
                 }, 5000);
             };
             webSocket.onerror = event => {

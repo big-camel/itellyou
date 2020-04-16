@@ -242,7 +242,10 @@ export default () => {
                     onBlur={e => {
                         if (e.change) setFiledErrors({ ...filedErrors, password: null });
                     }}
-                    onPressEnter={form.submit}
+                    onPressEnter={e => {
+                        e.target.blur();
+                        form.submit();
+                    }}
                 />
             </Tab>
             <Tab key="mobile" tab={'手机动态码登录'}>
@@ -261,7 +264,10 @@ export default () => {
                     name="code"
                     autoComplete="off"
                     onSend={sendMobileCaptcha}
-                    onPressEnter={form.submit}
+                    onPressEnter={e => {
+                        e.target.blur();
+                        form.submit();
+                    }}
                     errors={filedErrors['code']}
                     onBlur={e => {
                         if (e.change) setFiledErrors({ ...filedErrors, code: null });
