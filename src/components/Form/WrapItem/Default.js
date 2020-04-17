@@ -127,7 +127,7 @@ export default ({
         if (onChange) onChange(e);
     };
 
-    const doAsyncValidator = (rule, value) => {
+    const doAsyncValidator = (rule, value, cb, source, options) => {
         let hasError = false;
         for (const r of rules.current) {
             if (!r.asyncValidator) {
@@ -145,8 +145,8 @@ export default ({
                             hasError = true;
                         }
                     },
-                    { [name]: value },
-                    { messages: { [rule.type]: {} } },
+                    source,
+                    options,
                 );
             }
             if (hasError) break;

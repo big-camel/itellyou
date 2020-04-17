@@ -48,7 +48,7 @@ export default ({ defaultName, onCallback }) => {
         });
     };
 
-    const asyncValidator = value => {
+    const asyncValidator = (_, value) => {
         value = value.toLowerCase();
         return new Promise((resolve, reject) => {
             dispatch({

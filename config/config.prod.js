@@ -1,6 +1,7 @@
 export default {
-    chunks: ['editors', 'vendors', 'umi'],
-    chainWebpack: function(config, { webpack }) {
+    hash: true,
+    publicPath: 'http://cdn-object.itellyou.com/web/',
+    chainWebpack: config => {
         config.merge({
             optimization: {
                 minimize: true,
@@ -10,16 +11,23 @@ export default {
                     minChunks: 2,
                     automaticNameDelimiter: '.',
                     cacheGroups: {
-                        editor: {
+                        editors_css: {
+                            name: 'editor-styles',
+                            minChunks: 1,
+                            minSize: 0,
+                            test: /[\\/]node_modules[\\/](@itellyou|@antv|codemirror|ot-json0|node-htmldiff|markdown|diff-dom).*\.(css|less)$/,
+                            priority: 30,
+                        },
+                        editors: {
                             name: 'editors',
                             test({ resource }) {
-                                return /[\\/]node_modules[\\/](@itellyou|@antv|codemirror|ot-json0|node-htmldiff|markdown-it|diff-dom)/.test(
+                                return /[\\/]node_modules[\\/](@itellyou|@antv|codemirror|ot-json0|node-htmldiff|markdown|diff-dom)/.test(
                                     resource,
                                 );
                             },
                             priority: 20,
                         },
-                        vendor: {
+                        vendors: {
                             name: 'vendors',
                             test({ resource }) {
                                 return /[\\/]node_modules[\\/](antd|cropperjs|@ant-design|nprogress)/.test(

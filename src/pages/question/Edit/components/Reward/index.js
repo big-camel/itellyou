@@ -69,6 +69,7 @@ export default ({ current, data, onChange }) => {
     };
 
     const getDisabled = type => {
+        if (!current) return false;
         if (current.type !== 0 && current.type !== type) {
             return true;
         }
