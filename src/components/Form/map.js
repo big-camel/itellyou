@@ -154,7 +154,7 @@ export default {
     },
     Path: {
         props: {
-            addonBefore: 'http://www.itellyou.com/',
+            addonBefore: 'https://www.itellyou.com/',
         },
         rules: [
             {

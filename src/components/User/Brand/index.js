@@ -12,7 +12,7 @@ export default ({ id, placement, children }) => {
     const detail = useSelector(state => state.user.detail[id]);
     const loadingState = useSelector(state => state.loading);
     const loading = loadingState.effects['user/find'];
-
+    const settings = useSelector(state => state.settings) || {};
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
@@ -50,11 +50,7 @@ export default ({ id, placement, children }) => {
         return (
             <div className={styles['user-card']}>
                 <div className={styles['body']}>
-                    <Avatar
-                        shape="circle"
-                        src={avatar || 'http://cdn-object.itellyou.com/avatar/default.png'}
-                        size={48}
-                    />
+                    <Avatar shape="circle" src={avatar || settings.defaultAvatar} size={48} />
                     <div className={styles['info']}>
                         <h2>{name}</h2>
                         {description && description !== '' && (

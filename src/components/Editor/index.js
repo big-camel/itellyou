@@ -54,8 +54,8 @@ function Editor(
 
     useEffect(() => {
         const scripts = [
-            `http://cdn-object.itellyou.com/ali-sdk/aliyun-oss-sdk-5.3.1.min.js`,
-            `http://cdn-object.itellyou.com/ali-sdk/aliyun-upload-sdk-1.5.0.min.js`,
+            `https://cdn-object.itellyou.com/ali-sdk/aliyun-oss-sdk-5.3.1.min.js`,
+            `https://cdn-object.itellyou.com/ali-sdk/aliyun-upload-sdk-1.5.0.min.js`,
         ];
         scripts.map(src => {
             const script = document.createElement('script');
@@ -111,7 +111,7 @@ function Editor(
                 console.log('on save, editor not active, ignore');
                 return;
             }
-            if (saving) return message.error('正在保存，请稍后再试');
+            if (saving) return; //message.error('正在保存，请稍后再试');
             if (!collab.current) return;
             engine.current.event.trigger('save:before');
             engine.current.asyncEvent

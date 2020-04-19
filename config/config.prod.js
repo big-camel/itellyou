@@ -1,6 +1,6 @@
 export default {
     hash: true,
-    publicPath: 'http://cdn-object.itellyou.com/web/',
+    chunks: ['common', 'umi'],
     chainWebpack: config => {
         config.merge({
             optimization: {
@@ -11,15 +11,22 @@ export default {
                     minChunks: 2,
                     automaticNameDelimiter: '.',
                     cacheGroups: {
-                        editors_css: {
-                            name: 'editor-styles',
+                        editor_css: {
+                            name: 'editor',
                             minChunks: 1,
                             minSize: 0,
                             test: /[\\/]node_modules[\\/](@itellyou|@antv|codemirror|ot-json0|node-htmldiff|markdown|diff-dom).*\.(css|less)$/,
                             priority: 30,
                         },
-                        editors: {
-                            name: 'editors',
+                        commons_css: {
+                            name: 'common',
+                            minChunks: 1,
+                            minSize: 0,
+                            test: /[\\/]node_modules[\\/](antd|cropperjs|@ant-design|nprogress).*\.(css|less)$/,
+                            priority: 25,
+                        },
+                        editor: {
+                            name: 'editor',
                             test({ resource }) {
                                 return /[\\/]node_modules[\\/](@itellyou|@antv|codemirror|ot-json0|node-htmldiff|markdown|diff-dom)/.test(
                                     resource,
@@ -27,8 +34,8 @@ export default {
                             },
                             priority: 20,
                         },
-                        vendors: {
-                            name: 'vendors',
+                        common: {
+                            name: 'common',
                             test({ resource }) {
                                 return /[\\/]node_modules[\\/](antd|cropperjs|@ant-design|nprogress)/.test(
                                     resource,

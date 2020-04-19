@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar } from 'antd';
-import { Link } from 'umi';
+import { Link, useSelector } from 'umi';
 import classnames from 'classnames';
 import UserBrand from '../Brand';
 import './index.less';
@@ -22,6 +22,7 @@ export default ({
         description = undefined;
     }
     if (size === 'middle') avatarSize = 32;
+    const settings = useSelector(state => state.settings) || {};
     const getLink = () => {
         return (
             <Link to={`/${path}`}>
@@ -38,7 +39,7 @@ export default ({
                         <Avatar
                             shape={avatarShape}
                             size={avatarSize}
-                            src={avatar || 'http://cdn-object.itellyou.com/avatar/default.png'}
+                            src={avatar || settings.defaultAvatar}
                         />
                     </UserBrand>
                 </div>

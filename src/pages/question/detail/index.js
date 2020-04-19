@@ -15,6 +15,7 @@ import { ReportButton, CommentButton } from '@/components/Button';
 import Loading from '@/components/Loading';
 import Related from './components/Related';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import Author from './components/Author';
 
 function Detail({ match: { params } }) {
     const id = params.id ? parseInt(params.id) : null;
@@ -216,7 +217,10 @@ function Detail({ match: { params } }) {
                             />
                         }
                     </React.Fragment>
-                    <Related id={id} />
+                    <>
+                        {detail && <Author {...detail.author} />}
+                        <Related id={id} />
+                    </>
                 </Layout>
             </Container>
         </DocumentTitle>

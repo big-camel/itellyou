@@ -13,7 +13,7 @@ export default ({ id, paths }) => {
     const menuKey = paths && paths.length > 1 ? paths[1] : 'activity';
     if (!menus.find(menu => menu.key === menuKey)) history.push('/404');
     const dispatch = useDispatch();
-    const settings = useSelector(state => state.settings);
+    const settings = useSelector(state => state.settings) || {};
     useEffect(() => {
         dispatch({
             type: 'user/find',
@@ -26,7 +26,6 @@ export default ({ id, paths }) => {
     const detail = useSelector(state => state.user.detail[id]);
 
     if (!detail) return <Loading />;
-
     const { avatar, name, description, star_count, follower_count, profession, address } = detail;
     const menu = menus.find(item => item.key === menuKey);
     return (
@@ -35,10 +34,7 @@ export default ({ id, paths }) => {
                 <Layout spans={8}>
                     <Card bordered className={styles['info-card']}>
                         <div className={styles['info-head']}>
-                            <Avatar
-                                src={avatar || 'http://cdn-object.itellyou.com/avatar/default.png'}
-                                size={96}
-                            />
+                            <Avatar src={avatar || settings.defaultAvatar} size={96} />
                             <h2>{name}</h2>
                             <p className={styles['description']}>{description}</p>
                         </div>

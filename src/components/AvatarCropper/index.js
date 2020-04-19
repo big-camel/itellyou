@@ -84,6 +84,7 @@ export default ({ url, onChange }) => {
                 onCancel={() => {
                     setModalVisible(false);
                 }}
+                cancelText="取消"
                 onOk={() => {
                     if (cropperRef.current) {
                         cropperRef.current

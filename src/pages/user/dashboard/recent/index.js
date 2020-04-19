@@ -84,7 +84,9 @@ function Dashboard() {
         return (url += '/edit');
     };
 
-    const renderItem = ({ url, title, author, created_time, data_type, data_key }) => {
+    const renderItem = ({ url, title, author, created_time, data_type, data_key, target }) => {
+        let newUrl = url;
+        if (!target || !target.published) newUrl += '/edit';
         return (
             <ScrollList.Item>
                 <Card hoverable>
@@ -92,7 +94,7 @@ function Dashboard() {
                         <div className={styles['icon']}>{renderIcon(data_type)}</div>
                         <div className={styles['title']}>
                             <div className={styles['body']}>
-                                <Link className={styles['link']} to={url}>
+                                <Link className={styles['link']} to={newUrl}>
                                     {title}
                                 </Link>
                             </div>

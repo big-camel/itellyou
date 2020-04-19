@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from 'antd';
 import { useDispatch, useSelector } from 'umi';
-import { MoreList } from '@/components/List';
+import List from '@/components/List';
 import { UserAuthor } from '@/components/User';
+import Loading from '@/components/Loading';
 
 export default ({ className }) => {
     const [offset, setOffset] = useState(0);
-    const limit = 20;
+    const limit = 10;
 
     const dispatch = useDispatch();
 
@@ -14,6 +15,7 @@ export default ({ className }) => {
         dispatch({
             type: 'explore/writer',
             payload: {
+                append: false,
                 offset,
                 limit,
             },
@@ -21,25 +23,19 @@ export default ({ className }) => {
     }, [offset, limit, dispatch]);
 
     const dataSource = useSelector(state => state.explore.writer);
+    if (!dataSource) return <Loading />;
 
     const renderItem = item => {
         return (
-            <MoreList.Item>
+            <List.Item>
                 <UserAuthor info={item} size="middle" />
-            </MoreList.Item>
+            </List.Item>
         );
     };
 
     return (
         <Card title="优秀创作者" className={className}>
-            <MoreList
-                offset={offset}
-                limit={limit}
-                dataSource={dataSource}
-                onChange={offset => setOffset(offset)}
-                renderItem={renderItem}
-                split={false}
-            />
+            <List dataSource={dataSource.data} renderItem={renderItem} split={false} />
         </Card>
     );
 };

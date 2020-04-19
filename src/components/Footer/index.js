@@ -9,12 +9,14 @@ export default () => {
             <Container>
                 <div className={styles['copyright']}>
                     <p>Copyright © 2020 ITELLYOU</p>
+                    <p>蜀ICP备 17019166号 四川西维尔科技有限公司版权所有</p>
+                </div>
+                <div className={styles['links']}>
                     <Space>
-                        <a target="_blank" href="http://drawing.itellyou.com">
+                        <a target="_blank" href="https://drawing.itellyou.com">
                             文本绘图工具
                         </a>
                     </Space>
-                    <p>蜀ICP备 17019166号 四川西维尔科技有限公司版权所有</p>
                 </div>
             </Container>
         </div>

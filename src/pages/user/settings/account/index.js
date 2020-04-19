@@ -61,7 +61,7 @@ function Account() {
                 <div className={styles['form-item']}>
                     <div className={styles['text']}>
                         <h3>个人路径</h3>
-                        <span>{path ? `http://www.itellyou.com/${path}` : '未设置'}</span>
+                        <span>{path ? `https://www.itellyou.com/${path}` : '未设置'}</span>
                     </div>
                     <Button onClick={() => setPathVisible(true)}>{path ? '更改' : '设置'}</Button>
                 </div>

@@ -23,7 +23,7 @@ export const init = mode => {
                         });
                         gtObject.onError(error => {
                             reject(error.msg);
-                            gtObject.close();
+                            gtObject.reset();
                         });
                         gtObject.onClose(() => {
                             reject();

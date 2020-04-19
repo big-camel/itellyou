@@ -2,5 +2,9 @@ const { UMI_ENV } = process.env;
 export default {
     primaryColor: '#347EFF',
     title: 'ITELLYOU',
-    ws: UMI_ENV === 'prod' ? 'ws://api-web.itellyou.com' : 'ws://localhost:8082',
+    defaultAvatar: 'https://cdn-object.itellyou.com/avatar/default.png',
+    ws:
+        UMI_ENV === 'prod'
+            ? 'wss://api-web.itellyou.com/websocket'
+            : 'ws://localhost:8082/websocket',
 };

@@ -11,7 +11,9 @@ export default {
     dva: {
         hmr: true,
     },
-    dynamicImport: {},
+    dynamicImport: {
+        loading: '@/components/Loading',
+    },
     targets: {
         ie: 11,
     },

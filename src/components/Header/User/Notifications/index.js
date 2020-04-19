@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Badge, Popover, Tabs } from 'antd';
 import { Link, useSelector, useDispatch } from 'umi';
+import Cookies from 'js-cookie';
 import NotificationsList from './List';
 import styles from './index.less';
 import {
@@ -29,7 +30,9 @@ export default ({ overflowCount }) => {
     useEffect(() => {
         const connection = () => {
             if (!settings.ws) return;
-            const webSocket = new WebSocket(settings.ws);
+            const token = Cookies.get('token');
+            if (!token) return;
+            const webSocket = new WebSocket(settings.ws + '?token=' + encodeURIComponent(token));
             webSocket.onopen = () => {
                 const message = {
                     action: 'ready',
