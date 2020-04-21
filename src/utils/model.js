@@ -47,7 +47,7 @@ export const removeItem = (key, id, state, callback) => {
             return item.id === id;
         };
     const list = state[key] ? state[key] : {};
-    const data = list.data || [];
+    const data = list.data ? list.data.concat() : [];
     const index = data.findIndex(item => callback(item));
 
     if (index >= 0) {

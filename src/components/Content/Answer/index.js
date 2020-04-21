@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import Author from '@/components/User/Author';
 import { CommentButton, EditButton, ReportButton } from '@/components/Button';
 import { Vote, Favorite, Comment, Adopt, Delete, Edit } from './Action';
-import styles from './index.less';
-import { Button } from 'antd';
+import styles from '../index.less';
+import { Button, Space } from 'antd';
 import { history, Link, useDispatch } from 'umi';
 import Editor from '@/components/Editor';
 import Timer from '@/components/Timer';
@@ -11,6 +12,7 @@ import Timer from '@/components/Timer';
 const Answer = ({
     data: {
         id,
+        cover,
         question_id,
         description,
         author,
@@ -57,12 +59,9 @@ const Answer = ({
 
     const renderEdit = () => {
         return (
-            <Edit
-                className={styles['editor']}
-                id={id}
-                onCancel={onEditCancel}
-                onSubmit={onEditSubmit}
-            />
+            <div style={{ marginTop: 10 }}>
+                <Edit id={id} onCancel={onEditCancel} onSubmit={onEditSubmit} />
+            </div>
         );
     };
 
@@ -75,8 +74,10 @@ const Answer = ({
                 description.length > 3 && description.substr(description.length - 3) === '...';
             return (
                 <div className={styles['description']}>
-                    <span dangerouslySetInnerHTML={{ __html: description }} />
-                    {readFull && hasMore && (
+                    <Link to={`/question/${question_id}/answer/${id}`}>
+                        <span dangerouslySetInnerHTML={{ __html: description }} />
+                    </Link>
+                    {/**readFull && hasMore && (
                         <Button
                             className={styles['read-more']}
                             type="link"
@@ -84,7 +85,7 @@ const Answer = ({
                         >
                             阅读全文
                         </Button>
-                    )}
+                    )**/}
                 </div>
             );
         }
@@ -119,7 +120,7 @@ const Answer = ({
 
     const renderAction = () => {
         return (
-            <div className={styles['action']}>
+            <Space size="large">
                 <Adopt
                     id={id}
                     question_id={question_id}
@@ -143,14 +144,22 @@ const Answer = ({
                     />
                 )}
                 {allowEdit && <EditButton onClick={() => setEditVisible(!editVisible)} />}
-            </div>
+            </Space>
         );
     };
 
     const renderBody = () => {
         return (
             <div>
-                {renderContent()}
+                <div className={classNames(styles['body'], { [styles['has-cover']]: cover })}>
+                    {renderContent()}
+                    {cover && (
+                        <div
+                            className={styles['cover']}
+                            style={{ backgroundImage: `url(${cover})` }}
+                        />
+                    )}
+                </div>
                 {action && renderAction()}
                 {commentVisible && <Comment question_id={question_id} answer_id={id} />}
             </div>
@@ -158,14 +167,17 @@ const Answer = ({
     };
 
     return (
-        <div>
+        <div className={styles['item']}>
             {author && (
-                <Author
-                    className={styles['author']}
-                    info={{ ...author, use_author }}
-                    size={authorSize}
-                />
+                <div className={styles['header']}>
+                    <Author
+                        className={styles['author']}
+                        info={{ ...author, use_author }}
+                        size={authorSize}
+                    />
+                </div>
             )}
+
             {editVisible && renderEdit()}
             {!editVisible && renderBody()}
         </div>

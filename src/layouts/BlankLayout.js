@@ -2,8 +2,9 @@ import React, { useRef, useEffect } from 'react';
 import DocumentTitle from 'react-document-title';
 import { withRouter, useSelector, useDispatch, useModel } from 'umi';
 import NProgress from 'nprogress';
-import getPageTitle from '@/utils/getPageTitle';
+import { getTitle, getMetas } from '@/utils/page';
 import 'nprogress/nprogress.css';
+import { Helmet } from 'react-helmet';
 
 function BlankLayout({ route, children, location, title }) {
     const href = location.pathname;
@@ -39,24 +40,34 @@ function BlankLayout({ route, children, location, title }) {
     }, [dispatch, me]);
 
     const { routes = [] } = route || {};
+    const breadcrumbNameMap = {};
+    if (route && !route.routes) {
+        routes.push(route);
+    }
     if (!title) {
-        const breadcrumbNameMap = {};
-        if (route && !route.routes) {
-            routes.push(route);
-        }
         routes.forEach(item => {
             if (item && item.name && item.path) {
                 breadcrumbNameMap[item.path] = item;
             }
         });
-        title = getPageTitle(location.pathname, breadcrumbNameMap);
+        title = getTitle(location.pathname, breadcrumbNameMap);
     }
+    const metas = getMetas(location.pathname, breadcrumbNameMap);
 
     title = title ? `${title} - ${settings.title}` : settings.title;
 
     return (
         <DocumentTitle title={title}>
-            <React.Fragment>{children}</React.Fragment>
+            <>
+                {metas && metas.length > 0 && (
+                    <Helmet>
+                        {metas.map(({ name, content, ...rest }) => (
+                            <meta key={name} name={name} content={content} {...rest} />
+                        ))}
+                    </Helmet>
+                )}
+                {children}
+            </>
         </DocumentTitle>
     );
 }

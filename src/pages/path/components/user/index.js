@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { Link, history, useDispatch, useSelector } from 'umi';
-import { Card, Avatar, Menu } from 'antd';
+import { Card, Avatar, Menu, Button } from 'antd';
 import Loading from '@/components/Loading';
 import styles from './index.less';
 import menus from './menu';
@@ -24,13 +24,22 @@ export default ({ id, paths }) => {
     }, [dispatch, id]);
 
     const detail = useSelector(state => state.user.detail[id]);
-
+    const me = useSelector(state => state.user.me);
     if (!detail) return <Loading />;
     const { avatar, name, description, star_count, follower_count, profession, address } = detail;
     const menu = menus.find(item => item.key === menuKey);
     return (
         <DocumentTitle title={`${detail.name} - ${settings.title}`}>
-            <Container>
+            <Container
+                metas={[
+                    { name: 'author', content: name },
+                    { name: 'keywords', content: `个人主页,${name},${menu.title},itellyou` },
+                    {
+                        name: 'description',
+                        content: `${name}的个人主页-${menu.title}：${description}`,
+                    },
+                ]}
+            >
                 <Layout spans={8}>
                     <Card bordered className={styles['info-card']}>
                         <div className={styles['info-head']}>
@@ -40,11 +49,17 @@ export default ({ id, paths }) => {
                         </div>
                         <div className={styles['info-follow']}>
                             <div>
-                                <UserStar
-                                    className={styles['btn']}
-                                    id={id}
-                                    use_star={detail.use_star}
-                                />
+                                {me && me.id === detail.id ? (
+                                    <Button className={styles['btn']} href="/settings/profile">
+                                        编辑资料
+                                    </Button>
+                                ) : (
+                                    <UserStar
+                                        className={styles['btn']}
+                                        id={id}
+                                        use_star={detail.use_star}
+                                    />
+                                )}
                             </div>
                             <div className={styles['info']}>
                                 <Link to="followings">

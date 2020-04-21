@@ -40,17 +40,26 @@ function Detail({ match: { params } }) {
             config,
         });
     };
+    const { title, tags, author, description } = detail;
+    const keywords = tags.map(tag => tag.name) || [];
+    keywords.push('itellyou');
 
     return (
-        <DocumentTitle title={`${detail.title} - ${settings.title}`}>
-            <Container>
+        <DocumentTitle title={`${title} - ${settings.title}`}>
+            <Container
+                metas={[
+                    { name: 'author', content: author.name },
+                    { name: 'keywords', content: keywords.join(',') },
+                    { name: 'description', content: description },
+                ]}
+            >
                 <Layout>
                     <React.Fragment>
                         <div className={styles['article-view']}>
                             <Card>
                                 <Article
                                     className={styles['article']}
-                                    data={detail}
+                                    data={{ ...detail, cover: null }}
                                     tag={true}
                                     view={true}
                                     defaultComment={true}

@@ -30,19 +30,26 @@
         .right {
             flex: 1;
             justify-content: flex-end;
-            display: flex;
 
-            > button {
-                margin-left: 10px;
+            .ellipsis-button {
+                padding-left: 0;
+                padding-right: 0;
+
+                :global(.anticon) {
+                    font-size: 24px;
+                }
             }
         }
 
-        > small {
-            font-size: 16px;
-            font-weight: 500;
+        .sub-title {
+            margin-left: 24px;
+            max-width: 284px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
 
             > span {
-                margin: 0 10px;
+                margin: 0 4px;
             }
         }
 
@@ -54,6 +61,10 @@
     }
 }
 
+.more-menu {
+    min-width: 130px;
+}
+
 .container {
     margin: 0 auto;
 }
@@ -62,7 +73,7 @@
     .input {
         color: #262626;
         font-weight: 700;
-        font-size: 36px;
+        font-size: 30px;
     }
 
     :global {

@@ -6,7 +6,7 @@ import TagComponent from '@/components/Tag';
 import styles from './index.less';
 import Answer from '../Answer';
 import { TagOutlined } from '@ant-design/icons';
-import { Favorite } from './Action';
+import { Favorite, Delete } from './Action';
 import { Tag, Space } from 'antd';
 
 const Question = ({
@@ -78,4 +78,5 @@ const Question = ({
     );
 };
 Question.Favorite = Favorite;
+Question.Delete = Delete;
 export default Question;

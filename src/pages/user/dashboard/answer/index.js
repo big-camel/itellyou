@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Popover, Tag } from 'antd';
+import { Table, Popover, Tag, Space, Tooltip } from 'antd';
 import Layout from '../components/Layout';
 import Loading from '@/components/Loading';
 import { Link, useDispatch, useSelector } from 'umi';
 import CardTable from '../components/CardTable';
+import { EditButton } from '@/components/Button';
+import { Answer } from '@/components/Content';
 
 export default () => {
     const [page, setPage] = useState(1);
@@ -40,9 +42,16 @@ export default () => {
             dataIndex: 'title',
             key: 'title',
             ellipsis: true,
-            render: (_, { question: { title, description }, question_id, id }) => {
+            render: (_, { question: { title }, question_id, description, id }) => {
                 return (
-                    <Popover placement="bottomLeft" content={description}>
+                    <Popover
+                        placement="bottomLeft"
+                        content={
+                            <div style={{ maxWidth: 380, wordBreak: 'break-word' }}>
+                                {description || '无摘要'}
+                            </div>
+                        }
+                    >
                         <Link
                             className="table-column-title"
                             to={`/question/${question_id}/answer/${id}`}
@@ -86,7 +95,25 @@ export default () => {
             key: 'action',
             width: 80,
             render: (_, { question_id, id }) => {
-                return <Link to={`/question/${question_id}/answer/${id}`}>编辑</Link>;
+                return (
+                    <Space>
+                        <Tooltip title="编辑">
+                            <Link to={`/question/${question_id}/answer/${id}`}>
+                                <EditButton onlyIcon={true} />
+                            </Link>
+                        </Tooltip>
+                        <Tooltip title="删除">
+                            <a>
+                                <Answer.Delete
+                                    id={id}
+                                    question_id={question_id}
+                                    onlyIcon={true}
+                                    allow_delete={true}
+                                />
+                            </a>
+                        </Tooltip>
+                    </Space>
+                );
             },
         },
     ];

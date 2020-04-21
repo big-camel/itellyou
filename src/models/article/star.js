@@ -25,7 +25,7 @@ export default {
                 yield put({
                     type: 'setList',
                     payload: {
-                        append: true,
+                        append: offset !== 0,
                         end: true,
                         data: [
                             {

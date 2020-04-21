@@ -1,3 +1,4 @@
+import { history } from 'umi';
 import {
     find,
     create,
@@ -24,10 +25,16 @@ export default {
     effects: {
         *find({ payload }, { call, put }) {
             const response = yield call(find, payload);
-            yield put({
-                type: 'updateDetail',
-                payload: response.data,
-            });
+            const { result, status, data } = response;
+            if (result) {
+                yield put({
+                    type: 'updateDetail',
+                    payload: response.data,
+                });
+            } else if (status > 200) {
+                history.push(`/${status}`);
+            }
+
             return response;
         },
         *create({ payload }, { call }) {

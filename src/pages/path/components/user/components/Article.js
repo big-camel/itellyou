@@ -14,7 +14,7 @@ export default ({ id }) => {
         dispatch({
             type: 'article/list',
             payload: {
-                append: true,
+                append: offset !== 0,
                 offset,
                 limit,
                 user_id: id,

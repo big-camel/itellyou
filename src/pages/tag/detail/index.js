@@ -23,8 +23,6 @@ function Detail({ match: { params } }) {
     const detail = useSelector(state => state.tag.detail[id]);
     const me = useSelector(state => state.user.me);
     const settings = useSelector(state => state.settings);
-    const loadingEffect = useSelector(state => state.loading);
-    const loading = loadingEffect.effects['tag/find'];
 
     useEffect(() => {
         dispatch({
@@ -35,7 +33,7 @@ function Detail({ match: { params } }) {
         });
     }, [dispatch, id]);
 
-    if (!detail || loading) return <Loading />;
+    if (!detail) return <Loading />;
     const { name, description, use_star, content, author } = detail;
     const menu = menus.find(item => item.key === path);
 
@@ -43,7 +41,12 @@ function Detail({ match: { params } }) {
     if (path !== 'intro') title = `${menu.title} - ${title}`;
     return (
         <DocumentTitle title={title}>
-            <Container>
+            <Container
+                metas={[
+                    { name: 'keywords', content: `${name},itellyou,${name}的${menu.title}` },
+                    { name: 'description', content: description },
+                ]}
+            >
                 <Layout>
                     <div className={styles['layout']}>
                         <div className={styles['header']}>

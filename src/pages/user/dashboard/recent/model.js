@@ -29,7 +29,7 @@ export default {
     reducers: {
         setList(state, { payload }) {
             return setList('list', payload, state, (child, item) => {
-                return child.data_type === item.data_type && item.data_key === child.key;
+                return child.data_type === item.data_type && item.data_key === child.data_key;
             });
         },
         removeItem(state, { payload }) {

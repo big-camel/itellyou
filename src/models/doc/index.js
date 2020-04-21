@@ -1,4 +1,5 @@
-import { create, find, update, revert, publish } from '@/services/doc/index';
+import { history } from 'umi';
+import { create, find, update, meta, revert, publish } from '@/services/doc/index';
 
 export default {
     namespace: 'doc',
@@ -20,11 +21,14 @@ export default {
         *find({ payload }, { call, put, select }) {
             const type = yield select(state => state.doc.type);
             const response = yield call(find, { ...payload.data, type });
-            if (response.result) {
+            const { result, status, data } = response;
+            if (result) {
                 yield put({
                     type: 'setDetail',
-                    payload: response.data,
+                    payload: data,
                 });
+            } else if (status > 200) {
+                history.push(`/${status}`);
             } else {
                 payload.onError(response);
             }
@@ -40,6 +44,19 @@ export default {
                 });
             } else {
                 payload.onError(response);
+            }
+            return response;
+        },
+        *meta({ payload: { data, onError } }, { call, put, select }) {
+            const type = yield select(state => state.doc.type);
+            const response = yield call(meta, { ...data, type });
+            if (response.result) {
+                yield put({
+                    type: 'setDetail',
+                    payload: response.data,
+                });
+            } else if (onError) {
+                onError(response);
             }
             return response;
         },

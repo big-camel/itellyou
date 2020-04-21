@@ -5,7 +5,7 @@ import styles from './index.less';
 import { UploadOutlined } from '@ant-design/icons';
 
 const { Dragger } = Upload;
-
+export { ImageCropper };
 export default ({ url, onChange }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [uploadSrc, setUploadSrc] = useState();

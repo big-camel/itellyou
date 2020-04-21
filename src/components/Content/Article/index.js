@@ -4,9 +4,9 @@ import classNames from 'classnames';
 import Author from '@/components/User/Author';
 import Editor from '@/components/Editor';
 import { CommentButton, EditButton, ReportButton } from '@/components/Button';
-import { Vote, Favorite, Comment } from './Action';
-import styles from './index.less';
-import { Button, Space } from 'antd';
+import { Vote, Favorite, Comment, Delete } from './Action';
+import styles from '../index.less';
+import { Space } from 'antd';
 import Timer from '@/components/Timer';
 import Tag from '@/components/Tag';
 
@@ -15,6 +15,8 @@ const Article = ({
         id,
         title,
         description,
+        custom_description,
+        cover,
         content,
         author,
         column,
@@ -36,22 +38,23 @@ const Article = ({
     const [fullVisible, setFullVisible] = useState(false);
     const [commentVisible, setCommentVisible] = useState(defaultComment);
     const allowEdit = !desc && allow_edit;
-    description = description.trim();
+    description = (custom_description || description).trim();
     const hasMore = description.length > 3 && description.substr(description.length - 3) === '...';
     const renderContent = () => {
         if (desc && !fullVisible) {
             return (
                 <div className={styles['description']}>
-                    <span dangerouslySetInnerHTML={{ __html: description }} />
-                    {hasMore && (
-                        <Button
-                            className={styles['read-more']}
-                            type="link"
-                            onClick={() => setFullVisible(true)}
-                        >
-                            阅读全文
-                        </Button>
-                    )}
+                    <Link to={`/article/${id}`}>
+                        <span dangerouslySetInnerHTML={{ __html: description }} />
+                        {/**hasMore && (
+                            <Button
+                                className={styles['read-more']}
+                                type="link"
+                                onClick={() => setFullVisible(true)}
+                            >
+                                阅读全文
+                            </Button>)**/}
+                    </Link>
                 </div>
             );
         }
@@ -109,10 +112,15 @@ const Article = ({
                         ))}
                     {view && <span className={styles['view']}>{item.view}次浏览</span>}
                 </Space>
-                <Author className={styles['author']} info={author} size={authorSize} />
+                {author && <Author className={styles['author']} info={author} size={authorSize} />}
             </div>
-            {renderContent()}
-            <div className={styles['action']}>
+            <div className={classNames(styles['body'], { [styles['has-cover']]: cover })}>
+                {renderContent()}
+                {cover && (
+                    <div className={styles['cover']} style={{ backgroundImage: `url(${cover})` }} />
+                )}
+            </div>
+            <Space size="large">
                 <Vote id={id} {...item} />
                 <CommentButton onClick={() => setCommentVisible(!commentVisible)}>
                     {comment_count === 0 ? '添加评论' : `${comment_count} 条评论`}
@@ -121,7 +129,7 @@ const Article = ({
                     <Favorite id={id} use_star={item.use_star} allow_star={item.allow_star} />
                 )}
                 {!item.use_author && <ReportButton id={id} type="article" />}
-            </div>
+            </Space>
             <div>{commentVisible && <Comment id={id} />}</div>
         </div>
     );
@@ -129,4 +137,5 @@ const Article = ({
 Article.Vote = Vote;
 Article.Comment = Comment;
 Article.Favorite = Favorite;
+Article.Delete = Delete;
 export default Article;

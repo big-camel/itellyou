@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from 'antd';
+import { Button, Space } from 'antd';
 import { useDispatch } from 'umi';
 import { SupportButton, OpposeButton } from '@/components/Button';
 
@@ -23,15 +23,23 @@ export default ({ id, support, use_support, allow_support, oppose, use_oppose, a
         });
     };
 
+    const renderSupport = () => (
+        <SupportButton
+            active={use_support}
+            disabled={!allow_support}
+            onClick={() => doVote('support')}
+            loading={voting && voteType === 'support'}
+            count={support}
+        />
+    );
+
+    if (!allow_oppose) {
+        return renderSupport();
+    }
+
     return (
-        <Button.Group>
-            <SupportButton
-                active={use_support}
-                disabled={!allow_support}
-                onClick={() => doVote('support')}
-                loading={voting && voteType === 'support'}
-                count={support}
-            />
+        <Space size="large">
+            {renderSupport()}
             {allow_oppose && (
                 <OpposeButton
                     active={use_oppose}
@@ -39,6 +47,6 @@ export default ({ id, support, use_support, allow_support, oppose, use_oppose, a
                     loading={voting && voteType === 'oppose'}
                 />
             )}
-        </Button.Group>
+        </Space>
     );
 };

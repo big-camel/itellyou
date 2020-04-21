@@ -2,7 +2,7 @@ import React from 'react';
 import BaseButton from './BaseButton';
 import { DeleteOutlined } from '@ant-design/icons';
 
-function DeleteButton({ text, children, ...props }) {
+function DeleteButton({ text, onlyIcon, children, ...props }) {
     text = text || '删除';
     const renderContent = () => {
         if (children) return children;
@@ -10,7 +10,7 @@ function DeleteButton({ text, children, ...props }) {
     };
     return (
         <BaseButton icon={<DeleteOutlined />} {...props}>
-            {renderContent()}
+            {!onlyIcon && renderContent()}
         </BaseButton>
     );
 }

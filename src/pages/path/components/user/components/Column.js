@@ -15,7 +15,7 @@ export default ({ id }) => {
         dispatch({
             type: 'column/list',
             payload: {
-                append: true,
+                append: offset !== 0,
                 offset,
                 limit,
                 member_id: id,

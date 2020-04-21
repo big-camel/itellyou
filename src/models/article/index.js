@@ -1,4 +1,5 @@
-import { list, related, find, view, vote } from '@/services/article/index';
+import { history } from 'umi';
+import { list, related, find, view, vote, del } from '@/services/article/index';
 import { setList, replaceItem } from '@/utils/model';
 
 export default {
@@ -25,11 +26,14 @@ export default {
         },
         *find({ payload }, { call, put }) {
             const response = yield call(find, payload);
-            if (response && response.result) {
+            const { result, status, data } = response;
+            if (result) {
                 yield put({
                     type: 'updateDetail',
-                    payload: response.data,
+                    payload: data,
                 });
+            } else if (status > 200) {
+                history.push(`/${status}`);
             }
             return response;
         },
@@ -83,6 +87,16 @@ export default {
                         },
                     });
                 }
+            }
+            return response;
+        },
+        *delete({ payload }, { call, put }) {
+            const response = yield call(del, payload);
+            if (response && response.result) {
+                yield put({
+                    type: 'userArticle/removeItem',
+                    payload: payload.id,
+                });
             }
             return response;
         },

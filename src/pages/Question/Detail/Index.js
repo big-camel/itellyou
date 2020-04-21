@@ -63,7 +63,7 @@ function Detail({ match: { params } }) {
     }, [answer_id, user_answer]);
 
     if (!detail) return <Loading />;
-    const { title, use_star } = detail;
+    const { author, title, description, content, tags, use_star } = detail;
     const onRevoke = answer_id => {
         dispatch({
             type: 'answer/revoke',
@@ -129,10 +129,18 @@ function Detail({ match: { params } }) {
         );
     };
 
-    const isEmpty = Editor.Utils.isBlank(detail.content);
+    const isEmpty = Editor.Utils.isBlank(content);
+    const keywords = tags.map(tag => tag.name) || [];
+    keywords.push('itellyou');
     return (
-        <DocumentTitle title={`${detail.title} - ${settings.title}`}>
-            <Container>
+        <DocumentTitle title={`${title} - ${settings.title}`}>
+            <Container
+                metas={[
+                    { name: 'author', content: author.name },
+                    { name: 'keywords', content: keywords.join(',') },
+                    { name: 'description', content: description },
+                ]}
+            >
                 <Layout>
                     <React.Fragment>
                         <Card>
@@ -143,15 +151,15 @@ function Detail({ match: { params } }) {
                             >
                                 <h1 className={styles.title}>{title}</h1>
                                 <Space>
-                                    {detail.tags &&
-                                        detail.tags.map(({ id, name }) => (
+                                    {tags &&
+                                        tags.map(({ id, name }) => (
                                             <UserTag key={id} id={id} title={name} />
                                         ))}
                                 </Space>
                             </div>
                             {!isEmpty && (
                                 <article>
-                                    <Editor.Viewer content={detail.content} />
+                                    <Editor.Viewer content={content} />
                                 </article>
                             )}
                             <div className={styles['footer']}>

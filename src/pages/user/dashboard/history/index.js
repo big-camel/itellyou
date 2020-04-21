@@ -19,7 +19,7 @@ export default () => {
         dispatch({
             type: 'history/list',
             payload: {
-                append: true,
+                append: offset !== 0,
                 offset,
                 limit,
             },

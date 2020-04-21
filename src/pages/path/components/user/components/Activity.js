@@ -18,7 +18,7 @@ export default ({ id }) => {
         dispatch({
             type: 'userActivity/list',
             payload: {
-                append: true,
+                append: offset !== 0,
                 offset,
                 limit,
                 id,

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { history, useSelector, useDispatch } from 'umi';
-import { Button, Alert, message, Input, Form, Drawer } from 'antd';
+import { Button, Alert, message, Input, Form, Drawer, Space, Popover, Menu, Modal } from 'antd';
 import Editor from '@/components/Editor';
 import styles from './index.less';
 import logo from '@/assets/logo.svg';
@@ -10,12 +10,16 @@ import Loading from '@/components/Loading';
 import Tag, { Selector } from '@/components/Tag';
 import Column from './components/Column';
 import Source from './components/Source';
+import { EllipsisButton } from '@/components/Button';
+import Setting from './components/Setting';
+import { Article } from '@/components/Content';
 
 const { SAVE_TYPE } = Editor.Biz;
 
 function Edit({ match: { params } }) {
     const editor = useRef(null);
     const [id, setId] = useState(params.id ? parseInt(params.id) : null);
+    const [settingVisible, setSettingVisible] = useState(false);
     const [title, setTitle] = useState('');
     const [tags, setTags] = useState([]);
     //const [remark, setRemark] = useState('');
@@ -148,7 +152,7 @@ function Edit({ match: { params } }) {
         }
 
         const engine = editor.current.getEngine();
-        const content = engine.getPureContent();
+        const content = engine ? engine.getPureContent() : '';
         if (Editor.Utils.isBlank(content)) {
             return '请输入正文';
         }
@@ -212,19 +216,51 @@ function Edit({ match: { params } }) {
                             <img src={logo} alt="" />
                         </a>
                     </div>
-                    <small>
-                        <span>·</span>文章编辑<span>·</span>
+                    <div className={styles['sub-title']}>
+                        文章编辑<span>-</span>
                         {title}
-                    </small>
+                    </div>
                     <div className={styles['save-status']}>{renderSaveStatus()}</div>
-                    <div className={styles.right}>
+                    <Space className={styles.right}>
                         {detail && (
                             <Button onClick={() => editor.current.showHistory()}>历史</Button>
                         )}
                         <Button type="primary" onClick={onShowDrawer}>
                             发布
                         </Button>
-                    </div>
+                        <Popover
+                            overlayClassName={'popover-menu'}
+                            placement="bottomLeft"
+                            arrowPointAtCenter
+                            content={
+                                <Menu className={styles['more-menu']}>
+                                    <Menu.Item onClick={() => setSettingVisible(true)}>
+                                        文章设置
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        <Article.Delete
+                                            id={id}
+                                            title={title}
+                                            icon={null}
+                                            text="删除文章"
+                                            callback={res => {
+                                                if (res && res.result) {
+                                                    window.location.href = '/dashboard';
+                                                } else {
+                                                    message.error(res.message);
+                                                }
+                                            }}
+                                        />
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        <a href="/dashboard">退出编辑</a>
+                                    </Menu.Item>
+                                </Menu>
+                            }
+                        >
+                            <EllipsisButton className={styles['ellipsis-button']} />
+                        </Popover>
+                    </Space>
                 </div>
             </header>
             <div className={styles.container}>
@@ -297,6 +333,16 @@ function Edit({ match: { params } }) {
                     )}
                 </Form>
             </Drawer>
+            {detail && (
+                <Setting
+                    visible={settingVisible}
+                    id={id}
+                    custom_description={detail.custom_description}
+                    description={detail.description}
+                    cover={detail.cover}
+                    onCancel={() => setSettingVisible(false)}
+                />
+            )}
         </Loading>
     );
 }

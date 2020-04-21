@@ -15,7 +15,7 @@ export default ({ id }) => {
         dispatch({
             type: 'question/list',
             payload: {
-                append: true,
+                append: offset !== 0,
                 offset,
                 limit,
                 child: 1,

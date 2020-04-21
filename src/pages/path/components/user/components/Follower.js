@@ -14,7 +14,7 @@ export default ({ id }) => {
         dispatch({
             type: 'userStar/followerList',
             payload: {
-                append: true,
+                append: offset !== 0,
                 offset,
                 limit,
                 user_id: id,

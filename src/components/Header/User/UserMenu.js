@@ -42,7 +42,7 @@ export default ({ avatar, name, path }) => {
     );
     return (
         <Popover
-            overlayClassName={styles['popover-menu']}
+            overlayClassName={'popover-menu'}
             content={menu}
             arrowPointAtCenter
             placement="bottomRight"

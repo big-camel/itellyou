@@ -1,3 +1,4 @@
+import { history } from 'umi';
 import { create, list, setting, detail, queryName } from '@/services/column/index';
 import { setList, replaceItem } from '@/utils/model';
 
@@ -34,10 +35,15 @@ export default {
         },
         *detail({ payload }, { call, put }) {
             const response = yield call(detail, payload);
-            yield put({
-                type: 'updateDetail',
-                payload: response.data || {},
-            });
+            const { result, status, data } = response;
+            if (result) {
+                yield put({
+                    type: 'updateDetail',
+                    payload: response.data || {},
+                });
+            } else if (status > 200) {
+                history.push(`/${status}`);
+            }
         },
         *setting({ payload }, { call, put }) {
             const response = yield call(setting, payload);

@@ -25,7 +25,7 @@ export default ({ match: { params } }) => {
         dispatch({
             type: 'notifications/list',
             payload: {
-                append: true,
+                append: offset !== 0,
                 action: menuKey,
                 offset: prevMenuKey.current !== menuKey ? 0 : offset,
                 limit,

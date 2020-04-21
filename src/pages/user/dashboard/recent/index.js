@@ -26,7 +26,7 @@ function Dashboard() {
         dispatch({
             type: 'draft/list',
             payload: {
-                append: true,
+                append: offset !== 0,
                 offset,
                 limit,
             },

@@ -17,7 +17,7 @@ function TagList({ location: { query } }) {
         dispatch({
             type: 'tag/list',
             payload: {
-                append: true,
+                append: offset !== 0,
                 offset,
                 limit,
             },
@@ -78,7 +78,12 @@ function TagList({ location: { query } }) {
     };
 
     return (
-        <Container>
+        <Container
+            metas={[
+                { name: 'keywords', content: `标签,标签列表,itellyou` },
+                { name: 'description', content: `itellyou的标签列表页` },
+            ]}
+        >
             <Card className={styles['tag-list']}>
                 <Card.Meta
                     className={styles['tag-list-meta']}

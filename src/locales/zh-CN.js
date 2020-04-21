@@ -1,6 +1,8 @@
 export default {
     'sys.path': '无标题',
     'preview.page': '预览',
+    '401.page': '401 - No Permission',
+    '401': 'Sorry, you are not authorized to access this page.',
     '403.page': '403 - No Permission',
     '403': 'Sorry, you are not authorized to access this page.',
     '404.page': '404 - Not Found',

@@ -30,6 +30,11 @@ const menus = [
         title: 'MSDN',
         href: 'https://msdn.itellyou.cn',
         target: '_blank',
+        onClick: () => {
+            if (window._czc) {
+                window._czc.push(['_trackEvent', 'msdn', 'to']);
+            }
+        },
     },
 ];
 

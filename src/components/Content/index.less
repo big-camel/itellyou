@@ -5,7 +5,7 @@
         .title {
             font-size: 18px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
 
             > a,
             > a:hover,
@@ -33,21 +33,41 @@
             }
         }
     }
+    .body {
+        display: block;
 
-    .description,
-    .content {
-        margin: 10px 0;
-        word-wrap: break-word;
+        .cover {
+            background-size: cover;
+            background-position: 50%;
+            width: 190px;
+            height: 105px;
+            border-radius: 2px;
+            justify-content: flex-end;
+            margin-left: 24px;
+        }
 
-        .read-more {
-            padding: 4px 0;
+        .description,
+        .content {
+            flex: 1;
+            margin: 16px 0;
+            word-wrap: break-word;
+
+            .read-more {
+                padding: 4px 0;
+            }
+        }
+
+        .description {
+            font-size: 15px;
+        }
+
+        .description > a {
+            color: #595959;
         }
     }
 
-    .action {
-        :global(.ant-btn) {
-            margin-right: 24px;
-        }
+    .body.has-cover {
+        display: flex;
     }
 }
 

@@ -4,8 +4,24 @@ export default [
         path: '/:path(login|register)',
         component: '../layouts/PassportLayout',
         routes: [
-            { path: '/login', name: 'login.page', component: './user/login' },
-            { path: '/register', name: 'register.page', component: './user/register' },
+            {
+                path: '/login',
+                name: 'login.page',
+                component: './user/login',
+                metas: [
+                    { name: 'keywords', content: '登陆,itellyou登陆' },
+                    { name: 'description', content: 'ITELLYOU 用户登陆' },
+                ],
+            },
+            {
+                path: '/register',
+                name: 'register.page',
+                component: './user/register',
+                metas: [
+                    { name: 'keywords', content: '注册,itellyou注册' },
+                    { name: 'description', content: 'ITELLYOU 用户注册' },
+                ],
+            },
         ],
     },
     //question
@@ -207,6 +223,11 @@ export default [
                 name: 'user.notifications',
                 component: './user/notifications',
                 authority: ['admin', 'user'],
+            },
+            {
+                path: '/401',
+                name: '401.page',
+                component: './401',
             },
             {
                 path: '/403',

@@ -19,6 +19,13 @@ export async function update({ id, type, ...params }) {
     });
 }
 
+export async function meta({ id, type, ...params }) {
+    return request(`/api/${type}/${id}/meta`, {
+        method: 'PUT',
+        data: params,
+    });
+}
+
 export async function revert({ id, type, ...params }) {
     return request(`/api/${type}/${id}/rollback`, {
         method: 'PUT',

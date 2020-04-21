@@ -1,3 +1,4 @@
+import { history } from 'umi';
 import {
     find,
     findDraft,
@@ -29,12 +30,14 @@ export default {
         },
         *find({ payload }, { call, put }) {
             const response = yield call(find, payload);
-            if (response && response.result) {
-                const detail = response.data;
+            const { result, status, data } = response;
+            if (result) {
                 yield put({
                     type: 'setDetail',
-                    payload: detail,
+                    payload: { ...data },
                 });
+            } else if (status > 200) {
+                history.push(`/${status}`);
             }
             return response;
         },
@@ -104,6 +107,10 @@ export default {
                         payload: { ...list, data, total: list.total - 1 },
                     });
                 }
+                yield put({
+                    type: 'userAnswer/removeItem',
+                    payload: payload.id,
+                });
             }
             return response;
         },

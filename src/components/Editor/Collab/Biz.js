@@ -88,6 +88,7 @@ class CollabBiz extends EventEmitter {
                 },
             },
         }).then(({ data }) => {
+            if (!data) return;
             const { collab, ...doc } = data;
             this.loaded(doc, collab);
         });

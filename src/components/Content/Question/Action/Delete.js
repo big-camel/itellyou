@@ -4,13 +4,12 @@ import { Modal } from 'antd';
 import { useDispatch } from 'umi';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
-export default ({ id, question_id, allow_delete, title, callback, ...props }) => {
+export default ({ id, title, callback, ...props }) => {
     const dispatch = useDispatch();
 
     const onDelete = () => {
         Modal.confirm({
-            title: `确定删除${title ? ' ' + title + ' ' : '这个回答吗'}?`,
-            content: '答案内容不会被永久删除，你还可以撤消本次删除操作。',
+            title: `确定删除 ${title || ''}?`,
             okText: '确定',
             cancelText: '取消',
             centered: true,
@@ -18,9 +17,8 @@ export default ({ id, question_id, allow_delete, title, callback, ...props }) =>
             onOk() {
                 return new Promise(resolve => {
                     dispatch({
-                        type: 'answer/delete',
+                        type: 'question/delete',
                         payload: {
-                            question_id,
                             id,
                         },
                     }).then(() => {
@@ -33,9 +31,8 @@ export default ({ id, question_id, allow_delete, title, callback, ...props }) =>
         });
     };
 
-    if (!allow_delete) return null;
     return (
-        <DeleteButton onClick={onDelete} {...props}>
+        <DeleteButton {...props} onClick={onDelete}>
             删除
         </DeleteButton>
     );

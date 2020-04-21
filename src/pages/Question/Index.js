@@ -52,7 +52,12 @@ function Index({ location: { query }, match: { params } }) {
     };
 
     return (
-        <Container>
+        <Container
+            metas={[
+                { name: 'keywords', content: '问答,问答列表,热门问答,itellyou' },
+                { name: 'description', content: 'itellyou问答列表' },
+            ]}
+        >
             <Layout>
                 <Card
                     title={

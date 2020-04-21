@@ -8,7 +8,7 @@ export const matchParamsPath = (pathname, breadcrumbNameMap) => {
     return breadcrumbNameMap[pathKey];
 };
 
-const getPageTitle = (pathname, breadcrumbNameMap) => {
+export const getTitle = memoizeOne((pathname, breadcrumbNameMap) => {
     const currRouterData = matchParamsPath(pathname, breadcrumbNameMap);
     if (!currRouterData) {
         return;
@@ -19,6 +19,12 @@ const getPageTitle = (pathname, breadcrumbNameMap) => {
         defaultMessage: currRouterData.name,
     });
     return pageName;
-};
+}, isEqual);
 
-export default memoizeOne(getPageTitle, isEqual);
+export const getMetas = memoizeOne((pathname, breadcrumbNameMap) => {
+    const currRouterData = matchParamsPath(pathname, breadcrumbNameMap);
+    if (!currRouterData) {
+        return;
+    }
+    return currRouterData.metas;
+}, isEqual);

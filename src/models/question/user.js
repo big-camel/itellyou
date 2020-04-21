@@ -1,5 +1,5 @@
-import { list } from './service';
-import { setList } from '@/utils/model';
+import { list } from '@/services/question/user';
+import { setList, removeItem } from '@/utils/model';
 export default {
     namespace: 'userQuestion',
 
@@ -19,6 +19,9 @@ export default {
     reducers: {
         setList(state, { payload }) {
             return setList('list', payload, state);
+        },
+        removeItem(state, { payload }) {
+            return removeItem('list', payload, state);
         },
     },
 };

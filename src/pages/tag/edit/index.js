@@ -95,10 +95,10 @@ function Edit({ match: { params } }) {
                             <img src={logo} alt="" />
                         </a>
                     </div>
-                    <small>
-                        <span>·</span>标签编辑<span>·</span>
+                    <div className={styles['sub-title']}>
+                        标签编辑<span>-</span>
                         {detail ? detail.name : null}
-                    </small>
+                    </div>
                     <div className={styles['save-status']}>{renderSaveStatus()}</div>
                     <div className={styles.right}>
                         {detail && (

@@ -24,7 +24,7 @@ function QuestionComment({ question_id, visible, onVisibleChange }) {
                         question_id,
                         offset,
                         limit,
-                        append: true,
+                        append: offset !== 0,
                     },
                 });
             }
@@ -77,7 +77,7 @@ function QuestionComment({ question_id, visible, onVisibleChange }) {
             payload: {
                 question_id,
                 id,
-                append: true,
+                append: offset !== 0,
                 offset,
                 limit,
             },
@@ -106,7 +106,7 @@ function QuestionComment({ question_id, visible, onVisibleChange }) {
             payload: {
                 question_id,
                 id: comment.detail.id,
-                append: true,
+                append: offset !== 0,
                 offset,
                 limit,
             },

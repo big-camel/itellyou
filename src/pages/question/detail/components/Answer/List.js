@@ -21,7 +21,6 @@ function AnswerList({ question_id, exclude, title, ...props }) {
             dispatch({
                 type: 'answer/list',
                 payload: {
-                    append: true,
                     question_id,
                     offset,
                     limit,

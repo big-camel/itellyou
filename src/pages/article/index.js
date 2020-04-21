@@ -38,7 +38,12 @@ function ArticleIndex({ location: { query }, match: { params } }) {
     };
 
     return (
-        <Container>
+        <Container
+            metas={[
+                { name: 'keywords', content: '文章,文章列表,热门文章,itellyou' },
+                { name: 'description', content: 'itellyou文章列表' },
+            ]}
+        >
             <Layout>
                 <Card
                     title={

@@ -72,7 +72,7 @@ function ArticleComment({ id }) {
             payload: {
                 articleId,
                 id,
-                append: true,
+                append: offset !== 0,
                 offset,
                 limit,
             },
@@ -101,7 +101,7 @@ function ArticleComment({ id }) {
             payload: {
                 articleId,
                 id: detailComment.detail.id,
-                append: true,
+                append: offset !== 0,
                 offset,
                 limit,
             },

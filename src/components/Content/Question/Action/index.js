@@ -1,3 +1,4 @@
 import Favorite from './Favorite';
+import Delete from './Delete';
 
-export { Favorite };
+export { Favorite, Delete };

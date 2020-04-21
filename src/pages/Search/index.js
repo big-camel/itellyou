@@ -150,7 +150,13 @@ function Search({ location: { query } }) {
                         : `搜索 - ${settings.title}`
                 }
             >
-                <Container className={styles['search-list']}>
+                <Container
+                    className={styles['search-list']}
+                    metas={[
+                        { name: 'keywords', content: `itellyou站内搜索,${word}` },
+                        { name: 'description', content: `itellyou站内搜索-${word}-的结果` },
+                    ]}
+                >
                     <Layout>
                         <div>
                             <Menu

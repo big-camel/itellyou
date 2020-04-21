@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag } from 'antd';
+import { Table, Tag, Space, Tooltip, Modal } from 'antd';
 import Layout from '../components/Layout';
 import Loading from '@/components/Loading';
 import { Link, useDispatch, useSelector } from 'umi';
 import CardTable from '../components/CardTable';
+import { EditButton } from '@/components/Button';
+import { Article } from '@/components/Content';
 
 export default () => {
     const [page, setPage] = useState(1);
@@ -82,8 +84,21 @@ export default () => {
             dataIndex: 'action',
             key: 'action',
             width: 80,
-            render: (_, { id }) => {
-                return <Link to={`/article/${id}/edit`}>编辑</Link>;
+            render: (_, { id, title }) => {
+                return (
+                    <Space>
+                        <Tooltip title="编辑">
+                            <Link to={`/article/${id}/edit`}>
+                                <EditButton onlyIcon={true} />
+                            </Link>
+                        </Tooltip>
+                        <Tooltip title="删除">
+                            <a>
+                                <Article.Delete onlyIcon={true} id={id} title={title} />
+                            </a>
+                        </Tooltip>
+                    </Space>
+                );
             },
         },
     ];
