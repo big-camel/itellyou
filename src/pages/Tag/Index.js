@@ -113,10 +113,10 @@ export default () => {
 
     return (
         <Container
-            metas={[
-                { name: 'keywords', content: `标签,标签列表,itellyou` },
-                { name: 'description', content: `itellyou的标签列表页` },
-            ]}
+            metas={{
+                keywords: `标签,标签列表,itellyou`,
+                description: `itellyou的标签列表页`,
+            }}
         >
             <div className={styles['tag-layout']}>
                 {renderUserTag()}

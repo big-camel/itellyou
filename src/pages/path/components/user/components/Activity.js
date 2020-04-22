@@ -42,7 +42,7 @@ export default ({ id }) => {
         );
     };
 
-    const renderTag = ({ id, name }) => {
+    const renderTag = ({ id, name, description }) => {
         return (
             <div className={styles['tag']}>
                 <h2>

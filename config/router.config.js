@@ -8,19 +8,19 @@ export default [
                 path: '/login',
                 name: 'login.page',
                 component: './user/login',
-                metas: [
-                    { name: 'keywords', content: '登陆,itellyou登陆' },
-                    { name: 'description', content: 'ITELLYOU 用户登陆' },
-                ],
+                metas: {
+                    keywords: '登陆,itellyou登陆',
+                    description: 'ITELLYOU 用户登陆',
+                },
             },
             {
                 path: '/register',
                 name: 'register.page',
                 component: './user/register',
-                metas: [
-                    { name: 'keywords', content: '注册,itellyou注册' },
-                    { name: 'description', content: 'ITELLYOU 用户注册' },
-                ],
+                metas: {
+                    keywords: '注册,注册',
+                    description: 'ITELLYOU 用户注册',
+                },
             },
         ],
     },

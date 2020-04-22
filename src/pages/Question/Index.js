@@ -53,10 +53,10 @@ function Index({ location: { query }, match: { params } }) {
 
     return (
         <Container
-            metas={[
-                { name: 'keywords', content: '问答,问答列表,热门问答,itellyou' },
-                { name: 'description', content: 'itellyou问答列表' },
-            ]}
+            metas={{
+                keywords: '问答,问答列表,热门问答,itellyou',
+                description: 'itellyou问答列表',
+            }}
         >
             <Layout>
                 <Card

@@ -1,10 +1,9 @@
 import React, { useRef, useEffect } from 'react';
-import DocumentTitle from 'react-document-title';
+import DocumentMeta from 'react-document-meta';
 import { withRouter, useSelector, useDispatch, useModel } from 'umi';
 import NProgress from 'nprogress';
 import { getTitle, getMetas } from '@/utils/page';
 import 'nprogress/nprogress.css';
-import { Helmet } from 'react-helmet';
 
 function BlankLayout({ route, children, location, title }) {
     const href = location.pathname;
@@ -57,18 +56,16 @@ function BlankLayout({ route, children, location, title }) {
     title = title ? `${title} - ${settings.title}` : settings.title;
 
     return (
-        <DocumentTitle title={title}>
-            <>
-                {metas && metas.length > 0 && (
-                    <Helmet>
-                        {metas.map(({ name, content, ...rest }) => (
-                            <meta key={name} name={name} content={content} {...rest} />
-                        ))}
-                    </Helmet>
-                )}
-                {children}
-            </>
-        </DocumentTitle>
+        <DocumentMeta
+            title={title}
+            meta={{
+                name: {
+                    ...metas,
+                },
+            }}
+        >
+            <>{children}</>
+        </DocumentMeta>
     );
 }
 export default withRouter(BlankLayout);

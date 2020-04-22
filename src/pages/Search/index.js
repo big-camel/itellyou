@@ -10,7 +10,6 @@ import styles from './index.less';
 import menus from './menus';
 import { Question, Answer, Article } from '@/components/Content';
 import { UserAuthor } from '@/components/User';
-import DocumentTitle from 'react-document-title';
 
 function Search({ location: { query } }) {
     const [offset, setOffset] = useState(parseInt(query.offset || 0));
@@ -143,74 +142,69 @@ function Search({ location: { query } }) {
         if (!list) return <Loading />;
 
         return (
-            <DocumentTitle
+            <Container
+                className={styles['search-list']}
                 title={
                     word !== ''
                         ? `${word} - 搜索结果 - ${settings.title}`
                         : `搜索 - ${settings.title}`
                 }
+                metas={{
+                    keywords: `itellyou站内搜索,${word}`,
+                    description: `itellyou站内搜索-${word}-的结果`,
+                }}
             >
-                <Container
-                    className={styles['search-list']}
-                    metas={[
-                        { name: 'keywords', content: `itellyou站内搜索,${word}` },
-                        { name: 'description', content: `itellyou站内搜索-${word}-的结果` },
-                    ]}
-                >
-                    <Layout>
-                        <div>
-                            <Menu
-                                className={styles['menu']}
-                                mode="horizontal"
-                                defaultSelectedKeys={[type]}
-                            >
-                                {menus.map(({ key, title }) => (
-                                    <Menu.Item key={key}>
-                                        <Link
-                                            to={`/search?${
-                                                key === 'all' ? '' : `t=${key}&`
-                                            }q=${word}`}
-                                        >
-                                            {title}
-                                        </Link>
-                                    </Menu.Item>
-                                ))}
-                            </Menu>
-                            <Card>
-                                <Card.Meta title={<div>找到约 {list.hits} 条结果</div>} />
-                                <MoreList
-                                    itemLayout="vertical"
-                                    dataSource={list}
-                                    offset={offset}
-                                    limit={limit}
-                                    renderItem={renderItem}
-                                    onChange={offset => setOffset(offset)}
-                                />
-                            </Card>
-                        </div>
+                <Layout>
+                    <div>
+                        <Menu
+                            className={styles['menu']}
+                            mode="horizontal"
+                            defaultSelectedKeys={[type]}
+                        >
+                            {menus.map(({ key, title }) => (
+                                <Menu.Item key={key}>
+                                    <Link
+                                        to={`/search?${key === 'all' ? '' : `t=${key}&`}q=${word}`}
+                                    >
+                                        {title}
+                                    </Link>
+                                </Menu.Item>
+                            ))}
+                        </Menu>
                         <Card>
-                            <ul>
-                                <li>
-                                    <a
-                                        target="_blank"
-                                        href={`https://www.baidu.com/s?wd=site:itellyou.com ${word}`}
-                                    >
-                                        在 百度 中搜索
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        target="_blank"
-                                        href={`https://www.google.com/?gws_rd=ssl#newwindow=1&q=site:itellyou.com+${word}`}
-                                    >
-                                        在 Google 中搜索
-                                    </a>
-                                </li>
-                            </ul>
+                            <Card.Meta title={<div>找到约 {list.hits} 条结果</div>} />
+                            <MoreList
+                                itemLayout="vertical"
+                                dataSource={list}
+                                offset={offset}
+                                limit={limit}
+                                renderItem={renderItem}
+                                onChange={offset => setOffset(offset)}
+                            />
                         </Card>
-                    </Layout>
-                </Container>
-            </DocumentTitle>
+                    </div>
+                    <Card>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href={`https://www.baidu.com/s?wd=site:itellyou.com ${word}`}
+                                >
+                                    在 百度 中搜索
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href={`https://www.google.com/?gws_rd=ssl#newwindow=1&q=site:itellyou.com+${word}`}
+                                >
+                                    在 Google 中搜索
+                                </a>
+                            </li>
+                        </ul>
+                    </Card>
+                </Layout>
+            </Container>
         );
     };
 

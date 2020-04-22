@@ -7,8 +7,7 @@ import List from './components/list';
 import Member from './components/member';
 import styles from './index.less';
 import { ReportButton } from '@/components/Button';
-import DocumentTitle from 'react-document-title';
-import { Helmet } from 'react-helmet';
+import DocumentMeta from 'react-document-meta';
 
 export default ({ id, paths, location: { query } }) => {
     const setting = paths && paths.length > 1 ? paths[1] : null;
@@ -73,13 +72,17 @@ export default ({ id, paths, location: { query } }) => {
 
     const child = setting ? renderSetting() : renderList();
     return (
-        <DocumentTitle title={`${name} - ${settings.title}`}>
+        <DocumentMeta
+            title={`${name} - ${settings.title}`}
+            meta={{
+                name: {
+                    author: author.name,
+                    keywords: `专栏,${name},itellyou`,
+                    description,
+                },
+            }}
+        >
             <div className={styles['column-layout']}>
-                <Helmet>
-                    <meta name="author" content={author.name} />
-                    <meta name="keywords" content={`专栏,${name},itellyou`} />
-                    <meta name="description" content={description} />
-                </Helmet>
                 <div className={styles['header']}>
                     <div className={styles['header-inner']}>
                         <div className={styles['info']}>
@@ -107,6 +110,6 @@ export default ({ id, paths, location: { query } }) => {
                 </div>
                 <div className={styles['body']}>{child}</div>
             </div>
-        </DocumentTitle>
+        </DocumentMeta>
     );
 };

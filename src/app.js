@@ -15,13 +15,14 @@ export const dva = {
 export const rootContainer = container => {
     return <ConfigProvider autoInsertSpaceInButton={false}>{container}</ConfigProvider>;
 };
-
+let refer;
 export function onRouteChange({ location, routes, action }) {
     if (action !== 'POP') {
         if (window._czc) {
-            window._czc.push(['_trackPageview', location.pathname]);
+            window._czc.push(['_trackPageview', location.pathname, refer]);
         }
     }
+    refer = location.pathname;
 }
 
 export async function getInitialState() {

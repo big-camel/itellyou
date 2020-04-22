@@ -10,7 +10,6 @@ import styles from './index.less';
 import { ReportButton, EditButton } from '@/components/Button';
 import RelatedColumn from './components/RelatedColumn';
 import RelatedArticle from './components/RelatedArticle';
-import DocumentTitle from 'react-document-title';
 
 function Detail({ match: { params } }) {
     const id = parseInt(params.id || 0);
@@ -40,72 +39,71 @@ function Detail({ match: { params } }) {
     let title = `${detail.name} - ${settings.title}`;
     if (path !== 'intro') title = `${menu.title} - ${title}`;
     return (
-        <DocumentTitle title={title}>
-            <Container
-                metas={[
-                    { name: 'keywords', content: `${name},itellyou,${name}的${menu.title}` },
-                    { name: 'description', content: description },
-                ]}
-            >
-                <Layout>
-                    <div className={styles['layout']}>
-                        <div className={styles['header']}>
-                            <Card>
-                                <Card.Meta title={<h2>{name}</h2>} />
-                                <div className={styles['description']}>
-                                    {description}
-                                    <Button type="link" href={`/tag/${id}`}>
-                                        查看简介
-                                    </Button>
-                                </div>
-                                <Space size="middle">
-                                    <Tag.Star id={id} name={name} use_star={use_star} />
-                                    <ReportButton type="tag" />
-                                    {me && me.id === author.id && (
-                                        <EditButton type="link" href={`/tag/${id}/edit`} />
-                                    )}
-                                </Space>
-                            </Card>
-                        </div>
-                        <div className={styles['body']}>
-                            <Card
-                                title={
-                                    <Menu mode="horizontal" defaultSelectedKeys={path}>
-                                        {menus.map(({ key, title }) => (
-                                            <Menu.Item
-                                                key={key}
-                                                className={classNames({ active: key === path })}
-                                            >
-                                                <Link
-                                                    to={
-                                                        `/tag/${id}` +
-                                                        (key !== 'intro' ? `/${key}` : '')
-                                                    }
-                                                >
-                                                    {title}
-                                                </Link>
-                                            </Menu.Item>
-                                        ))}
-                                    </Menu>
-                                }
-                            >
-                                {path === 'intro' ? (
-                                    <menu.component content={content} />
-                                ) : (
-                                    <menu.component id={id} />
+        <Container
+            title={title}
+            metas={{
+                keywords: `${name},itellyou,${name}的${menu.title}`,
+                description,
+            }}
+        >
+            <Layout>
+                <div className={styles['layout']}>
+                    <div className={styles['header']}>
+                        <Card>
+                            <Card.Meta title={<h2>{name}</h2>} />
+                            <div className={styles['description']}>
+                                {description}
+                                <Button type="link" href={`/tag/${id}`}>
+                                    查看简介
+                                </Button>
+                            </div>
+                            <Space size="middle">
+                                <Tag.Star id={id} name={name} use_star={use_star} />
+                                <ReportButton type="tag" />
+                                {me && me.id === author.id && (
+                                    <EditButton type="link" href={`/tag/${id}/edit`} />
                                 )}
-                            </Card>
-                        </div>
+                            </Space>
+                        </Card>
                     </div>
-                    <React.Fragment>
-                        <RelatedArticle id={id} />
-                        <div className={styles['related-column']}>
-                            <RelatedColumn id={id} />
-                        </div>
-                    </React.Fragment>
-                </Layout>
-            </Container>
-        </DocumentTitle>
+                    <div className={styles['body']}>
+                        <Card
+                            title={
+                                <Menu mode="horizontal" defaultSelectedKeys={path}>
+                                    {menus.map(({ key, title }) => (
+                                        <Menu.Item
+                                            key={key}
+                                            className={classNames({ active: key === path })}
+                                        >
+                                            <Link
+                                                to={
+                                                    `/tag/${id}` +
+                                                    (key !== 'intro' ? `/${key}` : '')
+                                                }
+                                            >
+                                                {title}
+                                            </Link>
+                                        </Menu.Item>
+                                    ))}
+                                </Menu>
+                            }
+                        >
+                            {path === 'intro' ? (
+                                <menu.component content={content} />
+                            ) : (
+                                <menu.component id={id} />
+                            )}
+                        </Card>
+                    </div>
+                </div>
+                <React.Fragment>
+                    <RelatedArticle id={id} />
+                    <div className={styles['related-column']}>
+                        <RelatedColumn id={id} />
+                    </div>
+                </React.Fragment>
+            </Layout>
+        </Container>
     );
 }
 export default Detail;

@@ -39,10 +39,10 @@ function ArticleIndex({ location: { query }, match: { params } }) {
 
     return (
         <Container
-            metas={[
-                { name: 'keywords', content: '文章,文章列表,热门文章,itellyou' },
-                { name: 'description', content: 'itellyou文章列表' },
-            ]}
+            metas={{
+                keywords: '文章,文章列表,热门文章,itellyou',
+                description: 'itellyou文章列表',
+            }}
         >
             <Layout>
                 <Card

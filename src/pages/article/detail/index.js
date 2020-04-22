@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'umi';
-import DocumentTitle from 'react-document-title';
 import Container, { Layout } from '@/components/Container';
 import Loading from '@/components/Loading';
 import { Article } from '@/components/Content';
@@ -45,43 +44,39 @@ function Detail({ match: { params } }) {
     keywords.push('itellyou');
 
     return (
-        <DocumentTitle title={`${title} - ${settings.title}`}>
-            <Container
-                metas={[
-                    { name: 'author', content: author.name },
-                    { name: 'keywords', content: keywords.join(',') },
-                    { name: 'description', content: description },
-                ]}
-            >
-                <Layout>
-                    <React.Fragment>
-                        <div className={styles['article-view']}>
-                            <Card>
-                                <Article
-                                    className={styles['article']}
-                                    data={{ ...detail, cover: null }}
-                                    tag={true}
-                                    view={true}
-                                    defaultComment={true}
-                                    headerClass={styles['header']}
-                                    titleClass={styles['title']}
-                                    onContentReady={onContentReady}
-                                />
-                            </Card>
-                        </div>
-                        <div className={styles['related']}>
-                            <Related id={id} />
-                        </div>
-                    </React.Fragment>
-                    <React.Fragment>
-                        <Outline
-                            {...contentData}
-                            style={{ width: (1056 * 29.16666667) / 100 - 22 }}
-                        />
-                    </React.Fragment>
-                </Layout>
-            </Container>
-        </DocumentTitle>
+        <Container
+            title={`${title} - ${settings.title}`}
+            metas={{
+                author: author.name,
+                keywords: keywords.join(','),
+                description,
+            }}
+        >
+            <Layout>
+                <React.Fragment>
+                    <div className={styles['article-view']}>
+                        <Card>
+                            <Article
+                                className={styles['article']}
+                                data={{ ...detail, cover: null }}
+                                tag={true}
+                                view={true}
+                                defaultComment={true}
+                                headerClass={styles['header']}
+                                titleClass={styles['title']}
+                                onContentReady={onContentReady}
+                            />
+                        </Card>
+                    </div>
+                    <div className={styles['related']}>
+                        <Related id={id} />
+                    </div>
+                </React.Fragment>
+                <React.Fragment>
+                    <Outline {...contentData} style={{ width: (1056 * 29.16666667) / 100 - 22 }} />
+                </React.Fragment>
+            </Layout>
+        </Container>
     );
 }
 export default Detail;

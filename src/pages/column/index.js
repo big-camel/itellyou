@@ -70,10 +70,10 @@ function Column({ location: { query } }) {
 
     return (
         <Container
-            metas={[
-                { name: 'keywords', content: '专栏,专栏列表,热门专栏,itellyou' },
-                { name: 'description', content: 'itellyou专栏列表' },
-            ]}
+            metas={{
+                keywords: '专栏,专栏列表,热门专栏,itellyou',
+                description: 'itellyou专栏列表',
+            }}
         >
             {renderList()}
             <div className={styles['column-action']}>

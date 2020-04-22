@@ -7,7 +7,6 @@ import Editor from '@/components/Editor';
 import UserTag from '@/components/Tag';
 import Timer from '@/components/Timer';
 import styles from './index.less';
-import DocumentTitle from 'react-document-title';
 import Answer from './components/Answer';
 import { Question } from '@/components/Content';
 import Comment from './components/Comment';
@@ -133,105 +132,98 @@ function Detail({ match: { params } }) {
     const keywords = tags.map(tag => tag.name) || [];
     keywords.push('itellyou');
     return (
-        <DocumentTitle title={`${title} - ${settings.title}`}>
-            <Container
-                metas={[
-                    { name: 'author', content: author.name },
-                    { name: 'keywords', content: keywords.join(',') },
-                    { name: 'description', content: description },
-                ]}
-            >
-                <Layout>
-                    <React.Fragment>
-                        <Card>
-                            <div
-                                className={classNames(styles.header, {
-                                    [styles['no-border']]: isEmpty,
-                                })}
-                            >
-                                <h1 className={styles.title}>{title}</h1>
-                                <Space>
-                                    {tags &&
-                                        tags.map(({ id, name }) => (
-                                            <UserTag key={id} id={id} title={name} />
-                                        ))}
-                                </Space>
-                            </div>
-                            {!isEmpty && (
-                                <article>
-                                    <Editor.Viewer content={content} />
-                                </article>
-                            )}
-                            <div className={styles['footer']}>
-                                <div className={styles['actions']}>
-                                    <Question.Favorite
-                                        id={id}
-                                        use_star={use_star}
-                                        allow_star={true}
-                                        type="primary"
-                                        icon={null}
-                                    />
-                                    {renderStatusButton()}
-                                    <CommentButton onClick={() => setCommentVisible(true)}>
-                                        {detail.comments > 0 ? `${detail.comments} 条评论` : '评论'}
-                                    </CommentButton>
-                                    <ReportButton />
-                                </div>
-                                <div className={styles['other-info']}>
-                                    <span className={styles['view']}>{detail.view}次浏览</span>
-                                    <Timer time={detail.created_time} />
-                                </div>
-                            </div>
-                        </Card>
-                        {renderReward()}
-                        {editVisible && (
-                            <Answer.Edit
-                                hasHistory={
-                                    user_answer && user_answer.draft === false ? true : false
-                                }
-                                id={
-                                    user_answer && user_answer.draft === true
-                                        ? user_answer.id
-                                        : null
-                                }
-                                onCancel={() => setEditVisible(false)}
-                            />
+        <Container
+            title={`${title} - ${settings.title}`}
+            metas={{
+                author: author.name,
+                keywords: keywords.join(','),
+                description,
+            }}
+        >
+            <Layout>
+                <React.Fragment>
+                    <Card>
+                        <div
+                            className={classNames(styles.header, {
+                                [styles['no-border']]: isEmpty,
+                            })}
+                        >
+                            <h1 className={styles.title}>{title}</h1>
+                            <Space>
+                                {tags &&
+                                    tags.map(({ id, name }) => (
+                                        <UserTag key={id} id={id} title={name} />
+                                    ))}
+                            </Space>
+                        </div>
+                        {!isEmpty && (
+                            <article>
+                                <Editor.Viewer content={content} />
+                            </article>
                         )}
-                        {answer_id && (
-                            <React.Fragment>
-                                <div className={styles['view-all']}>
-                                    <Card>
-                                        <Link to={`/question/${detail.id}`}>
-                                            查看全部 {detail.answers} 个回答
-                                        </Link>
-                                    </Card>
-                                </div>
-                                <Answer.View question_id={id} answer_id={answer_id} />
-                            </React.Fragment>
-                        )}
-                        {
-                            <Answer.List
-                                className={styles['answer-list']}
-                                title={answer_id ? '更多回答' : null}
-                                question_id={id}
-                                exclude={[answer_id]}
-                            />
-                        }
-                        {
-                            <Comment
-                                question_id={id}
-                                visible={commentVisible}
-                                onVisibleChange={setCommentVisible}
-                            />
-                        }
-                    </React.Fragment>
-                    <>
-                        {detail && <Author {...detail.author} />}
-                        <Related id={id} />
-                    </>
-                </Layout>
-            </Container>
-        </DocumentTitle>
+                        <div className={styles['footer']}>
+                            <div className={styles['actions']}>
+                                <Question.Favorite
+                                    id={id}
+                                    use_star={use_star}
+                                    allow_star={true}
+                                    type="primary"
+                                    icon={null}
+                                />
+                                {renderStatusButton()}
+                                <CommentButton onClick={() => setCommentVisible(true)}>
+                                    {detail.comments > 0 ? `${detail.comments} 条评论` : '评论'}
+                                </CommentButton>
+                                <ReportButton />
+                            </div>
+                            <div className={styles['other-info']}>
+                                <span className={styles['view']}>{detail.view}次浏览</span>
+                                <Timer time={detail.created_time} />
+                            </div>
+                        </div>
+                    </Card>
+                    {renderReward()}
+                    {editVisible && (
+                        <Answer.Edit
+                            hasHistory={user_answer && user_answer.draft === false ? true : false}
+                            id={user_answer && user_answer.draft === true ? user_answer.id : null}
+                            onCancel={() => setEditVisible(false)}
+                        />
+                    )}
+                    {answer_id && (
+                        <React.Fragment>
+                            <div className={styles['view-all']}>
+                                <Card>
+                                    <Link to={`/question/${detail.id}`}>
+                                        查看全部 {detail.answers} 个回答
+                                    </Link>
+                                </Card>
+                            </div>
+                            <Answer.View question_id={id} answer_id={answer_id} />
+                        </React.Fragment>
+                    )}
+                    {
+                        <Answer.List
+                            className={styles['answer-list']}
+                            title={answer_id ? '更多回答' : null}
+                            question_id={id}
+                            exclude={[answer_id]}
+                        />
+                    }
+                    {
+                        <Comment
+                            question_id={id}
+                            visible={commentVisible}
+                            onVisibleChange={setCommentVisible}
+                        />
+                    }
+                </React.Fragment>
+                <>
+                    {detail && <Author {...detail.author} />}
+                    <Related id={id} />
+                </>
+            </Layout>
+        </Container>
     );
 }
 

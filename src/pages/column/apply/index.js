@@ -71,14 +71,11 @@ function Apply() {
     return (
         <Container
             className={styles['container']}
-            metas={[
-                { name: 'keywords', content: '专栏,专栏申请,itellyou' },
-                {
-                    name: 'description',
-                    content:
-                        'itellyou专栏申请，专栏旨在为信息安全主题下有持续创作及合作写作需求的用户提供媒介，打造独立内容品牌。创建专栏需要进行申请，通过审核后即可使用。',
-                },
-            ]}
+            metas={{
+                keywords: '专栏,专栏申请,itellyou',
+                description:
+                    'itellyou专栏申请，专栏旨在为信息安全主题下有持续创作及合作写作需求的用户提供媒介，打造独立内容品牌。创建专栏需要进行申请，通过审核后即可使用。',
+            }}
         >
             <Card>
                 <Card.Meta title={<h2>申请创建专栏</h2>} />
