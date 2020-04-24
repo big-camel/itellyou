@@ -4,6 +4,7 @@ import Container, { Layout } from '@/components/Container';
 import Recommends from './components/Recommends';
 import Writer from './components/Writer';
 import Answerer from './components/Answerer';
+import { GoogleSquare } from '@/components/AdSense';
 import styles from './index.less';
 
 export default () => {
@@ -24,6 +25,7 @@ export default () => {
                     </Card>
                 </div>
                 <React.Fragment>
+                    <GoogleSquare />
                     <Writer />
                     <Answerer className={styles['sider-answerer']} />
                 </React.Fragment>

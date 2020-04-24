@@ -262,6 +262,9 @@ function Editor(
                     ot={ot}
                     save={save}
                     toolbar={toolbar}
+                    emoji={{
+                        action: 'https://cdn-object.itellyou.com/emoji/',
+                    }}
                     markdown={{
                         action: null,
                         items: [

@@ -8,6 +8,7 @@ import { Question } from '@/components/Content';
 import GroupUser from './components/GroupUser';
 import { EditOutlined } from '@ant-design/icons';
 import styles from './index.less';
+import { GoogleSquare } from '@/components/AdSense';
 
 function Index({ location: { query }, match: { params } }) {
     const [offset, setOffset] = useState(parseInt(query.offset || 0));
@@ -100,7 +101,10 @@ function Index({ location: { query }, match: { params } }) {
                 >
                     {renderList()}
                 </Card>
-                <GroupUser />
+                <>
+                    <GoogleSquare />
+                    <GroupUser />
+                </>
             </Layout>
         </Container>
     );

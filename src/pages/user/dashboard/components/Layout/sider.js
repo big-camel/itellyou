@@ -37,12 +37,18 @@ export default [
         icon: <FormOutlined />,
         to: '/dashboard/answer',
     },
-    /**{
-        key:"finance",
-        title:"钱包",
-        icon:<BankOutlined />,
-        to:"/dashboard/finance"
-    },**/
+    {
+        key: 'column',
+        title: '专栏',
+        icon: <BugOutlined />,
+        to: '/dashboard/column',
+    },
+    {
+        key: 'wallet',
+        title: '钱包',
+        icon: <BankOutlined />,
+        to: '/dashboard/wallet',
+    },
     {
         type: 'divider',
     },

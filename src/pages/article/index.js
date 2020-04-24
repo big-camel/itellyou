@@ -9,6 +9,7 @@ import styles from './index.less';
 import HotColumn from './components/HotColumn';
 import HotTag from './components/HotTag';
 import { EditOutlined } from '@ant-design/icons';
+import { GoogleSquare } from '@/components/AdSense';
 
 function ArticleIndex({ location: { query }, match: { params } }) {
     const [offset, setOffset] = useState(parseInt(query.offset || 0));
@@ -85,6 +86,7 @@ function ArticleIndex({ location: { query }, match: { params } }) {
                     />
                 </Card>
                 <React.Fragment>
+                    <GoogleSquare />
                     <HotColumn />
                     <div className={styles['hot-tag']}>
                         <HotTag />

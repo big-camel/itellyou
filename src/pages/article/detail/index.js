@@ -7,6 +7,7 @@ import Related from './Related';
 import styles from './index.less';
 import { Card } from 'antd';
 import Outline from '@/components/Editor/Outline';
+import { GoogleSquare } from '@/components/AdSense';
 
 function Detail({ match: { params } }) {
     const id = parseInt(params.id || 0);
@@ -68,6 +69,7 @@ function Detail({ match: { params } }) {
                             />
                         </Card>
                     </div>
+                    <GoogleSquare style={{ marginTop: 24 }} />
                     <div className={styles['related']}>
                         <Related id={id} />
                     </div>

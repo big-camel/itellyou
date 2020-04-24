@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@ant-design/icons": "^4.0.3",
-        "@itellyou/itellyou-editor": "^2.2.6",
+        "@itellyou/itellyou-editor": "^2.2.8",
         "@umijs/preset-react": "1.x",
         "@umijs/test": "^3.0.13",
         "antd": "^4.1.1",
@@ -34,7 +34,9 @@
         "nzh": "^1.0.4",
         "ot-json0": "^1.1.0",
         "prettier": "^1.19.1",
+        "qrcode.react": "^1.0.0",
         "react": "^16.12.0",
+        "react-adsense": "^0.1.0",
         "react-container-query": "^0.11.0",
         "react-document-meta": "^3.0.0-beta.2",
         "react-dom": "^16.12.0",

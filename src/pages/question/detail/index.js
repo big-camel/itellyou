@@ -15,6 +15,7 @@ import Loading from '@/components/Loading';
 import Related from './components/Related';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import Author from './components/Author';
+import { GoogleSquare } from '@/components/AdSense';
 
 function Detail({ match: { params } }) {
     const id = params.id ? parseInt(params.id) : null;
@@ -219,6 +220,7 @@ function Detail({ match: { params } }) {
                     }
                 </React.Fragment>
                 <>
+                    <GoogleSquare />
                     {detail && <Author {...detail.author} />}
                     <Related id={id} />
                 </>

@@ -63,7 +63,7 @@ function AnswerList({ question_id, exclude, title, ...props }) {
     const renderItem = item => {
         return (
             <MoreList.Item key={item.id}>
-                <Answer data={item} />
+                <Answer data={{ ...item, cover: null }} />
             </MoreList.Item>
         );
     };

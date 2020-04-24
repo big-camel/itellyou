@@ -14,6 +14,12 @@ export default ({ content, onLoad, genAnchor, ...props }) => {
                     display: 'block',
                     align: 'center',
                 }}
+                video={{
+                    action: {
+                        query: '/api/upload/video/query',
+                    },
+                    user_id: '1049903053975201',
+                }}
                 {...props}
             />
         );

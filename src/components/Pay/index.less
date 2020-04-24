@@ -1,0 +1,80 @@
+.warpper {
+    :global(.ant-modal-header) {
+        border-bottom: 0 none;
+    }
+
+    :global(.ant-modal-body) {
+        padding-top: 0;
+    }
+
+    .desc {
+        margin-bottom: 20px;
+    }
+
+    h3 {
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .value-list {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 20px;
+        margin-bottom: 16px;
+
+        .value-item {
+            width: 140px;
+            height: 44px;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            text-align: center;
+            margin-right: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+
+            .value-title {
+                font-size: 16px;
+                font-weight: 600;
+            }
+        }
+
+        .value-item:nth-child(3n) {
+            margin-right: 0;
+        }
+
+        .value-item.active {
+            border-color: @primary-color;
+            color: @primary-color;
+            background-color: rgba(52, 126, 255, 0.123);
+        }
+    }
+
+    .pay-with {
+        :global(.anticon) {
+            font-size: 24px;
+            color: @primary-color;
+            display: block;
+        }
+    }
+
+    .dashline {
+        border-top: 1px dashed #e8e8e8;
+        margin: 1.5rem 0;
+    }
+
+    .pay-total {
+        font-size: 24px;
+        font-weight: 700;
+        color: #262626;
+        padding-right: 10px;
+        line-height: 45px;
+    }
+
+    .action-btns {
+        margin-top: 20px;
+    }
+}

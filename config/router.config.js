@@ -177,15 +177,21 @@ export default [
                 authority: ['admin', 'user'],
             },
             {
+                path: '/dashboard/column',
+                name: 'user.dashboard.column',
+                component: './user/dashboard/column',
+                authority: ['admin', 'user'],
+            },
+            {
                 path: '/dashboard/follows',
                 name: 'user.dashboard.follows',
                 component: './user/dashboard/follows',
                 authority: ['admin', 'user'],
             },
             {
-                path: '/dashboard/finance',
-                name: 'user.dashboard.finance',
-                component: './user/dashboard/finance',
+                path: '/dashboard/wallet',
+                name: 'user.dashboard.wallet',
+                component: './user/dashboard/wallet',
                 authority: ['admin', 'user'],
             },
             {
