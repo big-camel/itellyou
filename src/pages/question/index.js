@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useDispatch, useSelector } from 'umi';
 import classNames from 'classnames';
-import { Button, Card } from 'antd';
+import { Button, Card, Space } from 'antd';
 import Container, { Layout } from '@/components/Container';
 import { MoreList } from '@/components/List';
 import { Question } from '@/components/Content';
@@ -101,10 +101,10 @@ function Index({ location: { query }, match: { params } }) {
                 >
                     {renderList()}
                 </Card>
-                <>
+                <Space direction="vertical" size="large">
                     <GoogleSquare />
                     <GroupUser />
-                </>
+                </Space>
             </Layout>
         </Container>
     );

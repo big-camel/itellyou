@@ -219,11 +219,11 @@ function Detail({ match: { params } }) {
                         />
                     }
                 </React.Fragment>
-                <>
+                <Space direction="vertical" size="large">
                     <GoogleSquare />
                     {detail && <Author {...detail.author} />}
                     <Related id={id} />
-                </>
+                </Space>
             </Layout>
         </Container>
     );

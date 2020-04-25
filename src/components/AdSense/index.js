@@ -1,2 +1,3 @@
 import GoogleSquare from './Square';
-export { GoogleSquare };
+import GoogleDefault from './Default';
+export { GoogleSquare, GoogleDefault };

@@ -8,7 +8,7 @@ export default ({ className, ...props }) => {
             <Google
                 client="ca-pub-3706417744839656"
                 slot="1432657820"
-                style={{ display: 'block', width: 282, height: 300 }}
+                style={{ display: 'block' }}
             />
         </div>
     );

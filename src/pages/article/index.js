@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useDispatch, useSelector } from 'umi';
 import classNames from 'classnames';
-import { Card, Button } from 'antd';
+import { Card, Button, Space } from 'antd';
 import Container, { Layout } from '@/components/Container';
 import { Article } from '@/components/Content';
 import { MoreList } from '@/components/List';
@@ -85,13 +85,11 @@ function ArticleIndex({ location: { query }, match: { params } }) {
                         onChange={offset => setOffset(offset)}
                     />
                 </Card>
-                <React.Fragment>
+                <Space direction="vertical" size="large">
                     <GoogleSquare />
                     <HotColumn />
-                    <div className={styles['hot-tag']}>
-                        <HotTag />
-                    </div>
-                </React.Fragment>
+                    <HotTag />
+                </Space>
             </Layout>
         </Container>
     );
