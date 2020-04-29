@@ -6,16 +6,17 @@ import '@/utils/gt.js';
 import Form from '@/components/Form';
 import formMap from './formMap';
 import { sendCaptcha } from '@/services/validation';
-import { mobile, email } from '@/services/verify';
+import { mobile, email } from '@/services/user/verify';
 
 const { Captcha } = Form.createItem(formMap);
 const VERIFY_SESSION_KEY = 'itellyou_verify_key';
 
-function Verify({ defaultValue, onClose, children, ...props }) {
+function Verify({ defaultValue, onClose, onSucceed, children, ...props }) {
     defaultValue = defaultValue || 'mobile';
 
     const [type, setType] = useState(defaultValue);
-    const [visible, setVisible] = useState(props.visible);
+    const initVisible = props.visible === undefined ? true : props.visible;
+    const [visible, setVisible] = useState(initVisible);
 
     const [captcha, setCaptcha] = useState({
         time: null,
@@ -32,26 +33,28 @@ function Verify({ defaultValue, onClose, children, ...props }) {
     const [form] = Form.useForm(props.form);
 
     const dispatch = useDispatch();
-    const me = useSelector(state => state.user.me);
-    const loadingEffect = useSelector(state => state.loading);
+    const me = useSelector(state => state.user.me) || {};
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        setVerifySucceed(expired && expired > new Date().getTime() / 1000);
-    }, [expired]);
+        const succeed = expired && expired > new Date().getTime() / 1000;
+        setVerifySucceed(succeed);
+        if (succeed && onSucceed) {
+            onSucceed();
+        }
+    }, [expired, onSucceed]);
 
     useEffect(() => {
-        setVisible(props.visible);
-    }, [props.visible]);
+        setVisible(initVisible);
+    }, [initVisible]);
 
     useEffect(() => {
-        if (!me) {
+        if (!me || (!me.mobile && !me.email)) {
             dispatch({
-                type: 'user/fetchMe',
+                type: 'user/fetchAccount',
             });
         }
     }, [dispatch, me]);
-
-    if (!me) return <Loading />;
 
     const dataSource = [];
     if (me.mobile) {
@@ -65,9 +68,6 @@ function Verify({ defaultValue, onClose, children, ...props }) {
             key: 'email',
             title: `使用邮箱 ${me.email} 验证`,
         });
-    }
-    if (dataSource.length === 0) {
-        return <p>暂无可验证选项</p>;
     }
 
     const onTypeChange = value => {
@@ -110,13 +110,13 @@ function Verify({ defaultValue, onClose, children, ...props }) {
             });
     };
 
-    const loading = loadingEffect.effects[`verify/${type}`];
-
     const onVerify = () => {
+        setLoading(true);
         form.validateFields(['code'])
             .then(values => {
                 const verify = type === 'mobile' ? mobile : email;
                 verify(values).then(({ result, status, data, ...res }) => {
+                    setLoading(false);
                     if (result) {
                         sessionStorage.setItem(VERIFY_SESSION_KEY, data);
                         form.resetFields();
@@ -128,30 +128,19 @@ function Verify({ defaultValue, onClose, children, ...props }) {
                     }
                 });
             })
-            .catch(() => {});
+            .catch(() => {
+                setLoading(false);
+            });
     };
 
-    if (verifySucceed) return children;
+    if (verifySucceed) return children || null;
 
     const { Option } = Select;
-    return (
-        <Modal
-            title="身份验证"
-            visible={visible}
-            okText={loading ? '验证中...' : '验证'}
-            onOk={onVerify}
-            cancelText="取消"
-            destroyOnClose={true}
-            okButtonProps={{
-                loading,
-            }}
-            onCancel={() => {
-                setVisible(false);
-                if (onClose) {
-                    onClose();
-                }
-            }}
-        >
+
+    const render = () => {
+        if (!me || (!me.mobile && !me.email)) return <Loading />;
+        if (dataSource.length === 0) return <p>暂无可验证选项</p>;
+        return (
             <Form form={form}>
                 <Form.Item>
                     <p style={{ margin: 0 }}>
@@ -192,6 +181,28 @@ function Verify({ defaultValue, onClose, children, ...props }) {
                     </Col>
                 </Row>
             </Form>
+        );
+    };
+
+    return (
+        <Modal
+            title="身份验证"
+            visible={visible}
+            okText={loading ? '验证中...' : '验证'}
+            onOk={onVerify}
+            cancelText="取消"
+            destroyOnClose={true}
+            okButtonProps={{
+                loading,
+            }}
+            onCancel={() => {
+                setVisible(false);
+                if (onClose) {
+                    onClose();
+                }
+            }}
+        >
+            {render()}
         </Modal>
     );
 }

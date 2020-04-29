@@ -22,16 +22,19 @@ export default {
     Address: {
         props: {
             id: 'address',
+            size: 'large',
         },
     },
     Profession: {
         props: {
             id: 'profession',
+            size: 'large',
         },
     },
     Description: {
         props: {
             id: 'description',
+            size: 'large',
         },
         rules: [
             {

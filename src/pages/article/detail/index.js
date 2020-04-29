@@ -8,6 +8,7 @@ import styles from './index.less';
 import { Card, Space } from 'antd';
 import Outline from '@/components/Editor/Outline';
 import { GoogleDefault } from '@/components/AdSense';
+import DocumentMeta from 'react-document-meta';
 
 function Detail({ match: { params } }) {
     const id = parseInt(params.id || 0);
@@ -45,38 +46,45 @@ function Detail({ match: { params } }) {
     keywords.push('itellyou');
 
     return (
-        <Container
+        <DocumentMeta
             title={`${title} - ${settings.title}`}
-            metas={{
-                author: author.name,
-                keywords: keywords.join(','),
-                description,
+            meta={{
+                name: {
+                    author: author.name,
+                    keywords: keywords.join(','),
+                    description,
+                },
             }}
         >
-            <Layout>
-                <Space direction="vertical" size="large">
-                    <div className={styles['article-view']}>
-                        <Card>
-                            <Article
-                                className={styles['article']}
-                                data={{ ...detail, cover: null }}
-                                tag={true}
-                                view={true}
-                                defaultComment={true}
-                                headerClass={styles['header']}
-                                titleClass={styles['title']}
-                                onContentReady={onContentReady}
-                            />
-                        </Card>
-                    </div>
-                    <GoogleDefault />
-                    <Related id={id} />
-                </Space>
-                <React.Fragment>
-                    <Outline {...contentData} style={{ width: (1056 * 29.16666667) / 100 - 22 }} />
-                </React.Fragment>
-            </Layout>
-        </Container>
+            <Container>
+                <Layout>
+                    <Space direction="vertical" size="large">
+                        <div className={styles['article-view']}>
+                            <Card>
+                                <Article
+                                    className={styles['article']}
+                                    data={{ ...detail, cover: null }}
+                                    tag={true}
+                                    view={true}
+                                    defaultComment={true}
+                                    headerClass={styles['header']}
+                                    titleClass={styles['title']}
+                                    onContentReady={onContentReady}
+                                />
+                            </Card>
+                        </div>
+                        <GoogleDefault />
+                        <Related id={id} />
+                    </Space>
+                    <React.Fragment>
+                        <Outline
+                            {...contentData}
+                            style={{ width: (1056 * 29.16666667) / 100 - 22 }}
+                        />
+                    </React.Fragment>
+                </Layout>
+            </Container>
+        </DocumentMeta>
     );
 }
 export default Detail;

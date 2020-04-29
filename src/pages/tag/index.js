@@ -4,7 +4,8 @@ import Tag from '@/components/Tag';
 import Loading from '@/components/Loading';
 import styles from './index.less';
 import Container from '@/components/Container';
-import { Link, useDispatch, useSelector } from 'umi';
+import { Link, useDispatch, useSelector, useIntl } from 'umi';
+import DocumentMeta from 'react-document-meta';
 
 export default () => {
     const dispatch = useDispatch();
@@ -13,6 +14,7 @@ export default () => {
     const user = useSelector(state => state.user);
     const tagStar = useSelector(state => state.tagStar.list);
     const loadingEffect = useSelector(state => state.loading);
+    const settings = useSelector(state => state.settings);
 
     useEffect(() => {
         dispatch({
@@ -110,29 +112,36 @@ export default () => {
             </Card>
         );
     };
-
+    const intl = useIntl();
     return (
-        <Container
-            metas={{
-                keywords: `标签,标签列表,itellyou`,
-                description: `itellyou的标签列表页`,
+        <DocumentMeta
+            title={`${intl.formatMessage({ id: 'tag.page.index' })} - ${settings.title}`}
+            meta={{
+                name: {
+                    keywords: `${intl.formatMessage({ id: 'keywords' })},标签,标签列表`,
+                    description: `itellyou的常用标签列表页${intl.formatMessage({
+                        id: 'description',
+                    })}`,
+                },
             }}
         >
-            <div className={styles['tag-layout']}>
-                {renderUserTag()}
-                <Card className={styles['tag-group-list']}>
-                    <Card.Meta
-                        title="常用标签"
-                        description={
-                            <React.Fragment>
-                                标签不仅能组织和归类你的内容，还能关联相似的内容。
-                                <Link to="/tag/list">查看全部</Link>
-                            </React.Fragment>
-                        }
-                    />
-                    {renderGroupList()}
-                </Card>
-            </div>
-        </Container>
+            <Container>
+                <div className={styles['tag-layout']}>
+                    {renderUserTag()}
+                    <Card className={styles['tag-group-list']}>
+                        <Card.Meta
+                            title="常用标签"
+                            description={
+                                <React.Fragment>
+                                    标签不仅能组织和归类你的内容，还能关联相似的内容。
+                                    <Link to="/tag/list">查看全部</Link>
+                                </React.Fragment>
+                            }
+                        />
+                        {renderGroupList()}
+                    </Card>
+                </div>
+            </Container>
+        </DocumentMeta>
     );
 };

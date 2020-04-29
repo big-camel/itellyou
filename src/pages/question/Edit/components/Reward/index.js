@@ -101,7 +101,7 @@ export default ({ current, data, onChange }) => {
                     formatter={value =>
                         `${formatter}${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                     }
-                    parser={value => value.replace(`/${formatter}\s?|(,*)/g`, '')}
+                    parser={value => value.replace(new RegExp(`${formatter}\s?|(,*)`, 'g'), '')}
                 />
                 &nbsp;&nbsp;，{getText(type)}余额:{formatter}
                 {balance} {getUnit(type)}

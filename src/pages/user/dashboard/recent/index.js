@@ -128,8 +128,8 @@ function Dashboard() {
         );
     };
 
-    return (
-        <Layout defaultKey="recent">
+    const renderList = () => {
+        return (
             <ScrollList
                 className={styles['recent-list']}
                 itemLayout="vertical"
@@ -141,8 +141,17 @@ function Dashboard() {
                 onChange={offset => setOffset(offset)}
                 renderItem={renderItem}
             />
-        </Layout>
-    );
+        );
+    };
+
+    const render = () => {
+        if (dataSource && dataSource.total === 0) {
+            return <Card>{renderList()}</Card>;
+        }
+        return renderList();
+    };
+
+    return <Layout defaultKey="recent">{render()}</Layout>;
 }
 
 export default Dashboard;

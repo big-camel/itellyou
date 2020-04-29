@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Tabs } from 'antd';
 import classNames from 'classnames';
 import Submit from './Submit';
@@ -7,7 +7,15 @@ import FormContext from './FormContext';
 import formItem from './FormItem';
 import styles from './index.less';
 
-const FormComponent = ({ defaultActiveKey, onChange, onSubmit, className, children, ...props }) => {
+const FormComponent = ({
+    defaultActiveKey,
+    activeKey,
+    onChange,
+    onSubmit,
+    className,
+    children,
+    ...props
+}) => {
     const [form] = Form.useForm(props.form);
     const [tabs, setTabs] = useState([]);
     const [active, setActive] = useState({});
@@ -26,6 +34,10 @@ const FormComponent = ({ defaultActiveKey, onChange, onSubmit, className, childr
             otherChildren.push(item);
         }
     });
+
+    useEffect(() => {
+        setType(activeKey);
+    }, [activeKey]);
 
     return (
         <FormContext.Provider

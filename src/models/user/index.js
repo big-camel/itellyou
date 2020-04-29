@@ -1,7 +1,5 @@
 import { history } from 'umi';
 import { stringify } from 'qs';
-import { setAuthority } from '@/utils/authority';
-import { reloadAuthorized } from '@/utils/Authorized';
 import {
     queryName,
     fetchMe,
@@ -81,10 +79,6 @@ export default {
                 type: 'setMe',
                 payload: null,
             });
-            setAuthority({
-                authority: 'guest',
-            });
-            reloadAuthorized();
             const { redirect } = getPageQuery();
             if (window.location.pathname !== '/login' && !redirect) {
                 history.replace({

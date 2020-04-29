@@ -6,7 +6,6 @@ import Layout from '../components/Layout';
 import UserAvatar from '@/components/AvatarCropper';
 import Form, { Submit } from '@/components/Form';
 import formMap from './formMap';
-import styles from './index.less';
 
 const { Avatar, Name, Gender, Description, Introduction, Address, Profession } = Form.createItem(
     formMap,
@@ -19,6 +18,7 @@ function Profile() {
     const dispatch = useDispatch();
     const me = useSelector(state => state.user.me);
     const detail = useSelector(state => (me ? state.user.detail[me.id] : null));
+    const settings = useSelector(state => state.settings);
     const loadingEffect = useSelector(state => state.loading);
     const submiting = loadingEffect.effects['user/profile'];
 
@@ -35,7 +35,7 @@ function Profile() {
 
     useEffect(() => {
         if (detail) {
-            setAvatar(detail.avatar);
+            setAvatar(detail.avatar || settings.defaultAvatar);
         }
     }, [detail]);
 

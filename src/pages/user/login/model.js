@@ -1,7 +1,5 @@
-import { loginByAccount, loginByMobile } from './service';
-import { setAuthority } from '@/utils/authority';
+import { loginByAccount, loginByMobile, loginByOauth } from './service';
 import { getPageQuery } from '@/utils/utils';
-import { reloadAuthorized } from '@/utils/Authorized';
 
 const onRedirect = () => {
     const urlParams = new URL(window.location.href);
@@ -29,12 +27,7 @@ export default {
     effects: {
         *account({ payload }, { call }) {
             const response = yield call(loginByAccount, payload);
-
             if (response.result === true && response.status === 200) {
-                setAuthority({
-                    authority: response.data.authority || 'user',
-                });
-                reloadAuthorized();
                 onRedirect();
             }
             return response;
@@ -42,10 +35,13 @@ export default {
         *mobile({ payload }, { call }) {
             const response = yield call(loginByMobile, payload);
             if (response.result === true && response.status === 200) {
-                setAuthority({
-                    authority: response.data.authority || 'user',
-                });
-                reloadAuthorized();
+                onRedirect();
+            }
+            return response;
+        },
+        *oauth({ payload }, { call }) {
+            const response = yield call(loginByOauth, payload);
+            if (response.result === true && response.status === 200) {
                 onRedirect();
             }
             return response;

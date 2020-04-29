@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useDispatch, useSelector } from 'umi';
+import { Link, useDispatch, useSelector, useIntl } from 'umi';
 import classNames from 'classnames';
 import { Button, Card, Space } from 'antd';
 import Container, { Layout } from '@/components/Container';
@@ -9,6 +9,7 @@ import GroupUser from './components/GroupUser';
 import { EditOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import { GoogleSquare } from '@/components/AdSense';
+import DocumentMeta from 'react-document-meta';
 
 function Index({ location: { query }, match: { params } }) {
     const [offset, setOffset] = useState(parseInt(query.offset || 0));
@@ -18,6 +19,7 @@ function Index({ location: { query }, match: { params } }) {
 
     const dispatch = useDispatch();
     const dataSource = useSelector(state => (state.question ? state.question.list : null));
+    const settings = useSelector(state => state.settings);
 
     useEffect(() => {
         dispatch({
@@ -52,61 +54,74 @@ function Index({ location: { query }, match: { params } }) {
         );
     };
 
+    const intl = useIntl();
+
     return (
-        <Container
-            metas={{
-                keywords: '问答,问答列表,热门问答,itellyou',
-                description: 'itellyou问答列表',
+        <DocumentMeta
+            title={`${intl.formatMessage({ id: 'question.page.index' })} - ${settings.title}`}
+            meta={{
+                name: {
+                    keywords: `${intl.formatMessage({
+                        id: 'keywords',
+                    })},问答列表,热门问答,悬赏问题,付费问答`,
+                    description: `itellyou问答列表${intl.formatMessage({ id: 'description' })}`,
+                },
             }}
         >
-            <Layout>
-                <Card
-                    title={
-                        <div className={styles['header']}>
-                            <Button type="primary" href="/question/new" icon={<EditOutlined />}>
-                                提问题
-                            </Button>
-                            <div className={styles['type-list']}>
-                                <Link
-                                    className={classNames({
-                                        [styles['active']]: type === '' || type === 'default',
-                                    })}
-                                    to="/question"
-                                >
-                                    最新
-                                </Link>
-                                <Link
-                                    className={classNames({ [styles['active']]: type === 'hot' })}
-                                    to="/question/hot"
-                                >
-                                    热门
-                                </Link>
-                                <Link
-                                    className={classNames({
-                                        [styles['active']]: type === 'reward',
-                                    })}
-                                    to="/question/reward"
-                                >
-                                    悬赏
-                                </Link>
-                                <Link
-                                    className={classNames({ [styles['active']]: type === 'star' })}
-                                    to="/question/star"
-                                >
-                                    我的关注
-                                </Link>
+            <Container>
+                <Layout>
+                    <Card
+                        title={
+                            <div className={styles['header']}>
+                                <Button type="primary" href="/question/new" icon={<EditOutlined />}>
+                                    提问题
+                                </Button>
+                                <div className={styles['type-list']}>
+                                    <Link
+                                        className={classNames({
+                                            [styles['active']]: type === '' || type === 'default',
+                                        })}
+                                        to="/question"
+                                    >
+                                        最新
+                                    </Link>
+                                    <Link
+                                        className={classNames({
+                                            [styles['active']]: type === 'hot',
+                                        })}
+                                        to="/question/hot"
+                                    >
+                                        热门
+                                    </Link>
+                                    <Link
+                                        className={classNames({
+                                            [styles['active']]: type === 'reward',
+                                        })}
+                                        to="/question/reward"
+                                    >
+                                        悬赏
+                                    </Link>
+                                    <Link
+                                        className={classNames({
+                                            [styles['active']]: type === 'star',
+                                        })}
+                                        to="/question/star"
+                                    >
+                                        我的关注
+                                    </Link>
+                                </div>
                             </div>
-                        </div>
-                    }
-                >
-                    {renderList()}
-                </Card>
-                <Space direction="vertical" size="large">
-                    <GoogleSquare />
-                    <GroupUser />
-                </Space>
-            </Layout>
-        </Container>
+                        }
+                    >
+                        {renderList()}
+                    </Card>
+                    <Space direction="vertical" size="large">
+                        <GoogleSquare />
+                        <GroupUser />
+                    </Space>
+                </Layout>
+            </Container>
+        </DocumentMeta>
     );
 }
 export default Index;

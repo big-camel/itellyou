@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Alert, message } from 'antd';
+import { Alert, message, Space } from 'antd';
 import { history, useIntl, Link, useSelector, useDispatch } from 'umi';
 import Form, { Submit } from '@/components/Form';
 import formMap from './formMap';
 import '@/utils/gt.js';
 import { sendCaptcha } from '@/services/validation';
 import styles from './index.less';
+import { AlipayLogin, GithubLogin } from '@/components/ThirdParty';
 
 const { Name, Password, Mobile, Captcha } = Form.createItem(formMap);
 
@@ -147,83 +148,88 @@ export default () => {
     };
 
     return (
-        <Form onSubmit={handleSubmit} form={form}>
-            {renderErrorMessage()}
-            <Name
-                name="name"
-                errors={filedErrors['name']}
-                onBlur={e => {
-                    if (e.change)
-                        setFiledErrors(value => {
-                            return {
-                                ...value,
-                                name: null,
-                            };
+        <>
+            <div className={styles.title}>注册</div>
+            <Form onSubmit={handleSubmit} className={styles['form']} form={form}>
+                {renderErrorMessage()}
+                <Name
+                    name="name"
+                    errors={filedErrors['name']}
+                    onBlur={e => {
+                        if (e.change)
+                            setFiledErrors(value => {
+                                return {
+                                    ...value,
+                                    name: null,
+                                };
+                            });
+                    }}
+                    autoComplete="off"
+                    asyncValidator={(_, value) => {
+                        return new Promise((resolve, reject) => {
+                            dispatch({
+                                type: 'user/queryName',
+                                payload: {
+                                    name: value,
+                                },
+                            }).then(res => {
+                                if (res.result) return resolve();
+                                reject(res.message);
+                            });
                         });
-                }}
-                autoComplete="off"
-                asyncValidator={(_, value) => {
-                    return new Promise((resolve, reject) => {
-                        dispatch({
-                            type: 'user/queryName',
-                            payload: {
-                                name: value,
-                            },
-                        }).then(res => {
-                            if (res.result) return resolve();
-                            reject(res.message);
-                        });
-                    });
-                }}
-            />
-            <Password name="password" autoComplete="off" />
-            <Mobile
-                name="mobile"
-                autoComplete="off"
-                maxLength={11}
-                errors={filedErrors['mobile']}
-                onBlur={e => {
-                    if (e.change)
-                        setFiledErrors(value => {
-                            return {
-                                ...value,
-                                mobile: null,
-                            };
-                        });
-                }}
-                help={mobileHelp}
-            />
-            <Captcha
-                name="code"
-                autoComplete="off"
-                onSend={sendMobileCaptcha}
-                onPressEnter={form.submit}
-                errors={filedErrors['code']}
-                onBlur={e => {
-                    if (e.change)
-                        setFiledErrors(value => {
-                            return {
-                                ...value,
-                                code: null,
-                            };
-                        });
-                }}
-                {...captcha}
-            />
-            <Submit loading={submiting}>
-                {submiting
-                    ? intl.formatMessage({ id: 'register.submit.loadingText' })
-                    : intl.formatMessage({ id: 'register.submit.text' })}
-            </Submit>
-            <Form.Item>
+                    }}
+                />
+                <Password name="password" autoComplete="off" />
+                <Mobile
+                    name="mobile"
+                    autoComplete="off"
+                    maxLength={11}
+                    errors={filedErrors['mobile']}
+                    onBlur={e => {
+                        if (e.change)
+                            setFiledErrors(value => {
+                                return {
+                                    ...value,
+                                    mobile: null,
+                                };
+                            });
+                    }}
+                    help={mobileHelp}
+                />
+                <Captcha
+                    name="code"
+                    autoComplete="off"
+                    onSend={sendMobileCaptcha}
+                    onPressEnter={form.submit}
+                    errors={filedErrors['code']}
+                    onBlur={e => {
+                        if (e.change)
+                            setFiledErrors(value => {
+                                return {
+                                    ...value,
+                                    code: null,
+                                };
+                            });
+                    }}
+                    {...captcha}
+                />
+                <Submit loading={submiting}>
+                    {submiting
+                        ? intl.formatMessage({ id: 'register.submit.loadingText' })
+                        : intl.formatMessage({ id: 'register.submit.text' })}
+                </Submit>
                 <p className={styles['protocol']}>
                     注册即表明同意
                     <Link to="">《ITELLYOU用户协议》</Link>
                 </p>
-                <div className={styles['register-footer']}>
-                    <Link to="/login">去登陆</Link>
-                </div>
-            </Form.Item>
-        </Form>
+                <Space className={styles['third-login']} size="large">
+                    <AlipayLogin />
+                    <GithubLogin />
+                </Space>
+                <Space className={styles['register-footer']}>
+                    <Link to="/login">直接登陆</Link>
+                </Space>
+            </Form>
+        </>
     );
 };

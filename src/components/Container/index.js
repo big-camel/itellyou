@@ -15,38 +15,30 @@ const query = {
     },
 };
 
-export default ({ mode, title, metas, children, className, ...props }) => {
+export default ({ mode, children, className }) => {
     const isContainer = (type, param) => {
         return mode ? mode === type : param === type;
     };
+
     return (
-        <DocumentMeta
-            title={title}
-            meta={{
-                name: {
-                    ...metas,
-                },
-            }}
-        >
-            <ContainerQuery query={query}>
-                {param => (
-                    <div
-                        className={classnames(
-                            {
-                                'layout-container': true,
-                                'layout-container-wider': isContainer('wider', param),
-                                'layout-container-middle': isContainer('middle', param),
-                                'layout-container-full': isContainer('full', param),
-                                clearfix: true,
-                            },
-                            className,
-                        )}
-                    >
-                        {children}
-                    </div>
-                )}
-            </ContainerQuery>
-        </DocumentMeta>
+        <ContainerQuery query={query}>
+            {param => (
+                <div
+                    className={classnames(
+                        {
+                            'layout-container': true,
+                            'layout-container-wider': isContainer('wider', param),
+                            'layout-container-middle': isContainer('middle', param),
+                            'layout-container-full': isContainer('full', param),
+                            clearfix: true,
+                        },
+                        className,
+                    )}
+                >
+                    {children}
+                </div>
+            )}
+        </ContainerQuery>
     );
 };
 

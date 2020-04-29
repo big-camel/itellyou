@@ -1,7 +1,7 @@
 export default [
     // user passport
     {
-        path: '/:path(login|register)',
+        path: '/:path(login|register|login/oauth)',
         component: '../layouts/PassportLayout',
         routes: [
             {
@@ -12,6 +12,11 @@ export default [
                     keywords: '登陆,itellyou登陆',
                     description: 'ITELLYOU 用户登陆',
                 },
+            },
+            {
+                path: '/login/oauth',
+                name: 'login.page.oauth',
+                component: './user/login/Oauth',
             },
             {
                 path: '/register',
@@ -28,19 +33,18 @@ export default [
     {
         path: '/question/(new|[\\d]+/edit)',
         component: '../layouts/BlankLayout',
-        wrappers: ['Authorized'],
+        access: 'isLogin',
+        wrappers: ['@/wrappers/auth'],
         routes: [
             {
                 path: '/question/new',
                 name: 'question.page.new',
                 component: './question/edit',
-                authority: ['admin', 'user'],
             },
             {
                 path: '/question/:id([\\d]+)/edit',
                 name: 'question.page.edit',
                 component: './question/edit',
-                authority: ['admin', 'user'],
             },
         ],
     },
@@ -48,13 +52,13 @@ export default [
     {
         path: '/tag/:id(\\d+)/edit',
         component: '../layouts/BlankLayout',
-        wrappers: ['Authorized'],
+        access: 'isLogin',
+        wrappers: ['@/wrappers/auth'],
         routes: [
             {
                 path: '/tag/:id(\\d+)/edit',
                 name: 'tag.page.edit',
                 component: './tag/edit',
-                authority: ['admin', 'user'],
             },
         ],
     },
@@ -62,19 +66,18 @@ export default [
     {
         path: '/article/(new|[\\d]+/edit)',
         component: '../layouts/BlankLayout',
-        wrappers: ['Authorized'],
+        wrappers: ['@/wrappers/auth'],
+        access: 'isLogin',
         routes: [
             {
                 path: '/article/new',
                 name: 'article.page.new',
                 component: './article/edit',
-                authority: ['admin', 'user'],
             },
             {
                 path: '/article/:id(\\d+)/edit',
                 name: 'article.page.edit',
                 component: './article/edit',
-                authority: ['admin', 'user'],
             },
         ],
     },
@@ -94,7 +97,7 @@ export default [
     {
         path: '/',
         component: '../layouts/BasicLayout',
-        wrappers: ['Authorized'],
+        wrappers: ['@/wrappers/auth'],
         routes: [
             { path: '/', name: 'home.page.index', component: './home' },
             // Question
@@ -121,7 +124,7 @@ export default [
                 path: '/tag/review',
                 name: 'tagReview',
                 component: './tag/Review',
-                authority: ['admin'],
+                access: 'isAdmin',
             },
             { path: '/tag/:id(\\d+)', name: 'tag.page.detail', component: './tag/detail' },
             {
@@ -149,86 +152,86 @@ export default [
                 path: '/column/apply',
                 name: 'column.page.apply',
                 component: './column/apply',
-                authority: ['admin', 'user'],
+                access: 'isLogin',
             },
             // User
             {
                 path: '/dashboard',
-                name: 'user.dashboard.recent',
-                component: './user/dashboard/recent',
-                authority: ['admin', 'user'],
+                access: 'isLogin',
+                routes: [
+                    {
+                        path: '/dashboard',
+                        name: 'user.dashboard.recent',
+                        component: './user/dashboard/recent',
+                    },
+                    {
+                        path: '/dashboard/article',
+                        name: 'user.dashboard.article',
+                        component: './user/dashboard/article',
+                    },
+                    {
+                        path: '/dashboard/question',
+                        name: 'user.dashboard.question',
+                        component: './user/dashboard/question',
+                    },
+                    {
+                        path: '/dashboard/answer',
+                        name: 'user.dashboard.answer',
+                        component: './user/dashboard/answer',
+                    },
+                    {
+                        path: '/dashboard/column',
+                        name: 'user.dashboard.column',
+                        component: './user/dashboard/column',
+                    },
+                    {
+                        path: '/dashboard/follows',
+                        name: 'user.dashboard.follows',
+                        component: './user/dashboard/follows',
+                    },
+                    {
+                        path: '/dashboard/wallet',
+                        name: 'user.dashboard.wallet',
+                        component: './user/dashboard/wallet',
+                    },
+                    {
+                        path: '/dashboard/collections',
+                        name: 'user.dashboard.collections',
+                        component: './user/dashboard/collections',
+                    },
+                    {
+                        path: '/dashboard/history',
+                        name: 'user.dashboard.history',
+                        component: './user/dashboard/history',
+                    },
+                ],
             },
             {
-                path: '/dashboard/article',
-                name: 'user.dashboard.article',
-                component: './user/dashboard/article',
-                authority: ['admin', 'user'],
-            },
-            {
-                path: '/dashboard/question',
-                name: 'user.dashboard.question',
-                component: './user/dashboard/question',
-                authority: ['admin', 'user'],
-            },
-            {
-                path: '/dashboard/answer',
-                name: 'user.dashboard.answer',
-                component: './user/dashboard/answer',
-                authority: ['admin', 'user'],
-            },
-            {
-                path: '/dashboard/column',
-                name: 'user.dashboard.column',
-                component: './user/dashboard/column',
-                authority: ['admin', 'user'],
-            },
-            {
-                path: '/dashboard/follows',
-                name: 'user.dashboard.follows',
-                component: './user/dashboard/follows',
-                authority: ['admin', 'user'],
-            },
-            {
-                path: '/dashboard/wallet',
-                name: 'user.dashboard.wallet',
-                component: './user/dashboard/wallet',
-                authority: ['admin', 'user'],
-            },
-            {
-                path: '/dashboard/collections',
-                name: 'user.dashboard.collections',
-                component: './user/dashboard/collections',
-                authority: ['admin', 'user'],
-            },
-            {
-                path: '/dashboard/history',
-                name: 'user.dashboard.history',
-                component: './user/dashboard/history',
-                authority: ['admin', 'user'],
-            },
-            {
-                path: '/settings/profile',
-                name: 'user.settings.profile',
-                component: './user/settings/profile',
-                authority: ['admin', 'user'],
-            },
-            {
-                path: '/settings/account',
-                name: 'user.settings.account',
-                component: './user/settings/account',
-                authority: ['admin', 'user'],
-            },
-            {
-                path: '/settings/notifications',
-                name: 'user.settings.notifications',
-                component: './user/settings/notifications',
-                authority: ['admin', 'user'],
+                path: '/settings',
+                access: 'isLogin',
+                routes: [
+                    {
+                        path: '/settings/profile',
+                        name: 'user.settings.profile',
+                        component: './user/settings/profile',
+                    },
+                    {
+                        path: '/settings/account',
+                        name: 'user.settings.account',
+                        component: './user/settings/account',
+                    },
+                    {
+                        path: '/settings/notifications',
+                        name: 'user.settings.notifications',
+                        component: './user/settings/notifications',
+                    },
+                ],
             },
             {
                 path: '/notifications:path(/[a-zA-Z0-9_]+)?',
                 name: 'user.notifications',
                 component: './user/notifications',
-                authority: ['admin', 'user'],
+                access: 'isLogin',
             },
             {
                 path: '/401',

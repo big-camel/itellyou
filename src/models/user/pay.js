@@ -1,4 +1,5 @@
-import { alipayPrecreate, alipayQuery } from '@/services/pay';
+import { alipayPrecreate, alipayQuery, log } from '@/services/user/pay';
+import { setList } from '@/utils/model';
 export default {
     namespace: 'pay',
 
@@ -15,6 +16,14 @@ export default {
                     payload: { ...data },
                 });
             }
+            return response;
+        },
+        *log({ payload: { append, ...payload } }, { call, put }) {
+            const response = yield call(log, payload);
+            yield put({
+                type: 'setLog',
+                payload: { append, ...(response.data || {}) },
+            });
             return response;
         },
         *alipayQuery({ payload }, { call, put }) {
@@ -35,6 +44,9 @@ export default {
                 ...state,
                 alipay: { ...state.alipay, ...payload },
             };
+        },
+        setLog(state, { payload }) {
+            return setList('log', payload, state);
         },
     },
 };

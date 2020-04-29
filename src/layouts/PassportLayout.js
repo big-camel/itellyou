@@ -15,7 +15,6 @@ function PassportLayout({ route, children }) {
                         <img alt="logo" src={logo} />
                     </Link>
                 </div>
-                <div className={styles.title}>ITELLYOU 我告诉你</div>
             </div>
             {children}
         </div>

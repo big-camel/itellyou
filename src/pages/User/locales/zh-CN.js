@@ -8,6 +8,7 @@ export default {
     'register.mobile.takeUp': '手机号已被占用，请更换手机号或去',
 
     'login.page': '登录',
+    'login.page.oauth': '第三方登陆验证',
     'user.settings.profile': '个人信息',
     'user.settings.account': '账户管理',
     'user.settings.notifications': '消息管理',

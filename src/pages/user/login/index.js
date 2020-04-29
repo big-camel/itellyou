@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, message } from 'antd';
+import { Alert, message, Tooltip, Space, Popover } from 'antd';
 import { useIntl, Link, useDispatch } from 'umi';
 import '@/utils/gt.js';
 import Form, { Tab, Submit } from '@/components/Form';
@@ -7,6 +7,7 @@ import formMap from './formMap';
 import styles from './index.less';
 import { sendCaptcha } from '@/services/validation';
 import { init } from '@/services/geetest';
+import { GithubLogin, AlipayLogin } from '@/components/ThirdParty';
 
 const { UserName, Password, Mobile, Captcha } = Form.createItem(formMap);
 
@@ -87,7 +88,7 @@ export default () => {
     };
 
     const loginByAccount = () => {
-        init('login')
+        init('login/oauth')
             .then(({ validate, key }) => {
                 if (!validate) return setSubmit({ ...submit, loading: false });
                 const username = form.getFieldValue('username');
@@ -218,67 +219,84 @@ export default () => {
     };
 
     return (
-        <Form
-            className={styles['login-form']}
-            form={form}
-            onSubmit={handleSubmit}
-            defaultActiveKey={'account'}
-            onChange={tab => setTab(tab)}
-        >
-            <Tab key="account" tab={'账号密码登录'}>
-                {renderErrorMessage()}
-                <UserName
-                    name="username"
-                    autoComplete="off"
-                    errors={filedErrors['username']}
-                    onBlur={e => {
-                        if (e.change) setFiledErrors({ ...filedErrors, username: null });
-                    }}
-                />
-                <Password
-                    name="password"
-                    autoComplete="off"
-                    errors={filedErrors['password']}
-                    onBlur={e => {
-                        if (e.change) setFiledErrors({ ...filedErrors, password: null });
-                    }}
-                    onPressEnter={e => {
-                        e.target.blur();
-                        form.submit();
-                    }}
-                />
-            </Tab>
-            <Tab key="mobile" tab={'手机动态码登录'}>
-                {renderErrorMessage()}
-                <Mobile
-                    name="mobile"
-                    autoComplete="off"
-                    maxLength={11}
-                    errors={filedErrors['mobile']}
-                    onBlur={e => {
-                        if (e.change) setFiledErrors({ ...filedErrors, mobile: null });
-                    }}
-                    help={mobileHelp}
-                />
-                <Captcha
-                    name="code"
-                    autoComplete="off"
-                    onSend={sendMobileCaptcha}
-                    onPressEnter={e => {
-                        e.target.blur();
-                        form.submit();
-                    }}
-                    errors={filedErrors['code']}
-                    onBlur={e => {
-                        if (e.change) setFiledErrors({ ...filedErrors, code: null });
-                    }}
-                    {...captcha}
-                />
-            </Tab>
-            <Submit loading={submit.loading}>{submit.loading ? '登陆中...' : '登陆'}</Submit>
-            <div className={styles['login-footer']}>
-                <Link to="/register">快速注册</Link>
-            </div>
-        </Form>
+        <>
+            <div className={styles.title}>登录</div>
+            <Form
+                className={styles['login-form']}
+                form={form}
+                onSubmit={handleSubmit}
+                defaultActiveKey={'account'}
+                activeKey={tab}
+                onChange={tab => setTab(tab)}
+            >
+                <Tab key="account" tab={'账号密码登录'}>
+                    {renderErrorMessage()}
+                    <UserName
+                        name="username"
+                        autoComplete="off"
+                        errors={filedErrors['username']}
+                        onBlur={e => {
+                            if (e.change) setFiledErrors({ ...filedErrors, username: null });
+                        }}
+                    />
+                    <Password
+                        name="password"
+                        autoComplete="off"
+                        errors={filedErrors['password']}
+                        onBlur={e => {
+                            if (e.change) setFiledErrors({ ...filedErrors, password: null });
+                        }}
+                        onPressEnter={e => {
+                            e.target.blur();
+                            form.submit();
+                        }}
+                    />
+                </Tab>
+                <Tab key="mobile" tab={'手机动态码登录'}>
+                    {renderErrorMessage()}
+                    <Mobile
+                        name="mobile"
+                        autoComplete="off"
+                        maxLength={11}
+                        errors={filedErrors['mobile']}
+                        onBlur={e => {
+                            if (e.change) setFiledErrors({ ...filedErrors, mobile: null });
+                        }}
+                        help={mobileHelp}
+                    />
+                    <Captcha
+                        name="code"
+                        autoComplete="off"
+                        onSend={sendMobileCaptcha}
+                        onPressEnter={e => {
+                            e.target.blur();
+                            form.submit();
+                        }}
+                        errors={filedErrors['code']}
+                        onBlur={e => {
+                            if (e.change) setFiledErrors({ ...filedErrors, code: null });
+                        }}
+                        {...captcha}
+                    />
+                </Tab>
+                <Submit loading={submit.loading}>{submit.loading ? '登陆中...' : '登陆'}</Submit>
+                <Space className={styles['third-login']} size="large">
+                    <AlipayLogin />
+                    <GithubLogin />
+                </Space>
+                <Space className={styles['login-footer']}>
+                    <Popover
+                        content={
+                            <div>
+                                试试<a onClick={() => setTab('mobile')}>手机动态码登录</a>
+                            </div>
+                        }
+                    >
+                        <a>忘记密码</a>
+                    </Popover>
+                    |<Link to="/register">快速注册</Link>
+                </Space>
+            </Form>
+        </>
     );
 };

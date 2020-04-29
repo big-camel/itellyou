@@ -1,15 +1,21 @@
 import React, { useRef, useEffect } from 'react';
 import DocumentMeta from 'react-document-meta';
-import { withRouter, useSelector, useDispatch, useModel } from 'umi';
+import { withRouter, useSelector, useDispatch, useModel, Redirect, useAccess } from 'umi';
 import NProgress from 'nprogress';
-import { getTitle, getMetas } from '@/utils/page';
+import { getRoute, getTitle, getMetas } from '@/utils/page';
 import 'nprogress/nprogress.css';
 
-function BlankLayout({ route, children, location, title }) {
-    const href = location.pathname;
+function BlankLayout({ route, children, location: { pathname }, title }) {
+    const href = pathname;
     const hrefRef = useRef();
     const settings = useSelector(state => state.settings);
     const loading = useSelector(state => state.loading);
+
+    const { routes = [] } = route || {};
+
+    if (route && !route.routes) {
+        routes.push(route);
+    }
 
     useEffect(() => {
         if (hrefRef.current !== href) {
@@ -38,20 +44,18 @@ function BlankLayout({ route, children, location, title }) {
         });
     }, [dispatch, me]);
 
-    const { routes = [] } = route || {};
-    const breadcrumbNameMap = {};
-    if (route && !route.routes) {
-        routes.push(route);
-    }
     if (!title) {
-        routes.forEach(item => {
-            if (item && item.name && item.path) {
-                breadcrumbNameMap[item.path] = item;
-            }
-        });
-        title = getTitle(location.pathname, breadcrumbNameMap);
+        title = getTitle(pathname, routes);
     }
-    const metas = getMetas(location.pathname, breadcrumbNameMap);
+
+    const routeData = getRoute(pathname, routes);
+    if (routeData && routeData.unaccessible) {
+        const access = useAccess();
+        if (!access.isLogin) return <Redirect to="/login" />;
+        return <Redirect to="/403" />;
+    }
+
+    const metas = getMetas(pathname, routes);
 
     title = title ? `${title} - ${settings.title}` : settings.title;
 

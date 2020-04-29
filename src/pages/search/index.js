@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useSelector, useDispatch } from 'umi';
+import DocumentMeta from 'react-document-meta';
 import { Empty, Menu, Card, Avatar } from 'antd';
 import Container, { Layout } from '@/components/Container';
 import { MoreList } from '@/components/List';
-import Timer from '@/components/Timer';
 import Loading from '@/components/Loading';
 import styles from './index.less';
 
@@ -142,69 +142,74 @@ function Search({ location: { query } }) {
         if (!list) return <Loading />;
 
         return (
-            <Container
-                className={styles['search-list']}
+            <DocumentMeta
                 title={
                     word !== ''
                         ? `${word} - 搜索结果 - ${settings.title}`
                         : `搜索 - ${settings.title}`
                 }
-                metas={{
-                    keywords: `itellyou站内搜索,${word}`,
-                    description: `itellyou站内搜索-${word}-的结果`,
+                meta={{
+                    name: {
+                        keywords: `itellyou站内搜索,${word}`,
+                        description: `itellyou站内搜索-${word}-的结果`,
+                    },
                 }}
             >
-                <Layout>
-                    <div>
-                        <Menu
-                            className={styles['menu']}
-                            mode="horizontal"
-                            defaultSelectedKeys={[type]}
-                        >
-                            {menus.map(({ key, title }) => (
-                                <Menu.Item key={key}>
-                                    <Link
-                                        to={`/search?${key === 'all' ? '' : `t=${key}&`}q=${word}`}
-                                    >
-                                        {title}
-                                    </Link>
-                                </Menu.Item>
-                            ))}
-                        </Menu>
+                <Container className={styles['search-list']}>
+                    <Layout>
+                        <div>
+                            <Menu
+                                className={styles['menu']}
+                                mode="horizontal"
+                                defaultSelectedKeys={[type]}
+                            >
+                                {menus.map(({ key, title }) => (
+                                    <Menu.Item key={key}>
+                                        <Link
+                                            to={`/search?${
+                                                key === 'all' ? '' : `t=${key}&`
+                                            }q=${word}`}
+                                        >
+                                            {title}
+                                        </Link>
+                                    </Menu.Item>
+                                ))}
+                            </Menu>
+                            <Card>
+                                <Card.Meta title={<div>找到约 {list.hits} 条结果</div>} />
+                                <MoreList
+                                    itemLayout="vertical"
+                                    dataSource={list}
+                                    offset={offset}
+                                    limit={limit}
+                                    renderItem={renderItem}
+                                    onChange={offset => setOffset(offset)}
+                                />
+                            </Card>
+                        </div>
                         <Card>
-                            <Card.Meta title={<div>找到约 {list.hits} 条结果</div>} />
-                            <MoreList
-                                itemLayout="vertical"
-                                dataSource={list}
-                                offset={offset}
-                                limit={limit}
-                                renderItem={renderItem}
-                                onChange={offset => setOffset(offset)}
-                            />
+                            <ul>
+                                <li>
+                                    <a
+                                        target="_blank"
+                                        href={`https://www.baidu.com/s?wd=site:itellyou.com ${word}`}
+                                    >
+                                        在 百度 中搜索
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        target="_blank"
+                                        href={`https://www.google.com/?gws_rd=ssl#newwindow=1&q=site:itellyou.com+${word}`}
+                                    >
+                                        在 Google 中搜索
+                                    </a>
+                                </li>
+                            </ul>
                         </Card>
-                    </div>
-                    <Card>
-                        <ul>
-                            <li>
-                                <a
-                                    target="_blank"
-                                    href={`https://www.baidu.com/s?wd=site:itellyou.com ${word}`}
-                                >
-                                    在 百度 中搜索
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    target="_blank"
-                                    href={`https://www.google.com/?gws_rd=ssl#newwindow=1&q=site:itellyou.com+${word}`}
-                                >
-                                    在 Google 中搜索
-                                </a>
-                            </li>
-                        </ul>
-                    </Card>
-                </Layout>
-            </Container>
+                    </Layout>
+                </Container>
+            </DocumentMeta>
         );
     };
 

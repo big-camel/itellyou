@@ -1,4 +1,4 @@
-import { info, log } from '@/services/bank';
+import { info, log } from '@/services/user/bank';
 import { setList } from '@/utils/model';
 export default {
     namespace: 'bank',

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Card, PageHeader } from 'antd';
-import { Link, useDispatch, useSelector } from 'umi';
+import { Card } from 'antd';
+import { Link, useDispatch, useSelector, useIntl } from 'umi';
 import { MoreList } from '@/components/List';
 import Tag from '@/components/Tag';
 import Container from '@/components/Container';
 import styles from './index.less';
+import DocumentMeta from 'react-document-meta';
 
 function TagList({ location: { query } }) {
     const [page, setPage] = useState(query.page || 1);
@@ -12,7 +13,7 @@ function TagList({ location: { query } }) {
     const [offset, setOffset] = useState((page - 1) * limit);
     const dispatch = useDispatch();
     const list = useSelector(state => (state.tag ? state.tag.list : null));
-
+    const settings = useSelector(state => state.settings);
     useEffect(() => {
         dispatch({
             type: 'tag/list',
@@ -76,28 +77,33 @@ function TagList({ location: { query } }) {
             />
         );
     };
-
+    const intl = useIntl();
     return (
-        <Container
-            metas={{
-                keywords: `标签,标签列表,itellyou`,
-                description: `itellyou的标签列表页`,
+        <DocumentMeta
+            title={`${intl.formatMessage({ id: 'tag.page.list' })} - ${settings.title}`}
+            meta={{
+                name: {
+                    keywords: `${intl.formatMessage({ id: 'keywords' })},标签,标签列表`,
+                    description: `itellyou的标签列表页${intl.formatMessage({ id: 'description' })}`,
+                },
             }}
         >
-            <Card className={styles['tag-list']}>
-                <Card.Meta
-                    className={styles['tag-list-meta']}
-                    title="标签"
-                    description={
-                        <React.Fragment>
-                            标签不仅能组织和归类你的内容，还能关联相似的内容。
-                            <Link to="/tag">查看常用</Link>
-                        </React.Fragment>
-                    }
-                />
-                {renderList()}
-            </Card>
-        </Container>
+            <Container>
+                <Card className={styles['tag-list']}>
+                    <Card.Meta
+                        className={styles['tag-list-meta']}
+                        title="标签"
+                        description={
+                            <React.Fragment>
+                                标签不仅能组织和归类你的内容，还能关联相似的内容。
+                                <Link to="/tag">查看常用</Link>
+                            </React.Fragment>
+                        }
+                    />
+                    {renderList()}
+                </Card>
+            </Container>
+        </DocumentMeta>
     );
 }
 export default TagList;

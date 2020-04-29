@@ -1,6 +1,5 @@
 import React from 'react';
 import { ConfigProvider } from 'antd';
-import { useModel, useSelector } from 'umi';
 import { fetchMe } from './services/user/index';
 
 export const dva = {

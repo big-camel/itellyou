@@ -19,7 +19,7 @@ export default ({ overflowCount }) => {
     overflowCount = overflowCount || 99;
 
     const { groupCount } = useSelector(state => state.notifications);
-    const settings = useSelector(state => state.settings);
+    const { ws } = useSelector(state => state.settings) || {};
     const [visible, setVisible] = useState(false);
     const [force, setForce] = useState(false);
     const [activeKey, setActiveKey] = useState('default');
@@ -29,10 +29,10 @@ export default ({ overflowCount }) => {
 
     useEffect(() => {
         const connection = () => {
-            if (!settings.ws) return;
+            if (!ws) return;
             const token = Cookies.get('token');
             if (!token) return;
-            const webSocket = new WebSocket(settings.ws + '?token=' + encodeURIComponent(token));
+            const webSocket = new WebSocket(ws + '?token=' + encodeURIComponent(token));
             webSocket.onopen = () => {
                 const message = {
                     action: 'ready',
@@ -67,7 +67,7 @@ export default ({ overflowCount }) => {
             };
             socket.current = webSocket;
         };
-        if (socket.current == undefined) {
+        if (!socket.current) {
             connection();
         }
         return () => {
