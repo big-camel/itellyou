@@ -13,16 +13,26 @@ export default ({ onClose }) => {
     const loadingState = useSelector(state => state.loading);
     const submiting = loadingState.effects['withdraw/post'];
     const [value, setValue] = useState(0);
+    const [fee, setFee] = useState(0.0);
     const [error, setError] = useState();
+    const formatter = '￥';
 
     useEffect(() => {
-        if (config) {
+        if (config && bank) {
             const { min } = config;
+            const { cash } = bank;
+            let initValue = value;
             if (value < min) {
-                setValue(min);
+                if (cash < min) {
+                    initValue = cash;
+                } else {
+                    initValue = min;
+                }
             }
+            setValue(initValue);
+            updateState(initValue);
         }
-    }, [config]);
+    }, [config, bank]);
 
     useEffect(() => {
         dispatch({
@@ -38,13 +48,27 @@ export default ({ onClose }) => {
         }
     }, [dispatch, bank]);
 
-    const onChagne = value => {
+    const updateState = value => {
+        const { min, rate } = config;
         if (value > bank.cash) {
             setError('提现金额超过账户余额');
+        }
+        if (value < min) {
+            setError(`提现最低金额 ${min} 元`);
         } else {
             setError(null);
         }
-        setValue(value);
+        if (rate <= 0) setFee(0.0);
+        else setFee(((value ? value : min) * rate) / 100);
+    };
+
+    const onBlur = e => {
+        const value = getParseValue(e.target.value);
+        updateState(value);
+    };
+
+    const getParseValue = value => {
+        return parseFloat(value.replace(new RegExp(`${formatter}\s?|(,*)`, 'g'), ''));
     };
 
     const onSubmit = () => {
@@ -68,11 +92,7 @@ export default ({ onClose }) => {
         if (!config || !bank) return <Loading />;
         const { min, max, rate } = config;
         const balance = bank.cash;
-        const formatter = '￥ ';
-        const getFee = () => {
-            if (rate <= 0) return 0.0;
-            return ((value ? value : min) * rate) / 100;
-        };
+
         return (
             <div>
                 <Space>
@@ -84,22 +104,22 @@ export default ({ onClose }) => {
                     <InputNumber
                         size="large"
                         className={styles['amount']}
-                        min={min}
+                        min={balance < min ? 0 : min}
                         max={balance > max ? max : balance}
                         precision={2}
                         value={value}
-                        onChange={onChagne}
+                        onBlur={onBlur}
                         formatter={value =>
                             `${formatter}${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                         }
-                        parser={value => value.replace(new RegExp(`${formatter}\s?|(,*)`, 'g'), '')}
+                        parser={value => getParseValue(value)}
                     />
                 </div>
                 {error && <p className={styles['error']}>{error}</p>}
                 {!error && (
                     <Space>
                         账户余额<strong>{balance}</strong>元，服务费
-                        <strong>{getFee().toFixed(2)}</strong>元
+                        <strong>{fee.toFixed(2)}</strong>元
                     </Space>
                 )}
             </div>
@@ -118,6 +138,7 @@ export default ({ onClose }) => {
                 onOk={onSubmit}
                 okButtonProps={{
                     loading: submiting,
+                    disabled: value < (config || {}).min || 0,
                 }}
             >
                 {render()}
