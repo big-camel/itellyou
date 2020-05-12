@@ -7,7 +7,12 @@ export default ({ status = 404, title, subTitle, go }) => {
     return (
         <Result
             status={status}
-            title={title || status}
+            title={
+                title ||
+                intl.formatMessage({
+                    id: `${status}.page`,
+                })
+            }
             subTitle={
                 subTitle ||
                 intl.formatMessage({

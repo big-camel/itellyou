@@ -1,6 +1,10 @@
 import React from 'react';
 import { Button, InputNumber, Row, Col } from 'antd';
+import RewardButton from './Button';
 import styles from './index.less';
+
+export { RewardButton };
+
 class Reward extends React.PureComponent {
     state = {
         select_btn: null,

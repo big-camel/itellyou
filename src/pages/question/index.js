@@ -43,6 +43,13 @@ function Index({ location: { query }, match: { params } }) {
     };
 
     const renderList = () => {
+        const me = useSelector(state => state.user.me);
+        if (!me && type === 'star')
+            return (
+                <p>
+                    <Link to="/login">未登录</Link>
+                </p>
+            );
         return (
             <MoreList
                 renderItem={renderItem}

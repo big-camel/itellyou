@@ -4,10 +4,11 @@ import Author from '@/components/User/Author';
 import { CommentButton, EditButton, ReportButton } from '@/components/Button';
 import { Vote, Favorite, Comment, Adopt, Delete, Edit } from './Action';
 import styles from '../index.less';
-import { Button, Space } from 'antd';
+import { Space } from 'antd';
 import { history, Link, useDispatch } from 'umi';
 import Editor from '@/components/Editor';
 import Timer from '@/components/Timer';
+import { RewardButton } from '@/components/Reward';
 
 const Answer = ({
     data: {
@@ -114,6 +115,7 @@ const Answer = ({
                         </EditButton>
                     )}
                 </p>
+                <RewardButton author={author} dataType="answer" dataKey={id} />
             </div>
         );
     };

@@ -18,6 +18,7 @@ function Detail({ match: { params } }) {
     const dispatch = useDispatch();
     const { detail } = useSelector(state => state.article);
     const settings = useSelector(state => state.settings);
+
     useEffect(() => {
         dispatch({
             type: 'article/view',

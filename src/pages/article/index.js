@@ -9,7 +9,7 @@ import styles from './index.less';
 import HotColumn from './components/HotColumn';
 import HotTag from './components/HotTag';
 import { EditOutlined } from '@ant-design/icons';
-import { GoogleSquare } from '@/components/AdSense';
+import { GoogleDefault } from '@/components/AdSense';
 import DocumentMeta from 'react-document-meta';
 
 function ArticleIndex({ location: { query }, match: { params } }) {
@@ -20,6 +20,11 @@ function ArticleIndex({ location: { query }, match: { params } }) {
     const dispatch = useDispatch();
     const dataSource = useSelector(state => (state.article ? state.article.list : null));
     const settings = useSelector(state => state.settings);
+    if (dataSource && dataSource.data.length > 3) {
+        dataSource.data.splice(2, 0, {
+            type: 'AD',
+        });
+    }
     useEffect(() => {
         dispatch({
             type: 'article/list',
@@ -32,10 +37,35 @@ function ArticleIndex({ location: { query }, match: { params } }) {
     }, [offset, limit, type, dispatch]);
 
     const renderItem = item => {
+        if (item.type === 'AD')
+            return (
+                <MoreList.Item>
+                    <GoogleDefault />
+                </MoreList.Item>
+            );
         return (
             <MoreList.Item key={item.id}>
                 <Article data={item} desc={true} authorSize="small" />
             </MoreList.Item>
+        );
+    };
+
+    const renderList = () => {
+        const me = useSelector(state => state.user.me);
+        if (!me && type === 'star')
+            return (
+                <p>
+                    <Link to="/login">未登录</Link>
+                </p>
+            );
+        return (
+            <MoreList
+                renderItem={renderItem}
+                offset={offset}
+                limit={limit}
+                dataSource={dataSource}
+                onChange={offset => setOffset(offset)}
+            />
         );
     };
     const intl = useIntl();
@@ -86,16 +116,10 @@ function ArticleIndex({ location: { query }, match: { params } }) {
                             </div>
                         }
                     >
-                        <MoreList
-                            renderItem={renderItem}
-                            offset={offset}
-                            limit={limit}
-                            dataSource={dataSource}
-                            onChange={offset => setOffset(offset)}
-                        />
+                        {renderList()}
                     </Card>
                     <Space direction="vertical" size="large">
-                        <GoogleSquare />
+                        <GoogleDefault />
                         <HotColumn />
                         <HotTag />
                     </Space>

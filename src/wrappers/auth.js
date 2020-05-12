@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAccess } from 'umi';
+import { useAccess, Redirect } from 'umi';
 import { getRoute } from '@/utils/page';
 
 export default ({ children, route, location: { pathname } }) => {

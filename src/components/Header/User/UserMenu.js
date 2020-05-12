@@ -1,10 +1,15 @@
 import React from 'react';
-import { Popover, Avatar, Menu } from 'antd';
+import { Popover, Avatar, Menu, Space } from 'antd';
 import { Link, useDispatch } from 'umi';
 import styles from './index.less';
-import { UserOutlined, SettingOutlined, LoginOutlined } from '@ant-design/icons';
+import {
+    UserOutlined,
+    SettingOutlined,
+    LoginOutlined,
+    PropertySafetyOutlined,
+} from '@ant-design/icons';
 
-export default ({ avatar, name, path }) => {
+export default ({ avatar, name, path, rank, bank }) => {
     const dispatch = useDispatch();
 
     const onLogout = () => {
@@ -16,7 +21,10 @@ export default ({ avatar, name, path }) => {
     const menu = (
         <div className={styles['user-menu']}>
             <div className={styles['info']}>
-                <span className={styles['name']}>{name}</span>
+                <Space>
+                    <span className={styles['name']}>{name}</span>
+                    <span className={styles['rank']}>{(rank || {}).name}</span>
+                </Space>
             </div>
             <Menu>
                 <Menu.Divider />
@@ -30,6 +38,12 @@ export default ({ avatar, name, path }) => {
                     <Link to="/settings/profile">
                         <SettingOutlined />
                         账户设置
+                    </Link>
+                </Menu.Item>
+                <Menu.Item key="userWallet">
+                    <Link to="/dashboard/wallet">
+                        <PropertySafetyOutlined />
+                        我的钱包
                     </Link>
                 </Menu.Item>
                 <Menu.Divider />

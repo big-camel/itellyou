@@ -1,13 +1,14 @@
-import React from 'react';
-import { useDispatch } from 'umi';
+import React, { useState } from 'react';
+import { message } from 'antd';
+import { useDispatch, useSelector } from 'umi';
 import { FavoriteButton } from '@/components/Button';
-import { useState } from 'react';
 
 export default ({ id, use_star, allow_star, ...props }) => {
     const dispatch = useDispatch();
     const [following, setFollowing] = useState(false);
-
+    const me = useSelector(state => state.user.me);
     const onStar = () => {
+        if (!me) return message.error('未登录');
         if (following) return;
         setFollowing(true);
         const type = !use_star ? 'follow' : 'unfollow';

@@ -9,6 +9,7 @@ import styles from '../index.less';
 import { Space } from 'antd';
 import Timer from '@/components/Timer';
 import Tag from '@/components/Tag';
+import { RewardButton } from '@/components/Reward';
 
 const Article = ({
     data: {
@@ -89,6 +90,7 @@ const Article = ({
                         </EditButton>
                     )}
                 </p>
+                <RewardButton author={author} dataType="article" dataKey={id} />
             </div>
         );
     };

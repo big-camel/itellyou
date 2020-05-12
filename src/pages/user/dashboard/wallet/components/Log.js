@@ -43,6 +43,7 @@ export default () => {
             render: text => {
                 if (text === 'credit') return '积分';
                 if (text === 'cash') return '余额';
+                if (text === 'score') return '等级分';
                 return '未知';
             },
         },

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useDispatch, useSelector } from 'umi';
-import { Button, Card, Space } from 'antd';
+import { Button, Card, Space, message } from 'antd';
 import classNames from 'classnames';
 import Container, { Layout } from '@/components/Container';
 import Editor from '@/components/Editor';
@@ -23,6 +23,7 @@ function Detail({ match: { params } }) {
     const dispatch = useDispatch();
     const question = useSelector(state => state.question);
     const settings = useSelector(state => state.settings);
+    const me = useSelector(state => state.user.me);
     const { detail, user_answer } = question;
     useEffect(() => {
         dispatch({
@@ -37,13 +38,17 @@ function Detail({ match: { params } }) {
                 id,
             },
         });
-        dispatch({
-            type: 'answer/findDraft',
-            payload: {
-                question_id: id,
-            },
-        });
     }, [dispatch, id]);
+    useEffect(() => {
+        if (me) {
+            dispatch({
+                type: 'answer/findDraft',
+                payload: {
+                    question_id: id,
+                },
+            });
+        }
+    }, [me, id, dispatch]);
     const answer_id = params.answer_id ? parseInt(params.answer_id) : null;
     const [editVisible, setEditVisible] = useState();
     const [commentVisible, setCommentVisible] = useState(false);
@@ -96,7 +101,10 @@ function Detail({ match: { params } }) {
         }
         return (
             <Button
-                onClick={() => setEditVisible(!editVisible)}
+                onClick={() => {
+                    if (!me) return message.error('请登录后回答');
+                    setEditVisible(!editVisible);
+                }}
                 type="primary"
                 icon={<EditOutlined />}
             >
@@ -188,7 +196,7 @@ function Detail({ match: { params } }) {
                             </div>
                         </Card>
                         {renderReward()}
-                        {editVisible && (
+                        {editVisible && me && (
                             <Answer.Edit
                                 hasHistory={
                                     user_answer && user_answer.draft === false ? true : false

@@ -35,6 +35,10 @@ export default (action, type, who) => {
             return verb + getNoun(type, type !== 'user' ? who : '');
         case 'like':
             return '赞了' + getNoun(type, who);
+        case 'adopt':
+            return '采纳了' + getNoun(type, who);
+        case 'reward':
+            return '打赏了' + getNoun(type, who);
     }
 };
 

@@ -62,13 +62,13 @@ export default ({ onClose }) => {
         else setFee(((value ? value : min) * rate) / 100);
     };
 
-    const onBlur = e => {
-        const value = getParseValue(e.target.value);
+    const onBlur = value => {
+        setValue(value);
         updateState(value);
     };
 
     const getParseValue = value => {
-        return parseFloat(value.replace(new RegExp(`${formatter}\s?|(,*)`, 'g'), ''));
+        return parseFloat(value.replace(new RegExp(`${formatter}\s?|(,*)`, 'g'), '')) || 0;
     };
 
     const onSubmit = () => {
@@ -108,7 +108,7 @@ export default ({ onClose }) => {
                         max={balance > max ? max : balance}
                         precision={2}
                         value={value}
-                        onBlur={onBlur}
+                        onChange={onBlur}
                         formatter={value =>
                             `${formatter}${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                         }

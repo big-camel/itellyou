@@ -39,7 +39,7 @@ const data = [
     {
         key: 'like',
         title: '有人赞赏我',
-        desc: '有人对我点赞或打赏时，我会收到消息通知',
+        desc: '有人对我点赞时，我会收到消息通知',
         child: [
             {
                 key: 'answer',
@@ -115,6 +115,35 @@ const data = [
                 key: 'answer',
                 title: '关注的问题有新回答',
                 desc: '关注的问题被谁回答时，我将收到消息通知',
+            },
+        ],
+    },
+    {
+        key: 'adopt',
+        title: '回答被采纳消息设置',
+        desc: '当回答被采纳时，我会收到消息通知',
+        child: [
+            {
+                key: 'answer',
+                title: '回答被采纳',
+                desc: '当回答被采纳时，我将收到消息通知',
+            },
+        ],
+    },
+    {
+        key: 'reward',
+        title: '收到打赏消息设置',
+        desc: '当我收到打赏时，我会收到消息通知',
+        child: [
+            {
+                key: 'answer',
+                title: '打赏了你的回答',
+                desc: '当回答被打赏时，我将收到消息通知',
+            },
+            {
+                key: 'article',
+                title: '打赏了你的文章',
+                desc: '当文章被打赏时，我将收到消息通知',
             },
         ],
     },

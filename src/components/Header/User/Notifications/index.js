@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Badge, Popover, Tabs } from 'antd';
 import { Link, useSelector, useDispatch } from 'umi';
 import Cookies from 'js-cookie';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 import NotificationsList from './List';
 import styles from './index.less';
 import {
@@ -23,7 +24,6 @@ export default ({ overflowCount }) => {
     const [visible, setVisible] = useState(false);
     const [force, setForce] = useState(false);
     const [activeKey, setActiveKey] = useState('default');
-    const connectionCount = useRef(0);
     const dispatch = useDispatch();
     const socket = useRef();
 
@@ -32,20 +32,21 @@ export default ({ overflowCount }) => {
             if (!ws) return;
             const token = Cookies.get('token');
             if (!token) return;
-            const webSocket = new WebSocket(ws + '?token=' + encodeURIComponent(token));
+            const webSocket = new ReconnectingWebSocket(
+                ws + '?token=' + encodeURIComponent(token),
+                [],
+                {
+                    maxReconnectionDelay: 30000,
+                    minReconnectionDelay: 10000,
+                    reconnectionDelayGrowFactor: 10000,
+                    maxRetries: 60,
+                },
+            );
             webSocket.onopen = () => {
                 const message = {
                     action: 'ready',
                 };
                 webSocket.send(JSON.stringify(message));
-            };
-            webSocket.onclose = () => {
-                setTimeout(() => {
-                    if (connectionCount.current < 5) {
-                        connection();
-                        connectionCount.current++;
-                    }
-                }, 5000);
             };
             webSocket.onerror = event => {
                 console.log('websocket error:', event);

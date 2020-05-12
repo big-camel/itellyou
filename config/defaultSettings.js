@@ -5,6 +5,6 @@ export default {
     defaultAvatar: 'https://cdn-object.itellyou.com/avatar/default.png',
     ws:
         UMI_ENV === 'prod'
-            ? 'wss://api-web.itellyou.com/websocket'
+            ? 'wss://www.itellyou.com/api/websocket'
             : 'ws://localhost:8082/websocket',
 };

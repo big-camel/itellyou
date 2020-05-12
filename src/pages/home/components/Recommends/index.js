@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'umi';
 import { MoreList } from '@/components/List';
 import { Article, Question } from '@/components/Content';
+import { GoogleDefault } from '@/components/AdSense';
 
 export default () => {
     const [offset, setOffset] = useState(0);
@@ -21,6 +22,12 @@ export default () => {
 
     const dataSource = useSelector(state => state.explore.recommends);
 
+    if (dataSource && dataSource.data.length > 3) {
+        dataSource.data.splice(2, 0, {
+            type: 'AD',
+        });
+    }
+
     const renderArticle = item => {
         return <Article data={item} desc={true} authorSize="small" />;
     };
@@ -30,6 +37,12 @@ export default () => {
     };
 
     const renderItem = ({ type, object }) => {
+        if (type === 'AD')
+            return (
+                <MoreList.Item>
+                    <GoogleDefault />
+                </MoreList.Item>
+            );
         return (
             <MoreList.Item>
                 {type === 'article' && renderArticle(object)}

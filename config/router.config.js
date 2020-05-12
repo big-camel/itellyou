@@ -234,11 +234,6 @@ export default [
                 access: 'isLogin',
             },
             {
-                path: '/401',
-                name: '401.page',
-                component: './401',
-            },
-            {
                 path: '/403',
                 name: '403.page',
                 component: './403',

@@ -4,6 +4,7 @@ import { Outline } from '@itellyou/itellyou-editor';
 import { findReadingSection } from './utils';
 import styles from './index.less';
 import { Card } from 'antd';
+import { GoogleDefault } from '@/components/AdSense';
 
 export default ({ view, config, ...props }) => {
     const lastScrollTop = useRef(0);
@@ -65,7 +66,7 @@ export default ({ view, config, ...props }) => {
         const index = findReadingSection(headings.current, 60);
         setReadingSection(index);
     }, []);
-    if (!contents || contents.length === 0) return null;
+    if (!contents || contents.length === 0) return <GoogleDefault />;
     return (
         <div className={classNames(styles['toc'], { [styles['fixed']]: !reachingTop })} {...props}>
             <Card>

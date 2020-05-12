@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import { Modal, Space, Button } from 'antd';
 import { AlipayCircleFilled } from '@ant-design/icons';
-import QrCode from './QrCode';
+import PayQrCode from './QrCode';
 
 import styles from './index.less';
 
@@ -39,7 +39,8 @@ export default ({ values = defaultValues, defaultValue, onClose }) => {
     const [setp, setSetp] = useState('init');
 
     const render = () => {
-        if (setp === 'pay') return <QrCode amount={selectedValue} onClose={onClose} />;
+        if (setp === 'pay')
+            return <PayQrCode visible={true} amount={selectedValue} onClose={onClose} />;
         return (
             <Modal
                 wrapClassName={styles['warpper']}
@@ -85,3 +86,5 @@ export default ({ values = defaultValues, defaultValue, onClose }) => {
 
     return render();
 };
+
+export { PayQrCode };

@@ -20,14 +20,19 @@ export default () => {
         dispatch({
             type: 'tag/group',
         });
-        dispatch({
-            type: 'tagStar/list',
-            payload: {
-                append: false,
-                limit: 10000,
-            },
-        });
     }, [dispatch]);
+
+    useEffect(() => {
+        if (user.me) {
+            dispatch({
+                type: 'tagStar/list',
+                payload: {
+                    append: false,
+                    limit: 10000,
+                },
+            });
+        }
+    }, [dispatch, user.me]);
 
     const renderGroupList = () => {
         const groupLoading = loadingEffect.effects['tag/group'];

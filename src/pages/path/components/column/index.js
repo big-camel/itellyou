@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, useDispatch, useSelector } from 'umi';
+import { Link, useDispatch, useSelector, history } from 'umi';
 import { Card, Button, Avatar, Space } from 'antd';
 import Loading from '@/components/Loading';
 import Setting from './components/setting';
@@ -37,6 +37,7 @@ export default ({ id, paths, location: { query } }) => {
     const isAuthor = me && me.id === author.id;
 
     const onStar = () => {
+        if (!me) return history.push('/login');
         const type = !use_star ? 'follow' : 'unfollow';
         dispatch({
             type: `columnStar/${type}`,

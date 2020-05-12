@@ -10,13 +10,9 @@ export default () => {
     const [payVisible, setPayVisible] = useState(false);
     const [withdrawVisible, setWithdrawVisible] = useState(false);
     const dispatch = useDispatch();
-    const bank = useSelector(state => state.bank.detail);
+    const me = useSelector(state => state.user.me);
 
     useEffect(() => {
-        dispatch({
-            type: 'bank/info',
-        });
-
         dispatch({
             type: 'thirdAccount/find',
         });
@@ -33,9 +29,12 @@ export default () => {
         }
     };
 
-    if (!bank) return <Loading />;
+    if (!me) return <Loading />;
 
-    const { credit, cash } = bank;
+    const {
+        rank,
+        bank: { credit, cash, score },
+    } = me;
 
     const renderWithdrawBtn = () => {
         if (alipay) return <Button onClick={() => setWithdrawVisible(true)}>提现</Button>;
@@ -53,6 +52,15 @@ export default () => {
                     <Space size="large">
                         <Statistic title="我的积分" value={credit} />
                         <Statistic title="我的余额(元)" value={cash} precision={2} />
+                        <Statistic
+                            title="我的等级"
+                            valueRender={node => (
+                                <span>
+                                    {rank.name}({node})
+                                </span>
+                            )}
+                            value={score}
+                        />
                     </Space>
                     <Space size="large" className={styles['action']}>
                         {renderWithdrawBtn()}

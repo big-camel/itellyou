@@ -22,6 +22,9 @@ export default () => {
                         <a target="_blank" href="http://apptravel.cn">
                             AT搜索
                         </a>
+                        <a target="_blank" href="https://tech.skrskr.com/">
+                            skrskr科技
+                        </a>
                     </Space>
                 </div>
             </Container>

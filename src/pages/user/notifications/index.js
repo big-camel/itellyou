@@ -10,6 +10,8 @@ import styles from './index.less';
 import Like from './components/Like';
 import Comment from './components/Comment';
 import Publish from './components/Publish';
+import Adopt from './components/Adopt';
+import Reward from './components/Reward';
 
 export default ({ match: { params } }) => {
     const path = params.path || '/default';
@@ -63,6 +65,10 @@ export default ({ match: { params } }) => {
                     return <Comment {...item} />;
                 case 'publish':
                     return <Publish {...item} />;
+                case 'adopt':
+                    return <Adopt {...item} />;
+                case 'reward':
+                    return <Reward {...item} />;
                 default:
                     return null;
             }
