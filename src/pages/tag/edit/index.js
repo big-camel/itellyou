@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useContext } from 'react';
 import { Button, message } from 'antd';
 import { history, useDispatch, useSelector } from 'umi';
 import Editor from '@/components/Editor';
@@ -7,6 +7,7 @@ import logo from '@/assets/logo.svg';
 import moment from 'moment';
 import Timer from '@/components/Timer';
 import Loading from '@/components/Loading';
+import { RouteContext } from '@/context';
 
 function Edit({ match: { params } }) {
     const id = params.id ? parseInt(params.id) : null;
@@ -18,7 +19,7 @@ function Edit({ match: { params } }) {
 
     const dispatch = useDispatch();
     const { type, detail } = useSelector(state => state.doc);
-
+    const { isMobile } = useContext(RouteContext);
     const docType = 'tag';
     useEffect(() => {
         if (type !== docType) {
@@ -95,13 +96,15 @@ function Edit({ match: { params } }) {
                             <img src={logo} alt="" />
                         </a>
                     </div>
-                    <div className={styles['sub-title']}>
-                        标签编辑<span>-</span>
-                        {detail ? detail.name : null}
-                    </div>
+                    {!isMobile && (
+                        <div className={styles['sub-title']}>
+                            标签编辑<span>-</span>
+                            {detail ? detail.name : null}
+                        </div>
+                    )}
                     <div className={styles['save-status']}>{renderSaveStatus()}</div>
                     <div className={styles.right}>
-                        {detail && (
+                        {!isMobile && detail && (
                             <Button onClick={() => editor.current.showHistory()}>历史</Button>
                         )}
                         <Button type="primary" loading={publishing} onClick={onPublish}>
@@ -118,6 +121,17 @@ function Edit({ match: { params } }) {
                             ref={editor}
                             id={id}
                             ot={false}
+                            toolbar={
+                                isMobile
+                                    ? [
+                                          ['heading', 'bold'],
+                                          ['codeblock'],
+                                          ['orderedlist', 'unorderedlist'],
+                                          ['image', 'video', 'file'],
+                                      ]
+                                    : null
+                            }
+                            toc={isMobile ? false : true}
                             onSave={onSave}
                             onReverted={onReverted}
                             onPublished={onPublished}

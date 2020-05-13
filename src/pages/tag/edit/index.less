@@ -49,6 +49,12 @@
             margin-left: 16px;
         }
     }
+
+    @media only screen and (max-width: 575px) {
+        .container {
+            padding: 0 16px;
+        }
+    }
 }
 
 .container {
@@ -59,6 +65,13 @@
     :global {
         .itellyou-max-editor {
             height: calc(100vh - 60px);
+        }
+
+        @media only screen and (max-width: 575px) {
+            .itellyou-max-editor {
+                min-width: 0;
+                width: 100%;
+            }
         }
 
         .itellyou-max-editor-wrapper {
@@ -78,6 +91,10 @@
                 padding-left: 24px;
             }
 
+            .itellyou-max-editor-wrapper-content {
+                background-color: #fafafa;
+            }
+
             .itellyou-max-editor-content {
                 background-color: #fafafa;
                 padding: 24px 0 64px;
@@ -94,6 +111,19 @@
                     .itellyou-engine:not(.sub-editor-content) {
                         min-height: 1024px;
                         padding: 40px 60px 90px 60px;
+                    }
+
+                    @media only screen and (max-width: 575px) {
+                        .itellyou-engine:not(.sub-editor-content) {
+                            min-height: 200px;
+                            padding: 16px;
+                        }
+                    }
+                }
+
+                @media only screen and (max-width: 575px) {
+                    .itellyou-content-editor {
+                        width: 100%;
                     }
                 }
             }

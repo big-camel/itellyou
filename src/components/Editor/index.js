@@ -224,7 +224,7 @@ function Editor(
             message.error(message);
         }
     };
-    const restProps = omit(props, ['onSave', 'historyExtra', 'onReverted']);
+    const restProps = omit(props, ['onSave', 'historyExtra', 'onReverted', 'toolbar', 'toc']);
     let EditorType = FullEditor;
 
     let toolbar = props.toolbar || [
@@ -238,6 +238,7 @@ function Editor(
         ['link', 'quote', 'hr'],
         ['search', /**'translate',**/ 'toc'],
     ];
+
     if (type === 'mini') {
         EditorType = MiniEditor;
         toolbar = props.toolbar || [
