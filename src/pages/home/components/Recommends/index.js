@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'umi';
 import { MoreList } from '@/components/List';
 import { Article, Question } from '@/components/Content';
-import { GoogleDefault } from '@/components/AdSense';
+import { GoogleHorizontal } from '@/components/AdSense';
 
 export default () => {
     const [offset, setOffset] = useState(0);
@@ -40,7 +40,7 @@ export default () => {
         if (type === 'AD')
             return (
                 <MoreList.Item>
-                    <GoogleDefault />
+                    <GoogleHorizontal />
                 </MoreList.Item>
             );
         return (

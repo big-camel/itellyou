@@ -7,10 +7,10 @@ export default ({ className, ...props }) => {
         <div className={classNames(className)} {...props}>
             <Google
                 client="ca-pub-3706417744839656"
-                slot="1432657820"
+                slot="4836967202"
                 format="auto"
                 responsive={true}
-                style={{ display: 'block' }}
+                style={{ display: 'block', minHeight: 80, minWidth: 200 }}
             />
         </div>
     );

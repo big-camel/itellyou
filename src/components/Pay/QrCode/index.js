@@ -15,17 +15,19 @@ export default ({ visible, amount = 0.0, type = 'alipay', onClose }) => {
     const { id, qr } = pay || {};
     let { status } = pay || {};
     useEffect(() => {
-        dispatch({
-            type: `pay/${type}Precreate`,
-            payload: {
-                amount,
-            },
-        }).then(({ result, ...res }) => {
-            if (!result) {
-                setError(res.message);
-            }
-        });
-    }, [amount, type, dispatch]);
+        if (visible) {
+            dispatch({
+                type: `pay/${type}Precreate`,
+                payload: {
+                    amount,
+                },
+            }).then(({ result, ...res }) => {
+                if (!result) {
+                    setError(res.message);
+                }
+            });
+        }
+    }, [visible, amount, type, dispatch]);
 
     useEffect(() => {
         if (id) {

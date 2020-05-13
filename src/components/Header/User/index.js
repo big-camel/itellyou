@@ -12,9 +12,9 @@ const User = ({ isMobile }) => {
     const renderUnLogin = () => {
         if (isMobile) {
             return (
-                <Space>
-                    <Link to="/login">立即登录</Link>
-                    <Link to="/register">免费注册</Link>
+                <Space className={styles['m-right-action']}>
+                    <Link to="/login">登录</Link>
+                    <Link to="/register">注册</Link>
                 </Space>
             );
         }

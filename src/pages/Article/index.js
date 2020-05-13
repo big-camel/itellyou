@@ -9,7 +9,7 @@ import styles from './index.less';
 import HotColumn from './components/HotColumn';
 import HotTag from './components/HotTag';
 import { EditOutlined } from '@ant-design/icons';
-import { GoogleDefault } from '@/components/AdSense';
+import { GoogleHorizontal, GoogleSquare } from '@/components/AdSense';
 import DocumentMeta from 'react-document-meta';
 import { RouteContext } from '@/context';
 
@@ -43,7 +43,7 @@ function ArticleIndex({ location: { query }, match: { params } }) {
         if (item.type === 'AD')
             return (
                 <MoreList.Item>
-                    <GoogleDefault />
+                    <GoogleHorizontal />
                 </MoreList.Item>
             );
         return (
@@ -129,7 +129,7 @@ function ArticleIndex({ location: { query }, match: { params } }) {
                         {renderList()}
                     </Card>
                     <Space direction="vertical" size="large">
-                        <GoogleDefault />
+                        <GoogleSquare />
                         <HotColumn />
                         <HotTag />
                     </Space>

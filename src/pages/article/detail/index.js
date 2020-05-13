@@ -7,7 +7,7 @@ import Related from './Related';
 import styles from './index.less';
 import { Card, Space } from 'antd';
 import Outline from '@/components/Editor/Outline';
-import { GoogleDefault } from '@/components/AdSense';
+import { GoogleHorizontal } from '@/components/AdSense';
 import DocumentMeta from 'react-document-meta';
 
 function Detail({ match: { params } }) {
@@ -74,7 +74,7 @@ function Detail({ match: { params } }) {
                                 />
                             </Card>
                         </div>
-                        <GoogleDefault />
+                        <GoogleHorizontal />
                         <Related id={id} />
                     </Space>
                     <React.Fragment>
