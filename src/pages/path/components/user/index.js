@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import classNames from 'classnames';
 import { Link, history, useDispatch, useSelector } from 'umi';
 import { Card, Avatar, Menu, Button } from 'antd';
@@ -79,7 +79,7 @@ export default ({ id, paths }) => {
             <Card
                 className={styles['content-card']}
                 title={
-                    <Menu mode="horizontal" defaultSelectedKeys={menuKey}>
+                    <Menu mode="horizontal" selectedKeys={menuKey}>
                         {menus.map(({ key, title }) => (
                             <Menu.Item
                                 key={key}
