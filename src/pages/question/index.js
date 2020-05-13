@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useDispatch, useSelector, useIntl } from 'umi';
 import classNames from 'classnames';
 import { Button, Card, Space } from 'antd';
@@ -9,6 +9,7 @@ import GroupUser from './components/GroupUser';
 import { EditOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import { GoogleSquare } from '@/components/AdSense';
+import { RouteContext } from '@/context';
 import DocumentMeta from 'react-document-meta';
 
 function Index({ location: { query }, match: { params } }) {
@@ -63,6 +64,8 @@ function Index({ location: { query }, match: { params } }) {
 
     const intl = useIntl();
 
+    const { isMobile } = useContext(RouteContext);
+
     return (
         <DocumentMeta
             title={`${intl.formatMessage({ id: 'question.page.index' })} - ${settings.title}`}
@@ -80,9 +83,15 @@ function Index({ location: { query }, match: { params } }) {
                     <Card
                         title={
                             <div className={styles['header']}>
-                                <Button type="primary" href="/question/new" icon={<EditOutlined />}>
-                                    提问题
-                                </Button>
+                                {!isMobile && (
+                                    <Button
+                                        type="primary"
+                                        href="/question/new"
+                                        icon={<EditOutlined />}
+                                    >
+                                        提问题
+                                    </Button>
+                                )}
                                 <div className={styles['type-list']}>
                                     <Link
                                         className={classNames({

@@ -2,7 +2,9 @@ import React, { useRef, useEffect } from 'react';
 import DocumentMeta from 'react-document-meta';
 import { withRouter, useSelector, useDispatch, useModel, Redirect, useAccess } from 'umi';
 import NProgress from 'nprogress';
+import useAntdMediaQuery from 'use-media-antd-query';
 import { getRoute, getTitle, getMetas } from '@/utils/page';
+import { RouteContext } from '@/context';
 import 'nprogress/nprogress.css';
 
 function BlankLayout({ route, children, location: { pathname }, title }) {
@@ -44,6 +46,9 @@ function BlankLayout({ route, children, location: { pathname }, title }) {
         });
     }, [dispatch, me]);
 
+    const colSize = useAntdMediaQuery();
+    const isMobile = colSize === 'sm' || colSize === 'xs';
+
     if (!title) {
         title = getTitle(pathname, routes);
     }
@@ -68,7 +73,14 @@ function BlankLayout({ route, children, location: { pathname }, title }) {
                 },
             }}
         >
-            <>{children}</>
+            <RouteContext.Provider
+                value={{
+                    isMobile,
+                    routes,
+                }}
+            >
+                {children}
+            </RouteContext.Provider>
         </DocumentMeta>
     );
 }

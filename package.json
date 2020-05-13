@@ -43,6 +43,7 @@
         "reconnecting-websocket": "^4.4.0",
         "umi": "^3.0.13",
         "underscore.string": "^3.3.5",
+        "use-media-antd-query": "^1.0.1",
         "yorkie": "^2.0.0"
     }
 }

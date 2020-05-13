@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import classNames from 'classnames';
 import Author from '@/components/User/Author';
 import { CommentButton, EditButton, ReportButton } from '@/components/Button';
@@ -8,6 +8,7 @@ import { Space } from 'antd';
 import { history, Link, useDispatch } from 'umi';
 import Editor from '@/components/Editor';
 import Timer from '@/components/Timer';
+import { RouteContext } from '@/context';
 import { RewardButton } from '@/components/Reward';
 
 const Answer = ({
@@ -119,25 +120,27 @@ const Answer = ({
             </div>
         );
     };
-
+    const { isMobile } = useContext(RouteContext);
     const renderAction = () => {
         return (
             <Space size="large">
-                <Adopt
-                    id={id}
-                    question_id={question_id}
-                    allow_adopt={allow_adopt}
-                    adopted={adopted}
-                />
+                {!allow_adopt && !adopted && (
+                    <Adopt
+                        id={id}
+                        question_id={question_id}
+                        allow_adopt={allow_adopt}
+                        adopted={adopted}
+                    />
+                )}
                 <Vote id={id} question_id={question_id} {...item} />
                 <CommentButton onClick={() => setCommentVisible(!commentVisible)}>
                     {comments === 0 ? '添加评论' : `${comments} 条评论`}
                 </CommentButton>
-                {item.allow_star && (
+                {!isMobile && item.allow_star && (
                     <Favorite id={id} use_star={item.use_star} allow_star={item.allow_star} />
                 )}
-                {!allowEdit && <ReportButton id={id} type="answer" />}
-                {allow_delete && (
+                {!isMobile && !allowEdit && <ReportButton id={id} type="answer" />}
+                {!isMobile && allow_delete && (
                     <Delete
                         id={id}
                         question_id={question_id}
@@ -145,7 +148,9 @@ const Answer = ({
                         callback={() => history.push(`/question/${question_id}`)}
                     />
                 )}
-                {allowEdit && <EditButton onClick={() => setEditVisible(!editVisible)} />}
+                {!isMobile && allowEdit && (
+                    <EditButton onClick={() => setEditVisible(!editVisible)} />
+                )}
             </Space>
         );
     };

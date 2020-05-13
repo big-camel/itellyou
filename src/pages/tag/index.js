@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { List, Card, Empty, message } from 'antd';
 import Tag from '@/components/Tag';
 import Loading from '@/components/Loading';
 import styles from './index.less';
 import Container from '@/components/Container';
 import { Link, useDispatch, useSelector, useIntl } from 'umi';
+import { RouteContext } from '@/context';
 import DocumentMeta from 'react-document-meta';
 
 export default () => {
@@ -34,6 +35,8 @@ export default () => {
         }
     }, [dispatch, user.me]);
 
+    const { isMobile } = useContext(RouteContext);
+
     const renderGroupList = () => {
         const groupLoading = loadingEffect.effects['tag/group'];
         const { group } = tag || {};
@@ -43,7 +46,7 @@ export default () => {
 
         return (
             <List
-                grid={{ gutter: 16, column: 4 }}
+                grid={{ gutter: 16, column: isMobile ? 1 : 4 }}
                 dataSource={group.data}
                 renderItem={item => (
                     <List.Item key={item.id}>

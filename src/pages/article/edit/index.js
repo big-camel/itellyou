@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useContext } from 'react';
 import { history, useSelector, useDispatch } from 'umi';
 import { Button, Alert, message, Input, Form, Drawer, Space, Popover, Menu, Modal } from 'antd';
 import Editor from '@/components/Editor';
@@ -13,6 +13,7 @@ import Source from './components/Source';
 import { EllipsisButton } from '@/components/Button';
 import Setting from './components/Setting';
 import { Article } from '@/components/Content';
+import { RouteContext } from '@/context';
 
 const { SAVE_TYPE } = Editor.Biz;
 
@@ -36,7 +37,7 @@ function Edit({ match: { params } }) {
 
     const dispatch = useDispatch();
     const { type, detail } = useSelector(state => state.doc);
-
+    const { isMobile } = useContext(RouteContext);
     const docType = 'article';
     useEffect(() => {
         if (type !== docType) {
@@ -216,13 +217,15 @@ function Edit({ match: { params } }) {
                             <img src={logo} alt="" />
                         </a>
                     </div>
-                    <div className={styles['sub-title']}>
-                        文章编辑<span>-</span>
-                        {title}
-                    </div>
+                    {!isMobile && (
+                        <div className={styles['sub-title']}>
+                            文章编辑<span>-</span>
+                            {title}
+                        </div>
+                    )}
                     <div className={styles['save-status']}>{renderSaveStatus()}</div>
                     <Space className={styles.right}>
-                        {detail && (
+                        {!isMobile && detail && (
                             <Button onClick={() => editor.current.showHistory()}>历史</Button>
                         )}
                         <Button type="primary" onClick={onShowDrawer}>
@@ -271,6 +274,17 @@ function Edit({ match: { params } }) {
                             ref={editor}
                             id={id}
                             ot={false}
+                            toolbar={
+                                isMobile
+                                    ? [
+                                          ['heading', 'bold'],
+                                          ['codeblock'],
+                                          ['orderedlist', 'unorderedlist'],
+                                          ['image', 'video', 'file'],
+                                      ]
+                                    : null
+                            }
+                            toc={isMobile ? false : true}
                             header={
                                 <div className={styles['title']}>
                                     <Input

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link, useDispatch, useSelector } from 'umi';
+import { ReloadOutlined } from '@ant-design/icons';
 import { Card, Avatar, Button } from 'antd';
 import Container from '@/components/Container';
 import List from '@/components/List';
+import { RouteContext } from '@/context';
 import styles from './index.less';
-import { ReloadOutlined } from '@ant-design/icons';
 
 function Column({ location: { query } }) {
     const [offset, setOffset] = useState(parseInt(query.offset || 0));
@@ -57,10 +58,12 @@ function Column({ location: { query } }) {
         );
     };
 
+    const { isMobile } = useContext(RouteContext);
+
     const renderList = () => {
         return (
             <List
-                grid={{ gutter: 24, column: 4 }}
+                grid={isMobile ? { gutter: 16, column: 1 } : { gutter: 24, column: 4 }}
                 loading={loading}
                 dataSource={list ? list.data : []}
                 renderItem={renderItem}

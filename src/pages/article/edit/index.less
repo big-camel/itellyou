@@ -59,6 +59,12 @@
             margin-left: 16px;
         }
     }
+
+    @media only screen and (max-width: 575px) {
+        .container {
+            padding: 0 16px;
+        }
+    }
 }
 
 .more-menu {
@@ -92,6 +98,13 @@
     :global {
         .itellyou-max-editor {
             height: calc(100vh - 60px);
+        }
+
+        @media only screen and (max-width: 575px) {
+            .itellyou-max-editor {
+                min-width: 0;
+                width: 100%;
+            }
         }
 
         .itellyou-max-editor-wrapper {
@@ -128,10 +141,29 @@
                         min-height: 1024px;
                         padding: 20px 60px 90px 60px;
                     }
+
+                    @media only screen and (max-width: 575px) {
+                        .itellyou-engine:not(.sub-editor-content) {
+                            min-height: 200px;
+                            padding: 16px;
+                        }
+                    }
                 }
 
                 .itellyou-content-editor-extra {
                     padding: 32px 60px 0 60px;
+                }
+
+                @media only screen and (max-width: 575px) {
+                    .itellyou-content-editor-extra {
+                        padding: 16px;
+                    }
+                }
+            }
+
+            @media only screen and (max-width: 575px) {
+                .itellyou-content-editor {
+                    width: 100%;
                 }
             }
         }

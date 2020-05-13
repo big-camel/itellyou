@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'umi';
 import classNames from 'classnames';
 import Author from '@/components/User/Author';
@@ -9,6 +9,7 @@ import styles from '../index.less';
 import { Space } from 'antd';
 import Timer from '@/components/Timer';
 import Tag from '@/components/Tag';
+import { RouteContext } from '@/context';
 import { RewardButton } from '@/components/Reward';
 
 const Article = ({
@@ -94,6 +95,8 @@ const Article = ({
             </div>
         );
     };
+
+    const { isMobile } = useContext(RouteContext);
     return (
         <div className={classNames(styles['item'], props.className)}>
             <div className={classNames(styles['header'], headerClass)}>
@@ -127,10 +130,10 @@ const Article = ({
                 <CommentButton onClick={() => setCommentVisible(!commentVisible)}>
                     {comment_count === 0 ? '添加评论' : `${comment_count} 条评论`}
                 </CommentButton>
-                {item.allow_star && (
+                {!isMobile && item.allow_star && (
                     <Favorite id={id} use_star={item.use_star} allow_star={item.allow_star} />
                 )}
-                {!item.use_author && <ReportButton id={id} type="article" />}
+                {!isMobile && !item.use_author && <ReportButton id={id} type="article" />}
             </Space>
             <div>{commentVisible && <Comment id={id} />}</div>
         </div>

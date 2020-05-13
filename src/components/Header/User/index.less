@@ -4,31 +4,19 @@
     display: flex;
     align-items: center;
 
-    .action {
-        display: flex;
-
-        .item {
-            cursor: pointer;
-            padding: 0 13px;
-            display: flex;
-            align-items: center;
-
-            :global(.anticon) {
-                font-size: 18px;
-            }
-        }
-        .item:last-child {
-            padding-right: 0;
-        }
+    :global(.anticon),
+    :global(.ant-badge) {
+        font-size: 18px;
+        display: block;
     }
 }
 
-.user-menu {
+.user-menu,
+.m-user-menu {
     width: 162px;
     font-size: 12px;
 
     .info {
-        height: 38px;
         padding: 16px 12px 0;
 
         .name {
@@ -39,6 +27,37 @@
             max-width: 88px;
             font-weight: 700;
             font-size: 16px;
+            display: block;
+        }
+    }
+}
+
+.nav-burger {
+    width: auto !important;
+
+    :global {
+        .btn-burger {
+            .anticon-close {
+                font-size: 20px;
+            }
+        }
+    }
+}
+
+.m-user-menu {
+    width: 100%;
+
+    .info {
+        margin-bottom: 16px;
+    }
+
+    :global {
+        .ant-menu {
+            border: 0 none;
+
+            .ant-menu-item-selected {
+                background: transparent;
+            }
         }
     }
 }

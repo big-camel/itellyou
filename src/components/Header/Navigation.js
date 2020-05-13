@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'umi';
+import { Link, useSelector } from 'umi';
 import styles from './index.less';
 import { Menu } from 'antd';
 
@@ -38,8 +38,11 @@ const menus = [
     },
 ];
 
-export default ({ location: { pathname } }) => {
+export default ({ location: { pathname }, isMobile, onChange }) => {
     const [defaultKey, setDefaultKey] = useState('');
+
+    const me = useSelector(state => state.user.me);
+
     useEffect(() => {
         let path = pathname.split('/');
         if (path.length === 2 && path[1] === '') path = ['home'];
@@ -54,7 +57,11 @@ export default ({ location: { pathname } }) => {
     }, [pathname]);
 
     return (
-        <Menu className={styles['nav']} mode="horizontal" selectedKeys={[defaultKey]}>
+        <Menu
+            className={isMobile ? styles['m-nav'] : styles['nav']}
+            mode={isMobile ? 'vertical' : 'horizontal'}
+            selectedKeys={[defaultKey]}
+        >
             {menus.map(({ key, href, title, ...props }) => {
                 const link = href === undefined ? key : href;
                 const renderLink = () => {
@@ -65,7 +72,7 @@ export default ({ location: { pathname } }) => {
                             </a>
                         );
                     return (
-                        <Link {...props} to={`/${link}`}>
+                        <Link {...props} to={`/${link}`} onClick={onChange}>
                             {title}
                         </Link>
                     );

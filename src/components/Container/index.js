@@ -1,5 +1,4 @@
 import React from 'react';
-import DocumentMeta from 'react-document-meta';
 import { ContainerQuery } from 'react-container-query';
 import classnames from 'classnames';
 import Layout from './Layout';

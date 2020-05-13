@@ -227,7 +227,7 @@ function Editor(
     const restProps = omit(props, ['onSave', 'historyExtra', 'onReverted']);
     let EditorType = FullEditor;
 
-    let toolbar = [
+    let toolbar = props.toolbar || [
         ['section'],
         ['save', 'undo', 'redo', 'paintformat', 'removeformat'],
         ['heading', 'fontsize'],
@@ -240,7 +240,7 @@ function Editor(
     ];
     if (type === 'mini') {
         EditorType = MiniEditor;
-        toolbar = [
+        toolbar = props.toolbar || [
             ['emoji', 'heading', 'bold', 'italic', 'strikethrough', 'quote'],
             ['codeblock', 'table', 'math'],
             ['orderedlist', 'unorderedlist', 'tasklist'],
@@ -248,6 +248,7 @@ function Editor(
             ['image', 'video', 'file', 'link', 'label'],
         ];
     }
+
     return (
         <div className={className}>
             {editorLoaded && (
@@ -265,6 +266,7 @@ function Editor(
                     emoji={{
                         action: 'https://cdn-object.itellyou.com/emoji/',
                     }}
+                    toc={props.toc === undefined ? true : props.toc}
                     markdown={{
                         action: null,
                         items: [

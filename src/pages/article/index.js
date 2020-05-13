@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useDispatch, useSelector, useIntl } from 'umi';
 import classNames from 'classnames';
 import { Card, Button, Space } from 'antd';
@@ -11,6 +11,7 @@ import HotTag from './components/HotTag';
 import { EditOutlined } from '@ant-design/icons';
 import { GoogleDefault } from '@/components/AdSense';
 import DocumentMeta from 'react-document-meta';
+import { RouteContext } from '@/context';
 
 function ArticleIndex({ location: { query }, match: { params } }) {
     const [offset, setOffset] = useState(parseInt(query.offset || 0));
@@ -21,9 +22,11 @@ function ArticleIndex({ location: { query }, match: { params } }) {
     const dataSource = useSelector(state => (state.article ? state.article.list : null));
     const settings = useSelector(state => state.settings);
     if (dataSource && dataSource.data.length > 3) {
-        dataSource.data.splice(2, 0, {
-            type: 'AD',
-        });
+        if (dataSource.data[2].type !== 'AD') {
+            dataSource.data.splice(2, 0, {
+                type: 'AD',
+            });
+        }
     }
     useEffect(() => {
         dispatch({
@@ -69,6 +72,7 @@ function ArticleIndex({ location: { query }, match: { params } }) {
         );
     };
     const intl = useIntl();
+    const { isMobile } = useContext(RouteContext);
     return (
         <DocumentMeta
             title={`${intl.formatMessage({ id: 'article.page.index' })} - ${settings.title}`}
@@ -84,9 +88,15 @@ function ArticleIndex({ location: { query }, match: { params } }) {
                     <Card
                         title={
                             <div className={styles['header']}>
-                                <Button type="primary" href="/article/new" icon={<EditOutlined />}>
-                                    发文章
-                                </Button>
+                                {!isMobile && (
+                                    <Button
+                                        type="primary"
+                                        href="/article/new"
+                                        icon={<EditOutlined />}
+                                    >
+                                        发文章
+                                    </Button>
+                                )}
                                 <div className={styles['type-list']}>
                                     <Link
                                         className={classNames({

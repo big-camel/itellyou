@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Card } from 'antd';
 import { Link, useDispatch, useSelector, useIntl } from 'umi';
 import { MoreList } from '@/components/List';
@@ -6,6 +6,7 @@ import Tag from '@/components/Tag';
 import Container from '@/components/Container';
 import styles from './index.less';
 import DocumentMeta from 'react-document-meta';
+import { RouteContext } from '@/context';
 
 function TagList({ location: { query } }) {
     const [page, setPage] = useState(query.page || 1);
@@ -62,12 +63,14 @@ function TagList({ location: { query } }) {
         );
     };
 
+    const { isMobile } = useContext(RouteContext);
+
     const renderList = () => {
         return (
             <MoreList
                 grid={{
                     gutter: 16,
-                    column: 3,
+                    column: isMobile ? 1 : 3,
                 }}
                 dataSource={list}
                 renderItem={renderItem}

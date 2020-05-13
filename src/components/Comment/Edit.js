@@ -37,21 +37,18 @@ function CommentEdit({ defaultValue, onSubmit }) {
                 </div>
             )}
             {me && (
-                <Row type="flex" gutter={16} align="bottom">
-                    <Col span={20}>
-                        <LineEditor defaultValue={defaultValue} onLoad={onEditorLoad} />
-                    </Col>
-                    <Col span={4}>
-                        <Button
-                            className={styles['comment-editor-submit']}
-                            type="primary"
-                            loading={submiting}
-                            onClick={doSubmit}
-                        >
-                            提交
-                        </Button>
-                    </Col>
-                </Row>
+                <div className={styles['comment-warp']}>
+                    <LineEditor defaultValue={defaultValue} onLoad={onEditorLoad} />
+
+                    <Button
+                        className={styles['comment-editor-submit']}
+                        type="primary"
+                        loading={submiting}
+                        onClick={doSubmit}
+                    >
+                        提交
+                    </Button>
+                </div>
             )}
         </div>
     );

@@ -1,37 +1,49 @@
 import React from 'react';
 import styles from './index.less';
-import { useSelector } from 'umi';
+import { useSelector, Link } from 'umi';
 import UserMenu from './UserMenu';
 import ActionMenu from './ActionMenu';
 import Notifications from './Notifications';
 import { Button, Space } from 'antd';
 
-export default () => {
+const User = ({ isMobile }) => {
     const me = useSelector(state => state.user.me);
+
+    const renderUnLogin = () => {
+        if (isMobile) {
+            return (
+                <Space>
+                    <Link to="/login">立即登录</Link>
+                    <Link to="/register">免费注册</Link>
+                </Space>
+            );
+        }
+        return (
+            <Space>
+                <Button type="ghost" href="/login">
+                    立即登录
+                </Button>
+                <Button type="primary" href="/register">
+                    免费注册
+                </Button>
+            </Space>
+        );
+    };
     return (
         <div className={styles['user']}>
             {me ? (
-                <div className={styles['action']}>
-                    <div className={styles['item']}>
-                        <ActionMenu />
-                    </div>
-                    <div className={styles['item']}>
-                        <Notifications />
-                    </div>
-                    <div className={styles['item']}>
-                        <UserMenu {...me} />
-                    </div>
-                </div>
-            ) : (
-                <Space>
-                    <Button type="ghost" href="/login">
-                        立即登录
-                    </Button>
-                    <Button type="primary" href="/register">
-                        免费注册
-                    </Button>
+                <Space size="middle">
+                    <ActionMenu />
+                    <Notifications />
+                    <UserMenu isMobile={isMobile} />
                 </Space>
+            ) : (
+                renderUnLogin()
             )}
         </div>
     );
 };
+
+User.Menu = UserMenu;
+
+export default User;

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useSelector, useDispatch, Link } from 'umi';
 import Loading from '@/components/Loading';
 import Pay from '@/components/Pay';
 import { Card, Space, Statistic, Button } from 'antd';
+import { RouteContext } from '@/context';
 import styles from './index.less';
 import Withdraw from './Withdraw';
 
@@ -45,11 +46,24 @@ export default () => {
         );
     };
 
+    const { isMobile } = useContext(RouteContext);
+
+    const renderPayButton = () => {
+        return (
+            <Space size="large" className={styles['action']}>
+                {renderWithdrawBtn()}
+                <Button type="primary" onClick={() => setPayVisible(true)}>
+                    充值
+                </Button>
+            </Space>
+        );
+    };
+
     return (
         <div className={styles['warpper']}>
             <Card>
                 <div className={styles['body']}>
-                    <Space size="large">
+                    <Space size="large" direction={isMobile ? 'vertical' : 'horizontal'}>
                         <Statistic title="我的积分" value={credit} />
                         <Statistic title="我的余额(元)" value={cash} precision={2} />
                         <Statistic
@@ -61,13 +75,9 @@ export default () => {
                             )}
                             value={score}
                         />
+                        {isMobile && renderPayButton()}
                     </Space>
-                    <Space size="large" className={styles['action']}>
-                        {renderWithdrawBtn()}
-                        <Button type="primary" onClick={() => setPayVisible(true)}>
-                            充值
-                        </Button>
-                    </Space>
+                    {!isMobile && renderPayButton()}
                     {payVisible && <Pay onClose={onClose} />}
                     {withdrawVisible && <Withdraw onClose={onClose} />}
                 </div>

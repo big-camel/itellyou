@@ -81,11 +81,16 @@
     .comment-meta-title {
         font-weight: 500;
         font-size: 15px;
+        display: flex;
+        align-items: center;
+
+        :global(.user-author) {
+            flex: 1;
+        }
     }
 
     .comment-meta-time {
         font-weight: normal;
-        float: right;
         font-size: 14px;
         color: #8590a6;
     }
@@ -195,26 +200,33 @@
         font-weight: 700;
     }
 
-    :global {
-        .itellyou-line-editor {
-            border: 1px solid #8590a6;
-            border-radius: 4px;
+    .comment-warp {
+        display: flex;
+        align-items: flex-end;
 
-            .itellyou-content-editor {
-                border: 1px solid transparent;
+        :global {
+            .itellyou-line-editor {
+                flex: 1;
+
+                border: 1px solid #8590a6;
                 border-radius: 4px;
-            }
 
-            .itellyou-toolbar {
-                height: 32px;
-                line-height: 32px;
-                padding: 0 6px;
+                .itellyou-content-editor {
+                    border: 1px solid transparent;
+                    border-radius: 4px;
+                }
+
+                .itellyou-toolbar {
+                    height: 32px;
+                    line-height: 32px;
+                    padding: 0 6px;
+                }
             }
         }
-    }
 
-    .comment-editor-submit {
-        width: 100%;
+        .comment-editor-submit {
+            margin-left: 16px;
+        }
     }
 }
 

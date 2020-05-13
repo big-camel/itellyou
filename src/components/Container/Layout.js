@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Row, Col } from 'antd';
-import Sider from './Sider';
+import { RouteContext } from '@/context';
 
 function Layout({ spans = 17, gutter = 24, children }) {
     const spanData = 24;
@@ -15,6 +15,8 @@ function Layout({ spans = 17, gutter = 24, children }) {
             spans[i] = spanData / childLength;
         }
     }
+    const { isMobile } = useContext(RouteContext);
+    if (isMobile) return React.Children.toArray(children)[0];
     return (
         <Row gutter={gutter}>
             {React.Children.map(children, (child, index) => {

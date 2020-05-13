@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Link, useDispatch, useSelector, history } from 'umi';
 import { Card, Button, Avatar, Space } from 'antd';
 import Loading from '@/components/Loading';
@@ -7,6 +7,7 @@ import List from './components/list';
 import Member from './components/member';
 import styles from './index.less';
 import { ReportButton } from '@/components/Button';
+import { RouteContext } from '@/context';
 import DocumentMeta from 'react-document-meta';
 
 export default ({ id, paths, location: { query } }) => {
@@ -72,6 +73,8 @@ export default ({ id, paths, location: { query } }) => {
     };
 
     const child = setting ? renderSetting() : renderList();
+
+    const { isMobile } = useContext(RouteContext);
     return (
         <DocumentMeta
             title={`${name} - ${settings.title}`}
@@ -105,7 +108,7 @@ export default ({ id, paths, location: { query } }) => {
                             {isAuthor && <Link to={`/${paths[0]}/setting`}>设置</Link>}
                         </div>
                         <div>
-                            <Avatar size={124} src={avatar} />
+                            <Avatar size={isMobile ? 64 : 124} src={avatar} />
                         </div>
                     </div>
                 </div>

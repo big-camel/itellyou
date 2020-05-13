@@ -4,9 +4,10 @@ import { history } from 'umi';
 import styles from './index.less';
 
 const { Search } = Input;
-function TopSearch({ defaultValue, type }) {
+function TopSearch({ defaultValue, type, isMobile, ...props }) {
     const [word, setWord] = useState(defaultValue || '');
     const onSearch = value => {
+        if (props.onSearch) props.onSearch(value);
         if (value.trim() === '') return history.push('/');
         history.push(`/search?q=${value}${type ? `&t=${type}` : ''}`);
     };
@@ -16,7 +17,7 @@ function TopSearch({ defaultValue, type }) {
     }, [defaultValue]);
 
     return (
-        <div className={styles['top-search']}>
+        <div className={isMobile ? styles['m-top-search'] : styles['top-search']}>
             <Search
                 className={styles['input']}
                 placeholder="搜索"

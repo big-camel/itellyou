@@ -24,7 +24,13 @@ export default ({ id, question_id, allow_adopt, adopted }) => {
     if (!allow_adopt && !adopted) return null;
 
     return (
-        <AdoptButton onClick={doAdopt} loading={adopting} active={adopted} type="primary">
+        <AdoptButton
+            size="small"
+            onClick={doAdopt}
+            loading={adopting}
+            active={adopted}
+            type="primary"
+        >
             {adopted ? '已采纳' : '采纳答案'}
         </AdoptButton>
     );

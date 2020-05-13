@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useDispatch, useSelector } from 'umi';
 import { Button, Card, Space, message } from 'antd';
 import classNames from 'classnames';
@@ -16,6 +16,7 @@ import Related from './components/Related';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import Author from './components/Author';
 import { GoogleSquare } from '@/components/AdSense';
+import { RouteContext } from '@/context';
 import DocumentMeta from 'react-document-meta';
 
 function Detail({ match: { params } }) {
@@ -141,6 +142,17 @@ function Detail({ match: { params } }) {
     const isEmpty = Editor.Utils.isBlank(content);
     const keywords = tags.map(tag => tag.name) || [];
     keywords.push('itellyou');
+
+    const { isMobile } = useContext(RouteContext);
+
+    const renderOther = () => {
+        return (
+            <Space>
+                <span className={styles['view']}>{detail.view}次浏览</span>
+                <Timer time={detail.created_time} />
+            </Space>
+        );
+    };
     return (
         <DocumentMeta
             title={`${title} - ${settings.title}`}
@@ -167,6 +179,7 @@ function Detail({ match: { params } }) {
                                         tags.map(({ id, name }) => (
                                             <UserTag key={id} id={id} title={name} />
                                         ))}
+                                    {isMobile && renderOther()}
                                 </Space>
                             </div>
                             {!isEmpty && (
@@ -189,10 +202,7 @@ function Detail({ match: { params } }) {
                                     </CommentButton>
                                     <ReportButton />
                                 </div>
-                                <div className={styles['other-info']}>
-                                    <span className={styles['view']}>{detail.view}次浏览</span>
-                                    <Timer time={detail.created_time} />
-                                </div>
+                                {!isMobile && renderOther()}
                             </div>
                         </Card>
                         {renderReward()}

@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Layout, Sider } from '@/components/Container';
+import { RouteContext } from '@/context';
 import siderData from './sider';
 
 export default ({ children, defaultKey }) => {
+    const { isMobile } = useContext(RouteContext);
+
     return (
         <Layout spans={7}>
-            <Sider dataSource={siderData} defaultKey={defaultKey} />
+            {!isMobile && <Sider dataSource={siderData} defaultKey={defaultKey} />}
             <React.Fragment>{children}</React.Fragment>
         </Layout>
     );
