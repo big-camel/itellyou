@@ -10,7 +10,13 @@ export default ({ className, ...props }) => {
                 slot="4836967202"
                 format="auto"
                 responsive={true}
-                style={{ display: 'block', minHeight: 80, minWidth: 200 }}
+                style={{
+                    display: 'block',
+                    minHeigth: 100,
+                    maxHeight: 280,
+                    minWidth: 300,
+                    width: '100%',
+                }}
             />
         </div>
     );
