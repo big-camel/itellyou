@@ -19,7 +19,7 @@ function Edit({ match: { params } }) {
     const [title, setTitle] = useState('');
     const [tags, setTags] = useState([]);
     //const [remark, setRemark] = useState('');
-    const [reward, setReward] = useState({ type: 0 });
+    const [reward, setReward] = useState({ type: 'default' });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [publishing, setPublishing] = useState(false);
@@ -163,11 +163,11 @@ function Edit({ match: { params } }) {
          return '请填写修改原因';
         }**/
 
-        if (reward.type === 1 && reward.value > bank.credit) {
+        if (reward.type === 'credit' && reward.value > bank.credit) {
             return '积分余额不足';
         }
 
-        if (reward.type === 2 && reward.value > bank.cash) {
+        if (reward.type === 'cash' && reward.value > bank.cash) {
             return '现金余额不足';
         }
     };

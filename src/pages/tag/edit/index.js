@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback, useContext } from 'react';
-import { Button, message } from 'antd';
+import { Button, message, Space, Badge } from 'antd';
 import { history, useDispatch, useSelector } from 'umi';
 import Editor from '@/components/Editor';
 import styles from './index.less';
@@ -8,6 +8,7 @@ import moment from 'moment';
 import Timer from '@/components/Timer';
 import Loading from '@/components/Loading';
 import { RouteContext } from '@/context';
+import { UserAuthor } from '@/components/User';
 
 function Edit({ match: { params } }) {
     const id = params.id ? parseInt(params.id) : null;
@@ -16,7 +17,7 @@ function Edit({ match: { params } }) {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [publishing, setPublishing] = useState(false);
-
+    const [collabUsers, setCollabUsers] = useState([]);
     const dispatch = useDispatch();
     const { type, detail } = useSelector(state => state.doc);
     const { isMobile } = useContext(RouteContext);
@@ -87,6 +88,21 @@ function Edit({ match: { params } }) {
         });
     }, []);
 
+    const renderCollabUsers = () => {
+        if (isMobile) return null;
+        console.log(collabUsers);
+        return (
+            <Space>
+                {collabUsers.map(user => (
+                    <div key={user.id} className={styles['collab-user']}>
+                        <UserAuthor model="avatar" size="small" info={user} />
+                        <Badge color={user.color} />
+                    </div>
+                ))}
+            </Space>
+        );
+    };
+
     return (
         <Loading loading={loading}>
             <header className={styles.header}>
@@ -104,6 +120,7 @@ function Edit({ match: { params } }) {
                     )}
                     <div className={styles['save-status']}>{renderSaveStatus()}</div>
                     <div className={styles.right}>
+                        {renderCollabUsers()}
                         {!isMobile && detail && (
                             <Button onClick={() => editor.current.showHistory()}>历史</Button>
                         )}
@@ -117,10 +134,10 @@ function Edit({ match: { params } }) {
                 <div className={styles['editor']}>
                     {type === docType && (
                         <Editor
-                            type="full"
+                            type={isMobile ? 'mini' : 'full'}
                             ref={editor}
                             id={id}
-                            ot={false}
+                            ot={true}
                             toolbar={
                                 isMobile
                                     ? [
@@ -135,6 +152,7 @@ function Edit({ match: { params } }) {
                             onSave={onSave}
                             onReverted={onReverted}
                             onPublished={onPublished}
+                            onCollabUsers={setCollabUsers}
                         />
                     )}
                 </div>

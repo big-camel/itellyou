@@ -5,7 +5,7 @@ import { EVENT, STATUS, ERROR_LEVEL, ERROR_CODE, MESSAGE } from './constant';
 import { message, notification, Button } from 'antd';
 import Loading from '@/components/Loading';
 
-export default ({ id, ot, engine, onReady, MESSAGE }) => {
+export default ({ id, ot, engine, onReady }) => {
     onReady = onReady || function() {};
     const [status, setStatus] = useState(STATUS.initialize);
     const [users, setUsers] = useState([]);

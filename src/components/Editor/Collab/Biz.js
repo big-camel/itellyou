@@ -179,7 +179,11 @@ class CollabBiz extends EventEmitter {
 
     disconnect() {
         if (this.socket) {
-            this.socket.close(ERROR_CODE.FORCE_DISCONNECTED, 'FORCE_DISCONNECTED');
+            try {
+                this.socket.close(ERROR_CODE.STATUS_CODE.FORCE_DISCONNECTED, 'FORCE_DISCONNECTED');
+            } catch (e) {
+                console.log(e);
+            }
         }
     }
 
@@ -302,7 +306,8 @@ class CollabBiz extends EventEmitter {
 
     doReverted(content) {
         // 手动修改引擎value，让其同步到 ot 服务器
-        this.engine.setValue(content);
+        this.engine.ot.doc.data = [];
+        this.engine.ot.syncData(content);
         const check = debounce(() => {
             if (this.otDoc && this.otDoc.hasWritePending()) {
                 check();
@@ -353,7 +358,7 @@ class CollabBiz extends EventEmitter {
             //console.log("receive", event)
         });
 
-        const doc = connection.get('itellyou', this.options.collab.id.toString());
+        const doc = connection.get('itellyou', this.options.collab.key);
 
         doc.subscribe(error => {
             if (error) {

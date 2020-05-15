@@ -31,6 +31,7 @@ function Editor(
         onReady,
         onChange,
         historyExtra,
+        onCollabUsers,
         ...props
     },
     ref,
@@ -155,29 +156,35 @@ function Editor(
         [onDebounceSave, onChange],
     );
 
-    const onCollabReady = useCallback(collabBiz => {
-        collabBiz.on(EVENT.statusChange, ({ to }) => {
-            setStaus(to);
-        });
-        collabBiz.on(EVENT.usersChange, users => {});
-        collabBiz.on(EVENT.saving, () => {
-            setSaving(true);
-        });
-        collabBiz.on(EVENT.saved, () => {
-            setSaving(false);
-        });
-        collabBiz.on(EVENT.error, ({ code, level }) => {
-            if (code === ERROR_CODE.SAVE_FAILED) {
+    const onCollabReady = useCallback(
+        collabBiz => {
+            collabBiz.on(EVENT.statusChange, ({ to }) => {
+                setStaus(to);
+            });
+            collabBiz.on(EVENT.usersChange, users => {
+                setCollabUsers(users);
+                if (onCollabUsers) onCollabUsers(users);
+            });
+            collabBiz.on(EVENT.saving, () => {
+                setSaving(true);
+            });
+            collabBiz.on(EVENT.saved, () => {
                 setSaving(false);
-                setPublishing(false);
-            }
-            if (code === ERROR_CODE.PUBLISH_FAILED) {
-                setPublishing(false);
-            }
-        });
-        collab.current = collabBiz;
-        setCollabLoaded(true);
-    }, []);
+            });
+            collabBiz.on(EVENT.error, ({ code, level }) => {
+                if (code === ERROR_CODE.SAVE_FAILED) {
+                    setSaving(false);
+                    setPublishing(false);
+                }
+                if (code === ERROR_CODE.PUBLISH_FAILED) {
+                    setPublishing(false);
+                }
+            });
+            collab.current = collabBiz;
+            setCollabLoaded(true);
+        },
+        [onCollabUsers],
+    );
 
     useEffect(() => {
         if (collab.current) {
@@ -201,6 +208,17 @@ function Editor(
         };
     }, [collabLoaded, onPublished]);
 
+    useEffect(() => {
+        if (collab.current) {
+            collab.current.on(EVENT.reverted, props.onReverted);
+        }
+        return () => {
+            if (collab.current) {
+                collab.current.off(EVENT.reverted, props.onReverted);
+            }
+        };
+    }, [collabLoaded, props.onReverted]);
+
     const onPublish = params => {
         if (publishing) return;
         setPublishing(true);
@@ -218,8 +236,9 @@ function Editor(
         if (result) {
             if (ot) {
                 collab.current.doReverted(data.content);
+            } else if (props.onReverted) {
+                props.onReverted();
             }
-            if (props.onReverted) props.onReverted();
         } else {
             message.error(message);
         }

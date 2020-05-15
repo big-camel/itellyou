@@ -32,7 +32,14 @@ export default ({
         );
     };
     return (
-        <div className={classnames('user-author', `user-author-${size}`, className)}>
+        <div
+            className={classnames(
+                'user-author',
+                `user-author-${size}`,
+                `${model ? `user-author-${model}` : null}`,
+                className,
+            )}
+        >
             {(!model || model === 'avatar') && (
                 <div className="user-author-avatar">
                     <UserBrand id={id}>

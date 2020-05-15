@@ -9,7 +9,7 @@ export default ({ location: { pathname, ...location } }) => {
     pathname = pathname.indexOf('/') === 0 ? pathname.substr(1) : pathname;
     const paths = pathname.split('/');
     const path = paths[0];
-    const [notFound, setNotFound] = useState(!/^[a-zA-Z0-9_.]{4,50}$/.test(path));
+    const [notFound, setNotFound] = useState(!/^[a-zA-Z0-9_.]{3,30}$/.test(path));
 
     const dispatch = useDispatch();
 

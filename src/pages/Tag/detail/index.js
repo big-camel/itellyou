@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { Card, Menu, Space, Button } from 'antd';
-import { history, Link, useDispatch, useSelector } from 'umi';
+import { history, Link, useDispatch, useSelector, useAccess } from 'umi';
 import DocumentMeta from 'react-document-meta';
 import Loading from '@/components/Loading';
 import Container, { Layout } from '@/components/Container';
 import Tag from '@/components/Tag';
-import menus from './menu';
-import styles from './index.less';
 import { ReportButton, EditButton } from '@/components/Button';
 import RelatedColumn from './components/RelatedColumn';
 import RelatedArticle from './components/RelatedArticle';
+import menus from './menu';
+import styles from './index.less';
 
 function Detail({ match: { params } }) {
     const id = parseInt(params.id || 0);
@@ -23,6 +23,7 @@ function Detail({ match: { params } }) {
     const detail = useSelector(state => state.tag.detail[id]);
     const me = useSelector(state => state.user.me);
     const settings = useSelector(state => state.settings);
+    const access = useAccess();
 
     useEffect(() => {
         dispatch({
@@ -64,7 +65,7 @@ function Detail({ match: { params } }) {
                                 <Space size="middle">
                                     <Tag.Star id={id} name={name} use_star={use_star} />
                                     <ReportButton type="tag" />
-                                    {me && me.id === author.id && (
+                                    {((me && me.id === author.id) || access.webTagPublicEdit) && (
                                         <EditButton type="link" href={`/tag/${id}/edit`} />
                                     )}
                                 </Space>

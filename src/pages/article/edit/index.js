@@ -270,7 +270,7 @@ function Edit({ match: { params } }) {
                 <div className={styles['editor']}>
                     {type === docType && (
                         <Editor
-                            type="full"
+                            type={isMobile ? 'mini' : 'full'}
                             ref={editor}
                             id={id}
                             ot={false}

@@ -245,7 +245,7 @@ export default [
             },
             // Path
             {
-                path: '/:path([a-zA-Z0-9_.]{4,50}|[a-zA-Z0-9_.]{4,50}/.*)',
+                path: '/:path([a-zA-Z0-9_.]{3,30}|[a-zA-Z0-9_.]{3,30}/.*)',
                 name: 'sys.path',
                 component: './path',
             },

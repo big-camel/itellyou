@@ -89,10 +89,11 @@ export default ({ author, dataType, dataKey }) => {
     );
 
     const renderRewardList = () => {
-        const { data } = dataSource || {};
+        const data = (dataSource || {}).data || [];
         return (
             <div className={styles['reward-list']}>
-                {(data || []).map(({ created_user }, index) => (
+                {data.length > 0 ? <p>{`已有 ${data.length} 人打赏`}</p> : null}
+                {data.map(({ created_user }, index) => (
                     <UserAuthor key={index} size="small" model="avatar" info={created_user} />
                 ))}
             </div>

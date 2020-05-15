@@ -23,16 +23,16 @@ export default ({ current, data, onChange }) => {
     if (!config || !bank) return null;
 
     const getText = type => {
-        return type === 1 ? '积分' : '现金';
+        return type === 'credit' ? '积分' : '现金';
     };
 
     const getUnit = type => {
         const { credit, cash } = config;
-        return type === 1 ? credit.unit : cash.unit;
+        return type === 'credit' ? credit.unit : cash.unit;
     };
 
     const getKey = type => {
-        return type === 1 ? 'credit' : 'cash';
+        return type === 'credit' ? 'credit' : 'cash';
     };
 
     const renderCurrent = () => {
@@ -70,7 +70,7 @@ export default ({ current, data, onChange }) => {
 
     const getDisabled = type => {
         if (!current) return false;
-        if (current.type !== 0 && current.type !== type) {
+        if (current.type !== 'default' && current.type !== type) {
             return true;
         }
         return false;
@@ -79,12 +79,12 @@ export default ({ current, data, onChange }) => {
     const { type, value } = data;
 
     const renderInput = () => {
-        if (type === 0) return null;
+        if (type === 'default') return null;
         const key = getKey(type);
         let formatter = '';
         let precision = 0;
 
-        if (type === 2) {
+        if (type === 'cash') {
             precision = 2;
             formatter = '￥ ';
         }
@@ -112,12 +112,12 @@ export default ({ current, data, onChange }) => {
         <div className={styles['reward']}>
             {renderCurrent()}
             <Radio.Group value={type} onChange={onTypeChange} className={styles['type']}>
-                <Radio.Button value={0}>不设置</Radio.Button>
-                <Radio.Button disabled={getDisabled(1)} value={1}>
-                    {getText(1)}
+                <Radio.Button value="default">不设置</Radio.Button>
+                <Radio.Button disabled={getDisabled('credit')} value="credit">
+                    {getText('credit')}
                 </Radio.Button>
-                <Radio.Button disabled={getDisabled(2)} value={2}>
-                    {getText(2)}
+                <Radio.Button disabled={getDisabled('cash')} value="cash">
+                    {getText('cash')}
                 </Radio.Button>
             </Radio.Group>
             {renderInput()}

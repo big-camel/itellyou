@@ -28,7 +28,7 @@ export default {
     },
     proxy: {
         '/api/(latex|puml|graphviz|flowchart|mermaid)': {
-            target: 'http://g.itellyou.com/',
+            target: 'https://g.itellyou.com/',
             changeOrigin: true,
             pathRewrite: { '^/api': '' },
         },
