@@ -6,9 +6,10 @@ import { EVENT, ERROR_CODE, ERROR_LEVEL, STATUS, MESSAGE } from './constant';
 import { getPureContent, isBlank } from '../utils';
 
 class CollabBiz extends EventEmitter {
-    constructor(id, dispatch, options) {
+    constructor(id, type, dispatch, options) {
         super();
         this.id = id;
+        this.type = type;
         this.dispatch = dispatch;
         this.options = Object.assign(
             {
@@ -78,6 +79,7 @@ class CollabBiz extends EventEmitter {
                     id: this.id,
                     ot,
                 },
+                type: this.type,
                 onError: error => {
                     this.onError({
                         code: ERROR_CODE.INIT_FAILED,
@@ -245,6 +247,7 @@ class CollabBiz extends EventEmitter {
             type: server,
             payload: {
                 data,
+                type: this.type,
                 onError: error => {
                     this.emit(EVENT.error, {
                         code: ERROR_CODE.SAVE_FAILED,
@@ -279,6 +282,7 @@ class CollabBiz extends EventEmitter {
                     id: this.id,
                     ...params,
                 },
+                type: this.type,
                 onError: error => {
                     this.emit(EVENT.error, {
                         code: ERROR_CODE.PUBLISH_FAILED,

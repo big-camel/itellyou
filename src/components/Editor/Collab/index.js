@@ -5,7 +5,7 @@ import { EVENT, STATUS, ERROR_LEVEL, ERROR_CODE, MESSAGE } from './constant';
 import { message, notification, Button } from 'antd';
 import Loading from '@/components/Loading';
 
-export default ({ id, ot, engine, onReady }) => {
+export default ({ id, type, ot, engine, onReady }) => {
     onReady = onReady || function() {};
     const [status, setStatus] = useState(STATUS.initialize);
     const [users, setUsers] = useState([]);
@@ -20,7 +20,7 @@ export default ({ id, ot, engine, onReady }) => {
 
     useEffect(() => {
         if (collabBiz.current) return;
-        const biz = new Biz(id, dispatch, {
+        const biz = new Biz(id, type, dispatch, {
             ot,
             me,
             engine,

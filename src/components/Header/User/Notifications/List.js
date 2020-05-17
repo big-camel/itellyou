@@ -79,6 +79,8 @@ export default ({ action, type, force }) => {
     const renderOperational = ({ action, type, target }) => {
         const verb = getVerb(action, type, '你的');
         switch (type) {
+            case 'payment':
+                return '充值成功了';
             case 'user':
                 return verb;
             case 'column':

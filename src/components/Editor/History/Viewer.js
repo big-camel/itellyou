@@ -37,11 +37,12 @@ class Viewer extends React.PureComponent {
     }
 
     componentDidMount() {
-        const { dispatch, id } = this.props;
+        const { dispatch, id, type } = this.props;
         dispatch({
             type: 'version/list',
             payload: {
                 id,
+                type,
             },
         }).then(res => {
             this.setState({
@@ -144,12 +145,13 @@ class Viewer extends React.PureComponent {
             return;
         }
         // 获取数据并展示
-        const { dispatch, id } = this.props;
+        const { dispatch, id, type } = this.props;
         dispatch({
             type: 'version/find',
             payload: {
                 version_id,
                 id,
+                type,
             },
         }).then(res => {
             if (!res.result) return;
@@ -172,7 +174,7 @@ class Viewer extends React.PureComponent {
      * @param {number}current 版本2 ID
      */
     revert(version_id) {
-        const { dispatch, id, onReverted } = this.props;
+        const { dispatch, id, type, onReverted } = this.props;
         this.setState({
             reverting: true,
         });
@@ -181,6 +183,7 @@ class Viewer extends React.PureComponent {
             payload: {
                 version_id,
                 id,
+                type,
             },
         }).then(res => {
             this.setState({
@@ -239,11 +242,12 @@ class Viewer extends React.PureComponent {
             return;
         }
         // 获取数据并展示
-        const { dispatch, id } = this.props;
+        const { dispatch, id, type } = this.props;
         dispatch({
             type: 'version/diff',
             payload: {
                 id,
+                type,
                 str: ''.concat(current, '...').concat(base || ''),
             },
         }).then(res => {
@@ -309,16 +313,18 @@ class Viewer extends React.PureComponent {
                         </Radio.Group>
                         <div className={styles['actions']}>
                             <Button onClick={this.props.onCancel}>取消</Button>
-                            <Button
-                                type="primary"
-                                loading={this.state.reverting}
-                                onClick={() => {
-                                    this.revert(this.state.currentVersionId);
-                                }}
-                                disabled={!this.canRevert()}
-                            >
-                                恢复此版本
-                            </Button>
+                            {this.props.onReverted && (
+                                <Button
+                                    type="primary"
+                                    loading={this.state.reverting}
+                                    onClick={() => {
+                                        this.revert(this.state.currentVersionId);
+                                    }}
+                                    disabled={!this.canRevert()}
+                                >
+                                    恢复此版本
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </div>

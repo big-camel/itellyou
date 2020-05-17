@@ -1,15 +1,16 @@
 import React, { useState, useContext } from 'react';
 import classNames from 'classnames';
-import Author from '@/components/User/Author';
-import { CommentButton, EditButton, ReportButton } from '@/components/Button';
-import { Vote, Favorite, Comment, Adopt, Delete, Edit } from './Action';
-import styles from '../index.less';
-import { Space } from 'antd';
-import { history, Link, useDispatch } from 'umi';
+import { Space, message } from 'antd';
+import { history, Link, useDispatch, useSelector } from 'umi';
 import Editor from '@/components/Editor';
 import Timer from '@/components/Timer';
 import { RouteContext } from '@/context';
 import { RewardButton } from '@/components/Reward';
+import { PaidReadPurchase } from '@/components/PaidRead';
+import Author from '@/components/User/Author';
+import { CommentButton, EditButton, ReportButton, HistoryButton } from '@/components/Button';
+import { Vote, Favorite, Comment, Adopt, Delete, Edit } from './Action';
+import styles from '../index.less';
 
 const Answer = ({
     data: {
@@ -25,6 +26,7 @@ const Answer = ({
         adopted,
         allow_delete,
         allow_edit,
+        paid_read,
         ...item
     },
     authorSize,
@@ -35,8 +37,30 @@ const Answer = ({
     const [commentVisible, setCommentVisible] = useState(false);
     const [editVisible, setEditVisible] = useState(false);
     const [fullVisible, setFullVisible] = useState(false);
-
+    const [historyViewer, setHistoryViewer] = useState(false);
     const dispatch = useDispatch();
+    const rewardList = useSelector(state => state.answerReward.list);
+    const rewardData = (rewardList ? rewardList.data : []).filter(
+        ({ data_key }) => data_key === id,
+    );
+
+    const doPaidReadPay = () => {
+        return dispatch({
+            type: 'answer/paidread',
+            payload: {
+                question_id,
+                id,
+            },
+        }).then(res => {
+            if (res.result) {
+                message.success('支付成功', 1, () => {
+                    window.location.reload();
+                });
+            } else {
+                message.error(res.message);
+            }
+        });
+    };
 
     const onEditCancel = () => {
         setEditVisible(false);
@@ -72,8 +96,7 @@ const Answer = ({
     const renderContent = () => {
         if (desc && !fullVisible) {
             description = description.trim();
-            const hasMore =
-                description.length > 3 && description.substr(description.length - 3) === '...';
+
             return (
                 <div className={styles['description']}>
                     <Link to={`/question/${question_id}/answer/${id}`}>
@@ -116,7 +139,15 @@ const Answer = ({
                         </EditButton>
                     )}
                 </p>
-                <RewardButton author={author} dataType="answer" dataKey={id} />
+                <PaidReadPurchase data={paid_read} author={author} doPay={doPaidReadPay} />
+                {!paid_read && (
+                    <RewardButton
+                        author={author}
+                        dataType="answer"
+                        dataKey={id}
+                        dataSource={{ data: rewardData }}
+                    />
+                )}
             </div>
         );
     };
@@ -151,6 +182,7 @@ const Answer = ({
                 {!isMobile && allowEdit && (
                     <EditButton onClick={() => setEditVisible(!editVisible)} />
                 )}
+                {!isMobile && <HistoryButton onClick={() => setHistoryViewer(true)} />}
             </Space>
         );
     };
@@ -187,6 +219,13 @@ const Answer = ({
 
             {editVisible && renderEdit()}
             {!editVisible && renderBody()}
+            {historyViewer && (
+                <Editor.History
+                    id={id}
+                    type={`question/${question_id}/answer`}
+                    onCancel={() => setHistoryViewer(false)}
+                />
+            )}
         </div>
     );
 };

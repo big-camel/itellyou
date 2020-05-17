@@ -1,16 +1,17 @@
-import React, { useState, useContext } from 'react';
-import { Link } from 'umi';
+import React, { useState, useContext, useEffect } from 'react';
+import { Link, useDispatch, useSelector } from 'umi';
+import { Space, message } from 'antd';
 import classNames from 'classnames';
 import Author from '@/components/User/Author';
 import Editor from '@/components/Editor';
 import { CommentButton, EditButton, ReportButton } from '@/components/Button';
-import { Vote, Favorite, Comment, Delete } from './Action';
-import styles from '../index.less';
-import { Space } from 'antd';
 import Timer from '@/components/Timer';
 import Tag from '@/components/Tag';
 import { RouteContext } from '@/context';
 import { RewardButton } from '@/components/Reward';
+import { PaidReadPurchase } from '@/components/PaidRead';
+import { Vote, Favorite, Comment, Delete } from './Action';
+import styles from '../index.less';
 
 const Article = ({
     data: {
@@ -25,6 +26,7 @@ const Article = ({
         comment_count,
         allow_edit,
         tags,
+        paid_read,
         ...item
     },
     tag = false,
@@ -40,8 +42,42 @@ const Article = ({
     const [fullVisible, setFullVisible] = useState(false);
     const [commentVisible, setCommentVisible] = useState(defaultComment);
     const allowEdit = !desc && allow_edit;
+
     description = (custom_description || description).trim();
-    const hasMore = description.length > 3 && description.substr(description.length - 3) === '...';
+
+    const dispatch = useDispatch();
+    const rewardData = useSelector(state => state.articleReward.list);
+
+    const doPaidReadPay = () => {
+        return dispatch({
+            type: 'article/paidread',
+            payload: {
+                id,
+            },
+        }).then(res => {
+            if (res.result) {
+                message.success('支付成功', 1, () => {
+                    window.location.reload();
+                });
+            } else {
+                message.error(res.message);
+            }
+        });
+    };
+
+    useEffect(() => {
+        if (!desc) {
+            dispatch({
+                type: 'articleReward/list',
+                payload: {
+                    id,
+                    append: false,
+                    limit: 99999,
+                },
+            });
+        }
+    }, [dispatch, desc, id]);
+
     const renderContent = () => {
         if (desc && !fullVisible) {
             return (
@@ -91,7 +127,15 @@ const Article = ({
                         </EditButton>
                     )}
                 </p>
-                <RewardButton author={author} dataType="article" dataKey={id} />
+                <PaidReadPurchase data={paid_read} author={author} doPay={doPaidReadPay} />
+                {!paid_read && (
+                    <RewardButton
+                        author={author}
+                        dataType="article"
+                        dataKey={id}
+                        dataSource={rewardData}
+                    />
+                )}
             </div>
         );
     };
@@ -134,6 +178,7 @@ const Article = ({
                     <Favorite id={id} use_star={item.use_star} allow_star={item.allow_star} />
                 )}
                 {!isMobile && !item.use_author && <ReportButton id={id} type="article" />}
+                {props.renderAction && props.renderAction()}
             </Space>
             <div>{commentVisible && <Comment id={id} />}</div>
         </div>

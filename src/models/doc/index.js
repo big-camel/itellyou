@@ -1,5 +1,5 @@
 import { history } from 'umi';
-import { create, find, update, meta, revert, publish } from '@/services/doc/index';
+import { create, find, update, meta, paidread, revert, publish } from '@/services/doc/index';
 
 export default {
     namespace: 'doc',
@@ -10,22 +10,20 @@ export default {
     },
 
     effects: {
-        *create({ payload }, { call, select }) {
-            const type = yield select(state => state.doc.type);
-            const response = yield call(create, { ...payload.data, type });
+        *create({ payload: { data, type } }, { call }) {
+            const response = yield call(create, { ...data, type });
             if (!response.result) {
                 payload.onError(response);
             }
             return response;
         },
-        *find({ payload }, { call, put, select }) {
-            const type = yield select(state => state.doc.type);
-            const response = yield call(find, { ...payload.data, type });
-            const { result, status, data } = response;
+        *find({ payload: { data, type } }, { call, put }) {
+            const response = yield call(find, { ...data, type });
+            const { result, status } = response;
             if (result) {
                 yield put({
                     type: 'setDetail',
-                    payload: data,
+                    payload: response.data,
                 });
             } else if (status > 200) {
                 history.push(`/${status}`);
@@ -34,9 +32,8 @@ export default {
             }
             return response;
         },
-        *update({ payload }, { call, put, select }) {
-            const type = yield select(state => state.doc.type);
-            const response = yield call(update, { ...payload.data, type });
+        *update({ payload: { data, type } }, { call, put }) {
+            const response = yield call(update, { ...data, type });
             if (response.result) {
                 yield put({
                     type: 'setDetail',
@@ -47,8 +44,7 @@ export default {
             }
             return response;
         },
-        *meta({ payload: { data, onError } }, { call, put, select }) {
-            const type = yield select(state => state.doc.type);
+        *meta({ payload: { data, onError, type } }, { call, put }) {
             const response = yield call(meta, { ...data, type });
             if (response.result) {
                 yield put({
@@ -60,9 +56,8 @@ export default {
             }
             return response;
         },
-        *revert({ payload }, { call, put, select }) {
-            const type = yield select(state => state.doc.type);
-            const response = yield call(revert, { ...payload, type });
+        *revert({ payload }, { call, put }) {
+            const response = yield call(revert, payload);
             if (response.result) {
                 yield put({
                     type: 'setDetail',
@@ -71,23 +66,28 @@ export default {
             }
             return response;
         },
-        *publish({ payload }, { call, select }) {
-            const type = yield select(state => state.doc.type);
-            const response = yield call(publish, { ...payload.data, type });
+        *publish({ payload: { data, type } }, { call, select }) {
+            const response = yield call(publish, { ...data, type });
             if (!response.result) {
                 payload.onError(response);
+            }
+            return response;
+        },
+        *paidread({ payload: { data, onError, type } }, { call, put }) {
+            const response = yield call(paidread, { ...data, type });
+            if (response.result) {
+                yield put({
+                    type: 'setDetail',
+                    payload: response.data,
+                });
+            } else if (onError) {
+                onError(response);
             }
             return response;
         },
     },
 
     reducers: {
-        setType(state, { payload }) {
-            return {
-                ...state,
-                type: payload,
-            };
-        },
         setDetail(state, { payload }) {
             state = state || {};
             return {

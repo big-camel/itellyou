@@ -19,3 +19,9 @@ export async function list(params) {
         params,
     });
 }
+
+export async function answerList(params) {
+    return request('/api/reward/answer/list', {
+        params,
+    });
+}

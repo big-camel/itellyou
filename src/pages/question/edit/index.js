@@ -1,16 +1,18 @@
 import React, { useState, useRef, useEffect, useCallback, useContext } from 'react';
 import { history, useSelector, useDispatch } from 'umi';
-import { Button, message, Input, Alert, Form, Drawer } from 'antd';
+import { Button, message, Input, Alert, Form, Drawer, Space, Badge } from 'antd';
 import Editor from '@/components/Editor';
 import styles from './index.less';
 import logo from '@/assets/logo.svg';
 import moment from 'moment';
 import Timer from '@/components/Timer';
 import Loading from '@/components/Loading';
-import Tag, { Selector } from '@/components/Tag';
+import { Selector } from '@/components/Tag';
 import { RouteContext } from '@/context';
 import QuestionAlert from './components/Alert';
 import Reward from './components/Reward';
+import { UserAuthor } from '@/components/User';
+import HistoryExtra from '../components/HistoryExtra';
 const { SAVE_TYPE } = Editor.Biz;
 
 function Edit({ match: { params } }) {
@@ -24,23 +26,14 @@ function Edit({ match: { params } }) {
     const [saving, setSaving] = useState(false);
     const [publishing, setPublishing] = useState(false);
     const [drawerState, setDrawerState] = useState(false);
-
+    const [collabUsers, setCollabUsers] = useState([]);
     const dispatch = useDispatch();
 
-    const { type, detail } = useSelector(state => state.doc);
+    const { detail } = useSelector(state => state.doc);
 
     const bank = useSelector(state => state.bank.detail) || {};
     const { isMobile } = useContext(RouteContext);
-    const docType = 'question';
     useEffect(() => {
-        if (type !== docType) {
-            dispatch({
-                type: 'doc/setType',
-                payload: docType,
-            });
-            return;
-        }
-
         if ((id && detail) || !id) {
             if (detail) {
                 setTitle(detail.title);
@@ -48,7 +41,7 @@ function Edit({ match: { params } }) {
             }
             setLoading(false);
         }
-    }, [dispatch, type, detail, id]);
+    }, [dispatch, detail, id]);
 
     const onTitleChange = event => {
         setTitle(event.target.value);
@@ -204,20 +197,17 @@ function Edit({ match: { params } }) {
         });
     }, []);
 
-    const renderHistoryExtra = ({ title, tags, reward_type, reward_value }) => {
-        let rewardMessage = '无悬赏';
-        if (reward_type === 'credit') rewardMessage = `悬赏 ${reward_value} 积分`;
-        else if (reward_type === 'cash') rewardMessage = `悬赏 ${reward_value} 元`;
+    const renderCollabUsers = () => {
+        if (isMobile) return null;
         return (
-            <div className={styles['version-extra']}>
-                <h2>{title}</h2>
-                <div className={styles['tags']}>
-                    {tags.map(({ id, name }) => (
-                        <Tag className={styles['tag']} key={id} id={id} title={name} />
-                    ))}
-                </div>
-                <div>{rewardMessage}</div>
-            </div>
+            <Space>
+                {collabUsers.map(user => (
+                    <div key={user.id} className={styles['collab-user']}>
+                        <UserAuthor model="avatar" size="small" info={user} />
+                        <Badge color={user.color} />
+                    </div>
+                ))}
+            </Space>
         );
     };
 
@@ -239,6 +229,7 @@ function Edit({ match: { params } }) {
                     )}
                     <div className={styles['save-status']}>{renderSaveStatus()}</div>
                     <div className={styles.right}>
+                        {renderCollabUsers()}
                         {!isMobile && detail && (
                             <Button onClick={() => editor.current.showHistory()}>历史</Button>
                         )}
@@ -262,28 +253,28 @@ function Edit({ match: { params } }) {
                 </div>
                 <QuestionAlert />
                 <div className={styles['mini-editor']}>
-                    {type === docType && (
-                        <Editor
-                            ref={editor}
-                            id={id}
-                            ot={false}
-                            toolbar={
-                                isMobile
-                                    ? [
-                                          ['heading', 'bold'],
-                                          ['codeblock'],
-                                          ['orderedlist', 'unorderedlist'],
-                                          ['image', 'video', 'file'],
-                                      ]
-                                    : null
-                            }
-                            toc={false}
-                            historyExtra={renderHistoryExtra}
-                            onSave={onSave}
-                            onReverted={onReverted}
-                            onPublished={onPublished}
-                        />
-                    )}
+                    <Editor
+                        ref={editor}
+                        id={id}
+                        ot={true}
+                        dataType="question"
+                        toolbar={
+                            isMobile
+                                ? [
+                                      ['heading', 'bold'],
+                                      ['codeblock'],
+                                      ['orderedlist', 'unorderedlist'],
+                                      ['image', 'video', 'file'],
+                                  ]
+                                : null
+                        }
+                        toc={false}
+                        historyExtra={data => <HistoryExtra {...data} />}
+                        onSave={onSave}
+                        onReverted={onReverted}
+                        onPublished={onPublished}
+                        onCollabUsers={setCollabUsers}
+                    />
                 </div>
             </div>
             <Drawer

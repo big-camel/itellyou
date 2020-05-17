@@ -86,7 +86,7 @@ export default () => {
             width: 120,
             render: (text, { column: { use_star } }) => {
                 if (use_star === false) return;
-                return <Timer time={new Date(text)} />;
+                return <Timer time={text} />;
             },
         },
         {

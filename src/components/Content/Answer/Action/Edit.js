@@ -1,46 +1,26 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import classNames from 'classnames';
-import Editor from '@/components/Editor';
 import { history, useDispatch, useSelector } from 'umi';
-import { Button, Tooltip, Modal, message } from 'antd';
+import { Button, Tooltip, Modal, message, Space } from 'antd';
+import Editor from '@/components/Editor';
 import Timer from '@/components/Timer';
-import styles from './Edit.less';
 import { DeleteOutlined, RollbackOutlined } from '@ant-design/icons';
 import { UserAuthor } from '@/components/User';
+import { PaidReadSetting } from '@/components/PaidRead';
+import styles from './Edit.less';
 
 const AnswerEdit = ({ id, onSubmit, onCancel, ...props }) => {
     const editor = useRef();
     const [saving, setSaving] = useState(false);
     const [publishing, setPublishing] = useState(false);
+    const [paidReadSetting, setPaidReadSetting] = useState(false);
 
     const dispatch = useDispatch();
-    const { type, detail } = useSelector(state => state.doc);
+    const { detail } = useSelector(state => state.doc);
     const question = useSelector(state => state.question);
     const me = useSelector(state => state.user.me);
     const question_id = question.detail ? question.detail.id : null;
     const userAnswer = question.user_answer;
-
-    const docType = `question/${question_id}/answer`;
-    useEffect(() => {
-        if (type !== docType) {
-            dispatch({
-                type: 'doc/setType',
-                payload: docType,
-            });
-            return;
-        }
-    }, [dispatch, id]);
-
-    /**useEffect(() => {
-    if (id) {
-      dispatch({
-        type: 'doc/setDetail',
-        payload: {
-          id,
-        },
-      });
-    }
-  }, [dispatch, id]);**/
 
     const onSaveExit = () => {
         if (editor.current) {
@@ -103,7 +83,6 @@ const AnswerEdit = ({ id, onSubmit, onCancel, ...props }) => {
                         });
                         editorBiz.clearCachedContent();
                     }
-                    setHistory(true);
                 }
             }
             callback();
@@ -176,6 +155,24 @@ const AnswerEdit = ({ id, onSubmit, onCancel, ...props }) => {
         [question_id, onSubmit],
     );
 
+    const onPaidReadSubmit = value => {
+        return new Promise(resolve => {
+            dispatch({
+                type: 'doc/paidread',
+                payload: {
+                    data: { ...value, id },
+                    type: `question/${question_id}/answer`,
+                },
+            }).then(({ result }) => {
+                if (result) {
+                    setPaidReadSetting(false);
+                    message.success('设置成功');
+                }
+                resolve();
+            });
+        });
+    };
+
     return (
         <div
             className={classNames(
@@ -185,16 +182,15 @@ const AnswerEdit = ({ id, onSubmit, onCancel, ...props }) => {
             )}
         >
             {(!detail || !detail.published) && me && <UserAuthor info={me} />}
-            {type === docType && (
-                <Editor
-                    className={styles['answer-editor']}
-                    ref={editor}
-                    id={id}
-                    ot={false}
-                    onSave={onSave}
-                    onPublished={onPublished}
-                />
-            )}
+            <Editor
+                className={styles['answer-editor']}
+                ref={editor}
+                id={id}
+                ot={false}
+                dataType={`question/${question_id}/answer`}
+                onSave={onSave}
+                onPublished={onPublished}
+            />
             <div className={styles.footer}>
                 <div className={styles.status}>
                     {detail && (
@@ -219,14 +215,27 @@ const AnswerEdit = ({ id, onSubmit, onCancel, ...props }) => {
                         </Button>
                     )}
                 </div>
-                <div className={styles.action}>
-                    {detail && <Button onClick={() => editor.current.showHistory()}>历史</Button>}
-                    {onCancel && <Button onClick={onSaveExit}>保存草稿并离开</Button>}
+                <Space>
+                    {detail && (
+                        <Tooltip title="提问者始终可查看">
+                            <a onClick={() => setPaidReadSetting(true)}>付费阅读</a>
+                        </Tooltip>
+                    )}
+                    {detail && <a onClick={() => editor.current.showHistory()}>历史</a>}
+                    {onCancel && <a onClick={onSaveExit}>保存草稿并离开</a>}
                     <Button loading={publishing} type="primary" onClick={onPublish}>
                         {publishing ? '提交中...' : '提交回答'}
                     </Button>
-                </div>
+                </Space>
             </div>
+            {detail && (
+                <PaidReadSetting
+                    dataSource={detail.paid_read}
+                    visible={paidReadSetting}
+                    onCancel={() => setPaidReadSetting(false)}
+                    onSubmit={onPaidReadSubmit}
+                />
+            )}
         </div>
     );
 };

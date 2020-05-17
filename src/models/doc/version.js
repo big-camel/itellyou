@@ -8,9 +8,8 @@ export default {
     },
 
     effects: {
-        *list({ payload }, { call, put, select }) {
-            const type = yield select(state => state.doc.type);
-            const response = yield call(list, { ...payload, type });
+        *list({ payload }, { call, put }) {
+            const response = yield call(list, payload);
             if (response.result) {
                 yield put({
                     type: 'updateVersions',
@@ -19,17 +18,15 @@ export default {
             }
             return response;
         },
-        *find({ payload }, { call, select }) {
-            const type = yield select(state => state.doc.type);
-            const response = yield call(find, { ...payload, type });
+        *find({ payload }, { call }) {
+            const response = yield call(find, payload);
             if (response.result) {
                 return response;
             }
             return response;
         },
-        *diff({ payload }, { call, select }) {
-            const type = yield select(state => state.doc.type);
-            const response = yield call(diff, { ...payload, type });
+        *diff({ payload }, { call }) {
+            const response = yield call(diff, payload);
             return response;
         },
     },

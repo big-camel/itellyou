@@ -39,3 +39,10 @@ export async function publish({ id, type, ...params }) {
         data: params,
     });
 }
+
+export async function paidread({ id, type, ...params }) {
+    return request(`/api/${type}/${id}/paidread`, {
+        method: 'PUT',
+        data: params,
+    });
+}

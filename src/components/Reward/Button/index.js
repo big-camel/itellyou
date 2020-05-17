@@ -1,37 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Modal, message } from 'antd';
-import { useDispatch, useSelector } from 'umi';
+import React, { useState } from 'react';
+import { message } from 'antd';
+import { useDispatch } from 'umi';
 import { GiftFilled } from '@ant-design/icons';
 import Panel from '../Panel';
-import { PayQrCode } from '@/components/Pay';
 import styles from './index.less';
 import { UserAuthor } from '@/components/User';
 
-export default ({ author, dataType, dataKey }) => {
+export default ({ author, dataType, dataKey, dataSource }) => {
     const [visible, setVisible] = useState(false);
-    const [payVisible, setPayVisibel] = useState(false);
-    const [payValue, setPayValue] = useState(1);
-
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch({
-            type: 'reward/list',
-            payload: {
-                data_type: dataType,
-                data_key: dataKey,
-                append: false,
-                limit: 99999,
-            },
-        });
-    }, [dispatch, dataType, dataKey]);
-
-    const dataSource = useSelector(state => state.reward.list);
-
-    const me = useSelector(state => state.user.me);
-
     const doReward = (data_type, data_key, bank_type, amount) => {
-        dispatch({
+        return dispatch({
             type: 'reward/do',
             payload: {
                 data_type,
@@ -43,13 +23,10 @@ export default ({ author, dataType, dataKey }) => {
             setVisible(false);
             if (res.result) {
                 dispatch({
-                    type: 'user/setMe',
+                    type: 'user/setBank',
                     payload: {
-                        ...me,
-                        bank: {
-                            ...me.bank,
-                            [bank_type]: me.bank[bank_type] - amount,
-                        },
+                        append: true,
+                        [bank_type]: -amount,
                     },
                 });
                 message.success('打赏成功');
@@ -59,44 +36,17 @@ export default ({ author, dataType, dataKey }) => {
         });
     };
 
-    const onPay = (value, type) => {
-        setPayValue(value);
-        if (type === 'alipay') {
-            setVisible(false);
-            setPayVisibel(true);
-        } else {
-            doReward(dataType, dataKey, type, value);
-        }
-    };
-
-    const onPayCallback = useCallback(
-        status => {
-            setPayVisibel(false);
-            if (status === 'succeed') {
-                dispatch({
-                    type: 'user/setBank',
-                    payload: {
-                        ...me.bank,
-                        cash: me.bank.cash + payValue,
-                    },
-                });
-                doReward(dataType, dataKey, 'cash', payValue);
-            } else {
-                setVisible(true);
-            }
-        },
-        [dispatch, me, dataType, dataKey, payValue, doReward],
-    );
-
     const renderRewardList = () => {
         const data = (dataSource || {}).data || [];
         return (
-            <div className={styles['reward-list']}>
+            <>
                 {data.length > 0 ? <p>{`已有 ${data.length} 人打赏`}</p> : null}
-                {data.map(({ created_user }, index) => (
-                    <UserAuthor key={index} size="small" model="avatar" info={created_user} />
-                ))}
-            </div>
+                <div className={styles['reward-list']}>
+                    {data.map(({ created_user }, index) => (
+                        <UserAuthor key={index} size="small" model="avatar" info={created_user} />
+                    ))}
+                </div>
+            </>
         );
     };
 
@@ -109,16 +59,12 @@ export default ({ author, dataType, dataKey }) => {
                 </div>
                 {renderRewardList()}
             </div>
-            <Modal
-                title={null}
-                footer={null}
+            <Panel
                 visible={visible}
-                destroyOnClose
-                onCancel={() => setVisible(false)}
-            >
-                <Panel author={author} onPay={onPay} />
-            </Modal>
-            <PayQrCode visible={payVisible} amount={payValue} onClose={onPayCallback} />
+                onVisibleChange={setVisible}
+                author={author}
+                doPay={(type, value) => doReward(dataType, dataKey, type, value)}
+            />
         </>
     );
 };

@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import classNames from 'classnames';
 import { Card, Menu, Space, Button } from 'antd';
 import { history, Link, useDispatch, useSelector, useAccess } from 'umi';
 import DocumentMeta from 'react-document-meta';
+import { RouteContext } from '@/context';
 import Loading from '@/components/Loading';
 import Container, { Layout } from '@/components/Container';
 import Tag from '@/components/Tag';
-import { ReportButton, EditButton } from '@/components/Button';
+import Editor from '@/components/Editor';
+import { ReportButton, EditButton, HistoryButton } from '@/components/Button';
 import RelatedColumn from './components/RelatedColumn';
 import RelatedArticle from './components/RelatedArticle';
 import menus from './menu';
@@ -19,11 +21,13 @@ function Detail({ match: { params } }) {
 
     if (!menus.find(menu => menu.key === path)) history.push('/404');
 
+    const [historyViewer, setHistoryViewer] = useState(false);
     const dispatch = useDispatch();
     const detail = useSelector(state => state.tag.detail[id]);
     const me = useSelector(state => state.user.me);
     const settings = useSelector(state => state.settings);
     const access = useAccess();
+    const { isMobile } = useContext(RouteContext);
 
     useEffect(() => {
         dispatch({
@@ -68,6 +72,9 @@ function Detail({ match: { params } }) {
                                     {((me && me.id === author.id) || access.webTagPublicEdit) && (
                                         <EditButton type="link" href={`/tag/${id}/edit`} />
                                     )}
+                                    {!isMobile && (
+                                        <HistoryButton onClick={() => setHistoryViewer(true)} />
+                                    )}
                                 </Space>
                             </Card>
                         </div>
@@ -100,6 +107,13 @@ function Detail({ match: { params } }) {
                                 )}
                             </Card>
                         </div>
+                        {historyViewer && (
+                            <Editor.History
+                                id={id}
+                                type="tag"
+                                onCancel={() => setHistoryViewer(false)}
+                            />
+                        )}
                     </div>
                     <React.Fragment>
                         <RelatedArticle id={id} />

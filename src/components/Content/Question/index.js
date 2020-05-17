@@ -27,9 +27,9 @@ const Question = ({
     authorSize,
 }) => {
     const renderReward = () => {
-        if (reward_type === 0) return null;
+        if (reward_type === 'default') return null;
         let text = '积分';
-        if (reward_type === 2) text = '元';
+        if (reward_type === 'cash') text = '元';
         return (
             <Tag color="orange" style={{ fontWeight: 'normal' }}>
                 {reward_value}

@@ -125,6 +125,7 @@ export default ({ visible, id, custom_description, description, cover, onCancel 
                     type: 'doc/meta',
                     payload: {
                         data: { ...updateValues, id },
+                        type: 'article',
                     },
                 }).then(res => {
                     setLoading(false);

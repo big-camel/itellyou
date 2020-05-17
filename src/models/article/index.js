@@ -1,5 +1,5 @@
 import { history } from 'umi';
-import { list, related, find, view, vote, del } from '@/services/article/index';
+import { list, related, find, view, vote, del, paidread } from '@/services/article/index';
 import { setList, replaceItem } from '@/utils/model';
 
 export default {
@@ -96,6 +96,18 @@ export default {
                 yield put({
                     type: 'userArticle/removeItem',
                     payload: payload.id,
+                });
+            }
+            return response;
+        },
+        *paidread({ payload }, { call, put, select }) {
+            const response = yield call(paidread, payload);
+            if (response && response.result) {
+                const article = yield select(state => state.article);
+                let detail = article && article.detail ? article.detail : null;
+                yield put({
+                    type: 'updateDetail',
+                    payload: { ...detail, paid_read: null },
                 });
             }
             return response;

@@ -19,21 +19,13 @@ function Edit({ match: { params } }) {
     const [publishing, setPublishing] = useState(false);
     const [collabUsers, setCollabUsers] = useState([]);
     const dispatch = useDispatch();
-    const { type, detail } = useSelector(state => state.doc);
+    const { detail } = useSelector(state => state.doc);
     const { isMobile } = useContext(RouteContext);
-    const docType = 'tag';
     useEffect(() => {
-        if (type !== docType) {
-            dispatch({
-                type: 'doc/setType',
-                payload: docType,
-            });
-            return;
-        }
         if ((id && detail) || !id) {
             setLoading(false);
         }
-    }, [dispatch, type, detail, id]);
+    }, [dispatch, detail, id]);
 
     const onSave = useCallback(action => {
         setSaving(action === 'begin');
@@ -90,7 +82,6 @@ function Edit({ match: { params } }) {
 
     const renderCollabUsers = () => {
         if (isMobile) return null;
-        console.log(collabUsers);
         return (
             <Space>
                 {collabUsers.map(user => (
@@ -132,29 +123,28 @@ function Edit({ match: { params } }) {
             </header>
             <div className={styles.container}>
                 <div className={styles['editor']}>
-                    {type === docType && (
-                        <Editor
-                            type={isMobile ? 'mini' : 'full'}
-                            ref={editor}
-                            id={id}
-                            ot={true}
-                            toolbar={
-                                isMobile
-                                    ? [
-                                          ['heading', 'bold'],
-                                          ['codeblock'],
-                                          ['orderedlist', 'unorderedlist'],
-                                          ['image', 'video', 'file'],
-                                      ]
-                                    : null
-                            }
-                            toc={isMobile ? false : true}
-                            onSave={onSave}
-                            onReverted={onReverted}
-                            onPublished={onPublished}
-                            onCollabUsers={setCollabUsers}
-                        />
-                    )}
+                    <Editor
+                        type={isMobile ? 'mini' : 'full'}
+                        ref={editor}
+                        id={id}
+                        ot={true}
+                        dataType="tag"
+                        toolbar={
+                            isMobile
+                                ? [
+                                      ['heading', 'bold'],
+                                      ['codeblock'],
+                                      ['orderedlist', 'unorderedlist'],
+                                      ['image', 'video', 'file'],
+                                  ]
+                                : null
+                        }
+                        toc={isMobile ? false : true}
+                        onSave={onSave}
+                        onReverted={onReverted}
+                        onPublished={onPublished}
+                        onCollabUsers={setCollabUsers}
+                    />
                 </div>
             </div>
         </Loading>

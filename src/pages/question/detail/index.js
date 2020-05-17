@@ -1,31 +1,41 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link, useDispatch, useSelector } from 'umi';
+import { Link, useDispatch, useSelector, useAccess } from 'umi';
 import { Button, Card, Space, message } from 'antd';
+import DocumentMeta from 'react-document-meta';
 import classNames from 'classnames';
+import { RouteContext } from '@/context';
 import Container, { Layout } from '@/components/Container';
 import Editor from '@/components/Editor';
 import UserTag from '@/components/Tag';
 import Timer from '@/components/Timer';
-import styles from './index.less';
 import Answer from './components/Answer';
 import { Question } from '@/components/Content';
 import Comment from './components/Comment';
-import { ReportButton, CommentButton } from '@/components/Button';
+import { ReportButton, CommentButton, EditButton, HistoryButton } from '@/components/Button';
 import Loading from '@/components/Loading';
 import Related from './components/Related';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import Author from './components/Author';
 import { GoogleSquare } from '@/components/AdSense';
-import { RouteContext } from '@/context';
-import DocumentMeta from 'react-document-meta';
+import HistoryExtra from '../components/HistoryExtra';
+import styles from './index.less';
 
 function Detail({ match: { params } }) {
     const id = params.id ? parseInt(params.id) : null;
     const dispatch = useDispatch();
+    const [historyViewer, setHistoryViewer] = useState(false);
     const question = useSelector(state => state.question);
     const settings = useSelector(state => state.settings);
     const me = useSelector(state => state.user.me);
     const { detail, user_answer } = question;
+    const { isMobile } = useContext(RouteContext);
+
+    const answer_id = params.answer_id ? parseInt(params.answer_id) : null;
+    const [editVisible, setEditVisible] = useState();
+    const [commentVisible, setCommentVisible] = useState(false);
+
+    const access = useAccess();
+
     useEffect(() => {
         dispatch({
             type: 'question/view',
@@ -39,6 +49,13 @@ function Detail({ match: { params } }) {
                 id,
             },
         });
+        dispatch({
+            type: 'answerReward/list',
+            payload: {
+                question_id: id,
+                limit: 99999,
+            },
+        });
     }, [dispatch, id]);
     useEffect(() => {
         if (me) {
@@ -47,27 +64,14 @@ function Detail({ match: { params } }) {
                 payload: {
                     question_id: id,
                 },
+            }).then(({ data }) => {
+                const { draft, published, deleted } = data || {};
+                if (!answer_id && draft && !published && !deleted) {
+                    setEditVisible(true);
+                }
             });
         }
-    }, [me, id, dispatch]);
-    const answer_id = params.answer_id ? parseInt(params.answer_id) : null;
-    const [editVisible, setEditVisible] = useState();
-    const [commentVisible, setCommentVisible] = useState(false);
-
-    useEffect(() => {
-        if (
-            !answer_id &&
-            user_answer &&
-            user_answer.draft &&
-            !user_answer.published &&
-            !user_answer.deleted
-        ) {
-            setEditVisible(visible => {
-                if (!visible) return true;
-                return visible;
-            });
-        }
-    }, [answer_id, user_answer]);
+    }, [me, id, answer_id, dispatch]);
 
     if (!detail) return <Loading />;
     const { author, title, description, content, tags, use_star } = detail;
@@ -116,9 +120,9 @@ function Detail({ match: { params } }) {
 
     const renderReward = () => {
         const { reward_type, reward_value, adopted } = detail;
-        if (reward_type === 0) return null;
+        if (reward_type === 'default') return null;
         let text = '积分';
-        if (reward_type === 2) text = '元';
+        if (reward_type === 'cash') text = '元';
         return (
             <div className={styles['reward-view']}>
                 <Card hoverable={true}>
@@ -142,8 +146,6 @@ function Detail({ match: { params } }) {
     const isEmpty = Editor.Utils.isBlank(content);
     const keywords = tags.map(tag => tag.name) || [];
     keywords.push('itellyou');
-
-    const { isMobile } = useContext(RouteContext);
 
     const renderOther = () => {
         return (
@@ -201,6 +203,13 @@ function Detail({ match: { params } }) {
                                         {detail.comments > 0 ? `${detail.comments} 条评论` : '评论'}
                                     </CommentButton>
                                     <ReportButton />
+                                    {((me && me.id === author.id) ||
+                                        access.webQuestionPublicEdit) && (
+                                        <EditButton type="link" href={`/question/${id}/edit`} />
+                                    )}
+                                    {!isMobile && (
+                                        <HistoryButton onClick={() => setHistoryViewer(true)} />
+                                    )}
                                 </div>
                                 {!isMobile && renderOther()}
                             </div>
@@ -246,6 +255,14 @@ function Detail({ match: { params } }) {
                                 onVisibleChange={setCommentVisible}
                             />
                         }
+                        {historyViewer && (
+                            <Editor.History
+                                id={id}
+                                type="question"
+                                extra={data => <HistoryExtra {...data} />}
+                                onCancel={() => setHistoryViewer(false)}
+                            />
+                        )}
                     </React.Fragment>
                     <Space direction="vertical" size="large">
                         <GoogleSquare />

@@ -39,6 +39,9 @@ export default (action, type, who) => {
             return '采纳了' + getNoun(type, who);
         case 'reward':
             return '打赏了' + getNoun(type, who);
+        case 'payment':
+            if (type === 'payment') verb = '充值了';
+            return '购买了' + getNoun(type, who);
     }
 };
 

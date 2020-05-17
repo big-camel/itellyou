@@ -63,7 +63,7 @@ export default () => {
             key: 'created_time',
             width: 120,
             render: text => {
-                return <Timer time={new Date(text)} />;
+                return <Timer time={text} />;
             },
         },
     ];

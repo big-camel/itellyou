@@ -28,3 +28,9 @@ export async function del({ id }) {
         method: 'DELETE',
     });
 }
+
+export async function paidread({ id }) {
+    return request(`/api/article/${id}/paidread`, {
+        method: 'POST',
+    });
+}

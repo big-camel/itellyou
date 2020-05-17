@@ -108,12 +108,19 @@ export default {
                 },
             };
         },
-        setBank(state, { payload }) {
+        setBank(state, { payload: { append, ...payload } }) {
             const { me } = state;
-            me.bank = Object.assign({}, me.bank, payload);
+            const bank = {};
+            if (append) {
+                for (const p in me.bank) {
+                    bank[p] = payload[p] ? me.bank[p] + payload[p] : me.bank[p];
+                }
+            } else {
+                bank = { ...me.bank, ...payload };
+            }
             return {
                 ...state,
-                me,
+                me: { ...me, bank },
             };
         },
     },

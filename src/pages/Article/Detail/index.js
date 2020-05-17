@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'umi';
+import DocumentMeta from 'react-document-meta';
+import { RouteContext } from '@/context';
 import Container, { Layout } from '@/components/Container';
 import Loading from '@/components/Loading';
 import { Article } from '@/components/Content';
+import { Card, Space } from 'antd';
+import Editor from '@/components/Editor';
+import { GoogleHorizontal } from '@/components/AdSense';
+import { HistoryButton } from '@/components/Button';
+import HistoryExtra from '../components/HistoryExtra';
 import Related from './Related';
 import styles from './index.less';
-import { Card, Space } from 'antd';
-import Outline from '@/components/Editor/Outline';
-import { GoogleHorizontal } from '@/components/AdSense';
-import DocumentMeta from 'react-document-meta';
 
 function Detail({ match: { params } }) {
     const id = parseInt(params.id || 0);
 
     const [contentData, setContentData] = useState({});
-
+    const [historyViewer, setHistoryViewer] = useState(false);
     const dispatch = useDispatch();
     const { detail } = useSelector(state => state.article);
     const settings = useSelector(state => state.settings);
+    const { isMobile } = useContext(RouteContext);
 
     useEffect(() => {
         dispatch({
@@ -35,6 +39,11 @@ function Detail({ match: { params } }) {
     }, [dispatch, id]);
 
     if (!detail) return <Loading />;
+
+    const renderAction = () => {
+        if (!isMobile) return <HistoryButton onClick={() => setHistoryViewer(true)} />;
+        return null;
+    };
 
     const onContentReady = (view, config) => {
         setContentData({
@@ -71,14 +80,23 @@ function Detail({ match: { params } }) {
                                     headerClass={styles['header']}
                                     titleClass={styles['title']}
                                     onContentReady={onContentReady}
+                                    renderAction={renderAction}
                                 />
                             </Card>
                         </div>
                         <GoogleHorizontal />
                         <Related id={id} />
+                        {historyViewer && (
+                            <Editor.History
+                                id={id}
+                                type="article"
+                                extra={data => <HistoryExtra {...data} />}
+                                onCancel={() => setHistoryViewer(false)}
+                            />
+                        )}
                     </Space>
                     <React.Fragment>
-                        <Outline
+                        <Editor.Outline
                             {...contentData}
                             style={{ width: (1056 * 29.16666667) / 100 - 22 }}
                         />

@@ -51,7 +51,7 @@ class History extends React.PureComponent {
     }
 
     render() {
-        const { id, onReverted, onCancel } = this.props;
+        const { id, type, onReverted, onCancel } = this.props;
 
         return (
             <Modal
@@ -68,6 +68,7 @@ class History extends React.PureComponent {
             >
                 <HistoryViewer
                     id={id}
+                    type={type}
                     onReverted={onReverted}
                     onCancel={onCancel}
                     renderVersion={version => (

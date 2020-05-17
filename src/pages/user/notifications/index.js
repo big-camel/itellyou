@@ -12,6 +12,7 @@ import Comment from './components/Comment';
 import Publish from './components/Publish';
 import Adopt from './components/Adopt';
 import Reward from './components/Reward';
+import Payment from './components/Payment';
 
 export default ({ match: { params } }) => {
     const path = params.path || '/default';
@@ -69,6 +70,8 @@ export default ({ match: { params } }) => {
                     return <Adopt {...item} />;
                 case 'reward':
                     return <Reward {...item} />;
+                case 'payment':
+                    return <Payment {...item} />;
                 default:
                     return null;
             }

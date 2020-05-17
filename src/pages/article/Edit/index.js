@@ -1,19 +1,21 @@
 import React, { useState, useRef, useCallback, useEffect, useContext } from 'react';
 import { history, useSelector, useDispatch } from 'umi';
-import { Button, Alert, message, Input, Form, Drawer, Space, Popover, Menu, Modal } from 'antd';
-import Editor from '@/components/Editor';
-import styles from './index.less';
-import logo from '@/assets/logo.svg';
+import { Button, Alert, message, Input, Form, Drawer, Space, Popover, Menu } from 'antd';
 import moment from 'moment';
+import Editor from '@/components/Editor';
+import { RouteContext } from '@/context';
 import Timer from '@/components/Timer';
 import Loading from '@/components/Loading';
-import Tag, { Selector } from '@/components/Tag';
+import { Selector } from '@/components/Tag';
 import Column from './components/Column';
 import Source from './components/Source';
 import { EllipsisButton } from '@/components/Button';
 import Setting from './components/Setting';
 import { Article } from '@/components/Content';
-import { RouteContext } from '@/context';
+import HistoryExtra from '../components/HistoryExtra';
+import { PaidReadSetting } from '@/components/PaidRead';
+import styles from './index.less';
+import logo from '@/assets/logo.svg';
 
 const { SAVE_TYPE } = Editor.Biz;
 
@@ -35,18 +37,12 @@ function Edit({ match: { params } }) {
     const [publishing, setPublishing] = useState(false);
     const [drawerState, setDrawerState] = useState(false);
 
+    const [paidReadSetting, setPaidReadSetting] = useState(false);
+
     const dispatch = useDispatch();
-    const { type, detail } = useSelector(state => state.doc);
+    const { detail } = useSelector(state => state.doc);
     const { isMobile } = useContext(RouteContext);
-    const docType = 'article';
     useEffect(() => {
-        if (type !== docType) {
-            dispatch({
-                type: 'doc/setType',
-                payload: docType,
-            });
-            return;
-        }
         if ((id && detail) || !id) {
             if (detail) {
                 setTitle(detail.title);
@@ -56,7 +52,7 @@ function Edit({ match: { params } }) {
             }
             setLoading(false);
         }
-    }, [dispatch, type, detail, id]);
+    }, [dispatch, detail, id]);
 
     const onTitleChange = event => {
         setTitle(event.target.value);
@@ -191,19 +187,22 @@ function Edit({ match: { params } }) {
         });
     }, []);
 
-    const renderHistoryExtra = ({ title, tags }) => {
-        let rewardMessage = '';
-        return (
-            <div className={styles['version-extra']}>
-                <h2>{title}</h2>
-                <div className={styles['tags']}>
-                    {tags.map(({ id, name }) => (
-                        <Tag className={styles['tag']} key={id} id={id} title={name} />
-                    ))}
-                </div>
-                <div>{rewardMessage}</div>
-            </div>
-        );
+    const onPaidReadSubmit = value => {
+        return new Promise(resolve => {
+            dispatch({
+                type: 'doc/paidread',
+                payload: {
+                    data: { ...value, id },
+                    type: 'article',
+                },
+            }).then(({ result }) => {
+                if (result) {
+                    setPaidReadSetting(false);
+                    message.success('设置成功');
+                }
+                resolve();
+            });
+        });
     };
 
     const error = getError();
@@ -237,24 +236,33 @@ function Edit({ match: { params } }) {
                             arrowPointAtCenter
                             content={
                                 <Menu className={styles['more-menu']}>
-                                    <Menu.Item onClick={() => setSettingVisible(true)}>
-                                        文章设置
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        <Article.Delete
-                                            id={id}
-                                            title={title}
-                                            icon={null}
-                                            text="删除文章"
-                                            callback={res => {
-                                                if (res && res.result) {
-                                                    window.location.href = '/dashboard';
-                                                } else {
-                                                    message.error(res.message);
-                                                }
-                                            }}
-                                        />
-                                    </Menu.Item>
+                                    {id && (
+                                        <Menu.Item onClick={() => setSettingVisible(true)}>
+                                            文章设置
+                                        </Menu.Item>
+                                    )}
+                                    {id && (
+                                        <Menu.Item onClick={() => setPaidReadSetting(true)}>
+                                            付费阅读
+                                        </Menu.Item>
+                                    )}
+                                    {id && (
+                                        <Menu.Item>
+                                            <Article.Delete
+                                                id={id}
+                                                title={title}
+                                                icon={null}
+                                                text="删除文章"
+                                                callback={res => {
+                                                    if (res && res.result) {
+                                                        window.location.href = '/dashboard';
+                                                    } else {
+                                                        message.error(res.message);
+                                                    }
+                                                }}
+                                            />
+                                        </Menu.Item>
+                                    )}
                                     <Menu.Item>
                                         <a href="/dashboard">退出编辑</a>
                                     </Menu.Item>
@@ -268,42 +276,41 @@ function Edit({ match: { params } }) {
             </header>
             <div className={styles.container}>
                 <div className={styles['editor']}>
-                    {type === docType && (
-                        <Editor
-                            type={isMobile ? 'mini' : 'full'}
-                            ref={editor}
-                            id={id}
-                            ot={false}
-                            toolbar={
-                                isMobile
-                                    ? [
-                                          ['heading', 'bold'],
-                                          ['codeblock'],
-                                          ['orderedlist', 'unorderedlist'],
-                                          ['image', 'video', 'file'],
-                                      ]
-                                    : null
-                            }
-                            toc={isMobile ? false : true}
-                            header={
-                                <div className={styles['title']}>
-                                    <Input
-                                        className={styles['input']}
-                                        size="large"
-                                        placeholder="请输入标题(最多50个字)"
-                                        value={title}
-                                        onChange={onTitleChange}
-                                        onBlur={onTitleBlur}
-                                        maxLength={50}
-                                    />
-                                </div>
-                            }
-                            historyExtra={renderHistoryExtra}
-                            onSave={onSave}
-                            onReverted={onReverted}
-                            onPublished={onPublished}
-                        />
-                    )}
+                    <Editor
+                        type={isMobile ? 'mini' : 'full'}
+                        ref={editor}
+                        id={id}
+                        ot={false}
+                        dataType="article"
+                        toolbar={
+                            isMobile
+                                ? [
+                                      ['heading', 'bold'],
+                                      ['codeblock'],
+                                      ['orderedlist', 'unorderedlist'],
+                                      ['image', 'video', 'file'],
+                                  ]
+                                : null
+                        }
+                        toc={isMobile ? false : true}
+                        header={
+                            <div className={styles['title']}>
+                                <Input
+                                    className={styles['input']}
+                                    size="large"
+                                    placeholder="请输入标题(最多50个字)"
+                                    value={title}
+                                    onChange={onTitleChange}
+                                    onBlur={onTitleBlur}
+                                    maxLength={50}
+                                />
+                            </div>
+                        }
+                        historyExtra={data => <HistoryExtra {...data} />}
+                        onSave={onSave}
+                        onReverted={onReverted}
+                        onPublished={onPublished}
+                    />
                 </div>
             </div>
             <Drawer
@@ -311,7 +318,7 @@ function Edit({ match: { params } }) {
                 placement="right"
                 visible={drawerState}
                 onClose={onHideDrawer}
-                width="430"
+                width={isMobile ? '100%' : 430}
             >
                 <Form>
                     <Form.Item
@@ -355,6 +362,14 @@ function Edit({ match: { params } }) {
                     description={detail.description}
                     cover={detail.cover}
                     onCancel={() => setSettingVisible(false)}
+                />
+            )}
+            {detail && (
+                <PaidReadSetting
+                    dataSource={detail.paid_read}
+                    visible={paidReadSetting}
+                    onCancel={() => setPaidReadSetting(false)}
+                    onSubmit={onPaidReadSubmit}
                 />
             )}
         </Loading>

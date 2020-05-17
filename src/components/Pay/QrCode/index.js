@@ -63,6 +63,13 @@ export default ({ visible, amount = 0.0, type = 'alipay', onClose }) => {
                     status: 'default',
                 },
             });
+            dispatch({
+                type: 'user/setBank',
+                payload: {
+                    append: true,
+                    cash: amount,
+                },
+            });
             onClose('succeed');
         }
     }, [dispatch, type, status, onClose]);

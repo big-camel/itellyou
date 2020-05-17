@@ -9,11 +9,11 @@ import React, {
 import { useSelector } from 'umi';
 import { message } from 'antd';
 import omit from 'omit.js';
+import debounce from 'lodash/debounce';
 import { FullEditor, MiniEditor } from '@itellyou/itellyou-editor';
 import Viewer from './Viewer';
 import History from './History';
-
-import debounce from 'lodash/debounce';
+import Outline from './Outline';
 import Collab, { EVENT, STATUS, ERROR_CODE } from './Collab';
 import EditorBiz from './Biz';
 import * as Utils from './utils';
@@ -32,6 +32,7 @@ function Editor(
         onChange,
         historyExtra,
         onCollabUsers,
+        dataType = 'doc',
         ...props
     },
     ref,
@@ -209,11 +210,11 @@ function Editor(
     }, [collabLoaded, onPublished]);
 
     useEffect(() => {
-        if (collab.current) {
+        if (collab.current && props.onReverted) {
             collab.current.on(EVENT.reverted, props.onReverted);
         }
         return () => {
-            if (collab.current) {
+            if (collab.current && props.onReverted) {
                 collab.current.off(EVENT.reverted, props.onReverted);
             }
         };
@@ -272,7 +273,13 @@ function Editor(
     return (
         <div className={className}>
             {editorLoaded && (
-                <Collab id={id} ot={ot} engine={engine.current} onReady={onCollabReady} />
+                <Collab
+                    id={id}
+                    type={dataType}
+                    ot={ot}
+                    engine={engine.current}
+                    onReady={onCollabReady}
+                />
             )}
             {!loadScripts && (
                 <EditorType
@@ -336,6 +343,7 @@ function Editor(
             {historyView && (
                 <History
                     id={id}
+                    type={dataType}
                     extra={historyExtra}
                     onReverted={onReverted}
                     onCancel={() => {
@@ -348,6 +356,7 @@ function Editor(
 }
 
 Editor = forwardRef(Editor);
+Editor.Outline = Outline;
 Editor.Biz = EditorBiz;
 Editor.Viewer = Viewer;
 Editor.History = History;

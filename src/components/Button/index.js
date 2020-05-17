@@ -10,6 +10,7 @@ import FavoriteButton from './FavoriteButton';
 import EllipsisButton from './EllipsisButton';
 import AdoptButton from './AdoptButton';
 import EditButton from './EditButton';
+import HistoryButton from './HistoryButton';
 
 export default BaseButton;
 export {
@@ -24,4 +25,5 @@ export {
     EllipsisButton,
     AdoptButton,
     EditButton,
+    HistoryButton,
 };

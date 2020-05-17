@@ -7,6 +7,7 @@ import {
     revokeDelete,
     list,
     vote,
+    paidread,
 } from '@/services/answer/index';
 import { setList } from '@/utils/model';
 
@@ -212,6 +213,18 @@ export default {
                         },
                     });
                 }
+            }
+            return response;
+        },
+        *paidread({ payload }, { call, put, select }) {
+            const response = yield call(paidread, payload);
+            if (response && response.result) {
+                const answer = yield select(state => state.answer);
+                let detail = answer && answer.detail ? answer.detail : null;
+                yield put({
+                    type: 'updateDetail',
+                    payload: { ...detail, paid_read: null },
+                });
             }
             return response;
         },
