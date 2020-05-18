@@ -22,6 +22,8 @@ function Detail({ match: { params } }) {
     const { detail } = useSelector(state => state.article);
     const settings = useSelector(state => state.settings);
     const { isMobile } = useContext(RouteContext);
+    const loadingState = useSelector(state => state.loading);
+    const loading = loadingState.effects['article/find'];
 
     useEffect(() => {
         dispatch({
@@ -38,10 +40,11 @@ function Detail({ match: { params } }) {
         });
     }, [dispatch, id]);
 
-    if (!detail) return <Loading />;
+    if (!detail || loading) return <Loading />;
 
     const renderAction = () => {
-        if (!isMobile) return <HistoryButton onClick={() => setHistoryViewer(true)} />;
+        if (!isMobile && !detail.paid_read)
+            return <HistoryButton onClick={() => setHistoryViewer(true)} />;
         return null;
     };
 

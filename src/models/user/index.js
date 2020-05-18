@@ -1,5 +1,3 @@
-import { history } from 'umi';
-import { stringify } from 'qs';
 import {
     queryName,
     fetchMe,
@@ -10,6 +8,7 @@ import {
     fetchAccount,
 } from '@/services/user/index';
 import { getPageQuery } from '@/utils/utils';
+
 export default {
     namespace: 'user',
 
@@ -81,12 +80,9 @@ export default {
             });
             const { redirect } = getPageQuery();
             if (window.location.pathname !== '/login' && !redirect) {
-                history.replace({
-                    pathname: '/login',
-                    search: stringify({
-                        redirect: window.location.href,
-                    }),
-                });
+                window.location.href = `/login?redirect=${encodeURIComponent(
+                    window.location.href,
+                )}`;
             }
             return response;
         },

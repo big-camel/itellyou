@@ -101,16 +101,10 @@ const Answer = ({
                 <div className={styles['description']}>
                     <Link to={`/question/${question_id}/answer/${id}`}>
                         <span dangerouslySetInnerHTML={{ __html: description }} />
+                        {paid_read && (
+                            <span className={styles['paid-read-link']}>有付费内容，点击查看</span>
+                        )}
                     </Link>
-                    {/**readFull && hasMore && (
-                        <Button
-                            className={styles['read-more']}
-                            type="link"
-                            onClick={() => setFullVisible(true)}
-                        >
-                            阅读全文
-                        </Button>
-                    )**/}
                 </div>
             );
         }
@@ -119,17 +113,22 @@ const Answer = ({
                 <div>{<Editor.Viewer key={id} content={item.content} />}</div>
 
                 <p className={styles['footer']}>
-                    <Link className={styles['time']} to={`/question/${question_id}/answer/${id}`}>
-                        {item.updated_time === null || item.version === 1 ? '发布于' : '更新于'}
-                        <Timer
-                            time={
-                                item.updated_time === null || item.version === 1
-                                    ? item.created_time
-                                    : item.updated_time
-                            }
-                        />
-                    </Link>
-                    {allowEdit && (
+                    {!paid_read && (
+                        <Link
+                            className={styles['time']}
+                            to={`/question/${question_id}/answer/${id}`}
+                        >
+                            {item.updated_time === null || item.version === 1 ? '发布于' : '更新于'}
+                            <Timer
+                                time={
+                                    item.updated_time === null || item.version === 1
+                                        ? item.created_time
+                                        : item.updated_time
+                                }
+                            />
+                        </Link>
+                    )}
+                    {allowEdit && !paid_read && (
                         <EditButton
                             className={styles['edit']}
                             type="link"
@@ -182,7 +181,9 @@ const Answer = ({
                 {!isMobile && allowEdit && (
                     <EditButton onClick={() => setEditVisible(!editVisible)} />
                 )}
-                {!isMobile && <HistoryButton onClick={() => setHistoryViewer(true)} />}
+                {!isMobile && !desc && !paid_read && (
+                    <HistoryButton onClick={() => setHistoryViewer(true)} />
+                )}
             </Space>
         );
     };
@@ -190,9 +191,11 @@ const Answer = ({
     const renderBody = () => {
         return (
             <div>
-                <div className={classNames(styles['body'], { [styles['has-cover']]: cover })}>
+                <div
+                    className={classNames(styles['body'], { [styles['has-cover']]: cover && desc })}
+                >
                     {renderContent()}
-                    {cover && (
+                    {cover && desc && (
                         <div
                             className={styles['cover']}
                             style={{ backgroundImage: `url(${cover})` }}

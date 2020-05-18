@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Popover, Avatar, Menu, Space } from 'antd';
+import { Popover, Avatar, Menu, Space, Tag } from 'antd';
 import { Link, useDispatch, useSelector } from 'umi';
 import {
     UserOutlined,
@@ -15,7 +15,7 @@ import styles from './index.less';
 export default ({ isMobile }) => {
     const [visible, setVisible] = useState(false);
     const me = useSelector(state => state.user.me);
-
+    const settings = useSelector(state => state.settings);
     const dispatch = useDispatch();
 
     const onLogout = () => {
@@ -29,8 +29,8 @@ export default ({ isMobile }) => {
     const { avatar, name, path, rank, bank } = me;
 
     const avatarLink = (
-        <Link to="/dashboard">
-            <Avatar src={avatar} size={24} />
+        <Link to="/dashboard" className={styles['user-avatar']}>
+            <Avatar src={avatar || settings.defaultAvatar} size={24} />
         </Link>
     );
 
@@ -40,7 +40,9 @@ export default ({ isMobile }) => {
                 <Space>
                     {isMobile && avatarLink}
                     <span className={styles['name']}>{name}</span>
-                    <span className={styles['rank']}>{(rank || {}).name}</span>
+                    <span className={styles['rank']}>
+                        <Tag color="#347EFF">{(rank || {}).name}</Tag>
+                    </span>
                 </Space>
             </div>
             <Menu onClick={() => setVisible(false)}>

@@ -55,13 +55,22 @@
             .read-more {
                 padding: 4px 0;
             }
+
+            .paid-read-link {
+                color: @primary-color;
+            }
         }
 
         .description {
-            font-size: 15px;
-            max-height: 42px;
+            text-overflow: ellipsis;
+            color: #8c8c8c;
+            display: -webkit-box;
+            max-height: 63px;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
+            line-height: 21px;
         }
 
         .description > a {

@@ -84,14 +84,9 @@ const Article = ({
                 <div className={styles['description']}>
                     <Link to={`/article/${id}`}>
                         <span dangerouslySetInnerHTML={{ __html: description }} />
-                        {/**hasMore && (
-                            <Button
-                                className={styles['read-more']}
-                                type="link"
-                                onClick={() => setFullVisible(true)}
-                            >
-                                阅读全文
-                            </Button>)**/}
+                        {paid_read && (
+                            <span className={styles['paid-read-link']}>有付费内容，点击查看</span>
+                        )}
                     </Link>
                 </div>
             );
@@ -107,17 +102,19 @@ const Article = ({
                     />
                 }
                 <p className={styles['footer']}>
-                    <Link className={styles['time']} to={`/article/${id}`}>
-                        {item.updated_time === null || item.version === 1 ? '发布于' : '更新于'}
-                        <Timer
-                            time={
-                                item.updated_time === null || item.version === 1
-                                    ? item.created_time
-                                    : item.updated_time
-                            }
-                        />
-                    </Link>
-                    {allowEdit && (
+                    {!paid_read && (
+                        <Link className={styles['time']} to={`/article/${id}`}>
+                            {item.updated_time === null || item.version === 1 ? '发布于' : '更新于'}
+                            <Timer
+                                time={
+                                    item.updated_time === null || item.version === 1
+                                        ? item.created_time
+                                        : item.updated_time
+                                }
+                            />
+                        </Link>
+                    )}
+                    {allowEdit && !paid_read && (
                         <EditButton
                             className={styles['edit']}
                             type="link"
@@ -163,9 +160,9 @@ const Article = ({
                 </Space>
                 {author && <Author className={styles['author']} info={author} size={authorSize} />}
             </div>
-            <div className={classNames(styles['body'], { [styles['has-cover']]: cover })}>
+            <div className={classNames(styles['body'], { [styles['has-cover']]: cover && desc })}>
                 {renderContent()}
-                {cover && (
+                {cover && desc && (
                     <div className={styles['cover']} style={{ backgroundImage: `url(${cover})` }} />
                 )}
             </div>

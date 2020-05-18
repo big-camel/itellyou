@@ -29,7 +29,9 @@ export default () => {
             arrowPointAtCenter
             placement="bottomRight"
         >
-            <PlusOutlined />
+            <div className={styles['action-menu']}>
+                <PlusOutlined />
+            </div>
         </Popover>
     );
 };

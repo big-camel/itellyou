@@ -56,7 +56,7 @@ export default ({ id }) => {
     const renderAnswer = ({ id, question: { title, ...question }, ...target }) => {
         return (
             <div>
-                <h2>
+                <h2 className={styles['question-title']}>
                     <Link to={`/question/${question.id}/answer/${id}`}>{title}</Link>
                 </h2>
                 <Answer data={{ ...target, id }} desc={true} />
