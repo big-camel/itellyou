@@ -38,6 +38,7 @@ const errorHandler = error => {
     if (!isBrowser()) {
         return console.log('umi-request error:', error);
     }
+    console.log(error);
     const { response } = error;
     if (response && response.status) {
         const errorText = codeMessage[response.status] || response.statusText;
@@ -71,6 +72,7 @@ const errorHandler = error => {
 const request = extend({
     errorHandler, // 默认错误处理
     credentials: 'include', // 默认请求是否带上cookie
+    timeout: 10000,
 });
 
 request.interceptors.request.use((url, { params = {}, data = {}, headers, ...options }) => {
@@ -78,8 +80,11 @@ request.interceptors.request.use((url, { params = {}, data = {}, headers, ...opt
     if (!isBrowser()) {
         let token = params.token;
         let apiUrl = params.api_url;
+        let clientHeaders = params.headers;
         if (!token) token = data.token;
         if (!apiUrl) apiUrl = data.api_url;
+        if (!clientHeaders) clientHeaders = data.headers;
+
         const cookies = headers.Cookie ? headers.Cookie.split(';') : [];
 
         if (token) {
@@ -89,9 +94,11 @@ request.interceptors.request.use((url, { params = {}, data = {}, headers, ...opt
         headers.Cookie = cookies.join(';');
 
         if (apiUrl) {
-            url = apiUrl + url;
+            url = apiUrl + url.replace('/api', '');
             exclude.push('api_url');
         }
+        headers = { ...headers, ...clientHeaders };
+        exclude.push('headers');
     }
     return {
         url,
