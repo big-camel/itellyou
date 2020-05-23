@@ -67,7 +67,7 @@ export default ({ view, config, ...props }) => {
         }, 200);
     }, [contents]);
 
-    if (!contents || contents.length === 0) return <GoogleDefault />;
+    if (!contents || contents.length === 0) return Outline ? <GoogleDefault /> : null;
     return (
         <div className={classNames(styles['toc'], { [styles['fixed']]: !reachingTop })} {...props}>
             <Card>
