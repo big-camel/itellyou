@@ -51,12 +51,14 @@ function CommentItem({ item, onDelete, onCreate, onVote, onChild, onDetail }) {
                 const result = onCreate(content, html, parentId, item.id);
                 if (typeof result === 'object') {
                     result.then(() => {
-                        setEditVisible(false);
-                        resolve();
+                        resolve(() => {
+                            setEditVisible(false);
+                        });
                     });
                 } else {
-                    setEditVisible(false);
-                    resolve();
+                    resolve(() => {
+                        setEditVisible(false);
+                    });
                 }
             });
         }

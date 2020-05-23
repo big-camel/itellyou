@@ -17,9 +17,10 @@ function CommentEdit({ defaultValue, onSubmit }) {
             const pureHtml = editor.current.getPureHtml();
             const result = onSubmit(pureContent, pureHtml);
             if (typeof result === 'object') {
-                result.then(() => {
+                result.then(callback => {
                     editor.current.clearValue();
                     setSubmiting(false);
+                    if (typeof callback === 'function') callback();
                 });
             } else {
                 setSubmiting(false);

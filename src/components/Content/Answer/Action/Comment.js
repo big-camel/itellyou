@@ -13,6 +13,9 @@ export default ({ question_id, answer_id }) => {
     const [childOffset, setChildOffset] = useState(0);
     const limit = 20;
 
+    const loadingState = useSelector(state => state.loading);
+    const loading = loadingState.effects['answerComment/root'];
+
     const load = useCallback(
         (offset, limit) => {
             dispatch({
@@ -30,9 +33,10 @@ export default ({ question_id, answer_id }) => {
     );
 
     useEffect(() => {
-        if(!comment || comment.offset !== 0)
+        if (!answerComment[answer_id] && !loading) {
             load(0, limit);
-    }, [comment,load, limit]);
+        }
+    }, [answerComment, loading, load, limit]);
 
     const create = (content, html, parentId, replyId) => {
         return dispatch({

@@ -66,19 +66,19 @@ const Answer = ({
         setEditVisible(false);
     };
 
-    const onEditSubmit = doc => {
+    const onEditSubmit = async doc => {
         setEditVisible(false);
         if (doc) {
-            dispatch({
+            await dispatch({
                 type: 'answer/updateDetail',
                 payload: doc,
             });
-            dispatch({
+            await dispatch({
                 type: 'answer/updateListItem',
                 payload: doc,
             });
-            //history.push(`/question/${question_id}/answer/${doc.id}`);
-            window.location.href = `/question/${question_id}/answer/${doc.id}`;
+            history.push(`/question/${question_id}/answer/${doc.id}`);
+            //window.location.href = `/question/${question_id}/answer/${doc.id}`;
         } else {
             window.location.reload();
         }

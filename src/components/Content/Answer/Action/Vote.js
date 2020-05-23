@@ -33,15 +33,23 @@ export default ({
         });
     };
 
+    const renderSupport = () => (
+        <SupportButton
+            active={use_support}
+            disabled={!allow_support}
+            onClick={() => doVote('support')}
+            loading={voting && voteType === 'support'}
+            count={support}
+        />
+    );
+
+    if (!allow_oppose) {
+        return renderSupport();
+    }
+
     return (
         <Space size="large">
-            <SupportButton
-                active={use_support}
-                disabled={!allow_support}
-                onClick={() => doVote('support')}
-                loading={voting && voteType === 'support'}
-                count={support}
-            />
+            {renderSupport()}
             {allow_oppose && (
                 <OpposeButton
                     active={use_oppose}
