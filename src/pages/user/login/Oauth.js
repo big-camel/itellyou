@@ -9,7 +9,7 @@ import formMap from './formMap';
 
 const { Mobile, Captcha } = Form.createItem(formMap);
 
-export default ({ location }) => {
+const Oauth = ({ location }) => {
     const queryParams = location ? location.query || {} : {};
 
     const intl = useIntl();
@@ -159,3 +159,11 @@ export default ({ location }) => {
         </>
     );
 };
+
+Oauth.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
+export default Oauth;

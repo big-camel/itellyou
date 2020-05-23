@@ -10,7 +10,7 @@ import { AlipayLogin, GithubLogin } from '@/components/ThirdParty';
 
 const { Name, Password, Mobile, Captcha } = Form.createItem(formMap);
 
-export default () => {
+const Register = () => {
     const intl = useIntl();
     const [form] = Form.useForm();
     const [filedErrors, setFiledErrors] = useState({});
@@ -234,3 +234,11 @@ export default () => {
         </>
     );
 };
+
+Register.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
+export default Register;

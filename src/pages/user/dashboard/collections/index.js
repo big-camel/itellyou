@@ -18,7 +18,7 @@ const menus = [
         component: <Answer />,
     },
 ];
-export default ({ location: { query } }) => {
+const UserCollections = ({ location: { query } }) => {
     const type = query.type || 'article';
 
     return (
@@ -27,3 +27,11 @@ export default ({ location: { query } }) => {
         </Layout>
     );
 };
+
+UserCollections.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
+export default UserCollections;

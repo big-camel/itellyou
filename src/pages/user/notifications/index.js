@@ -14,7 +14,7 @@ import Adopt from './components/Adopt';
 import Reward from './components/Reward';
 import Payment from './components/Payment';
 
-export default ({ match: { params } }) => {
+const Notifications = ({ match: { params } }) => {
     const path = params.path || '/default';
     const menuKey = path.substr(1);
     const prevMenuKey = useRef(menuKey);
@@ -102,3 +102,11 @@ export default ({ match: { params } }) => {
         </Container>
     );
 };
+
+Notifications.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
+export default Notifications;

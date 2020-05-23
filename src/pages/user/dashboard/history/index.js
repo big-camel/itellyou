@@ -2,12 +2,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector, Link } from 'umi';
 import { Card } from 'antd';
 import timeUtils from '@/utils/time';
-import Timer from '@/components/Timer';
 import Layout from '../components/Layout';
 import { MoreList } from '@/components/List';
 import styles from './index.less';
 
-export default () => {
+const UserHistory = () => {
     const [offset, setOffset] = useState(0);
     const limit = 20;
 
@@ -79,3 +78,11 @@ export default () => {
         </Layout>
     );
 };
+
+UserHistory.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
+export default UserHistory;

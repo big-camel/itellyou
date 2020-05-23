@@ -149,7 +149,7 @@ const data = [
     },
 ];
 
-export default () => {
+const SettingsNotifications = () => {
     const dispatch = useDispatch();
     const dataSource = useSelector(state => state.notificationsSettings.list);
     useEffect(() => {
@@ -233,3 +233,11 @@ export default () => {
         </Layout>
     );
 };
+
+SettingsNotifications.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
+export default SettingsNotifications;

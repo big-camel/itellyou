@@ -39,7 +39,7 @@ const menus = [
         component: <Tag />,
     },
 ];
-export default ({ location: { query } }) => {
+const UserFollows = ({ location: { query } }) => {
     const type = query.type || 'user';
 
     return (
@@ -48,3 +48,11 @@ export default ({ location: { query } }) => {
         </Layout>
     );
 };
+
+UserFollows.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
+export default UserFollows;

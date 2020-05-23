@@ -7,7 +7,7 @@ import CardTable from '../components/CardTable';
 import { Question } from '@/components/Content';
 import { EditButton } from '@/components/Button';
 
-export default () => {
+const UserQuestion = () => {
     const [page, setPage] = useState(1);
     const limit = 20;
 
@@ -135,3 +135,11 @@ export default () => {
         </Layout>
     );
 };
+
+UserQuestion.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
+export default UserQuestion;

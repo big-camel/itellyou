@@ -113,4 +113,11 @@ function Profile() {
         </Layout>
     );
 }
+
+Profile.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
 export default Profile;

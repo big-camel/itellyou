@@ -154,4 +154,10 @@ function Dashboard() {
     return <Layout defaultKey="recent">{render()}</Layout>;
 }
 
+Dashboard.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
 export default Dashboard;

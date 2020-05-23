@@ -7,7 +7,7 @@ import CardTable from '../components/CardTable';
 import Timer from '@/components/Timer';
 import styles from './index.less';
 
-export default () => {
+const UserColumn = () => {
     const [page, setPage] = useState(1);
     const limit = 20;
     const dispatch = useDispatch();
@@ -97,3 +97,11 @@ export default () => {
         </Layout>
     );
 };
+
+UserColumn.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
+export default UserColumn;

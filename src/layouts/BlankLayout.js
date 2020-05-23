@@ -77,13 +77,13 @@ BlankLayout.getInitialProps = async ({ isServer, isMobile, user, store, params }
 
     const state = getState();
     if (isServer) {
-        dispatch({
+        await dispatch({
             type: 'user/setMe',
             payload: {
                 ...user,
             },
         });
-        dispatch({
+        await dispatch({
             type: 'settings/setSettings',
             payload: {
                 isMobile,
@@ -92,6 +92,7 @@ BlankLayout.getInitialProps = async ({ isServer, isMobile, user, store, params }
         return Promise.resolve({ ...state, user: { ...state.user, me: user } });
     }
     user = state.user;
+
     if (!user || !user.me) {
         await dispatch({
             type: 'user/fetchMe',

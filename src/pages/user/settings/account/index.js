@@ -85,4 +85,10 @@ function Account() {
     );
 }
 
+Account.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
 export default Account;

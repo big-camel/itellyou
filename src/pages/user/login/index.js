@@ -11,7 +11,7 @@ import styles from './index.less';
 
 const { UserName, Password, Mobile, Captcha } = Form.createItem(formMap);
 
-export default () => {
+const Login = () => {
     const intl = useIntl();
     const [form] = Form.useForm();
     const [tab, setTab] = useState('account');
@@ -301,3 +301,11 @@ export default () => {
         </>
     );
 };
+
+Login.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
+export default Login;
