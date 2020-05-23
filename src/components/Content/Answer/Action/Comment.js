@@ -30,8 +30,9 @@ export default ({ question_id, answer_id }) => {
     );
 
     useEffect(() => {
-        load(0, 20);
-    }, [load]);
+        if(!comment || comment.offset !== 0)
+            load(0, limit);
+    }, [comment,load, limit]);
 
     const create = (content, html, parentId, replyId) => {
         return dispatch({

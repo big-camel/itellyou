@@ -28,9 +28,10 @@ function ArticleComment({ id }) {
         [articleId, dispatch],
     );
 
-    /**useEffect(() => {
-        load(0, limit);
-    }, [load, limit]);**/
+    useEffect(() => {
+        if(!comment || comment.offset !== 0)
+            load(0, limit);
+    }, [comment,load, limit]);
 
     const create = (content, html, parentId, replyId) => {
         return dispatch({
