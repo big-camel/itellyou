@@ -8,7 +8,7 @@ import styles from './index.less';
 
 const { Avatar, Name, Desc, Path } = Form.createItem(formMap);
 
-export default detail => {
+const Setting = detail => {
     const [avatar, setAvatar] = useState(detail.avatar);
     const [submiting, setSubmiting] = useState(false);
 
@@ -108,3 +108,5 @@ export default detail => {
         </Card>
     );
 };
+
+export default Setting;

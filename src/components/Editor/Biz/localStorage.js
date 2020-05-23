@@ -42,12 +42,14 @@ const storageFactory = storage => {
     };
 };
 
-const localStorageService = storageFactory(window.localStorage);
+const localStorageService = storageFactory(
+    typeof window === 'undefined' ? null : window.localStorage,
+);
 export default {
     set: localStorageService.set,
     get: localStorageService.get,
     getObject: localStorageService.getObject,
     remove: localStorageService.remove,
     keys: localStorageService.keys,
-    session: storageFactory(window.sessionStorage),
+    session: storageFactory(typeof window === 'undefined' ? null : window.sessionStorage),
 };

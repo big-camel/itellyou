@@ -7,6 +7,17 @@ import List from '@/components/List';
 import { RouteContext } from '@/context';
 import styles from './index.less';
 
+const fetchList = (dispatch, offset, limit, type, parmas) => {
+    return dispatch({
+        type: 'column/list',
+        payload: {
+            type,
+            offset,
+            limit,
+            ...parmas,
+        },
+    });
+};
 function Column({ location: { query } }) {
     const [offset, setOffset] = useState(parseInt(query.offset || 0));
     const loadingEffect = useSelector(state => state.loading);
@@ -15,17 +26,6 @@ function Column({ location: { query } }) {
     const type = query.type || 'hot';
 
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch({
-            type: 'column/list',
-            payload: {
-                type: 'hot',
-                offset,
-                limit,
-            },
-        });
-    }, [offset, limit, type, dispatch]);
 
     const list = useSelector(state => {
         if (state.column) return state.column.list;
@@ -83,6 +83,7 @@ function Column({ location: { query } }) {
                 <Button
                     onClick={() => {
                         setOffset(list.end ? 0 : offset + limit);
+                        fetchList(dispatch, list.end ? 0 : offset + limit, limit, type);
                     }}
                     icon={<ReloadOutlined />}
                 >
@@ -93,4 +94,15 @@ function Column({ location: { query } }) {
         </Container>
     );
 }
+
+Column.getInitialProps = async ({ isServer, store, params, history, match }) => {
+    console.log(match, history);
+    const { location } = history || {};
+    const { query } = location || {};
+    const type = query ? query.type : null;
+    const { dispatch, getState } = store;
+    await fetchList(dispatch, 0, 8, type || 'hot', params);
+
+    if (isServer) return getState();
+};
 export default Column;

@@ -4,28 +4,30 @@ import { MoreList } from '@/components/List';
 import { Article, Question } from '@/components/Content';
 import { GoogleHorizontal } from '@/components/AdSense';
 
-export default () => {
+const Recommends = () => {
     const [offset, setOffset] = useState(0);
     const limit = 20;
 
     const dispatch = useDispatch();
+    const dataSource = useSelector(state => state.explore.recommends);
 
-    useEffect(() => {
+    const loadData = (offset, limit) => {
         dispatch({
             type: 'explore/recommends',
             payload: {
+                append: true,
                 offset,
                 limit,
             },
         });
-    }, [offset, limit, dispatch]);
-
-    const dataSource = useSelector(state => state.explore.recommends);
+    };
 
     if (dataSource && dataSource.data.length > 3) {
-        dataSource.data.splice(2, 0, {
-            type: 'AD',
-        });
+        if (dataSource.data[2].type !== 'AD') {
+            dataSource.data.splice(2, 0, {
+                type: 'AD',
+            });
+        }
     }
 
     const renderArticle = item => {
@@ -56,8 +58,12 @@ export default () => {
             offset={offset}
             limit={limit}
             dataSource={dataSource}
-            onChange={offset => setOffset(offset)}
+            onChange={offset => {
+                setOffset(offset);
+                loadData(offset, limit);
+            }}
             renderItem={renderItem}
         />
     );
 };
+export default Recommends;

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Alert, message, Space } from 'antd';
 import { history, useIntl, Link, useSelector, useDispatch } from 'umi';
+import Script from 'react-load-script';
 import Form, { Submit } from '@/components/Form';
 import formMap from './formMap';
-import '@/utils/gt.js';
 import { sendCaptcha } from '@/services/validation';
 import styles from './index.less';
 import { AlipayLogin, GithubLogin } from '@/components/ThirdParty';
@@ -149,6 +149,7 @@ export default () => {
 
     return (
         <>
+            <Script url="https://cdn-object.itellyou.com/geetest/gt.js" />
             <div className={styles.title}>注册</div>
             <Form onSubmit={handleSubmit} className={styles['form']} form={form}>
                 {renderErrorMessage()}

@@ -3,9 +3,7 @@ import { list } from './service';
 export default {
     namespace: 'search',
 
-    state: {
-        ...window.appData.search,
-    },
+    state: {},
     effects: {
         *list({ payload: { append, ...payload } }, { call, put }) {
             const response = yield call(list, payload);

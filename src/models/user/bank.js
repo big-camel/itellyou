@@ -3,9 +3,7 @@ import { setList } from '@/utils/model';
 export default {
     namespace: 'bank',
 
-    state: {
-        ...window.appData.bank,
-    },
+    state: {},
     effects: {
         *info({ payload }, { call, put }) {
             const response = yield call(info, payload);

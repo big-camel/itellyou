@@ -1,5 +1,4 @@
 import request from '@/utils/request';
-import { stringify } from 'qs';
 
 export async function create({ type, ...params }) {
     return request(`/api/${type}/create`, {
@@ -9,7 +8,9 @@ export async function create({ type, ...params }) {
 }
 
 export async function find({ id, type, ...params }) {
-    return request(`/api/${type}/${id}/edit?${stringify(params)}`);
+    return request(`/api/${type}/${id}/edit`, {
+        params,
+    });
 }
 
 export async function update({ id, type, ...params }) {

@@ -1,8 +1,9 @@
 import request from '@/utils/request';
-import { stringify } from 'qs';
 
-export async function config() {
-    return request(`/api/withdraw/config`);
+export async function config(params) {
+    return request(`/api/withdraw/config`, {
+        params,
+    });
 }
 
 export async function post(params) {
@@ -13,5 +14,7 @@ export async function post(params) {
 }
 
 export async function log(params) {
-    return request(`/api/withdraw/log?${stringify(params)}`);
+    return request(`/api/withdraw/log`, {
+        params,
+    });
 }

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Alert, message } from 'antd';
 import { useDispatch, useIntl, Link } from 'umi';
+import Script from 'react-load-script';
 import Form, { Submit } from '@/components/Form';
 import styles from './index.less';
 import { sendCaptcha } from '@/services/validation';
 import formMap from './formMap';
-import '@/utils/gt.js';
 
 const { Mobile, Captcha } = Form.createItem(formMap);
 
@@ -120,6 +120,7 @@ export default ({ location }) => {
 
     return (
         <>
+            <Script url="https://cdn-object.itellyou.com/geetest/gt.js" />
             <div className={styles.title}>
                 验证成功
                 <div className={styles['sub']}>绑定手机号立即登录</div>

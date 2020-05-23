@@ -28,9 +28,9 @@ function ArticleComment({ id }) {
         [articleId, dispatch],
     );
 
-    useEffect(() => {
+    /**useEffect(() => {
         load(0, limit);
-    }, [load, limit]);
+    }, [load, limit]);**/
 
     const create = (content, html, parentId, replyId) => {
         return dispatch({

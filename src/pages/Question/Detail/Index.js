@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link, useDispatch, useSelector, useAccess } from 'umi';
+import { Link, useDispatch, useSelector, useAccess, Helmet } from 'umi';
 import { Button, Card, Space, message } from 'antd';
-import DocumentMeta from 'react-document-meta';
 import classNames from 'classnames';
 import { RouteContext } from '@/context';
 import Container, { Layout } from '@/components/Container';
@@ -37,27 +36,6 @@ function Detail({ match: { params } }) {
     const access = useAccess();
 
     useEffect(() => {
-        dispatch({
-            type: 'question/view',
-            payload: {
-                id,
-            },
-        });
-        dispatch({
-            type: 'question/find',
-            payload: {
-                id,
-            },
-        });
-        dispatch({
-            type: 'answerReward/list',
-            payload: {
-                question_id: id,
-                limit: 99999,
-            },
-        });
-    }, [dispatch, id]);
-    useEffect(() => {
         if (me) {
             dispatch({
                 type: 'answer/findDraft',
@@ -74,7 +52,7 @@ function Detail({ match: { params } }) {
     }, [me, id, answer_id, dispatch]);
 
     if (!detail) return <Loading />;
-    const { author, title, description, content, tags, use_star } = detail;
+    const { author, title, description, content, html, tags, use_star } = detail;
     const onRevoke = answer_id => {
         dispatch({
             type: 'answer/revoke',
@@ -156,16 +134,13 @@ function Detail({ match: { params } }) {
         );
     };
     return (
-        <DocumentMeta
-            title={`${title} - ${settings.title}`}
-            meta={{
-                name: {
-                    author: author.name,
-                    keywords: keywords.join(','),
-                    description,
-                },
-            }}
-        >
+        <>
+            <Helmet>
+                <title>{`${title} - ${settings.title}`}</title>
+                <meta name="author" content={author.name} />
+                <meta name="keywords" content={keywords.join(',')} />
+                <meta name="description" content={description} />
+            </Helmet>
             <Container>
                 <Layout>
                     <React.Fragment>
@@ -186,7 +161,7 @@ function Detail({ match: { params } }) {
                             </div>
                             {!isEmpty && (
                                 <article>
-                                    <Editor.Viewer content={content} />
+                                    <Editor.Viewer content={content} html={html} />
                                 </article>
                             )}
                             <div className={styles['footer']}>
@@ -271,8 +246,42 @@ function Detail({ match: { params } }) {
                     </Space>
                 </Layout>
             </Container>
-        </DocumentMeta>
+        </>
     );
 }
 
+Detail.getInitialProps = async ({ isServer, match, store, params }) => {
+    const { dispatch, getState } = store;
+    const id = parseInt(match.params.id || 0);
+    const answer_id = match.params.answer_id ? parseInt(match.params.answer_id) : null;
+    await dispatch({
+        type: 'question/view',
+        payload: {
+            id,
+            ...params,
+        },
+    });
+    await dispatch({
+        type: 'question/find',
+        payload: {
+            id,
+            ...params,
+        },
+    });
+    await dispatch({
+        type: 'answerReward/list',
+        payload: {
+            question_id: id,
+            limit: 99999,
+            ...params,
+        },
+    });
+    await Answer.List.getInitialProps({ isServer, store, params, id });
+    await Related.getInitialProps({ isServer, store, params, id });
+    if (answer_id) {
+        await Answer.View.getInitialProps({ isServer, store, params, question_id: id, answer_id });
+    }
+
+    if (isServer) return getState();
+};
 export default Detail;

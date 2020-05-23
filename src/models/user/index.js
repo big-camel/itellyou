@@ -13,7 +13,7 @@ export default {
     namespace: 'user',
 
     state: {
-        me: window.appData.me,
+        me: null,
         detail: {},
     },
 

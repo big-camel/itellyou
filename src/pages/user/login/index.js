@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Alert, message, Tooltip, Space, Popover } from 'antd';
+import { Alert, message, Space, Popover } from 'antd';
 import { useIntl, Link, useDispatch } from 'umi';
-import '@/utils/gt.js';
+import Script from 'react-load-script';
 import Form, { Tab, Submit } from '@/components/Form';
-import formMap from './formMap';
-import styles from './index.less';
 import { sendCaptcha } from '@/services/validation';
 import { init } from '@/services/geetest';
 import { GithubLogin, AlipayLogin } from '@/components/ThirdParty';
+import formMap from './formMap';
+import styles from './index.less';
 
 const { UserName, Password, Mobile, Captcha } = Form.createItem(formMap);
 
@@ -220,16 +220,17 @@ export default () => {
 
     return (
         <>
+            <Script url="https://cdn-object.itellyou.com/geetest/gt.js" />
             <div className={styles.title}>登录</div>
             <Form
                 className={styles['login-form']}
                 form={form}
                 onSubmit={handleSubmit}
-                defaultActiveKey={'account'}
+                defaultActiveKey={tab}
                 activeKey={tab}
                 onChange={tab => setTab(tab)}
             >
-                <Tab key="account" tab={'账号密码登录'}>
+                <Tab key="account" tab="账号密码登录">
                     {renderErrorMessage()}
                     <UserName
                         name="username"
@@ -252,7 +253,7 @@ export default () => {
                         }}
                     />
                 </Tab>
-                <Tab key="mobile" tab={'手机动态码登录'}>
+                <Tab key="mobile" tab="手机动态码登录">
                     {renderErrorMessage()}
                     <Mobile
                         name="mobile"

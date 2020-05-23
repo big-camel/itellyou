@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Select, message, Row, Col } from 'antd';
 import { useDispatch, useSelector } from 'umi';
+import Script from 'react-load-script';
 import Loading from '@/components/Loading';
-import '@/utils/gt.js';
 import Form from '@/components/Form';
 import formMap from './formMap';
 import { sendCaptcha } from '@/services/validation';
@@ -185,25 +185,28 @@ function Verify({ defaultValue, onClose, onSucceed, children, ...props }) {
     };
 
     return (
-        <Modal
-            title="身份验证"
-            visible={visible}
-            okText={loading ? '验证中...' : '验证'}
-            onOk={onVerify}
-            cancelText="取消"
-            destroyOnClose={true}
-            okButtonProps={{
-                loading,
-            }}
-            onCancel={() => {
-                setVisible(false);
-                if (onClose) {
-                    onClose();
-                }
-            }}
-        >
-            {render()}
-        </Modal>
+        <>
+            <Script url="https://cdn-object.itellyou.com/geetest/gt.js" />
+            <Modal
+                title="身份验证"
+                visible={visible}
+                okText={loading ? '验证中...' : '验证'}
+                onOk={onVerify}
+                cancelText="取消"
+                destroyOnClose={true}
+                okButtonProps={{
+                    loading,
+                }}
+                onCancel={() => {
+                    setVisible(false);
+                    if (onClose) {
+                        onClose();
+                    }
+                }}
+            >
+                {render()}
+            </Modal>
+        </>
     );
 }
 export default Verify;

@@ -1,24 +1,25 @@
-import request from '@/utils/request'
-import { stringify } from 'qs'
+import request from '@/utils/request';
 
-export async function list(params){
-    return request(`/api/question/star?${stringify(params)}`)
+export async function list(params) {
+    return request(`/api/question/star`, {
+        params,
+    });
 }
 
-export async function follow({ id }){
-    return request(`/api/question/star`,{ 
+export async function follow({ id }) {
+    return request(`/api/question/star`, {
         method: 'POST',
-        data:{
-            id
-        }
-    })
+        data: {
+            id,
+        },
+    });
 }
 
-export async function unfollow({ id }){
-    return request(`/api/question/star`,{ 
+export async function unfollow({ id }) {
+    return request(`/api/question/star`, {
         method: 'DELETE',
-        data:{
-            id
-        }
-    })
+        data: {
+            id,
+        },
+    });
 }

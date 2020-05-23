@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, message } from 'antd';
-import '@/utils/gt.js';
 import { useDispatch, useSelector } from 'umi';
 import Verify from '@/components/User/Verify';
 import Form, { Submit } from '@/components/Form';

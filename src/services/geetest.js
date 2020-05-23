@@ -1,11 +1,10 @@
-import { stringify } from 'qs';
 import request from '@/utils/request';
 
 export const init = mode => {
     return new Promise((resolve, reject) => {
         const { initGeetest } = window;
         if (!initGeetest) return reject('Not fint geetest lib');
-        request(`/api/geetest?${stringify({ mode })}`).then(res => {
+        request('/api/geetest', { params: mode }).then(res => {
             if (res.result) {
                 const { key, gt, challenge, success, newCaptcha } = res.data;
                 initGeetest(

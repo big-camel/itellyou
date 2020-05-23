@@ -1,6 +1,7 @@
-import request from '@/utils/request'
-import { stringify } from 'qs'
+import request from '@/utils/request';
 
 export async function find(params) {
-    return request(`/api/path/find?${stringify(params)}`)
+    return request('/api/path/find', {
+        params,
+    });
 }

@@ -4,9 +4,7 @@ import { setList } from '@/utils/model';
 export default {
     namespace: 'reward',
 
-    state: {
-        ...window.appData.reward,
-    },
+    state: {},
     effects: {
         *findConfig({ payload }, { call, put }) {
             const response = yield call(findConfig, payload);

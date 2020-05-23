@@ -14,9 +14,7 @@ import { setList } from '@/utils/model';
 export default {
     namespace: 'answer',
 
-    state: {
-        ...window.appData.answer,
-    },
+    state: {},
 
     effects: {
         *list({ payload: { append, ...payload } }, { call, put }) {

@@ -5,9 +5,7 @@ import { setList } from '@/utils/model';
 export default {
     namespace: 'question',
 
-    state: {
-        ...window.appData.question,
-    },
+    state: {},
 
     effects: {
         *adopt({ payload }, { call, put }) {

@@ -1,18 +1,43 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
-import { Outline } from '@itellyou/itellyou-editor';
-import { findReadingSection } from './utils';
-import styles from './index.less';
 import { Card } from 'antd';
 import { GoogleDefault } from '@/components/AdSense';
+import { findReadingSection } from './utils';
+import { useEditor } from '../Hook';
+import styles from './index.less';
 
 export default ({ view, config, ...props }) => {
     const lastScrollTop = useRef(0);
     const headings = useRef([]);
-
+    const { Outline } = useEditor() || {};
     const [contents, setContents] = useState([]);
     const [readingSection, setReadingSection] = useState(0);
     const [reachingTop, setReachingTop] = useState(true);
+
+    const handleResize = useCallback(() => {
+        listenerViewChange();
+    }, []);
+
+    const listenerViewChange = useCallback(() => {
+        const index = findReadingSection(headings.current, 60);
+        setReadingSection(index);
+    }, []);
+
+    const handleScroll = useCallback(() => {
+        const min = 5;
+        const top =
+            window.pageYOffset ||
+            document.documentElement.scrollTop ||
+            document.body.scrollTop ||
+            0;
+
+        if (!Math.abs(lastScrollTop.current - top) <= min) {
+            setReachingTop(top < 60);
+            listenerViewChange();
+
+            lastScrollTop.current = top;
+        }
+    }, []);
 
     useEffect(() => {
         if (view && config) {
@@ -42,30 +67,6 @@ export default ({ view, config, ...props }) => {
         }, 200);
     }, [contents]);
 
-    const handleScroll = useCallback(() => {
-        const min = 5;
-        const top =
-            window.pageYOffset ||
-            document.documentElement.scrollTop ||
-            document.body.scrollTop ||
-            0;
-
-        if (!Math.abs(lastScrollTop.current - top) <= min) {
-            setReachingTop(top < 60);
-            listenerViewChange();
-
-            lastScrollTop.current = top;
-        }
-    }, []);
-
-    const handleResize = useCallback(() => {
-        listenerViewChange();
-    }, []);
-
-    const listenerViewChange = useCallback(() => {
-        const index = findReadingSection(headings.current, 60);
-        setReadingSection(index);
-    }, []);
     if (!contents || contents.length === 0) return <GoogleDefault />;
     return (
         <div className={classNames(styles['toc'], { [styles['fixed']]: !reachingTop })} {...props}>

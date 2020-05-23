@@ -1,17 +1,16 @@
 import React, { useEffect, useContext } from 'react';
-import { Link, useDispatch, useSelector, history } from 'umi';
+import { Link, useDispatch, useSelector, history, Helmet } from 'umi';
 import { Card, Button, Avatar, Space } from 'antd';
+import { ReportButton } from '@/components/Button';
+import { RouteContext } from '@/context';
 import Loading from '@/components/Loading';
 import Setting from './components/setting';
 import List from './components/list';
 import Member from './components/member';
 import styles from './index.less';
-import { ReportButton } from '@/components/Button';
-import { RouteContext } from '@/context';
-import DocumentMeta from 'react-document-meta';
 
-export default ({ id, paths, location: { query } }) => {
-    const setting = paths && paths.length > 1 ? paths[1] : null;
+const Column = ({ id, paths, location: { query } }) => {
+    const setting = paths && paths.length > 1 ? paths[1] === 'setting' : null;
 
     const dispatch = useDispatch();
     const detail = useSelector(state => state.column.detail);
@@ -19,17 +18,10 @@ export default ({ id, paths, location: { query } }) => {
     const settings = useSelector(state => state.settings);
     const loadingEffect = useSelector(state => state.loading);
 
+    const { isMobile } = useContext(RouteContext);
+
     const followLoading =
         loadingEffect.effects['columnStar/follow'] || loadingEffect.effects['columnStar/unfollow'];
-
-    useEffect(() => {
-        dispatch({
-            type: 'column/detail',
-            payload: {
-                id,
-            },
-        });
-    }, [dispatch, id]);
 
     if (!detail) return <Loading />;
 
@@ -73,19 +65,14 @@ export default ({ id, paths, location: { query } }) => {
     };
 
     const child = setting ? renderSetting() : renderList();
-
-    const { isMobile } = useContext(RouteContext);
     return (
-        <DocumentMeta
-            title={`${name} - ${settings.title}`}
-            meta={{
-                name: {
-                    author: author.name,
-                    keywords: `专栏,${name},itellyou`,
-                    description,
-                },
-            }}
-        >
+        <>
+            <Helmet>
+                <title>{`${name} - ${settings.title}`}</title>
+                <meta name="author" content={author.name} />
+                <meta name="keywords" content={`专栏,${name},itellyou`} />
+                <meta name="description" content={description} />
+            </Helmet>
             <div className={styles['column-layout']}>
                 <div className={styles['header']}>
                     <div className={styles['header-inner']}>
@@ -114,6 +101,29 @@ export default ({ id, paths, location: { query } }) => {
                 </div>
                 <div className={styles['body']}>{child}</div>
             </div>
-        </DocumentMeta>
+        </>
     );
 };
+
+Column.getInitialProps = async ({ isServer, store, params, paths }) => {
+    const { dispatch, getState } = store;
+
+    await dispatch({
+        type: 'column/detail',
+        payload: {
+            ...params,
+        },
+    });
+
+    await Member.getInitialProps({ isServer, store, params });
+
+    const setting = paths && paths.length > 1 ? paths[1] === 'setting' : null;
+
+    if (!setting) {
+        await List.getInitialProps({ isServer, store, params });
+    }
+
+    if (isServer) return getState();
+};
+
+export default Column;

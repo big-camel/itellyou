@@ -3,9 +3,7 @@ import { setList } from '@/utils/model';
 export default {
     namespace: 'pay',
 
-    state: {
-        ...window.appData.pay,
-    },
+    state: {},
     effects: {
         *alipayPrecreate({ payload }, { call, put }) {
             const response = yield call(alipayPrecreate, payload);

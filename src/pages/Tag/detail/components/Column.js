@@ -4,24 +4,25 @@ import { Avatar } from 'antd';
 import { Link, useDispatch, useSelector } from 'umi';
 import styles from './Column.less';
 
-export default ({ id }) => {
+const fetchList = (dispatch, offset, limit, id, parmas) => {
+    return dispatch({
+        type: 'column/list',
+        payload: {
+            append: offset !== 0,
+            offset,
+            limit,
+            tag_id: id,
+            ...parmas,
+        },
+    });
+};
+
+const TagColumn = ({ id }) => {
     const [offset, setOffset] = useState(0);
     const limit = 20;
 
     const dispatch = useDispatch();
     const dataSource = useSelector(state => state.column.list);
-
-    useEffect(() => {
-        dispatch({
-            type: 'column/list',
-            payload: {
-                append: offset !== 0,
-                offset,
-                limit,
-                tag_id: id,
-            },
-        });
-    }, [id, offset, limit, dispatch]);
 
     const renderItem = item => {
         const { name, description, avatar, path, article_count, star_count } = item;
@@ -51,7 +52,20 @@ export default ({ id }) => {
             limit={limit}
             renderItem={renderItem}
             dataSource={dataSource}
-            onChange={offset => setOffset(offset)}
+            onChange={offset => {
+                setOffset(offset);
+                fetchList(dispatch, offset, limit, id);
+            }}
         />
     );
 };
+
+TagColumn.getInitialProps = async ({ isServer, store, params: { id, ...params } }) => {
+    const { dispatch, getState } = store;
+
+    await await fetchList(dispatch, 0, 20, id, params);
+
+    if (isServer) return getState();
+};
+
+export default TagColumn;

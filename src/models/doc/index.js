@@ -6,7 +6,6 @@ export default {
 
     state: {
         type: 'doc',
-        ...window.appData.doc,
     },
 
     effects: {

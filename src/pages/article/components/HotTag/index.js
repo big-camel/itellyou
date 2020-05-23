@@ -1,24 +1,11 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'umi';
+import React from 'react';
+import { useSelector } from 'umi';
 import { Card } from 'antd';
 import Loading from '@/components/Loading';
 import Tag from '@/components/Tag';
 import List from '@/components/List';
 
 export default props => {
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch({
-            type: 'tag/list',
-            payload: {
-                type: 'hot',
-                offset: 0,
-                limit: 10,
-            },
-        });
-    }, [dispatch]);
-
     const renderItem = ({ id, name }) => {
         return (
             <List.Item key={id}>

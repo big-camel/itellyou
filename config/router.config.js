@@ -8,10 +8,10 @@ export default [
                 path: '/login',
                 name: 'login.page',
                 component: './user/login',
-                metas: {
-                    keywords: '登陆,itellyou登陆',
-                    description: 'ITELLYOU 用户登陆',
-                },
+                metas: [
+                    { name: 'keywords', conetnt: '登陆,itellyou登陆' },
+                    { name: 'description', conetnt: 'ITELLYOU 用户登陆' },
+                ],
             },
             {
                 path: '/login/oauth',
@@ -22,10 +22,10 @@ export default [
                 path: '/register',
                 name: 'register.page',
                 component: './user/register',
-                metas: {
-                    keywords: '注册,注册',
-                    description: 'ITELLYOU 用户注册',
-                },
+                metas: [
+                    { name: 'keywords', conetnt: '注册,itellyou注册' },
+                    { name: 'description', conetnt: 'ITELLYOU 用户注册' },
+                ],
             },
         ],
     },
@@ -135,7 +135,7 @@ export default [
             // Article
             { path: '/article', name: 'article.page.index', component: './article' },
             {
-                path: '/article/:type(hot|reward|star)',
+                path: '/article/:type(hot|star)',
                 name: 'article.page.index',
                 component: './article',
             },
@@ -242,6 +242,11 @@ export default [
                 path: '/500',
                 name: '500.page',
                 component: './500',
+            },
+            {
+                path: '/404',
+                name: '404.page',
+                component: './404',
             },
             // Path
             {

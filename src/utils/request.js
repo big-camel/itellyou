@@ -2,10 +2,16 @@
  * request 网络请求工具
  * 更详细的api文档: https://github.com/umijs/umi-request
  */
+
 import { extend } from 'umi-request';
 import pathToRegexp from 'path-to-regexp';
-import { notification } from 'antd';
-import { history } from 'umi';
+import { isBrowser, history } from 'umi';
+import omit from 'omit.js';
+
+let notification;
+import('antd').then(module => {
+    notification = module.notification;
+});
 
 const codeMessage = {
     200: '服务器成功返回请求的数据。',
@@ -29,9 +35,12 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = error => {
+    if (!isBrowser()) {
+        return console.log('umi-request error:', error);
+    }
     const { response } = error;
     if (response && response.status) {
-        //const errorText = codeMessage[response.status] || response.statusText;
+        const errorText = codeMessage[response.status] || response.statusText;
         const { status, url } = response;
         if (
             !pathToRegexp('/user/me').test(url) &&
@@ -41,13 +50,13 @@ const errorHandler = error => {
             if (status === 401) url = 'login';
             else if (status >= 500) url = 500;
             history.push(`/${url}`);
-        } else {
+        } else if (notification) {
             notification.error({
                 message: `请求错误 ${status}: ${url}`,
                 description: errorText,
             });
         }
-    } else if (!response) {
+    } else if (!response && notification) {
         notification.error({
             description: '您的网络发生异常，无法连接服务器',
             message: '网络异常',
@@ -62,6 +71,38 @@ const errorHandler = error => {
 const request = extend({
     errorHandler, // 默认错误处理
     credentials: 'include', // 默认请求是否带上cookie
+});
+
+request.interceptors.request.use((url, { params = {}, data = {}, headers, ...options }) => {
+    const exclude = [];
+    if (!isBrowser()) {
+        let token = params.token;
+        let apiUrl = params.api_url;
+        if (!token) token = data.token;
+        if (!apiUrl) apiUrl = data.api_url;
+        const cookies = headers.Cookie ? headers.Cookie.split(';') : [];
+
+        if (token) {
+            exclude.push('token');
+            cookies.push(`token=${token}`);
+        }
+        headers.Cookie = cookies.join(';');
+
+        if (apiUrl) {
+            url = apiUrl + url;
+            exclude.push('api_url');
+        }
+    }
+    return {
+        url,
+        options: {
+            headers,
+            params: omit(params, exclude),
+            data: omit(data, exclude),
+            ...options,
+            interceptors: true,
+        },
+    };
 });
 
 export default request;

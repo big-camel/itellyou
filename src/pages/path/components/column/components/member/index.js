@@ -1,19 +1,8 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'umi';
+import React from 'react';
+import { useSelector } from 'umi';
 import Author from '@/components/User/Author';
 
-export default ({ id }) => {
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch({
-            type: 'columnMember/list',
-            payload: {
-                id,
-            },
-        });
-    }, [dispatch, id]);
-
+const Member = () => {
     const dataSource = useSelector(state => state.columnMember.list);
     if (!dataSource) return null;
     return (
@@ -24,3 +13,18 @@ export default ({ id }) => {
         </div>
     );
 };
+
+Member.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+
+    await dispatch({
+        type: 'columnMember/list',
+        payload: {
+            ...params,
+        },
+    });
+
+    if (isServer) return getState();
+};
+
+export default Member;

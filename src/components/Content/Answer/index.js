@@ -77,7 +77,8 @@ const Answer = ({
                 type: 'answer/updateListItem',
                 payload: doc,
             });
-            history.push(`/question/${question_id}/answer/${doc.id}`);
+            //history.push(`/question/${question_id}/answer/${doc.id}`);
+            window.location.href = `/question/${question_id}/answer/${doc.id}`;
         } else {
             window.location.reload();
         }
@@ -96,21 +97,20 @@ const Answer = ({
     const renderContent = () => {
         if (desc && !fullVisible) {
             description = description.trim();
-
+            const paidReadHtml = paid_read
+                ? `<span class='${styles['paid-read-link']}'>有付费内容，点击查看</span>`
+                : '';
             return (
                 <div className={styles['description']}>
                     <Link to={`/question/${question_id}/answer/${id}`}>
-                        <span dangerouslySetInnerHTML={{ __html: description }} />
-                        {paid_read && (
-                            <span className={styles['paid-read-link']}>有付费内容，点击查看</span>
-                        )}
+                        <div dangerouslySetInnerHTML={{ __html: description + paidReadHtml }} />
                     </Link>
                 </div>
             );
         }
         return (
             <div className={styles['content']}>
-                <div>{<Editor.Viewer key={id} content={item.content} />}</div>
+                <div>{<Editor.Viewer key={id} content={item.content} html={item.html} />}</div>
 
                 <p className={styles['footer']}>
                     {!paid_read && (

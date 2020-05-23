@@ -1,10 +1,13 @@
 import React from 'react';
-import { ContentView } from '@itellyou/itellyou-editor';
+import { useEditor } from './Hook';
 
-export default ({ content, onLoad, genAnchor, ...props }) => {
+export default ({ content, html, onLoad, genAnchor, ...props }) => {
+    const { ContentView } = useEditor() || {};
+
     const renderContent = () => {
         // 内容为空时，不执行渲染
         if (!content) return <span></span>;
+        if (!ContentView) return <div dangerouslySetInnerHTML={{ __html: html }} />;
         return (
             <ContentView
                 content={content}

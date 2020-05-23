@@ -4,11 +4,10 @@ import Tag from '@/components/Tag';
 import Loading from '@/components/Loading';
 import styles from './index.less';
 import Container from '@/components/Container';
-import { Link, useDispatch, useSelector, useIntl } from 'umi';
+import { Link, useDispatch, useSelector, useIntl, Helmet } from 'umi';
 import { RouteContext } from '@/context';
-import DocumentMeta from 'react-document-meta';
 
-export default () => {
+const TagIndex = () => {
     const dispatch = useDispatch();
     const tag = useSelector(state => state.tag);
 
@@ -16,12 +15,6 @@ export default () => {
     const tagStar = useSelector(state => state.tagStar.list);
     const loadingEffect = useSelector(state => state.loading);
     const settings = useSelector(state => state.settings);
-
-    useEffect(() => {
-        dispatch({
-            type: 'tag/group',
-        });
-    }, [dispatch]);
 
     useEffect(() => {
         if (user.me) {
@@ -122,17 +115,22 @@ export default () => {
     };
     const intl = useIntl();
     return (
-        <DocumentMeta
-            title={`${intl.formatMessage({ id: 'tag.page.index' })} - ${settings.title}`}
-            meta={{
-                name: {
-                    keywords: `${intl.formatMessage({ id: 'keywords' })},标签,标签列表`,
-                    description: `itellyou的常用标签列表页${intl.formatMessage({
+        <>
+            <Helmet>
+                <title>{`${intl.formatMessage({ id: 'tag.page.index' })} - ${
+                    settings.title
+                }`}</title>
+                <meta
+                    name="keywords"
+                    content={`${intl.formatMessage({ id: 'keywords' })},标签,标签列表`}
+                />
+                <meta
+                    name="description"
+                    content={`itellyou的常用标签列表页${intl.formatMessage({
                         id: 'description',
-                    })}`,
-                },
-            }}
-        >
+                    })}`}
+                />
+            </Helmet>
             <Container>
                 <div className={styles['tag-layout']}>
                     {renderUserTag()}
@@ -150,6 +148,21 @@ export default () => {
                     </Card>
                 </div>
             </Container>
-        </DocumentMeta>
+        </>
     );
 };
+
+TagIndex.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+
+    await dispatch({
+        type: 'tag/group',
+        payload: {
+            ...params,
+        },
+    });
+
+    if (isServer) return getState();
+};
+
+export default TagIndex;

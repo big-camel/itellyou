@@ -1,84 +1,83 @@
-import { list , count , deleted ,readed } from '@/services/notifications'
+import { list, count, deleted, readed } from '@/services/notifications';
 export default {
     namespace: 'notifications',
 
     state: {
-        ...window.appData.notifications,
-        groupCount:{
-            count:0
+        groupCount: {
+            count: 0,
         },
-        list:{}
+        list: {},
     },
     effects: {
-        *count(_, { call , put }){
-            const response = yield call(count)
-            if(response.result){
+        *count(_, { call, put }) {
+            const response = yield call(count);
+            if (response.result) {
                 yield put({
                     type: 'setCount',
-                    payload:response.data
-                })
+                    payload: response.data,
+                });
             }
-            return response
+            return response;
         },
-        *list({ payload : { append , action , ...payload }}, { call , put }){
-            const response = yield call(list,{...payload,action})
-            if(response.result){
+        *list({ payload: { append, action, ...payload } }, { call, put }) {
+            const response = yield call(list, { ...payload, action });
+            if (response.result) {
                 yield put({
                     type: 'setList',
-                    payload:{ append , action , ...(response ? response.data : {}) }
-                })
+                    payload: { append, action, ...(response ? response.data : {}) },
+                });
             }
-            return response
+            return response;
         },
-        *readed({ payload }, { call , put }){
-            const response = yield call(readed,payload)
-            if(response && response.result){
+        *readed({ payload }, { call, put }) {
+            const response = yield call(readed, payload);
+            if (response && response.result) {
                 yield put({
                     type: 'setGroupCount',
-                    payload:{
-                        count:0
-                    }
-                })
+                    payload: {
+                        count: 0,
+                    },
+                });
             }
-            return response
+            return response;
         },
-        *deleted({ payload }, { call }){
-            const response = yield call(deleted,payload)
-            return response
-        }
+        *deleted({ payload }, { call }) {
+            const response = yield call(deleted, payload);
+            return response;
+        },
     },
-    reducers:{
-        setCount(state,{ payload }){
-            const groupCount = state.groupCount
+    reducers: {
+        setCount(state, { payload }) {
+            const groupCount = state.groupCount;
             return {
                 ...state,
-                groupCount:{ ...groupCount , count:payload }
-            }
+                groupCount: { ...groupCount, count: payload },
+            };
         },
-        setGroupCount(state,{ payload }){
+        setGroupCount(state, { payload }) {
             return {
                 ...state,
-                groupCount:payload
-            }
+                groupCount: payload,
+            };
         },
-        setList(state,{ payload : { append , action , end , total , data , ...payload} }){
-            const list = state.list
-            if(!list || !list[action] || !append){
+        setList(state, { payload: { append, action, end, total, data, ...payload } }) {
+            const list = state.list;
+            if (!list || !list[action] || !append) {
                 return {
                     ...state,
-                    list:{...list , [action]:{end , total , data , ...payload}}
-                }
+                    list: { ...list, [action]: { end, total, data, ...payload } },
+                };
             }
-            const dataList = list[action].data.concat()
+            const dataList = list[action].data.concat();
             data.forEach(item => {
-                if(!dataList.find(child => child.id === item.id)){
-                    dataList.push(item)
+                if (!dataList.find(child => child.id === item.id)) {
+                    dataList.push(item);
                 }
-            })
+            });
             return {
                 ...state,
-                list:{...list,[action]:{...list[action],end,total,data:dataList}}
-            }
-        }
-    }
-}
+                list: { ...list, [action]: { ...list[action], end, total, data: dataList } },
+            };
+        },
+    },
+};

@@ -1,10 +1,9 @@
 import React, { useRef, useEffect } from 'react';
-import DocumentMeta from 'react-document-meta';
-import { withRouter, useSelector, useDispatch, useModel, Redirect, useAccess } from 'umi';
+import { withRouter, useSelector, Redirect, useAccess, Helmet, isBrowser, useDispatch } from 'umi';
 import NProgress from 'nprogress';
-import useAntdMediaQuery from 'use-media-antd-query';
 import { getRoute, getTitle, getMetas } from '@/utils/page';
 import { RouteContext } from '@/context';
+import useMedia from 'use-media-antd-query';
 import 'nprogress/nprogress.css';
 
 function BlankLayout({ route, children, location: { pathname }, title }) {
@@ -12,6 +11,8 @@ function BlankLayout({ route, children, location: { pathname }, title }) {
     const hrefRef = useRef();
     const settings = useSelector(state => state.settings);
     const loading = useSelector(state => state.loading);
+
+    const dispatch = useDispatch();
 
     const { routes = [] } = route || {};
 
@@ -24,30 +25,40 @@ function BlankLayout({ route, children, location: { pathname }, title }) {
             if (loading.global && !NProgress.status) {
                 NProgress.start();
             }
+
             if (!loading.global && NProgress.status) {
                 NProgress.done();
                 hrefRef.current = href;
-                if (window.app && window.app.done) {
+                if (typeof window !== 'undefined' && window.app && window.app.done) {
                     window.app.done();
                 }
             }
         }
     }, [href, loading]);
 
-    const { initialState } = useModel('@@initialState');
-    const me = initialState ? initialState.me : null;
+    const colSize = isBrowser() ? useMedia() : '';
+    const isMobile = isBrowser() ? colSize === 'sm' || colSize === 'xs' : settings.isMobile;
 
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch({
-            type: 'user/setMe',
-            payload: me,
-        });
-    }, [dispatch, me]);
-
-    const colSize = useAntdMediaQuery();
-    const isMobile = colSize === 'sm' || colSize === 'xs';
+    //useEffect(() => {
+    /*    let isDestory = false
+        if(isBrowser() && settings.isMobile === undefined){
+            import('use-media-antd-query').then(module => {
+                const colSize = module.default()
+                const isMobile = colSize === 'sm' || colSize === 'xs';
+                if(!isDestory){
+                    dispatch({
+                        type:'settings/setSettings',
+                        payload:{
+                            isMobile
+                        }
+                    })
+                }
+            })
+        }
+       return () => {
+            isDestory = true
+        }
+    },[isBrowser,settings,dispatch])*/
 
     if (!title) {
         title = getTitle(pathname, routes);
@@ -60,19 +71,18 @@ function BlankLayout({ route, children, location: { pathname }, title }) {
         return <Redirect to="/403" />;
     }
 
-    const metas = getMetas(pathname, routes);
+    const metas = getMetas(pathname, routes) || [];
 
     title = title ? `${title} - ${settings.title}` : settings.title;
 
     return (
-        <DocumentMeta
-            title={title}
-            meta={{
-                name: {
-                    ...metas,
-                },
-            }}
-        >
+        <>
+            <Helmet>
+                <title>{title}</title>
+                {metas.map(({ name, content }) => (
+                    <meta key={name} name={name} content={content} />
+                ))}
+            </Helmet>
             <RouteContext.Provider
                 value={{
                     isMobile,
@@ -81,7 +91,37 @@ function BlankLayout({ route, children, location: { pathname }, title }) {
             >
                 {children}
             </RouteContext.Provider>
-        </DocumentMeta>
+        </>
     );
 }
+
+BlankLayout.getInitialProps = async ({ isServer, isMobile, user, store, params }) => {
+    const { dispatch, getState } = store;
+
+    const state = getState();
+    if (isServer) {
+        dispatch({
+            type: 'user/setMe',
+            payload: {
+                ...user,
+            },
+        });
+        dispatch({
+            type: 'settings/setSettings',
+            payload: {
+                isMobile,
+            },
+        });
+        return Promise.resolve({ ...state, user: { ...state.user, me: user } });
+    }
+    user = state.user;
+    if (!user || !user.me) {
+        await dispatch({
+            type: 'user/fetchMe',
+            payload: {
+                ...params,
+            },
+        });
+    }
+};
 export default withRouter(BlankLayout);

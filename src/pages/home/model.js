@@ -3,21 +3,25 @@ import { setList, replaceItem } from '@/utils/model';
 export default {
     namespace: 'explore',
 
-    state: {
-        ...window.appData.explore,
-    },
+    state: {},
     effects: {
-        *recommends({ payload: { append, ...payload } }, { call, put }) {
+        *recommends({ payload: { append, ...payload } }, { call, put, select }) {
+            const data = yield select(state => state.explore.recommends);
+            if (data && data.offset === payload.offset) return;
+
             const response = yield call(recommends, payload);
             if (response && response.result) {
                 yield put({
                     type: 'setRecommends',
-                    payload: response.data,
+                    payload: { append, ...response.data },
                 });
             }
             return response;
         },
-        *writer({ payload: { append, ...payload } }, { call, put }) {
+        *writer({ payload: { append, ...payload } }, { call, put, select }) {
+            const data = yield select(state => state.explore.writer);
+            if (data && data.offset === payload.offset) return;
+
             const response = yield call(writer, payload);
             if (response && response.result) {
                 yield put({
@@ -27,7 +31,9 @@ export default {
             }
             return response;
         },
-        *answerer({ payload: { append, ...payload } }, { call, put }) {
+        *answerer({ payload: { append, ...payload } }, { call, put, select }) {
+            const data = yield select(state => state.explore.answerer);
+            if (data && data.offset === payload.offset) return;
             const response = yield call(answerer, payload);
             if (response && response.result) {
                 yield put({

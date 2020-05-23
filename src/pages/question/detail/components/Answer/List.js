@@ -7,6 +7,19 @@ import styles from './Answer.less';
 import { StarTwoTone } from '@ant-design/icons';
 import Loading from '@/components/Loading';
 
+const fetchList = (dispatch, offset, limit, id, parmas) => {
+    return dispatch({
+        type: 'answer/list',
+        payload: {
+            question_id: id,
+            offset,
+            limit,
+            append: offset > 0,
+            ...parmas,
+        },
+    });
+};
+
 function AnswerList({ question_id, exclude, title, ...props }) {
     const page = parseInt(props.page || 1);
     const limit = parseInt(props.size || 20);
@@ -15,20 +28,6 @@ function AnswerList({ question_id, exclude, title, ...props }) {
     const list = useSelector(state => (state.answer ? state.answer.list : null));
     const loadingState = useSelector(state => state.loading);
     const loading = loadingState.effects['answer/list'];
-
-    useEffect(() => {
-        if (question_id) {
-            dispatch({
-                type: 'answer/list',
-                payload: {
-                    question_id,
-                    offset,
-                    limit,
-                    append: offset > 0,
-                },
-            });
-        }
-    }, [offset, limit, question_id, dispatch]);
 
     if (loading) return <Loading />;
 
@@ -89,11 +88,25 @@ function AnswerList({ question_id, exclude, title, ...props }) {
                     renderItem={renderItem}
                     offset={offset}
                     limit={limit}
-                    onChange={offset => setOffset(offset)}
+                    onChange={offset => {
+                        setOffset(offset);
+                        fetchList(dispatch, offset, limit, question_id);
+                    }}
                     itemLayout="vertical"
                 />
             </Card>
         </div>
     );
 }
+
+AnswerList.getInitialProps = async ({ isServer, id, store, params }) => {
+    const { dispatch, getState } = store;
+
+    if (id) {
+        await fetchList(dispatch, 0, 20, id, params);
+    }
+
+    if (isServer) return getState();
+};
+
 export default AnswerList;

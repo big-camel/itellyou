@@ -1,24 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Card } from 'antd';
 import List from '@/components/List';
 import Loading from '@/components/Loading';
-import { useDispatch, useSelector, Link } from 'umi';
+import { useSelector, Link } from 'umi';
 import styles from './index.less';
 
-export default ({ id }) => {
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch({
-            type: 'question/related',
-            payload: {
-                id,
-                offset: 0,
-                limit: 5,
-            },
-        });
-    }, [id, dispatch]);
-
+const QuestionRelated = () => {
     const renderItem = ({ id, title }) => {
         return (
             <List.Item key={id}>
@@ -41,3 +28,23 @@ export default ({ id }) => {
         </Card>
     );
 };
+
+QuestionRelated.getInitialProps = async ({ isServer, id, store, params }) => {
+    const { dispatch, getState } = store;
+
+    if (id) {
+        await dispatch({
+            type: 'question/related',
+            payload: {
+                id,
+                offset: 0,
+                limit: 5,
+                ...params,
+            },
+        });
+    }
+
+    if (isServer) return getState();
+};
+
+export default QuestionRelated;

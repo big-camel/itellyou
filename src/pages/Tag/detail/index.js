@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import classNames from 'classnames';
 import { Card, Menu, Space, Button } from 'antd';
-import { history, Link, useDispatch, useSelector, useAccess } from 'umi';
-import DocumentMeta from 'react-document-meta';
+import { history, Link, useSelector, useAccess, Helmet } from 'umi';
 import { RouteContext } from '@/context';
 import Loading from '@/components/Loading';
 import Container, { Layout } from '@/components/Container';
@@ -22,38 +21,26 @@ function Detail({ match: { params } }) {
     if (!menus.find(menu => menu.key === path)) history.push('/404');
 
     const [historyViewer, setHistoryViewer] = useState(false);
-    const dispatch = useDispatch();
+
     const detail = useSelector(state => state.tag.detail[id]);
     const me = useSelector(state => state.user.me);
     const settings = useSelector(state => state.settings);
     const access = useAccess();
     const { isMobile } = useContext(RouteContext);
 
-    useEffect(() => {
-        dispatch({
-            type: 'tag/find',
-            payload: {
-                id,
-            },
-        });
-    }, [dispatch, id]);
-
     if (!detail) return <Loading />;
-    const { name, description, use_star, content, author } = detail;
+    const { name, description, use_star, content, html, author } = detail;
     const menu = menus.find(item => item.key === path);
 
     let title = `${detail.name} - ${settings.title}`;
     if (path !== 'intro') title = `${menu.title} - ${title}`;
     return (
-        <DocumentMeta
-            title={title}
-            meta={{
-                name: {
-                    keywords: `${name},itellyou,${name}的${menu.title}`,
-                    description,
-                },
-            }}
-        >
+        <>
+            <Helmet>
+                <title>{title}</title>
+                <meta name="keywords" content={`${name},itellyou,${name}的${menu.title}`} />
+                <meta name="description" content={description} />
+            </Helmet>
             <Container>
                 <Layout>
                     <div className={styles['layout']}>
@@ -101,7 +88,7 @@ function Detail({ match: { params } }) {
                                 }
                             >
                                 {path === 'intro' ? (
-                                    <menu.component content={content} />
+                                    <menu.component content={content} html={html} />
                                 ) : (
                                     <menu.component id={id} />
                                 )}
@@ -115,15 +102,39 @@ function Detail({ match: { params } }) {
                             />
                         )}
                     </div>
-                    <React.Fragment>
+                    <Space direction="vertical" size="large">
                         <RelatedArticle id={id} />
-                        <div className={styles['related-column']}>
-                            <RelatedColumn id={id} />
-                        </div>
-                    </React.Fragment>
+                        <RelatedColumn id={id} />
+                    </Space>
                 </Layout>
             </Container>
-        </DocumentMeta>
+        </>
     );
 }
+
+Detail.getInitialProps = async ({ isServer, match, store, params }) => {
+    const { dispatch, getState } = store;
+    const id = parseInt(match.params.id || 0);
+
+    const path = match.params.path || 'intro';
+
+    await dispatch({
+        type: 'tag/find',
+        payload: {
+            id,
+            ...params,
+        },
+    });
+
+    await RelatedArticle.getInitialProps({ isServer, store, params: { ...params, id } });
+
+    await RelatedColumn.getInitialProps({ isServer, store, params: { ...params, id } });
+
+    const menu = menus.find(menu => menu.key === path);
+    if (menu && menu.component.getInitialProps) {
+        await menu.component.getInitialProps({ isServer, store, params: { ...params, id } });
+    }
+
+    if (isServer) return getState();
+};
 export default Detail;

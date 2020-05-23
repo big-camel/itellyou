@@ -1,5 +1,23 @@
-export default function({ me }) {
-    if (!me) return {};
+import { isBrowser } from 'umi';
+import { fetchMe } from '@/services/user';
+
+export default async props => {
+    let me = (props || {}).me;
+    if (!me) {
+        if (typeof window !== 'undefined' && window.g_initialProps && window.g_initialProps.user) {
+            me = window.g_initialProps.user.me;
+        } else if (isBrowser()) {
+            const { result, data } = (await fetchMe()) || {};
+            if (result) {
+                me = data;
+            }
+        }
+
+        if (!me)
+            return {
+                isLogin: false,
+            };
+    }
 
     const isLogin = !!me;
     const accessArray = me.access || [];
@@ -20,4 +38,4 @@ export default function({ me }) {
         isLogin,
         ...accessList,
     };
-}
+};

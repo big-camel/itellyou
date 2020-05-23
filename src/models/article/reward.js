@@ -4,9 +4,7 @@ import { setList } from '@/utils/model';
 export default {
     namespace: 'articleReward',
 
-    state: {
-        ...window.appData.articleReward,
-    },
+    state: {},
     effects: {
         *list({ payload: { append, id, ...payload } }, { call, put }) {
             const response = yield call(list, { ...payload, data_type: 'article', data_key: id });

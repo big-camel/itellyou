@@ -161,7 +161,12 @@ function CommentItem({ item, onDelete, onCreate, onVote, onChild, onDetail }) {
         return (
             <div>
                 <div className={styles['comment-content']}>
-                    {<Editor.Viewer content={item.deleted ? '评论已被删除' : item.content} />}
+                    {
+                        <Editor.Viewer
+                            content={item.deleted ? '评论已被删除' : item.content}
+                            html={item.deleted ? '评论已被删除' : item.html}
+                        />
+                    }
                 </div>
             </div>
         );

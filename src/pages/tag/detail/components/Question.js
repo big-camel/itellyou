@@ -2,27 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { MoreList } from '@/components/List';
 import { useDispatch, useSelector } from 'umi';
 import { Question } from '@/components/Content';
-import Timer from '@/components/Timer';
 
-export default ({ id }) => {
+const fetchList = (dispatch, offset, limit, id, parmas) => {
+    return dispatch({
+        type: 'question/list',
+        payload: {
+            append: offset !== 0,
+            offset,
+            limit,
+            child: 1,
+            tag_id: id,
+            ...parmas,
+        },
+    });
+};
+
+const TagQuestion = ({ id }) => {
     const [offset, setOffset] = useState(0);
     const limit = 20;
 
     const dispatch = useDispatch();
     const dataSource = useSelector(state => state.question.list);
-
-    useEffect(() => {
-        dispatch({
-            type: 'question/list',
-            payload: {
-                append: offset !== 0,
-                offset,
-                limit,
-                child: 1,
-                tag_id: id,
-            },
-        });
-    }, [id, offset, limit, dispatch]);
 
     const renderItem = item => {
         return (
@@ -40,7 +40,20 @@ export default ({ id }) => {
             limit={limit}
             renderItem={renderItem}
             dataSource={dataSource}
-            onChange={offset => setOffset(offset)}
+            onChange={offset => {
+                setOffset(offset);
+                fetchList(dispatch, offset, limit, id);
+            }}
         />
     );
 };
+
+TagQuestion.getInitialProps = async ({ isServer, store, params: { id, ...params } }) => {
+    const { dispatch, getState } = store;
+
+    await await fetchList(dispatch, 0, 20, id, params);
+
+    if (isServer) return getState();
+};
+
+export default TagQuestion;

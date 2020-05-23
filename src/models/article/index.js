@@ -5,17 +5,18 @@ import { setList, replaceItem } from '@/utils/model';
 export default {
     namespace: 'article',
 
-    state: {
-        ...window.appData.article,
-    },
+    state: {},
 
     effects: {
         *list({ payload: { append, ...payload } }, { call, put }) {
             const response = yield call(list, payload);
-            yield put({
-                type: 'setList',
-                payload: { ...(response.data || {}), append },
-            });
+            if (response && response.result) {
+                yield put({
+                    type: 'setList',
+                    payload: { ...(response.data || {}), append },
+                });
+            }
+            return response;
         },
         *related({ payload: { append, ...payload } }, { call, put }) {
             const response = yield call(related, payload);
@@ -23,6 +24,7 @@ export default {
                 type: 'setRelated',
                 payload: { append, ...(response.data || {}) },
             });
+            return response;
         },
         *find({ payload }, { call, put }) {
             const response = yield call(find, payload);

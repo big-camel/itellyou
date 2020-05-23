@@ -3,8 +3,8 @@ import classnames from 'classnames';
 import { connect } from 'umi';
 import { List, Tag, Switch, Radio, Button } from 'antd';
 import Timer from '@/components/Timer';
-import styles from './index.less';
 import Loading from '@/components/Loading';
+import styles from './index.less';
 
 class Viewer extends React.PureComponent {
     state = {

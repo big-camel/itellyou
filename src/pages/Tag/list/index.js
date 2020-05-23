@@ -1,12 +1,23 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Card } from 'antd';
-import { Link, useDispatch, useSelector, useIntl } from 'umi';
+import { Link, useDispatch, useSelector, useIntl, Helmet } from 'umi';
 import { MoreList } from '@/components/List';
 import Tag from '@/components/Tag';
 import Container from '@/components/Container';
 import styles from './index.less';
-import DocumentMeta from 'react-document-meta';
 import { RouteContext } from '@/context';
+
+const fetchList = (dispatch, offset, limit, parmas) => {
+    return dispatch({
+        type: 'tag/list',
+        payload: {
+            append: offset !== 0,
+            offset,
+            limit,
+            ...parmas,
+        },
+    });
+};
 
 function TagList({ location: { query } }) {
     const [page, setPage] = useState(query.page || 1);
@@ -15,16 +26,6 @@ function TagList({ location: { query } }) {
     const dispatch = useDispatch();
     const list = useSelector(state => (state.tag ? state.tag.list : null));
     const settings = useSelector(state => state.settings);
-    useEffect(() => {
-        dispatch({
-            type: 'tag/list',
-            payload: {
-                append: offset !== 0,
-                offset,
-                limit,
-            },
-        });
-    }, [offset, limit, dispatch]);
 
     const renderItem = ({
         id,
@@ -76,21 +77,29 @@ function TagList({ location: { query } }) {
                 renderItem={renderItem}
                 offset={offset}
                 limit={limit}
-                onChange={offset => setOffset(offset)}
+                onChange={offset => {
+                    setOffset(offset);
+                    fetchList(dispatch, offset, limit);
+                }}
             />
         );
     };
     const intl = useIntl();
     return (
-        <DocumentMeta
-            title={`${intl.formatMessage({ id: 'tag.page.list' })} - ${settings.title}`}
-            meta={{
-                name: {
-                    keywords: `${intl.formatMessage({ id: 'keywords' })},标签,标签列表`,
-                    description: `itellyou的标签列表页${intl.formatMessage({ id: 'description' })}`,
-                },
-            }}
-        >
+        <>
+            <Helmet>
+                <title>{`${intl.formatMessage({ id: 'tag.page.list' })} - ${
+                    settings.title
+                }`}</title>
+                <meta
+                    name="keywords"
+                    content={`${intl.formatMessage({ id: 'keywords' })},标签,标签列表`}
+                />
+                <meta
+                    name="description"
+                    content={`itellyou的标签列表页${intl.formatMessage({ id: 'description' })}`}
+                />
+            </Helmet>
             <Container>
                 <Card className={styles['tag-list']}>
                     <Card.Meta
@@ -106,7 +115,15 @@ function TagList({ location: { query } }) {
                     {renderList()}
                 </Card>
             </Container>
-        </DocumentMeta>
+        </>
     );
 }
+
+TagList.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+
+    await fetchList(dispatch, 0, 18, params);
+
+    if (isServer) return getState();
+};
 export default TagList;

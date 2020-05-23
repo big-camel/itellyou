@@ -9,13 +9,12 @@ export default ({ className, ...props }) => {
                 client="ca-pub-3706417744839656"
                 slot="4836967202"
                 format="auto"
-                responsive={true}
+                responsive={false}
                 style={{
                     display: 'block',
-                    minHeigth: 100,
-                    maxHeight: 280,
-                    minWidth: 300,
-                    width: '100%',
+                    minHeight: 200,
+                    maxHeight: 300,
+                    minWidth: 600,
                 }}
             />
         </div>

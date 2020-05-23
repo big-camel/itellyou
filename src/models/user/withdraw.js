@@ -3,9 +3,7 @@ import { setList } from '@/utils/model';
 export default {
     namespace: 'withdraw',
 
-    state: {
-        ...window.appData.withdraw,
-    },
+    state: {},
     effects: {
         *config({ payload }, { call, put }) {
             const response = yield call(config, payload);

@@ -1,18 +1,25 @@
 import request from '@/utils/request';
-import { stringify } from 'qs';
 
 export async function list({ question_id, ...params }) {
     if (question_id)
-        return request(`/api/question/${question_id}/answer/list?${stringify(params)}`);
-    return request(`/api/answer/list?${stringify(params)}`);
+        return request(`/api/question/${question_id}/answer/list`, {
+            params,
+        });
+    return request(`/api/answer/list`, {
+        params,
+    });
 }
 
-export async function findDraft({ question_id }) {
-    return request(`/api/question/${question_id}/answer/draft`);
+export async function findDraft({ question_id, ...params }) {
+    return request(`/api/question/${question_id}/answer/draft`, {
+        params,
+    });
 }
 
-export async function find({ question_id, id }) {
-    return request(`/api/question/${question_id}/answer/${id}`);
+export async function find({ question_id, id, ...params }) {
+    return request(`/api/question/${question_id}/answer/${id}`, {
+        params,
+    });
 }
 
 export async function deleteDraft({ question_id, id }) {

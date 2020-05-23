@@ -1,12 +1,14 @@
 import defaultSettings from './defaultSettings';
 import routes from './router.config';
-const { primaryColor, title } = defaultSettings;
+const { primaryColor } = defaultSettings;
 // ref: https://umijs.org/config/
 export default {
+    ssr: {
+        devServerRender: false,
+    },
     theme: {
         'primary-color': primaryColor,
     },
-    routes,
     antd: {},
     dva: {
         hmr: true,
@@ -14,14 +16,18 @@ export default {
     dynamicImport: {
         loading: '@/components/Loading',
     },
+    nodeModulesTransform: {
+        type: 'none',
+    },
     targets: {
         ie: 11,
     },
-    title,
+    title: false,
     locale: {
         default: 'zh-CN',
         baseNavigator: true,
     },
+    routes,
     ignoreMomentLocale: true,
     lessLoader: {
         javascriptEnabled: true,

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useSelector, useDispatch } from 'umi';
-import DocumentMeta from 'react-document-meta';
+import { Link, useSelector, useDispatch, Helmet } from 'umi';
 import { Empty, Menu, Card, Avatar } from 'antd';
 import Container, { Layout } from '@/components/Container';
 import { MoreList } from '@/components/List';
@@ -142,19 +141,16 @@ function Search({ location: { query } }) {
         if (!list) return <Loading />;
 
         return (
-            <DocumentMeta
-                title={
-                    word !== ''
-                        ? `${word} - 搜索结果 - ${settings.title}`
-                        : `搜索 - ${settings.title}`
-                }
-                meta={{
-                    name: {
-                        keywords: `itellyou站内搜索,${word}`,
-                        description: `itellyou站内搜索-${word}-的结果`,
-                    },
-                }}
-            >
+            <>
+                <Helmet>
+                    <title>
+                        {word !== ''
+                            ? `${word} - 搜索结果 - ${settings.title}`
+                            : `搜索 - ${settings.title}`}
+                    </title>
+                    <meta name="keywords" content={`itellyou站内搜索,${word}`} />
+                    <meta name="description" content={`itellyou站内搜索-${word}-的结果`} />
+                </Helmet>
                 <Container className={styles['search-list']}>
                     <Layout>
                         <div>
@@ -209,7 +205,7 @@ function Search({ location: { query } }) {
                         </Card>
                     </Layout>
                 </Container>
-            </DocumentMeta>
+            </>
         );
     };
 

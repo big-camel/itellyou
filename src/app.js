@@ -1,36 +1,23 @@
 import React from 'react';
 import { ConfigProvider } from 'antd';
-import { fetchMe } from './services/user/index';
+import { fetchMe } from '@/services/user';
 
-export const dva = {
-    config: {
-        onError(err) {
-            err.preventDefault();
-            console.error(err.message);
-        },
+export const ssr = {
+    modifyGetInitialPropsCtx: async ctx => {
+        return ctx;
     },
 };
 
 export const rootContainer = container => {
     return <ConfigProvider autoInsertSpaceInButton={false}>{container}</ConfigProvider>;
 };
+
 let refer;
 export function onRouteChange({ location, routes, action }) {
     if (action !== 'POP') {
-        if (window._czc) {
+        if (typeof window !== 'undefined' && window._czc) {
             window._czc.push(['_trackPageview', location.pathname, refer]);
         }
     }
     refer = location.pathname;
-}
-
-export async function getInitialState() {
-    const result = await fetchMe();
-    const me = result && result.result ? result.data : null;
-    if (window._czc) {
-        window._czc.push(['_setCustomVar', me ? 'user' : 'guest', me ? 'vip' : 'guest']);
-    }
-    return {
-        me,
-    };
 }

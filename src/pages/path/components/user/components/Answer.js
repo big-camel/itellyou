@@ -3,24 +3,25 @@ import { MoreList } from '@/components/List';
 import { useDispatch, useSelector } from 'umi';
 import { Question } from '@/components/Content';
 
-export default ({ id }) => {
+const fetchList = (dispatch, offset, limit, id, params) => {
+    return dispatch({
+        type: 'answer/list',
+        payload: {
+            append: offset !== 0,
+            offset,
+            limit,
+            user_id: id,
+            ...params,
+        },
+    });
+};
+
+const Answer = ({ id }) => {
     const [offset, setOffset] = useState(0);
     const limit = 20;
 
     const dispatch = useDispatch();
     const dataSource = useSelector(state => state.answer.list);
-
-    useEffect(() => {
-        dispatch({
-            type: 'answer/list',
-            payload: {
-                append: offset !== 0,
-                offset,
-                limit,
-                user_id: id,
-            },
-        });
-    }, [id, offset, limit, dispatch]);
 
     const renderItem = ({ question, ...item }) => {
         return (
@@ -41,7 +42,20 @@ export default ({ id }) => {
             limit={limit}
             renderItem={renderItem}
             dataSource={dataSource}
-            onChange={offset => setOffset(offset)}
+            onChange={offset => {
+                setOffset(offset);
+                fetchList(dispatch, 0, limit, id);
+            }}
         />
     );
 };
+
+Answer.getInitialProps = async ({ isServer, store, params: { id, ...params } }) => {
+    const { dispatch, getState } = store;
+
+    await fetchList(dispatch, 0, 20, id, params);
+
+    if (isServer) return getState();
+};
+
+export default Answer;

@@ -4,7 +4,6 @@ import { Modal } from 'antd';
 import TextViewer from '../Viewer';
 import HistoryViewer from './Viewer';
 import styles from './index.less';
-import Tag from '@/components/Tag';
 
 class History extends React.PureComponent {
     renderVersion(version) {

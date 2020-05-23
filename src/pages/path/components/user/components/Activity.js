@@ -7,24 +7,25 @@ import { Article, Answer } from '@/components/Content';
 import { Space, Avatar } from 'antd';
 import styles from './Activity.less';
 
-export default ({ id }) => {
+const fetchList = (dispatch, offset, limit, id, params) => {
+    return dispatch({
+        type: 'userActivity/list',
+        payload: {
+            append: offset !== 0,
+            offset,
+            limit,
+            id,
+            ...params,
+        },
+    });
+};
+
+const Activity = ({ id }) => {
     const [offset, setOffset] = useState(0);
     const limit = 20;
 
     const dispatch = useDispatch();
     const dataSource = useSelector(state => state.userActivity.list);
-
-    useEffect(() => {
-        dispatch({
-            type: 'userActivity/list',
-            payload: {
-                append: offset !== 0,
-                offset,
-                limit,
-                id,
-            },
-        });
-    }, [id, offset, limit, dispatch]);
 
     const renderColumn = ({ name, avatar, path, description }) => {
         return (
@@ -114,7 +115,20 @@ export default ({ id }) => {
             limit={limit}
             renderItem={renderItem}
             dataSource={dataSource}
-            onChange={offset => setOffset(offset)}
+            onChange={offset => {
+                setOffset(offset);
+                fetchList(dispatch, 0, 20, id);
+            }}
         />
     );
 };
+
+Activity.getInitialProps = async ({ isServer, store, params: { id, ...params } }) => {
+    const { dispatch, getState } = store;
+
+    await fetchList(dispatch, 0, 20, id, params);
+
+    if (isServer) return getState();
+};
+
+export default Activity;

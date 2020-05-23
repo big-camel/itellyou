@@ -7,10 +7,14 @@ export async function alipayPrecreate(params) {
     });
 }
 
-export async function alipayQuery({ id }) {
-    return request(`/api/pay/alipay?id=${id}`);
+export async function alipayQuery(params) {
+    return request(`/api/pay/alipay`, {
+        params,
+    });
 }
 
 export async function log(params) {
-    return request(`/api/pay/log?${stringify(params)}`);
+    return request(`/api/pay/log`, {
+        params,
+    });
 }

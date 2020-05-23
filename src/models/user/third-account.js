@@ -2,9 +2,7 @@ import { find, del } from '@/services/user/third-account';
 export default {
     namespace: 'thirdAccount',
 
-    state: {
-        ...window.appData.thirdAccount,
-    },
+    state: {},
     effects: {
         *find({ payload }, { call, put }) {
             const response = yield call(find, payload);

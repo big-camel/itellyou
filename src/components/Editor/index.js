@@ -6,16 +6,17 @@ import React, {
     useImperativeHandle,
     forwardRef,
 } from 'react';
-import { useSelector } from 'umi';
+import { useSelector, isBrowser } from 'umi';
 import { message } from 'antd';
 import omit from 'omit.js';
 import debounce from 'lodash/debounce';
-import { FullEditor, MiniEditor } from '@itellyou/itellyou-editor';
+import Script from 'react-load-script';
 import Viewer from './Viewer';
 import History from './History';
 import Outline from './Outline';
 import Collab, { EVENT, STATUS, ERROR_CODE } from './Collab';
 import EditorBiz from './Biz';
+import { useEditor } from './Hook';
 import * as Utils from './utils';
 const { SAVE_TYPE } = EditorBiz;
 
@@ -37,6 +38,7 @@ function Editor(
     },
     ref,
 ) {
+    const { FullEditor, MiniEditor } = useEditor() || {};
     const [loadScripts, setLoadScripts] = useState(true);
     const [editorLoaded, setEditorLoaded] = useState(false);
     const [collabLoaded, setCollabLoaded] = useState(false);
@@ -53,20 +55,6 @@ function Editor(
     onChange = onChange || useCallback(() => {}, []);
 
     onPublished = onPublished || useCallback(() => {}, []);
-
-    useEffect(() => {
-        const scripts = [
-            `https://cdn-object.itellyou.com/ali-sdk/aliyun-oss-sdk-5.3.1.min.js`,
-            `https://cdn-object.itellyou.com/ali-sdk/aliyun-upload-sdk-1.5.0.min.js`,
-        ];
-        scripts.map(src => {
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = src;
-            document.body.appendChild(script);
-        });
-        setLoadScripts(false);
-    }, []);
 
     const onEditorLoaded = inst => {
         engine.current = inst;
@@ -272,6 +260,11 @@ function Editor(
 
     return (
         <div className={className}>
+            <Script url="https://cdn-object.itellyou.com/ali-sdk/aliyun-oss-sdk-5.3.1.min.js" />
+            <Script
+                onLoad={() => setLoadScripts(false)}
+                url="https://cdn-object.itellyou.com/ali-sdk/aliyun-upload-sdk-1.5.0.min.js"
+            />
             {editorLoaded && (
                 <Collab
                     id={id}
@@ -281,7 +274,7 @@ function Editor(
                     onReady={onCollabReady}
                 />
             )}
-            {!loadScripts && (
+            {!loadScripts && EditorType && (
                 <EditorType
                     defaultValue={null}
                     onSave={onUserSave}
@@ -362,3 +355,4 @@ Editor.Viewer = Viewer;
 Editor.History = History;
 Editor.Utils = Utils;
 export default Editor;
+export { useEditor };

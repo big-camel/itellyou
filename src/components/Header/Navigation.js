@@ -31,7 +31,7 @@ const menus = [
         href: 'https://msdn.itellyou.cn',
         target: '_blank',
         onClick: () => {
-            if (window._czc) {
+            if (typeof window !== 'undefined' && window._czc) {
                 window._czc.push(['_trackEvent', 'msdn', 'to']);
             }
         },

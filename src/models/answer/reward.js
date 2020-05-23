@@ -4,9 +4,7 @@ import { setList } from '@/utils/model';
 export default {
     namespace: 'answerReward',
 
-    state: {
-        ...window.appData.answerReward,
-    },
+    state: {},
     effects: {
         *list({ payload: { append, ...payload } }, { call, put }) {
             const response = yield call(answerList, { ...payload, data_type: 'answer' });

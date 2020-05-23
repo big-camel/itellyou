@@ -1,28 +1,31 @@
-import request from '@/utils/request'
-import { stringify } from 'qs'
+import request from '@/utils/request';
 
-export async function star(params){
-    return request(`/api/user/star?${stringify(params)}`)
+export async function star(params) {
+    return request(`/api/user/star`, {
+        params,
+    });
 }
 
-export async function follower(params){
-    return request(`/api/user/follower?${stringify(params)}`)
+export async function follower(params) {
+    return request(`/api/user/follower`, {
+        params,
+    });
 }
 
-export async function follow({ id }){
-    return request(`/api/user/star`,{ 
+export async function follow({ id }) {
+    return request(`/api/user/star`, {
         method: 'POST',
-        data:{
-            id
-        }
-    })
+        data: {
+            id,
+        },
+    });
 }
 
-export async function unfollow({ id }){
-    return request(`/api/user/star`,{ 
+export async function unfollow({ id }) {
+    return request(`/api/user/star`, {
         method: 'DELETE',
-        data:{
-            id
-        }
-    })
+        data: {
+            id,
+        },
+    });
 }

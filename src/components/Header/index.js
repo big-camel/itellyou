@@ -46,9 +46,9 @@ function Header(props) {
         );
     };
     return (
-        <header className={classNames(isMobile ? styles['m-header'] : styles['header'])}>
+        <div className={classNames(isMobile ? styles['m-header'] : styles['header'])}>
             <Container>{render()}</Container>
-        </header>
+        </div>
     );
 }
 export default Header;

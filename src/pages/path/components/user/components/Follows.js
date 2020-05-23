@@ -3,24 +3,25 @@ import { MoreList } from '@/components/List';
 import { useDispatch, useSelector } from 'umi';
 import { UserAuthor, UserStar } from '@/components/User';
 
-export default ({ id }) => {
+const fetchList = (dispatch, offset, limit, id, params) => {
+    return dispatch({
+        type: 'userStar/starList',
+        payload: {
+            append: offset !== 0,
+            offset,
+            limit,
+            user_id: id,
+            ...params,
+        },
+    });
+};
+
+const UserFollows = ({ id }) => {
     const [offset, setOffset] = useState(0);
     const limit = 20;
 
     const dispatch = useDispatch();
     const dataSource = useSelector(state => state.userStar.starList);
-
-    useEffect(() => {
-        dispatch({
-            type: 'userStar/starList',
-            payload: {
-                append: offset !== 0,
-                offset,
-                limit,
-                user_id: id,
-            },
-        });
-    }, [id, offset, limit, dispatch]);
 
     const renderItem = ({ star }) => {
         const { id, use_star } = star;
@@ -38,7 +39,20 @@ export default ({ id }) => {
             limit={limit}
             renderItem={renderItem}
             dataSource={dataSource}
-            onChange={offset => setOffset(offset)}
+            onChange={offset => {
+                setOffset(offset);
+                fetchList(dispatch, 0, limit, id);
+            }}
         />
     );
 };
+
+UserFollows.getInitialProps = async ({ isServer, store, params: { id, ...params } }) => {
+    const { dispatch, getState } = store;
+
+    await fetchList(dispatch, 0, 20, id, params);
+
+    if (isServer) return getState();
+};
+
+export default UserFollows;

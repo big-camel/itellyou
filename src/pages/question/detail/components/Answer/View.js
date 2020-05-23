@@ -6,23 +6,10 @@ import styles from './Answer.less';
 import Loading from '@/components/Loading';
 import { Answer } from '@/components/Content';
 
-function AnswerView({ question_id, answer_id, title }) {
-    const dispatch = useDispatch();
+function AnswerView({ title }) {
     const detail = useSelector(state => (state.answer ? state.answer.detail : null));
     const loadingEffect = useSelector(state => state.loading);
     const loading = loadingEffect.effects['answer/find'];
-
-    useEffect(() => {
-        if (question_id && answer_id) {
-            dispatch({
-                type: 'answer/find',
-                payload: {
-                    question_id,
-                    id: answer_id,
-                },
-            });
-        }
-    }, [question_id, answer_id, dispatch]);
 
     const renderItem = item => {
         return (
@@ -39,4 +26,20 @@ function AnswerView({ question_id, answer_id, title }) {
         </Card>
     );
 }
+
+AnswerView.getInitialProps = async ({ isServer, question_id, answer_id, store, params }) => {
+    const { dispatch, getState } = store;
+    if (question_id && answer_id) {
+        await dispatch({
+            type: 'answer/find',
+            payload: {
+                question_id,
+                id: answer_id,
+                ...params,
+            },
+        });
+    }
+    if (isServer) return getState();
+};
+
 export default AnswerView;

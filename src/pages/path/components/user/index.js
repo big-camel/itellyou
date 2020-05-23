@@ -1,36 +1,29 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import classNames from 'classnames';
-import { Link, history, useDispatch, useSelector } from 'umi';
+import { Link, history, useSelector, Helmet, Redirect } from 'umi';
 import { Card, Avatar, Menu, Button } from 'antd';
 import Loading from '@/components/Loading';
 import styles from './index.less';
 import menus from './menu';
 import { UserStar } from '@/components/User';
 import Container, { Layout } from '@/components/Container';
-import DocumentMeta from 'react-document-meta';
 import { RouteContext } from '@/context';
 
-export default ({ id, paths }) => {
+const User = ({ id, paths }) => {
     const menuKey = paths && paths.length > 1 ? paths[1] : 'activity';
-    if (!menus.find(menu => menu.key === menuKey)) history.push('/404');
-    const dispatch = useDispatch();
+
+    const menu = menus.find(item => item.key === menuKey);
+
     const settings = useSelector(state => state.settings) || {};
-    useEffect(() => {
-        dispatch({
-            type: 'user/find',
-            payload: {
-                id,
-            },
-        });
-    }, [dispatch, id]);
 
     const detail = useSelector(state => state.user.detail[id]);
     const me = useSelector(state => state.user.me);
     const { isMobile } = useContext(RouteContext);
 
     if (!detail) return <Loading />;
+
+    if (!menu) return <Redirect to="/404" />;
     const { avatar, name, description, star_count, follower_count, profession, address } = detail;
-    const menu = menus.find(item => item.key === menuKey);
 
     const renderInfo = () => {
         return (
@@ -116,16 +109,37 @@ export default ({ id, paths }) => {
     };
 
     return (
-        <DocumentMeta
-            title={`${name} - ${settings.title}`}
-            meta={{
-                name: {
-                    keywords: `个人主页,${name},${menu.title},itellyou`,
-                    description: `${name}的个人主页-${menu.title}：${description}`,
-                },
-            }}
-        >
+        <>
+            <Helmet>
+                <title>{`${name} - ${settings.title}`}</title>
+                <meta name="keywords" content={`个人主页,${name},${menu.title},itellyou`} />
+                <meta
+                    name="description"
+                    content={`${name}的个人主页-${menu.title}：${description}`}
+                />
+            </Helmet>
             <Container>{render()}</Container>
-        </DocumentMeta>
+        </>
     );
 };
+
+User.getInitialProps = async ({ isServer, store, params, paths }) => {
+    const { dispatch, getState } = store;
+
+    await dispatch({
+        type: 'user/find',
+        payload: {
+            ...params,
+        },
+    });
+
+    const menuKey = paths && paths.length > 1 ? paths[1] : 'activity';
+    const menu = menus.find(item => item.key === menuKey);
+    if (menu) {
+        await menu.component.getInitialProps({ isServer, store, params });
+    }
+
+    if (isServer) return getState();
+};
+
+export default User;

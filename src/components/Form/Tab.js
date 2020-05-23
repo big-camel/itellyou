@@ -17,7 +17,7 @@ const FormTab = props => {
         const uniqueId = generateId('form-tab-');
         const { tabUtil } = props;
         if (tabUtil) {
-            tabUtil.addTab(uniqueId);
+            //tabUtil.addTab(uniqueId);
         }
     }, []);
     const { children } = props;

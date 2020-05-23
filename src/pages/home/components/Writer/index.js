@@ -1,28 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card } from 'antd';
-import { useDispatch, useSelector } from 'umi';
+import { useSelector } from 'umi';
 import List from '@/components/List';
 import { UserAuthor } from '@/components/User';
 import Loading from '@/components/Loading';
 
 export default ({ className }) => {
-    const [offset, setOffset] = useState(0);
-    const limit = 10;
-
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch({
-            type: 'explore/writer',
-            payload: {
-                append: false,
-                offset,
-                limit,
-            },
-        });
-    }, [offset, limit, dispatch]);
-
     const dataSource = useSelector(state => state.explore.writer);
+
     if (!dataSource) return <Loading />;
 
     const renderItem = item => {

@@ -1,29 +1,33 @@
-import { find } from '@/services/path'
+import { find } from '@/services/path';
 export default {
     namespace: 'path',
 
-    state: {
-        ...window.appData.path
-    },
+    state: {},
     effects: {
-        *find({ payload : { reducer , ...payload } }, { call , put }){
-            const response = yield call(find,payload)
-            const { result , data  } = response || {}
-            if(result && reducer !== false){
+        *find({ payload: { reducer, ...payload } }, { call, put }) {
+            const response = yield call(find, payload);
+            const { result, data } = response || {};
+            if (result && reducer !== false) {
                 yield put({
-                    type:"setDetail",
-                    payload:data
-                })
+                    type: 'setDetail',
+                    payload: data,
+                });
             }
-            return response
-        }
+            return response;
+        },
     },
-    reducers:{
-        setDetail(state,{ payload }){
+    reducers: {
+        setDetail(state, { payload }) {
             return {
                 ...state,
-                detail:{...state.detail,...payload}
-            }
-        }
-    }
-}
+                detail: { ...state.detail, ...payload },
+            };
+        },
+        clearDetail(state) {
+            return {
+                ...state,
+                detail: null,
+            };
+        },
+    },
+};

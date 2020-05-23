@@ -1,6 +1,7 @@
-import request from '@/utils/request'
-import { stringify } from 'qs'
+import request from '@/utils/request';
 
 export async function list(params) {
-    return request(`/api/view/list?${stringify(params)}`);
+    return request(`/api/view/list`, {
+        params,
+    });
 }

@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { Button, Row, Col } from 'antd';
+import { Button } from 'antd';
 import { useSelector, Link } from 'umi';
-import { LineEditor } from '@itellyou/itellyou-editor';
+import { useEditor } from '@/components/Editor';
 import styles from './index.less';
 
 function CommentEdit({ defaultValue, onSubmit }) {
+    const { LineEditor } = useEditor() || {};
     const editor = useRef();
     const [submiting, setSubmiting] = useState(false);
     const me = useSelector(state => state.user.me);
@@ -36,7 +37,7 @@ function CommentEdit({ defaultValue, onSubmit }) {
                     <Link to="/login">登录</Link>后参与评论
                 </div>
             )}
-            {me && (
+            {me && LineEditor && (
                 <div className={styles['comment-warp']}>
                     <LineEditor defaultValue={defaultValue} onLoad={onEditorLoad} />
 

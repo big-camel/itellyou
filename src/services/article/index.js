@@ -1,20 +1,27 @@
 import request from '@/utils/request';
-import { stringify } from 'qs';
 
 export async function list(params) {
-    return request(`/api/article/list?${stringify(params)}`);
+    return request(`/api/article/list`, {
+        params,
+    });
 }
 
 export async function related(params) {
-    return request(`/api/article/related?${stringify(params)}`);
+    return request(`/api/article/related`, {
+        params,
+    });
 }
 
-export async function find(params) {
-    return request(`/api/article/${params.id}`);
+export async function find({ id, ...params }) {
+    return request(`/api/article/${id}`, {
+        params,
+    });
 }
 
-export async function view({ id }) {
-    return request(`/api/article/${id}/view`);
+export async function view({ id, ...params }) {
+    return request(`/api/article/${id}/view`, {
+        params,
+    });
 }
 
 export async function vote({ id, type }) {

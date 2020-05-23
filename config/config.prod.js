@@ -37,7 +37,7 @@ export default {
                         common: {
                             name: 'common',
                             test({ resource }) {
-                                return /[\\/]node_modules[\\/](antd|cropperjs|@ant-design|nprogress|react-document-meta)/.test(
+                                return /[\\/]node_modules[\\/](antd|cropperjs|@ant-design|nprogress)/.test(
                                     resource,
                                 );
                             },

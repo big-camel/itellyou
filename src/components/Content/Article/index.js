@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useDispatch, useSelector } from 'umi';
 import { Space, message } from 'antd';
 import classNames from 'classnames';
@@ -21,6 +21,7 @@ const Article = ({
         custom_description,
         cover,
         content,
+        html,
         author,
         column,
         comment_count,
@@ -65,28 +66,15 @@ const Article = ({
         });
     };
 
-    useEffect(() => {
-        if (!desc) {
-            dispatch({
-                type: 'articleReward/list',
-                payload: {
-                    id,
-                    append: false,
-                    limit: 99999,
-                },
-            });
-        }
-    }, [dispatch, desc, id]);
-
     const renderContent = () => {
         if (desc && !fullVisible) {
+            const paidReadHtml = paid_read
+                ? `<span class='${styles['paid-read-link']}'>有付费内容，点击查看</span>`
+                : '';
             return (
                 <div className={styles['description']}>
                     <Link to={`/article/${id}`}>
-                        <span dangerouslySetInnerHTML={{ __html: description }} />
-                        {paid_read && (
-                            <span className={styles['paid-read-link']}>有付费内容，点击查看</span>
-                        )}
+                        <div dangerouslySetInnerHTML={{ __html: description + paidReadHtml }} />
                     </Link>
                 </div>
             );
@@ -97,6 +85,7 @@ const Article = ({
                     <Editor.Viewer
                         key={id}
                         content={content}
+                        html={html}
                         genAnchor={true}
                         onLoad={onContentReady}
                     />

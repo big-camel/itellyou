@@ -26,7 +26,6 @@ export default map => {
                             {...props}
                             type={key}
                             {...context}
-                            updateActive={context.updateActive}
                         />
                     )}
                 </FormContext.Consumer>
