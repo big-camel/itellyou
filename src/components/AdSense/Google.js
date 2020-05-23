@@ -1,27 +1,37 @@
-export default class Google extends React.Component {
-    componentDidMount() {
+import React, { useEffect, useContext } from 'react';
+import { RouteContext } from '@/context';
+
+const Google = ({ className, style, client, slot, layout, layoutKey, format, responsive }) => {
+    const { isMobile } = useContext(RouteContext);
+
+    useEffect(() => {
         try {
-            if (window) (window.adsbygoogle = window.adsbygoogle || []).push({});
+            if (typeof window !== 'undefined' && window)
+                (window.adsbygoogle = window.adsbygoogle || []).push({});
         } catch (e) {
             console.error(e.message);
         }
+    }, []);
+
+    if (isMobile) {
+        style.width = '100%';
+        style.minWidth = 'auto';
+        style.maxWidth = '100%';
     }
 
-    render() {
-        return (
-            <ins
-                className={`${this.props.className} adsbygoogle`}
-                style={this.props.style}
-                data-ad-client={this.props.client}
-                data-ad-slot={this.props.slot}
-                data-ad-layout={this.props.layout}
-                data-ad-layout-key={this.props.layoutKey}
-                data-ad-format={this.props.format}
-                data-full-width-responsive={this.props.responsive}
-            ></ins>
-        );
-    }
-}
+    return (
+        <ins
+            className={`${className} adsbygoogle`}
+            style={style}
+            data-ad-client={client}
+            data-ad-slot={slot}
+            data-ad-layout={layout}
+            data-ad-layout-key={layoutKey}
+            data-ad-format={format}
+            data-full-width-responsive={responsive}
+        ></ins>
+    );
+};
 Google.defaultProps = {
     className: '',
     style: { display: 'block' },
