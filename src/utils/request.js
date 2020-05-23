@@ -9,7 +9,7 @@ import { isBrowser, history } from 'umi';
 import omit from 'omit.js';
 
 let notification;
-import('antd').then(module => {
+import(/* webpackChunkName: "async-antd" */ 'antd').then(module => {
     notification = module.notification;
 });
 

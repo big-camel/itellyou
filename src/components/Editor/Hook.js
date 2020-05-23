@@ -8,7 +8,9 @@ function useEditor() {
     useEffect(() => {
         let isUn = false;
         if (!Editor.current) {
-            import('@itellyou/itellyou-editor').then(module => {
+            import(
+                /* webpackChunkName: "async-itellyou-editor" */ '@itellyou/itellyou-editor'
+            ).then(module => {
                 if (!isUn) {
                     Editor.current = module;
                     setLoading(true);

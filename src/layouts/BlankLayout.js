@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { withRouter, useSelector, Redirect, useAccess, Helmet, isBrowser, useDispatch } from 'umi';
+import { withRouter, useSelector, Redirect, useAccess, Helmet, isBrowser } from 'umi';
 import NProgress from 'nprogress';
 import { getRoute, getTitle, getMetas } from '@/utils/page';
 import { RouteContext } from '@/context';
@@ -11,8 +11,6 @@ function BlankLayout({ route, children, location: { pathname }, title }) {
     const hrefRef = useRef();
     const settings = useSelector(state => state.settings);
     const loading = useSelector(state => state.loading);
-
-    const dispatch = useDispatch();
 
     const { routes = [] } = route || {};
 
@@ -38,27 +36,6 @@ function BlankLayout({ route, children, location: { pathname }, title }) {
 
     const colSize = isBrowser() ? useMedia() : '';
     const isMobile = isBrowser() ? colSize === 'sm' || colSize === 'xs' : settings.isMobile;
-
-    //useEffect(() => {
-    /*    let isDestory = false
-        if(isBrowser() && settings.isMobile === undefined){
-            import('use-media-antd-query').then(module => {
-                const colSize = module.default()
-                const isMobile = colSize === 'sm' || colSize === 'xs';
-                if(!isDestory){
-                    dispatch({
-                        type:'settings/setSettings',
-                        payload:{
-                            isMobile
-                        }
-                    })
-                }
-            })
-        }
-       return () => {
-            isDestory = true
-        }
-    },[isBrowser,settings,dispatch])*/
 
     if (!title) {
         title = getTitle(pathname, routes);
