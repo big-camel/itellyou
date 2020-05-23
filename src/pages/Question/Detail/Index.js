@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { RouteContext } from '@/context';
 import Container, { Layout } from '@/components/Container';
 import Editor from '@/components/Editor';
-import UserTag from '@/components/Tag';
+import Tag from '@/components/Tag';
 import Timer from '@/components/Timer';
 import Answer from './components/Answer';
 import { Question } from '@/components/Content';
@@ -154,7 +154,12 @@ function Detail({ match: { params } }) {
                                 <Space>
                                     {tags &&
                                         tags.map(({ id, name }) => (
-                                            <UserTag key={id} id={id} title={name} />
+                                            <Tag
+                                                key={id}
+                                                id={id}
+                                                href={`/tag/${id}`}
+                                                title={name}
+                                            />
                                         ))}
                                     {isMobile && renderOther()}
                                 </Space>

@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { useDispatch, useSelector, Helmet } from 'umi';
+import React, { useState, useContext, useCallback } from 'react';
+import { useSelector, Helmet } from 'umi';
 import { RouteContext } from '@/context';
 import Container, { Layout } from '@/components/Container';
 import Loading from '@/components/Loading';
