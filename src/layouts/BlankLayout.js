@@ -79,9 +79,7 @@ BlankLayout.getInitialProps = async ({ isServer, isMobile, user, store, params }
     if (isServer) {
         await dispatch({
             type: 'user/setMe',
-            payload: {
-                ...user,
-            },
+            payload: user,
         });
         await dispatch({
             type: 'settings/setSettings',

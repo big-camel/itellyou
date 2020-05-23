@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { AdoptButton } from '@/components/Button';
 import { useDispatch } from 'umi';
-import { StarTwoTone } from '@ant-design/icons';
 
 export default ({ id, question_id, allow_adopt, adopted }) => {
     const [adopting, setAdopting] = useState(false);
