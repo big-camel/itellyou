@@ -225,7 +225,14 @@ const Register = () => {
                 </Submit>
                 <p className={styles['protocol']}>
                     注册即表明同意
-                    <Link to={(site || {}).user_agreement_link}>《ITELLYOU用户协议》</Link>
+                    <Link
+                        to={
+                            (site || { user_agreement_link: 'https://www.itellyou.com' })
+                                .user_agreement_link
+                        }
+                    >
+                        《ITELLYOU用户协议》
+                    </Link>
                 </p>
                 <Space className={styles['third-login']} size="large">
                     <AlipayLogin />

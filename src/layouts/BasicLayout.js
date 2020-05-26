@@ -22,7 +22,7 @@ const BasicLayout = ({ route, children, ...props }) => {
     );
 };
 
-BasicLayout.getInitialProps = async ctx => {
-    await BlankLayout.getInitialProps(ctx);
+BasicLayout.getInitialProps = ctx => {
+    BlankLayout.getInitialProps(ctx);
 };
 export default BasicLayout;

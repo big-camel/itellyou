@@ -29,4 +29,7 @@ function PassportLayout({ route, children }) {
     );
 }
 
+PassportLayout.getInitialProps = ctx => {
+    BlankLayout.getInitialProps(ctx);
+};
 export default PassportLayout;
