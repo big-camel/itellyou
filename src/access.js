@@ -1,18 +1,14 @@
-import { isBrowser } from 'umi';
-import { fetchMe } from '@/services/user';
+import { getDvaApp } from 'umi';
 
-export default async props => {
-    let me = (props || {}).me;
+export default () => {
+    const { _store } = getDvaApp();
+    const { user } = _store.getState();
+    let me = (user || {}).me;
+
     if (!me) {
         if (typeof window !== 'undefined' && window.g_initialProps && window.g_initialProps.user) {
             me = window.g_initialProps.user.me;
-        } else if (isBrowser()) {
-            const { result, data } = (await fetchMe()) || {};
-            if (result) {
-                me = data;
-            }
         }
-
         if (!me)
             return {
                 isLogin: false,

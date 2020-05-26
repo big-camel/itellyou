@@ -96,7 +96,6 @@ function Column({ location: { query } }) {
 }
 
 Column.getInitialProps = async ({ isServer, store, params, history, match }) => {
-    console.log(match, history);
     const { location } = history || {};
     const { query } = location || {};
     const type = query ? query.type : null;
