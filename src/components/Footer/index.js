@@ -1,30 +1,34 @@
 import React from 'react';
+import { Space } from 'antd';
+import { useSelector } from 'umi';
 import Container from '../Container';
 import styles from './index.less';
-import { Space } from 'antd';
 
 export default () => {
+    const settings = useSelector(state => state.settings);
+    const { title, site, links } = settings || {};
+    const { copyright, icp_text, company_name } = site || {};
+
     return (
         <div className={styles['footer']}>
             <Container>
-                <div className={styles['copyright']}>
-                    <p>Copyright © 2020 ITELLYOU</p>
-                    <p>蜀ICP备 17019166号 四川西维尔科技有限公司版权所有</p>
-                </div>
+                <Space className={styles['copyright']} direction="vertical" size="small">
+                    <Space>
+                        {copyright}
+                        {title}
+                    </Space>
+                    <Space>
+                        {icp_text}
+                        {company_name ? `${company_name}版权所有` : ''}
+                    </Space>
+                </Space>
                 <div className={styles['links']}>
                     <Space>
-                        <a target="_blank" href="https://drawing.itellyou.com">
-                            文本绘图工具
-                        </a>
-                        <a target="_blank" href="https://www.guowenfu.com">
-                            趣善帮
-                        </a>
-                        <a target="_blank" href="http://apptravel.cn">
-                            AT搜索
-                        </a>
-                        <a target="_blank" href="https://tech.skrskr.com/">
-                            skrskr科技
-                        </a>
+                        {(links || []).map(({ text, link, target }, index) => (
+                            <a key={index} target={target ? `${target}` : ''} href={link}>
+                                {text}
+                            </a>
+                        ))}
                     </Space>
                 </div>
             </Container>

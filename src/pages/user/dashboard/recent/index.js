@@ -156,7 +156,7 @@ function Dashboard() {
 
 Dashboard.getInitialProps = async ({ isServer, store }) => {
     const { getState } = store;
-
+    console.log(getState());
     if (isServer) return getState();
 };
 

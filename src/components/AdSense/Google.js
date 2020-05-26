@@ -14,9 +14,12 @@ const Google = ({ className, style, client, slot, layout, layoutKey, format, res
     }, []);
 
     if (isMobile) {
-        style.width = '100%';
-        style.minWidth = '300px';
-        style.maxWidth = '100%';
+        style = {
+            ...style,
+            width: '100%',
+            minWidth: '300px',
+            maxWidth: '100%',
+        };
     }
 
     return (

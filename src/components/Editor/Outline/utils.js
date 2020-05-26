@@ -38,12 +38,16 @@ export const findReadingSection = (elements, top) => {
     let index = -1;
     const len = elements.length;
     for (; i < len; i++) {
-        const rect = elements[i].getBoundingClientRect();
+        const element = elements[i];
+        if (!element.getBoundingClientRect) continue;
+        const rect = element.getBoundingClientRect();
         if (rect.top <= top + 1) {
             if (i === len - 1) {
                 index = i;
             } else {
-                const nextRect = elements[i + 1].getBoundingClientRect();
+                const nexElement = elements[i + 1];
+                if (!nexElement.getBoundingClientRect) continue;
+                const nextRect = nexElement.getBoundingClientRect();
                 if (nextRect.top > top + 1) {
                     index = i;
                     break;

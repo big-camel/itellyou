@@ -51,13 +51,13 @@ export default ({ action, type, force }) => {
         );
     };
 
-    const renderAnswerComment = (verb, { reply }) => {
+    const renderAnswerComment = (verb, { reply, ...target }) => {
         const {
             answer: {
                 id,
                 question: { title, ...question },
             },
-        } = reply;
+        } = reply ? reply : target;
         return (
             <span>
                 {verb}&nbsp;&nbsp;<Link to={`/question/${question.id}/answer/${id}`}>{title}</Link>
@@ -86,7 +86,7 @@ export default ({ action, type, force }) => {
             case 'column':
                 return renderColumn(verb, target);
             case 'answer':
-                if (action === 'comment') renderAnswerComment(verb, target);
+                if (action === 'comment') return renderAnswerComment(verb, target);
                 return renderAnswer(verb, target);
             case 'question':
             case 'article':

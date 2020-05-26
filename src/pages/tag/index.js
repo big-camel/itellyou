@@ -158,6 +158,8 @@ TagIndex.getInitialProps = async ({ isServer, store, params }) => {
     await dispatch({
         type: 'tag/group',
         payload: {
+            offset: 0,
+            limit: 1000,
             ...params,
         },
     });

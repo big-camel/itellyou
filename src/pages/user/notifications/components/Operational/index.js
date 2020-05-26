@@ -48,13 +48,13 @@ export default ({ action, type, target }) => {
         );
     };
 
-    const renderAnswerComment = ({ content, reply }) => {
+    const renderAnswerComment = ({ content, reply, ...target }) => {
         const {
             answer: {
                 id,
                 question: { title, ...question },
             },
-        } = reply;
+        } = reply ? reply : target;
         return (
             <div className={classNames(styles['op-body'], styles['op-block'])}>
                 <Link className={styles['target']} to={`/question${question.id}/answer/${id}`}>
@@ -99,7 +99,7 @@ export default ({ action, type, target }) => {
             case 'column':
                 return renderColumn(target);
             case 'answer':
-                if (action === 'comment') renderAnswerComment(target);
+                if (action === 'comment') return renderAnswerComment(target);
                 return renderAnswer(target);
             case 'question':
             case 'article':

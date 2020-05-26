@@ -31,12 +31,22 @@
 }
 
 @media only screen and (max-width: 575px) {
-    .layout-container {
-        padding: 0;
+    :global {
+        .main-wrapper {
+            background-color: #fff;
+
+            .layout-container {
+                padding: 0;
+            }
+        }
     }
 
     .wrapper {
         width: 100%;
         padding: 0;
+
+        .content {
+            border: 0 none;
+        }
     }
 }

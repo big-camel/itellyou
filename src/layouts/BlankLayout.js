@@ -72,28 +72,53 @@ function BlankLayout({ route, children, location: { pathname }, title }) {
     );
 }
 
-BlankLayout.getInitialProps = async ({ isServer, isMobile, user, store, params }) => {
+BlankLayout.getInitialProps = ({ isServer, isMobile, user, site, links, store, params }) => {
     const { dispatch, getState } = store;
 
     const state = getState();
     if (isServer) {
-        await dispatch({
+        dispatch({
             type: 'user/setMe',
             payload: user,
         });
-        await dispatch({
+        dispatch({
             type: 'settings/setSettings',
             payload: {
                 isMobile,
+                site,
+                links,
             },
         });
-        return Promise.resolve({ ...state, user: { ...state.user, me: user } });
+        return Promise.resolve({
+            ...state,
+            user: { ...state.user, me: user },
+            settings: { ...state.settings, site, links },
+        });
     }
     user = state.user;
 
     if (!user || !user.me) {
-        await dispatch({
+        dispatch({
             type: 'user/fetchMe',
+            payload: {
+                ...params,
+            },
+        });
+    }
+
+    const { settings } = state;
+
+    if (!settings || !settings.site) {
+        dispatch({
+            type: 'settings/systemSetting',
+            payload: {
+                ...params,
+            },
+        });
+    }
+    if (!settings || !settings.links) {
+        dispatch({
+            type: 'settings/systemLink',
             payload: {
                 ...params,
             },

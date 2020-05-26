@@ -25,6 +25,8 @@ const Register = () => {
     const loadingState = useSelector(state => state.loading);
     const submiting = loadingState.effects['register/submit'];
 
+    const settings = useSelector(state => state.settings);
+
     const dispatch = useDispatch();
 
     const renderMobileError = () => (
@@ -147,6 +149,8 @@ const Register = () => {
         return null;
     };
 
+    const { site } = settings || {};
+
     return (
         <>
             <Script url="https://cdn-object.itellyou.com/geetest/gt.js" />
@@ -221,7 +225,7 @@ const Register = () => {
                 </Submit>
                 <p className={styles['protocol']}>
                     注册即表明同意
-                    <Link to="">《ITELLYOU用户协议》</Link>
+                    <Link to={(site || {}).user_agreement_link}>《ITELLYOU用户协议》</Link>
                 </p>
                 <Space className={styles['third-login']} size="large">
                     <AlipayLogin />
