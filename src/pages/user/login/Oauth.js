@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, message } from 'antd';
-import { useDispatch, useIntl, Link } from 'umi';
+import { useDispatch, useIntl, Link, useSelector } from 'umi';
 import Script from 'react-load-script';
 import Form, { Submit } from '@/components/Form';
 import styles from './index.less';
