@@ -46,7 +46,17 @@ export default {
     },
     reducers: {
         setRecommends(state, { payload }) {
-            return setList('recommends', payload, state);
+            return setList('recommends', payload, state, (child, item) => {
+                if (child.type === 'article' && item.type === 'article')
+                    return child.object.id === item.object.id;
+                if (child.type === 'question' && item.type === 'question') {
+                    return child.object.answer_list.find(answer => {
+                        return item.object.answer_list.find(
+                            itemAnswer => answer.id === itemAnswer.id,
+                        );
+                    });
+                }
+            });
         },
         replaceRecommendsArticle(state, { payload }) {
             return replaceItem(
