@@ -166,7 +166,11 @@ function Detail({ match: { params } }) {
                             </div>
                             {!isEmpty && (
                                 <article>
-                                    <Editor.Viewer content={content} html={html} />
+                                    <Editor.Viewer
+                                        genAnchor={false}
+                                        content={content}
+                                        html={html}
+                                    />
                                 </article>
                             )}
                             <div className={styles['footer']}>

@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-
 function useEditor() {
     const Editor = useRef();
     const [loading, setLoading] = useState(false);

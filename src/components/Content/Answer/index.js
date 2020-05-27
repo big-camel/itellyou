@@ -110,7 +110,16 @@ const Answer = ({
         }
         return (
             <div className={styles['content']}>
-                <div>{<Editor.Viewer key={id} content={item.content} html={item.html} />}</div>
+                <div>
+                    {
+                        <Editor.Viewer
+                            key={id}
+                            content={item.content}
+                            html={item.html}
+                            genAnchor={false}
+                        />
+                    }
+                </div>
 
                 <p className={styles['footer']}>
                     {!paid_read && (

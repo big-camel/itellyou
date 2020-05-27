@@ -150,4 +150,9 @@ function Edit({ match: { params } }) {
         </Loading>
     );
 }
+Edit.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
 export default Edit;

@@ -1,6 +1,5 @@
 import React from 'react';
 import { ConfigProvider } from 'antd';
-import { fetchMe } from '@/services/user';
 
 export const ssr = {
     modifyGetInitialPropsCtx: async ctx => {
