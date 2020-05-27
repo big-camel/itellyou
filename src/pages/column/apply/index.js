@@ -138,4 +138,10 @@ function Apply() {
     );
 }
 
+Apply.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
 export default Apply;
