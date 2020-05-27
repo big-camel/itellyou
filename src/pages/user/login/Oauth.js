@@ -24,6 +24,8 @@ const Oauth = ({ location }) => {
     const [submit, setSubmit] = useState({});
     const dispatch = useDispatch();
 
+    const settings = useSelector(state => state.settings);
+
     const sendMobileCaptcha = e => {
         e.preventDefault();
         form.validateFields(['mobile']).then(values => {
@@ -118,6 +120,8 @@ const Oauth = ({ location }) => {
         return null;
     };
 
+    const { site } = settings || {};
+
     return (
         <>
             <Script url="https://cdn-object.itellyou.com/geetest/gt.js" />
@@ -153,7 +157,16 @@ const Oauth = ({ location }) => {
                 />
                 <Submit loading={submit.loading}>{submit.loading ? '登陆中...' : '登陆'}</Submit>
                 <p className={styles['protocol']}>
-                    登陆即表明同意<Link to="">《ITELLYOU用户协议》</Link>
+                    登陆即表明同意
+                    <a
+                        target="_blank"
+                        href={
+                            (site || { user_agreement_link: 'https://www.itellyou.com' })
+                                .user_agreement_link
+                        }
+                    >
+                        《ITELLYOU用户协议》
+                    </a>
                 </p>
             </Form>
         </>
