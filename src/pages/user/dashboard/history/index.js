@@ -6,6 +6,18 @@ import Layout from '../components/Layout';
 import { MoreList } from '@/components/List';
 import styles from './index.less';
 
+const fetchList = (dispatch, offset, limit, parmas) => {
+    return dispatch({
+        type: 'history/list',
+        payload: {
+            append: offset > 0,
+            offset,
+            limit,
+            ...parmas,
+        },
+    });
+};
+
 const UserHistory = () => {
     const [offset, setOffset] = useState(0);
     const limit = 20;
@@ -13,17 +25,6 @@ const UserHistory = () => {
     const dispatch = useDispatch();
     const prevTime = useRef();
     const dataSource = useSelector(state => (state.history ? state.history.list : null));
-
-    useEffect(() => {
-        dispatch({
-            type: 'history/list',
-            payload: {
-                append: offset !== 0,
-                offset,
-                limit,
-            },
-        });
-    }, [offset, limit, dispatch]);
 
     const renderUrl = (type, key) => {
         switch (type) {
@@ -70,7 +71,10 @@ const UserHistory = () => {
                     split={false}
                     offset={offset}
                     limit={limit}
-                    onChange={offset => setOffset(offset)}
+                    onChange={offset => {
+                        setOffset(offset);
+                        fetchList(dispatch, offset, limit);
+                    }}
                     dataSource={dataSource}
                     renderItem={renderItem}
                 />
@@ -79,9 +83,9 @@ const UserHistory = () => {
     );
 };
 
-UserHistory.getInitialProps = async ({ isServer, store }) => {
-    const { getState } = store;
-
+UserHistory.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+    await fetchList(dispatch, 0, 20, params);
     if (isServer) return getState();
 };
 

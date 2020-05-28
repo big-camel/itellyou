@@ -41,7 +41,7 @@ function Edit({ match: { params } }) {
             }
             setLoading(false);
         }
-    }, [dispatch, detail, id]);
+    }, [detail, id]);
 
     const onTitleChange = event => {
         setTitle(event.target.value);

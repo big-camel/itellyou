@@ -23,17 +23,6 @@ function Profile() {
     const submiting = loadingEffect.effects['user/profile'];
 
     useEffect(() => {
-        if (me) {
-            dispatch({
-                type: 'user/find',
-                payload: {
-                    id: me.id,
-                },
-            });
-        }
-    }, [dispatch, me]);
-
-    useEffect(() => {
         if (detail) {
             setAvatar(detail.avatar || settings.defaultAvatar);
         }
@@ -114,10 +103,21 @@ function Profile() {
     );
 }
 
-Profile.getInitialProps = async ({ isServer, store }) => {
-    const { getState } = store;
-
-    if (isServer) return getState();
+Profile.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+    const state = getState();
+    const { user } = state;
+    const { me } = user || {};
+    if (me) {
+        await dispatch({
+            type: 'user/find',
+            payload: {
+                id: me.id,
+                ...params,
+            },
+        });
+        if (isServer) return getState();
+    }
 };
 
 export default Profile;

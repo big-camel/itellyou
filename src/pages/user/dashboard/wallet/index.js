@@ -12,9 +12,10 @@ const Wallet = () => {
     );
 };
 
-Wallet.getInitialProps = async ({ isServer, store }) => {
+Wallet.getInitialProps = async ({ isServer, store, params }) => {
     const { getState } = store;
-
+    await Access.getInitialProps({ isServer, store, params });
+    await Log.getInitialProps({ isServer, store, params });
     if (isServer) return getState();
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { getPageQuery } from '@/utils/utils';
 import Layout from '../components/Layout';
 import User from './User';
 import Follower from './Follower';
@@ -49,9 +50,27 @@ const UserFollows = ({ location: { query } }) => {
     );
 };
 
-UserFollows.getInitialProps = async ({ isServer, store }) => {
+UserFollows.getInitialProps = async ({ isServer, store, params, history }) => {
     const { getState } = store;
 
+    const { location } = history || {};
+    let query = (location || {}).query;
+    if (!isServer) {
+        query = getPageQuery();
+    }
+
+    const type = query.type || 'user';
+    if (type === 'user') {
+        await User.getInitialProps({ isServer, store, params });
+    } else if (type === 'follower') {
+        await Follower.getInitialProps({ isServer, store, params });
+    } else if (type === 'column') {
+        await Column.getInitialProps({ isServer, store, params });
+    } else if (type === 'question') {
+        await Question.getInitialProps({ isServer, store, params });
+    } else if (type === 'tag') {
+        await Tag.getInitialProps({ isServer, store, params });
+    }
     if (isServer) return getState();
 };
 

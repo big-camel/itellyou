@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useDispatch, useSelector } from 'umi';
 import { ReloadOutlined } from '@ant-design/icons';
 import { Card, Avatar, Button } from 'antd';
+import { getPageQuery } from '@/utils/utils';
 import Container from '@/components/Container';
 import List from '@/components/List';
 import { RouteContext } from '@/context';
@@ -95,9 +96,12 @@ function Column({ location: { query } }) {
     );
 }
 
-Column.getInitialProps = async ({ isServer, store, params, history, match }) => {
+Column.getInitialProps = async ({ isServer, store, params, history }) => {
     const { location } = history || {};
-    const { query } = location || {};
+    let query = (location || {}).query;
+    if (!isServer) {
+        query = getPageQuery();
+    }
     const type = query ? query.type : null;
     const { dispatch, getState } = store;
     await fetchList(dispatch, 0, 8, type || 'hot', params);

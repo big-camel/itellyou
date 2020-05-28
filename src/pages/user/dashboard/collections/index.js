@@ -1,4 +1,5 @@
 import React from 'react';
+import { getPageQuery } from '@/utils/utils';
 import Layout from '../components/Layout';
 import Article from './Article';
 import Answer from './Answer';
@@ -18,6 +19,7 @@ const menus = [
         component: <Answer />,
     },
 ];
+
 const UserCollections = ({ location: { query } }) => {
     const type = query.type || 'article';
 
@@ -28,8 +30,21 @@ const UserCollections = ({ location: { query } }) => {
     );
 };
 
-UserCollections.getInitialProps = async ({ isServer, store }) => {
+UserCollections.getInitialProps = async ({ isServer, store, history, params }) => {
     const { getState } = store;
+    const { location } = history || {};
+    let query = (location || {}).query;
+    if (!isServer) {
+        query = getPageQuery();
+    }
+
+    const type = query.type || 'article';
+    if (type === 'article') {
+        await Article.getInitialProps({ isServer, store, params });
+    }
+    if (type === 'answer') {
+        await Answer.getInitialProps({ isServer, store, params });
+    }
 
     if (isServer) return getState();
 };

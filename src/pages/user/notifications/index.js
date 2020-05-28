@@ -14,6 +14,19 @@ import Adopt from './components/Adopt';
 import Reward from './components/Reward';
 import Payment from './components/Payment';
 
+const fetchList = (dispatch, offset, limit, action, parmas) => {
+    return dispatch({
+        type: 'notifications/list',
+        payload: {
+            append: offset > 0,
+            action,
+            offset,
+            limit,
+            ...parmas,
+        },
+    });
+};
+
 const Notifications = ({ match: { params } }) => {
     const path = params.path || '/default';
     const menuKey = path.substr(1);
@@ -23,22 +36,6 @@ const Notifications = ({ match: { params } }) => {
     const limit = 20;
     const dispatch = useDispatch();
     const dataSource = useSelector(state => state.notifications.list[menuKey]);
-
-    useEffect(() => {
-        dispatch({
-            type: 'notifications/list',
-            payload: {
-                append: offset !== 0,
-                action: menuKey,
-                offset: prevMenuKey.current !== menuKey ? 0 : offset,
-                limit,
-            },
-        });
-        if (prevMenuKey.current !== menuKey) {
-            prevTime.current = '';
-        }
-        prevMenuKey.current = menuKey;
-    }, [offset, limit, menuKey, dispatch]);
 
     const renderItem = item => {
         const { created_time, action, type } = item;
@@ -95,7 +92,19 @@ const Notifications = ({ match: { params } }) => {
                         limit={limit}
                         renderItem={renderItem}
                         dataSource={dataSource}
-                        onChange={offset => setOffset(offset)}
+                        onChange={offset => {
+                            setOffset(offset);
+                            fetchList(
+                                dispatch,
+                                prevMenuKey.current !== menuKey ? 0 : offset,
+                                limit,
+                                menuKey,
+                            );
+                            if (prevMenuKey.current !== menuKey) {
+                                prevTime.current = '';
+                            }
+                            prevMenuKey.current = menuKey;
+                        }}
                     />
                 </Card>
             </Layout>
@@ -103,9 +112,11 @@ const Notifications = ({ match: { params } }) => {
     );
 };
 
-Notifications.getInitialProps = async ({ isServer, store }) => {
-    const { getState } = store;
-
+Notifications.getInitialProps = async ({ isServer, store, match, params }) => {
+    const { dispatch, getState } = store;
+    const path = match.params.path || '/default';
+    const menuKey = path.substr(1);
+    await fetchList(dispatch, 0, 20, menuKey, params);
     if (isServer) return getState();
 };
 

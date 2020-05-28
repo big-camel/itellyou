@@ -3,10 +3,21 @@ import { useDispatch, useSelector } from 'umi';
 import { Table } from 'antd';
 import Loading from '@/components/Loading';
 import Timer from '@/components/Timer';
-import CardTable from '../components/CardTable';
 import { UserAuthor } from '@/components/User';
 
-export default () => {
+const fetchList = (dispatch, offset, limit, parmas) => {
+    return dispatch({
+        type: 'userStar/followerList',
+        payload: {
+            append: offset > 0,
+            offset,
+            limit,
+            ...parmas,
+        },
+    });
+};
+
+const FollowsFollower = () => {
     const [page, setPage] = useState(1);
     const limit = 20;
 
@@ -14,16 +25,6 @@ export default () => {
     const dataSource = useSelector(state => (state.userStar ? state.userStar.followerList : null));
     const loadingEffect = useSelector(state => state.loading);
     const loading = loadingEffect.effects['userStar/followerList'];
-
-    useEffect(() => {
-        dispatch({
-            type: 'userStar/followerList',
-            payload: {
-                offset: (page - 1) * limit,
-                limit,
-            },
-        });
-    }, [page, limit, dispatch]);
 
     const renderPage = (_, type, originalElement) => {
         if (type === 'prev') {
@@ -67,6 +68,7 @@ export default () => {
                     pagination={{
                         onChange: page => {
                             setPage(page);
+                            fetchList(dispatch, (page - 1) * limit, limit);
                         },
                         current: page,
                         itemRender: renderPage,
@@ -81,3 +83,11 @@ export default () => {
 
     return renderTable();
 };
+
+FollowsFollower.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+    await fetchList(dispatch, 0, 20, params);
+    if (isServer) return getState();
+};
+
+export default FollowsFollower;

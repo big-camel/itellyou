@@ -38,12 +38,6 @@ const AnswerEdit = ({ id, onSubmit, onCancel, ...props }) => {
                 setSaving(true);
             } else if (action === 'finish') {
                 setSaving(false);
-                dispatch({
-                    type: 'answer/findDraft',
-                    payload: {
-                        question_id,
-                    },
-                });
             }
         },
         [dispatch, question_id],

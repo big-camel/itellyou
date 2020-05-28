@@ -28,15 +28,19 @@ export default {
         },
         *find({ payload }, { call, put }) {
             const response = yield call(find, payload);
-            const { result, status, data } = response;
+            const { result, status, data } = response || {};
             if (result) {
                 yield put({
                     type: 'updateDetail',
                     payload: data,
                 });
             } else if (status > 200) {
-                history.push(`/${status}`);
+                if (history) history.push(`/${status}`);
             }
+            yield put({
+                type: 'setResponseStatus',
+                payload: status,
+            });
             return response;
         },
         *view({ payload }, { call }) {
@@ -142,6 +146,12 @@ export default {
         },
         updateListItem(state, { payload }) {
             return replaceItem('list', payload, state);
+        },
+        setResponseStatus(state, { payload }) {
+            return {
+                ...state,
+                response_status: payload,
+            };
         },
     },
 };

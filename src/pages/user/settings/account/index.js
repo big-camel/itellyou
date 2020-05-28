@@ -11,25 +11,13 @@ import Third from './components/Third';
 import styles from './index.less';
 
 function Account() {
-    const [loading, setLoading] = useState(true);
     const [mobileVisible, setMobileVisible] = useState(false);
     const [emailVisible, setEmailVisible] = useState(false);
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [pathVisible, setPathVisible] = useState(false);
-
-    //const [ loginVisible , setLoginVisible ] = useState(false)
-
-    const dispatch = useDispatch();
     const me = useSelector(state => state.user.me);
-
-    useEffect(() => {
-        dispatch({
-            type: 'user/fetchAccount',
-        }).then(() => {
-            setLoading(false);
-        });
-    }, [dispatch]);
-
+    const loadingState = useSelector(state => state.loading);
+    const loading = loadingState.effects['user/fetchAccount'];
     if (!me || loading) return <Loading />;
 
     const { mobile, email, is_set_pwd, path } = me;
@@ -85,9 +73,14 @@ function Account() {
     );
 }
 
-Account.getInitialProps = async ({ isServer, store }) => {
-    const { getState } = store;
-
+Account.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+    await dispatch({
+        type: 'user/fetchAccount',
+        payload: {
+            ...params,
+        },
+    });
     if (isServer) return getState();
 };
 

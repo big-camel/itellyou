@@ -1,11 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector, Link } from 'umi';
 import { Table, Button } from 'antd';
 import Loading from '@/components/Loading';
 import Timer from '@/components/Timer';
-import styles from './index.less';
 
-export default () => {
+const fetchList = (dispatch, offset, limit, parmas) => {
+    return dispatch({
+        type: 'questionStar/list',
+        payload: {
+            append: offset > 0,
+            offset,
+            limit,
+            ...parmas,
+        },
+    });
+};
+
+const FollowsQuestion = () => {
     const [page, setPage] = useState(1);
     const limit = 20;
     const [followLoading, setFollowLoading] = useState({});
@@ -14,16 +25,6 @@ export default () => {
     const dataSource = useSelector(state => (state.questionStar ? state.questionStar.list : null));
     const loadingEffect = useSelector(state => state.loading);
     const loading = loadingEffect.effects['questionStar/list'];
-
-    useEffect(() => {
-        dispatch({
-            type: 'questionStar/list',
-            payload: {
-                offset: (page - 1) * limit,
-                limit,
-            },
-        });
-    }, [page, limit, dispatch]);
 
     const renderPage = (_, type, originalElement) => {
         if (type === 'prev') {
@@ -116,6 +117,7 @@ export default () => {
                     pagination={{
                         onChange: page => {
                             setPage(page);
+                            fetchList(dispatch, (page - 1) * limit, limit);
                         },
                         current: page,
                         itemRender: renderPage,
@@ -130,3 +132,11 @@ export default () => {
 
     return renderTable();
 };
+
+FollowsQuestion.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+    await fetchList(dispatch, 0, 20, params);
+    if (isServer) return getState();
+};
+
+export default FollowsQuestion;

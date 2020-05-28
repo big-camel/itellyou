@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link, useDispatch, useSelector, useAccess, Helmet } from 'umi';
+import { Link, useDispatch, useSelector, useAccess, Helmet, Redirect } from 'umi';
 import { Button, Card, Space, message } from 'antd';
 import classNames from 'classnames';
 import { RouteContext } from '@/context';
@@ -26,32 +26,29 @@ function Detail({ match: { params } }) {
     const question = useSelector(state => state.question);
     const settings = useSelector(state => state.settings);
     const me = useSelector(state => state.user.me);
-    const { detail, user_answer } = question;
+    const { detail, user_answer, response_status } = question;
     const { isMobile } = useContext(RouteContext);
 
     const answer_id = params.answer_id ? parseInt(params.answer_id) : null;
     const [editVisible, setEditVisible] = useState();
     const [commentVisible, setCommentVisible] = useState(false);
 
+    const loadingState = useSelector(state => state.loading);
+    const loading = loadingState.effects['question/find'];
+
     const access = useAccess();
 
     useEffect(() => {
-        if (me) {
-            dispatch({
-                type: 'answer/findDraft',
-                payload: {
-                    question_id: id,
-                },
-            }).then(({ data }) => {
-                const { draft, published, deleted } = data || {};
-                if (!answer_id && draft && !published && !deleted) {
-                    setEditVisible(true);
-                }
-            });
+        const { draft, published, deleted } = user_answer || {};
+        if (!answer_id && draft && !published && !deleted) {
+            setEditVisible(true);
         }
-    }, [me, id, answer_id, dispatch]);
+    }, [answer_id, user_answer]);
 
-    if (!detail) return <Loading />;
+    if (typeof response_status !== 'undefined' && response_status > 200)
+        return <Redirect to="/404" />;
+    if (!detail || loading) return <Loading />;
+
     const { author, title, description, content, html, tags, use_star } = detail;
     const onRevoke = answer_id => {
         dispatch({
@@ -261,8 +258,35 @@ function Detail({ match: { params } }) {
 
 Detail.getInitialProps = async ({ isServer, match, store, params }) => {
     const { dispatch, getState } = store;
+
+    const state = getState();
+    const { question, user } = state;
+    if (question && typeof question.response_status === 'number' && question.response_status > 200)
+        return state;
+
     const id = parseInt(match.params.id || 0);
     const answer_id = match.params.answer_id ? parseInt(match.params.answer_id) : null;
+
+    const response = await dispatch({
+        type: 'question/find',
+        payload: {
+            id,
+            ...params,
+        },
+    });
+
+    if (!response || !response.result) return getState();
+
+    if (user && user.me) {
+        await dispatch({
+            type: 'answer/findDraft',
+            payload: {
+                question_id: id,
+                ...params,
+            },
+        });
+    }
+
     await dispatch({
         type: 'question/view',
         payload: {
@@ -270,13 +294,7 @@ Detail.getInitialProps = async ({ isServer, match, store, params }) => {
             ...params,
         },
     });
-    await dispatch({
-        type: 'question/find',
-        payload: {
-            id,
-            ...params,
-        },
-    });
+
     await dispatch({
         type: 'answerReward/list',
         payload: {

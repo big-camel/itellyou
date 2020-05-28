@@ -15,23 +15,24 @@ import {
 } from '@ant-design/icons';
 import { ScrollList } from '@/components/List';
 
+const fetchList = (dispatch, offset, limit, parmas) => {
+    return dispatch({
+        type: 'draft/list',
+        payload: {
+            append: offset > 0,
+            offset,
+            limit,
+            ...parmas,
+        },
+    });
+};
+
 function Dashboard() {
     const [offset, setOffset] = useState(0);
     const limit = 20;
 
     const dispatch = useDispatch();
     const dataSource = useSelector(state => (state.draft ? state.draft.list : null));
-
-    useEffect(() => {
-        dispatch({
-            type: 'draft/list',
-            payload: {
-                append: offset !== 0,
-                offset,
-                limit,
-            },
-        });
-    }, [offset, limit, dispatch]);
 
     const onDelete = (type, key) => {
         dispatch({
@@ -79,14 +80,26 @@ function Dashboard() {
         return <WarningOutlined />;
     };
 
-    const getEditUrl = (type, url) => {
-        if (type === 'question_answer' || type === 'answer') return url;
+    const getEditUrl = ({ data_key, type, url, target }) => {
+        if (type === 'answer' || type === 'question_answer') {
+            if (!target) return url.replace(`/answer/${data_key}`, '');
+            url = `/question/${target.question_id}`;
+            if (target.published) {
+                url += `/answer/${target.id}`;
+            }
+            return url;
+        }
         return (url += '/edit');
     };
 
-    const renderItem = ({ url, title, author, created_time, data_type, data_key, target }) => {
+    const renderItem = item => {
+        const { url, title, author, created_time, data_type, data_key, target } = item;
         let newUrl = url;
         if (!target || !target.published) newUrl += '/edit';
+        if (data_type === 'answer' || data_type === 'question_answer') {
+            if (!target) newUrl = url.replace(`/answer/${data_key}`, '');
+            else if (!target.published) newUrl = `/question/${target.question_id}`;
+        }
         return (
             <ScrollList.Item>
                 <Card hoverable>
@@ -112,9 +125,9 @@ function Dashboard() {
                         </div>
                         <Space className={styles['action']}>
                             <Tooltip title="编辑">
-                                <Link to={getEditUrl(data_type, url)}>
+                                <a href={getEditUrl(item)}>
                                     <EditOutlined />
-                                </Link>
+                                </a>
                             </Tooltip>
                             <Tooltip title="移除记录">
                                 <a onClick={() => onDelete(data_type, data_key)}>
@@ -138,7 +151,10 @@ function Dashboard() {
                 dataSource={dataSource}
                 offset={offset}
                 limit={limit}
-                onChange={offset => setOffset(offset)}
+                onChange={offset => {
+                    setOffset(offset);
+                    fetchList(dispatch, offset, limit);
+                }}
                 renderItem={renderItem}
             />
         );
@@ -154,8 +170,9 @@ function Dashboard() {
     return <Layout defaultKey="recent">{render()}</Layout>;
 }
 
-Dashboard.getInitialProps = async ({ isServer, store }) => {
-    const { getState } = store;
+Dashboard.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+    await fetchList(dispatch, 0, 20, params);
     if (isServer) return getState();
 };
 

@@ -7,17 +7,10 @@ import { RouteContext } from '@/context';
 import styles from './index.less';
 import Withdraw from './Withdraw';
 
-export default () => {
+const Access = () => {
     const [payVisible, setPayVisible] = useState(false);
     const [withdrawVisible, setWithdrawVisible] = useState(false);
-    const dispatch = useDispatch();
     const me = useSelector(state => state.user.me);
-
-    useEffect(() => {
-        dispatch({
-            type: 'thirdAccount/find',
-        });
-    }, [dispatch]);
 
     const { alipay } = useSelector(state => state.thirdAccount) || {};
 
@@ -85,3 +78,16 @@ export default () => {
         </div>
     );
 };
+
+Access.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+    await dispatch({
+        type: 'thirdAccount/find',
+        payload: {
+            ...params,
+        },
+    });
+    if (isServer) return getState();
+};
+
+export default Access;

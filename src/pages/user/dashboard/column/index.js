@@ -7,6 +7,19 @@ import CardTable from '../components/CardTable';
 import Timer from '@/components/Timer';
 import styles from './index.less';
 
+const fetchList = (dispatch, offset, limit, member_id, parmas) => {
+    return dispatch({
+        type: 'column/list',
+        payload: {
+            append: offset > 0,
+            offset,
+            limit,
+            member_id,
+            ...parmas,
+        },
+    });
+};
+
 const UserColumn = () => {
     const [page, setPage] = useState(1);
     const limit = 20;
@@ -15,17 +28,6 @@ const UserColumn = () => {
     const me = useSelector(state => state.user.me);
     const loadingEffect = useSelector(state => state.loading);
     const loading = loadingEffect.effects['column/list'];
-
-    useEffect(() => {
-        dispatch({
-            type: 'column/list',
-            payload: {
-                member_id: me.id,
-                offset: (page - 1) * limit,
-                limit,
-            },
-        });
-    }, [me, page, limit, dispatch]);
 
     const renderPage = (_, type, originalElement) => {
         if (type === 'prev') {
@@ -79,6 +81,7 @@ const UserColumn = () => {
                     pagination={{
                         onChange: page => {
                             setPage(page);
+                            fetchList(dispatch, (page - 1) * limit, limit, me.id);
                         },
                         current: page,
                         itemRender: renderPage,
@@ -98,10 +101,15 @@ const UserColumn = () => {
     );
 };
 
-UserColumn.getInitialProps = async ({ isServer, store }) => {
-    const { getState } = store;
-
-    if (isServer) return getState();
+UserColumn.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+    const state = getState();
+    const { user } = state;
+    const { me } = user || {};
+    if (me) {
+        await fetchList(dispatch, 0, 20, (me || {}).id, params);
+        if (isServer) return getState();
+    }
 };
 
 export default UserColumn;

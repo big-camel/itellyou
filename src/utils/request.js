@@ -38,7 +38,6 @@ const errorHandler = error => {
     if (!isBrowser()) {
         return console.log('umi-request error:', error);
     }
-    console.log(error);
     const { response } = error;
     if (response && response.status) {
         const errorText = codeMessage[response.status] || response.statusText;

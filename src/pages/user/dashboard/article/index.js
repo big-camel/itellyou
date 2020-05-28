@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Table, Tag, Space, Tooltip, Modal } from 'antd';
 import Layout from '../components/Layout';
 import Loading from '@/components/Loading';
@@ -6,6 +6,18 @@ import { Link, useDispatch, useSelector } from 'umi';
 import CardTable from '../components/CardTable';
 import { EditButton } from '@/components/Button';
 import { Article } from '@/components/Content';
+
+const fetchList = (dispatch, offset, limit, parmas) => {
+    return dispatch({
+        type: 'userArticle/list',
+        payload: {
+            append: offset > 0,
+            offset,
+            limit,
+            ...parmas,
+        },
+    });
+};
 
 const UserArticle = () => {
     const [page, setPage] = useState(1);
@@ -15,16 +27,6 @@ const UserArticle = () => {
     const dataSource = useSelector(state => (state.userArticle ? state.userArticle.list : null));
     const loadingEffect = useSelector(state => state.loading);
     const loading = loadingEffect.effects['userArticle/list'];
-
-    useEffect(() => {
-        dispatch({
-            type: 'userArticle/list',
-            payload: {
-                offset: (page - 1) * limit,
-                limit,
-            },
-        });
-    }, [page, limit, dispatch]);
 
     const renderPage = (_, type, originalElement) => {
         if (type === 'prev') {
@@ -42,10 +44,12 @@ const UserArticle = () => {
             dataIndex: 'title',
             key: 'title',
             ellipsis: true,
-            render: (text, { id }) => {
+            render: (text, { id, published }) => {
+                let url = `/article/${id}`;
+                if (!published) url += '/edit';
                 return (
-                    <Link className="table-column-title" to={`/article/${id}`}>
-                        {text}
+                    <Link className="table-column-title" to={url}>
+                        {text || '无标题'}
                     </Link>
                 );
             },
@@ -75,7 +79,11 @@ const UserArticle = () => {
             render: (_, { published, draft_version, version }) => {
                 return (
                     <Tag>
-                        {draft_version > version ? '未更新' : published ? '已发布' : '未发布'}{' '}
+                        {draft_version > version && version !== 0
+                            ? '未更新'
+                            : published
+                            ? '已发布'
+                            : '未发布'}{' '}
                     </Tag>
                 );
             },
@@ -114,6 +122,7 @@ const UserArticle = () => {
                     pagination={{
                         onChange: page => {
                             setPage(page);
+                            fetchList(dispatch, (page - 1) * limit, limit);
                         },
                         current: page,
                         itemRender: renderPage,
@@ -133,9 +142,9 @@ const UserArticle = () => {
     );
 };
 
-UserArticle.getInitialProps = async ({ isServer, store }) => {
-    const { getState } = store;
-
+UserArticle.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+    await fetchList(dispatch, 0, 20, params);
     if (isServer) return getState();
 };
 

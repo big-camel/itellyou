@@ -36,8 +36,12 @@ export default {
                     payload: { ...data },
                 });
             } else if (status > 200) {
-                history.push(`/${status}`);
+                if (history) history.push(`/${status}`);
             }
+            yield put({
+                type: 'setResponseStatus',
+                payload: status,
+            });
             return response;
         },
         *findDraft({ payload }, { call, put, select }) {
@@ -282,6 +286,12 @@ export default {
             return {
                 ...state,
                 list: { ...state.list, data },
+            };
+        },
+        setResponseStatus(state, { payload }) {
+            return {
+                ...state,
+                response_status: payload,
             };
         },
     },

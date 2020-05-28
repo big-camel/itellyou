@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback, useContext } from 'react';
 import { Button, message, Space, Badge } from 'antd';
-import { history, useDispatch, useSelector } from 'umi';
+import { history, useSelector } from 'umi';
 import Editor from '@/components/Editor';
 import styles from './index.less';
 import logo from '@/assets/logo.svg';
@@ -18,14 +18,13 @@ function Edit({ match: { params } }) {
     const [saving, setSaving] = useState(false);
     const [publishing, setPublishing] = useState(false);
     const [collabUsers, setCollabUsers] = useState([]);
-    const dispatch = useDispatch();
     const { detail } = useSelector(state => state.doc);
     const { isMobile } = useContext(RouteContext);
     useEffect(() => {
         if ((id && detail) || !id) {
             setLoading(false);
         }
-    }, [dispatch, detail, id]);
+    }, [detail, id]);
 
     const onSave = useCallback(action => {
         setSaving(action === 'begin');

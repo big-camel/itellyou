@@ -50,9 +50,12 @@ export default {
                     payload: data || {},
                 });
             } else if (status > 200) {
-                history.push(`/${status}`);
+                if (history) history.push(`/${status}`);
             }
-
+            yield put({
+                type: 'setResponseStatus',
+                payload: status,
+            });
             return response;
         },
         *view({ payload }, { call }) {
@@ -110,6 +113,12 @@ export default {
             return {
                 ...state,
                 user_answer: { ...state.user_answer, ...payload },
+            };
+        },
+        setResponseStatus(state, { payload }) {
+            return {
+                ...state,
+                response_status: payload,
             };
         },
     },

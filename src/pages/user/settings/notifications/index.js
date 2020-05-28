@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'umi';
 import Layout from '../components/Layout';
 import { Card, Collapse, Button, Select, message } from 'antd';
@@ -152,11 +152,7 @@ const data = [
 const SettingsNotifications = () => {
     const dispatch = useDispatch();
     const dataSource = useSelector(state => state.notificationsSettings.list);
-    useEffect(() => {
-        dispatch({
-            type: 'notificationsSettings/list',
-        });
-    }, [dispatch]);
+
     if (!dataSource || dataSource.length === 0) return <Loading />;
     const dataMap = {};
     dataSource.forEach(({ action, type, value }) => {
@@ -234,9 +230,14 @@ const SettingsNotifications = () => {
     );
 };
 
-SettingsNotifications.getInitialProps = async ({ isServer, store }) => {
-    const { getState } = store;
-
+SettingsNotifications.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+    await dispatch({
+        type: 'notificationsSettings/list',
+        payload: {
+            ...params,
+        },
+    });
     if (isServer) return getState();
 };
 

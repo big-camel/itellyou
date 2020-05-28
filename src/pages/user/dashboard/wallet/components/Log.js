@@ -6,7 +6,19 @@ import Timer from '@/components/Timer';
 import CardTable from '../../components/CardTable';
 import { RouteContext } from '@/context';
 
-export default () => {
+const fetchList = (dispatch, offset, limit, parmas) => {
+    return dispatch({
+        type: 'bank/log',
+        payload: {
+            append: offset > 0,
+            offset,
+            limit,
+            ...parmas,
+        },
+    });
+};
+
+const WalletLog = () => {
     const [page, setPage] = useState(1);
     const limit = 20;
 
@@ -14,16 +26,6 @@ export default () => {
     const dataSource = useSelector(state => (state.bank ? state.bank.list : null));
     const loadingEffect = useSelector(state => state.loading);
     const loading = loadingEffect.effects['bank/log'];
-
-    useEffect(() => {
-        dispatch({
-            type: 'bank/log',
-            payload: {
-                offset: (page - 1) * limit,
-                limit,
-            },
-        });
-    }, [page, limit, dispatch]);
 
     const renderPage = (_, type, originalElement) => {
         if (type === 'prev') {
@@ -115,6 +117,7 @@ export default () => {
                     pagination={{
                         onChange: page => {
                             setPage(page);
+                            fetchList(dispatch, (page - 1) * limit, limit);
                         },
                         current: page,
                         itemRender: renderPage,
@@ -132,3 +135,11 @@ export default () => {
 
     return <CardTable>{renderTable()}</CardTable>;
 };
+
+WalletLog.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+    await fetchList(dispatch, 0, 20, params);
+    if (isServer) return getState();
+};
+
+export default WalletLog;

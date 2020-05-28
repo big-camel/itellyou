@@ -4,7 +4,19 @@ import Loading from '@/components/Loading';
 import { Link, useDispatch, useSelector } from 'umi';
 import Timer from '@/components/Timer';
 
-export default () => {
+const fetchList = (dispatch, offset, limit, parmas) => {
+    return dispatch({
+        type: 'answerStar/list',
+        payload: {
+            append: offset > 0,
+            offset,
+            limit,
+            ...parmas,
+        },
+    });
+};
+
+const AnswerStar = () => {
     const [page, setPage] = useState(1);
     const limit = 20;
     const [followLoading, setFollowLoading] = useState({});
@@ -13,16 +25,6 @@ export default () => {
     const dataSource = useSelector(state => (state.answerStar ? state.answerStar.list : null));
     const loadingEffect = useSelector(state => state.loading);
     const loading = loadingEffect.effects['answerStar/list'];
-
-    useEffect(() => {
-        dispatch({
-            type: 'answerStar/list',
-            payload: {
-                offset: (page - 1) * limit,
-                limit,
-            },
-        });
-    }, [page, limit, dispatch]);
 
     const renderPage = (_, type, originalElement) => {
         if (type === 'prev') {
@@ -130,6 +132,7 @@ export default () => {
                     pagination={{
                         onChange: page => {
                             setPage(page);
+                            fetchList(dispatch, (page - 1) * limit, limit);
                         },
                         current: page,
                         itemRender: renderPage,
@@ -144,3 +147,11 @@ export default () => {
 
     return renderTable();
 };
+
+AnswerStar.getInitialProps = async ({ isServer, store, params }) => {
+    const { dispatch, getState } = store;
+    await fetchList(dispatch, 0, 20, params);
+    if (isServer) return getState();
+};
+
+export default AnswerStar;

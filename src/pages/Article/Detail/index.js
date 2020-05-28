@@ -1,10 +1,11 @@
 import React, { useState, useContext, useCallback } from 'react';
-import { useSelector, Helmet } from 'umi';
+import { useSelector, Helmet, Redirect } from 'umi';
+import { Card, Space } from 'antd';
 import { RouteContext } from '@/context';
 import Container, { Layout } from '@/components/Container';
 import Loading from '@/components/Loading';
 import { Article } from '@/components/Content';
-import { Card, Space } from 'antd';
+import Execption from '@/components/Exception';
 import Editor from '@/components/Editor';
 import { GoogleHorizontal } from '@/components/AdSense';
 import { HistoryButton } from '@/components/Button';
@@ -18,17 +19,19 @@ function Detail({ match: { params } }) {
     const [contentData, setContentData] = useState({});
     const [historyViewer, setHistoryViewer] = useState(false);
 
-    const { detail } = useSelector(state => state.article);
+    const { detail, response_status } = useSelector(state => state.article);
     const settings = useSelector(state => state.settings);
     const { isMobile } = useContext(RouteContext);
     const loadingState = useSelector(state => state.loading);
     const loading = loadingState.effects['article/find'];
 
     const renderAction = useCallback(() => {
-        if (!isMobile && !detail.paid_read)
+        if (!isMobile && detail && !detail.paid_read)
             return <HistoryButton onClick={() => setHistoryViewer(true)} />;
         return null;
     }, [isMobile, detail]);
+
+    if (typeof response_status === 'number' && response_status > 200) return <Redirect to="/404" />;
 
     if (!detail || loading) return <Loading />;
 
@@ -93,16 +96,25 @@ function Detail({ match: { params } }) {
 
 Detail.getInitialProps = async ({ isServer, match, store, params }) => {
     const { dispatch, getState } = store;
+
+    const state = getState();
+    const { article } = state;
+    if (article && typeof article.response_status === 'number' && article.response_status > 200)
+        return state;
+
     const id = parseInt(match.params.id || 0);
-    await dispatch({
-        type: 'article/view',
+    const response = await dispatch({
+        type: 'article/find',
         payload: {
             id,
             ...params,
         },
     });
+
+    if (!response || !response.result) return getState();
+
     await dispatch({
-        type: 'article/find',
+        type: 'article/view',
         payload: {
             id,
             ...params,
