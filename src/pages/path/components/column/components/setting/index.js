@@ -4,7 +4,7 @@ import { message, Card } from 'antd';
 import AvatarCropper from '@/components/AvatarCropper';
 import Form, { Submit } from '@/components/Form';
 import formMap from './formMap';
-import styles from './index.less';
+import { find as findByPath } from '@/services/path';
 
 const { Avatar, Name, Desc, Path } = Form.createItem(formMap);
 
@@ -44,13 +44,7 @@ const Setting = detail => {
                 return resolve();
             }
 
-            dispatch({
-                type: 'path/find',
-                payload: {
-                    path,
-                    reducer: false,
-                },
-            }).then(({ result }) => {
+            findByPath({ path }).then(({ result }) => {
                 if (result) return reject('不可用的路径或已被使用');
                 resolve();
             });

@@ -81,6 +81,12 @@ Account.getInitialProps = async ({ isServer, store, params }) => {
             ...params,
         },
     });
+    await dispatch({
+        type: 'thirdAccount/find',
+        payload: {
+            ...params,
+        },
+    });
     if (isServer) return getState();
 };
 

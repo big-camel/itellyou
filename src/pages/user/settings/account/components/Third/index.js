@@ -13,12 +13,6 @@ export default () => {
     const [unbindType, setUnbindType] = useState(null);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch({
-            type: 'thirdAccount/find',
-        });
-    }, [dispatch]);
-
     const loaddingState = useSelector(state => state.loading);
     const { alipay, github } = useSelector(state => state.thirdAccount) || {};
 

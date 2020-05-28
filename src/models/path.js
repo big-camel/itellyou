@@ -7,6 +7,7 @@ export default {
         *find({ payload: { reducer, ...payload } }, { call, put }) {
             const response = yield call(find, payload);
             const { result, data } = response || {};
+
             if (result && reducer !== false) {
                 yield put({
                     type: 'setDetail',

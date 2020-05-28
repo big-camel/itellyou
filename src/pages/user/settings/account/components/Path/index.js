@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'umi';
 import Verify from '@/components/User/Verify';
 import Form, { Submit } from '@/components/Form';
 import formMap from './formMap';
+import { find as findByPath } from '@/services/path';
 
 const { Path } = Form.createItem(formMap);
 
@@ -20,12 +21,7 @@ export default ({ onClose, visible, defaultValue }) => {
                 return resolve();
             }
 
-            dispatch({
-                type: 'path/find',
-                payload: {
-                    path,
-                },
-            }).then(({ result }) => {
+            findByPath({ path }).then(({ result }) => {
                 if (result) return reject('不可用的路径或已被使用');
                 resolve();
             });

@@ -1,5 +1,3 @@
-import React from 'react';
-import { Input } from 'antd';
 import formApplyMap from '@/pages/column/apply/formMap';
 import formMap from '@/components/Form/map';
 const { Name, Desc } = formApplyMap;
