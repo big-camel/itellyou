@@ -4,17 +4,17 @@ import FormContext from './FormContext';
 
 const { TabPane } = Tabs;
 
-const generateId = (() => {
+/**const generateId = (() => {
     let i = 0;
     return (prefix = '') => {
         i += 1;
         return `${prefix}${i}`;
     };
-})();
+})();**/
 
 const FormTab = props => {
     useEffect(() => {
-        const uniqueId = generateId('form-tab-');
+        //const uniqueId = generateId('form-tab-');
         const { tabUtil } = props;
         if (tabUtil) {
             //tabUtil.addTab(uniqueId);

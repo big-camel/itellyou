@@ -121,7 +121,7 @@ function CommentItem({ item, onDelete, onCreate, onVote, onChild, onDetail }) {
                         <Timer
                             className={styles['comment-meta-time']}
                             time={
-                                item.updated_time === null || item.version === 1
+                                !item.updated_time || item.version === 1
                                     ? item.created_time
                                     : item.updated_time
                             }

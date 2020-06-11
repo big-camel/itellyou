@@ -5,7 +5,6 @@ import Submit from './Submit';
 import Tab from './Tab';
 import FormContext from './FormContext';
 import formItem from './FormItem';
-import styles from './index.less';
 
 const FormComponent = ({
     defaultActiveKey,
@@ -43,7 +42,7 @@ const FormComponent = ({
                 form,
             }}
         >
-            <div className={classNames(styles.formWarp, className)}>
+            <div className={classNames(className)}>
                 <Form
                     scrollToFirstError
                     form={form}

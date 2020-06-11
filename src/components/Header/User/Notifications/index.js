@@ -49,7 +49,7 @@ export default ({ overflowCount }) => {
                 webSocket.send(JSON.stringify(message));
             };
             webSocket.onerror = event => {
-                console.log('websocket error:', event);
+                //console.log('websocket error:', event);
             };
             webSocket.onmessage = event => {
                 const {

@@ -27,6 +27,9 @@ export default [
                     { name: 'description', conetnt: 'ITELLYOU 用户注册' },
                 ],
             },
+            {
+                component: '404',
+            },
         ],
     },
     //question
@@ -45,6 +48,9 @@ export default [
                 path: '/question/:id([\\d]+)/edit',
                 name: 'question.page.edit',
                 component: './question/edit',
+            },
+            {
+                component: '404',
             },
         ],
     },
@@ -78,6 +84,9 @@ export default [
                 path: '/article/:id(\\d+)/edit',
                 name: 'article.page.edit',
                 component: './article/edit',
+            },
+            {
+                component: '404',
             },
         ],
     },

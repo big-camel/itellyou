@@ -75,7 +75,6 @@ export default ({ onClose, visible, defaultValue }) => {
                         name="path"
                         autoComplete="off"
                         placeholder={defaultValue}
-                        defaultValue={defaultValue}
                         asyncValidator={findPath}
                     />
                     <Submit loading={submiting}>{submiting ? '提交中...' : '确认'}</Submit>

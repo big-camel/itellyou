@@ -117,8 +117,8 @@ export default {
                     type: 'replaceItem',
                     payload: {
                         type: 'list',
+                        articleId,
                         detail: {
-                            articleId,
                             id,
                             parent_id,
                         },
@@ -129,8 +129,8 @@ export default {
                     type: 'replaceItem',
                     payload: {
                         type: 'detail',
+                        articleId,
                         detail: {
-                            articleId,
                             id,
                             parent_id,
                         },

@@ -1,11 +1,10 @@
-import React, { useState, useContext, useCallback } from 'react';
-import { useSelector, Helmet, Redirect } from 'umi';
+import React, { useState, useContext, useCallback, useEffect } from 'react';
+import { useSelector, Helmet, Redirect, useDispatch } from 'umi';
 import { Card, Space } from 'antd';
 import { RouteContext } from '@/context';
 import Container, { Layout } from '@/components/Container';
 import Loading from '@/components/Loading';
 import { Article } from '@/components/Content';
-import Execption from '@/components/Exception';
 import Editor from '@/components/Editor';
 import { GoogleHorizontal } from '@/components/AdSense';
 import { HistoryButton } from '@/components/Button';
@@ -25,11 +24,22 @@ function Detail({ match: { params } }) {
     const loadingState = useSelector(state => state.loading);
     const loading = loadingState.effects['article/find'];
 
+    const dispatch = useDispatch();
+
     const renderAction = useCallback(() => {
         if (!isMobile && detail && !detail.paid_read)
             return <HistoryButton onClick={() => setHistoryViewer(true)} />;
         return null;
     }, [isMobile, detail]);
+
+    useEffect(() => {
+        dispatch({
+            type: 'article/view',
+            payload: {
+                id,
+            },
+        });
+    }, [dispatch, id]);
 
     if (typeof response_status === 'number' && response_status > 200) return <Redirect to="/404" />;
 
@@ -112,23 +122,18 @@ Detail.getInitialProps = async ({ isServer, match, store, params }) => {
     });
 
     if (!response || !response.result) return getState();
+    if (isServer) {
+        await dispatch({
+            type: 'articleComment/root',
+            payload: {
+                articleId: id,
+                offset: 0,
+                limit: 20,
+                ...params,
+            },
+        });
+    }
 
-    await dispatch({
-        type: 'article/view',
-        payload: {
-            id,
-            ...params,
-        },
-    });
-    await dispatch({
-        type: 'articleComment/root',
-        payload: {
-            articleId: id,
-            offset: 0,
-            limit: 20,
-            ...params,
-        },
-    });
     await dispatch({
         type: 'articleReward/list',
         payload: {
