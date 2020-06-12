@@ -163,15 +163,14 @@ const Answer = ({
     const renderAction = () => {
         return (
             <Space size="large">
-                {allow_adopt ||
-                    (adopted && (
-                        <Adopt
-                            id={id}
-                            question_id={question_id}
-                            allow_adopt={allow_adopt}
-                            adopted={adopted}
-                        />
-                    ))}
+                {(allow_adopt || adopted) && (
+                    <Adopt
+                        id={id}
+                        question_id={question_id}
+                        allow_adopt={allow_adopt}
+                        adopted={adopted}
+                    />
+                )}
                 <Vote id={id} question_id={question_id} {...item} />
                 <CommentButton onClick={() => setCommentVisible(!commentVisible)}>
                     {comments === 0 ? '添加评论' : `${comments} 条评论`}

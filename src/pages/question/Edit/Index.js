@@ -37,6 +37,7 @@ function Edit({ match: { params } }) {
         if ((id && detail) || !id) {
             if (detail) {
                 setTitle(detail.title);
+                console.log(detail.tags);
                 setTags(detail.tags);
             }
             setLoading(false);
@@ -301,6 +302,7 @@ function Edit({ match: { params } }) {
                             }
                             data={reward}
                             onChange={setReward}
+                            adopted={detail ? detail.adopted : null}
                         />
                     </Form.Item>
                     {error && <Alert description={error} type="error" showIcon />}

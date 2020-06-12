@@ -16,10 +16,9 @@ export default ({ id, question_id, allow_adopt, adopted }) => {
                 answer_id: id,
             },
         }).then(() => {
-            setAdopting(false);
+            //setAdopting(false);
         });
     };
-
     if (!allow_adopt && !adopted) return null;
 
     return (

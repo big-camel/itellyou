@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'umi';
 import { Radio, InputNumber } from 'antd';
 import styles from './index.less';
 
-export default ({ current, data, onChange }) => {
+export default ({ current, data, onChange, adopted }) => {
     onChange = onChange || function() {};
 
     const dispatch = useDispatch();
@@ -46,7 +46,7 @@ export default ({ current, data, onChange }) => {
                     <strong>{value}</strong>
                     {getUnit(type)}
                 </span>
-                ，还可以继续增加悬赏
+                {adopted ? '，问题已采纳，不能增加悬赏了' : '，还可以继续增加悬赏'}
             </div>
         );
     };
@@ -59,7 +59,7 @@ export default ({ current, data, onChange }) => {
     };
 
     const onTypeChange = event => {
-        const type = parseInt(event.target.value);
+        const type = event.target.value;
         const key = getKey(type);
         const { min } = config[key];
         onChange({
@@ -69,6 +69,7 @@ export default ({ current, data, onChange }) => {
     };
 
     const getDisabled = type => {
+        if (adopted) return true;
         if (!current) return false;
         if (current.type !== 'default' && current.type !== type) {
             return true;
@@ -108,6 +109,7 @@ export default ({ current, data, onChange }) => {
             </div>
         );
     };
+    console.log(type);
     return (
         <div className={styles['reward']}>
             {renderCurrent()}
