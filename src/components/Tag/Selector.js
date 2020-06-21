@@ -1,6 +1,7 @@
 import React from 'react';
 import Tag from '@/components/Tag';
-import List from '@/components/List';
+import { Space } from 'antd';
+import styles from './Selector.less';
 
 export default ({ values, onChange, ...props }) => {
     onChange = onChange || function() {};
@@ -23,24 +24,16 @@ export default ({ values, onChange, ...props }) => {
         }
     };
 
-    const renderItem = ({ id, name }) => {
-        return (
-            <List.Item key={id}>
-                <Tag id={id} title={name} onClose={onClose} />
-            </List.Item>
-        );
-    };
-
     const renderTags = () => {
+        console.log(values);
         return (
-            <React.Fragment>
-                {values.length > 0 && (
-                    <List
-                        grid={{ gutter: 8 }}
-                        dataSource={values}
-                        renderItem={renderItem}
-                        split={false}
-                    />
+            <Space direction="vertical">
+                {values && (
+                    <Space className={styles['tag-selector']}>
+                        {values.map(({ id, name }) => (
+                            <Tag key={id} id={id} title={name} onClose={onClose} />
+                        ))}
+                    </Space>
                 )}
                 <Tag.Select
                     values={values}
@@ -48,7 +41,7 @@ export default ({ values, onChange, ...props }) => {
                     placeholder="搜索标签"
                     {...props}
                 />
-            </React.Fragment>
+            </Space>
         );
     };
 

@@ -137,13 +137,7 @@ const Article = ({
                     {tag &&
                         tags &&
                         tags.map(({ id, name }) => (
-                            <Tag
-                                className={styles['tag']}
-                                key={id}
-                                id={id}
-                                href={`/tag/${id}`}
-                                title={name}
-                            />
+                            <Tag key={id} id={id} href={`/tag/${id}`} title={name} />
                         ))}
                     {view && <span className={styles['view']}>{item.view}次浏览</span>}
                 </Space>
