@@ -4,11 +4,26 @@ import { Empty, Menu, Card, Avatar } from 'antd';
 import Container, { Layout } from '@/components/Container';
 import { MoreList } from '@/components/List';
 import Loading from '@/components/Loading';
+import { getPageQuery } from '@/utils/utils';
 import styles from './index.less';
 
 import menus from './menus';
 import { Question, Answer, Article } from '@/components/Content';
 import { UserAuthor } from '@/components/User';
+
+const fetch = (dispatch, offset, limit, type, word, append, parmas) => {
+    return dispatch({
+        type: 'search/list',
+        payload: {
+            t: type === 'all' ? null : type,
+            q: word,
+            append,
+            offset,
+            limit,
+            ...parmas,
+        },
+    });
+};
 
 function Search({ location: { query } }) {
     const [offset, setOffset] = useState(parseInt(query.offset || 0));
@@ -25,19 +40,9 @@ function Search({ location: { query } }) {
     const list = search ? search.list : null;
 
     useEffect(() => {
-        dispatch({
-            type: 'search/list',
-            payload: {
-                t: type === 'all' ? null : type,
-                q: word,
-                append: wordRef.current === word && typeRef.current === type,
-                offset,
-                limit,
-            },
-        });
         typeRef.current = type;
         wordRef.current = word;
-    }, [dispatch, offset, limit, type, word]);
+    }, [type, word]);
 
     if (word === '') return <Empty />;
 
@@ -179,7 +184,17 @@ function Search({ location: { query } }) {
                                     offset={offset}
                                     limit={limit}
                                     renderItem={renderItem}
-                                    onChange={offset => setOffset(offset)}
+                                    onChange={offset => {
+                                        setOffset(offset);
+                                        fetch(
+                                            dispatch,
+                                            offset,
+                                            limit,
+                                            type,
+                                            word,
+                                            wordRef.current === word && typeRef.current === type,
+                                        );
+                                    }}
                                 />
                             </Card>
                         </div>
@@ -211,5 +226,19 @@ function Search({ location: { query } }) {
 
     return renderList();
 }
+
+Search.getInitialProps = async ({ isServer, store, params, history }) => {
+    const { location } = history || {};
+    let query = (location || {}).query;
+    if (!isServer) {
+        query = getPageQuery();
+    }
+    const type = query ? query.t : null;
+    const word = query ? query.q : null;
+    const { dispatch, getState } = store;
+    await fetch(dispatch, 0, 20, type || 'all', word || '', false, params);
+
+    if (isServer) return getState();
+};
 
 export default Search;
