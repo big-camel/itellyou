@@ -9,7 +9,7 @@ export default props => {
     const renderItem = ({ id, name }) => {
         return (
             <List.Item key={id}>
-                <Tag id={id} title={name} />
+                <Tag id={id} href={`/tag/${id}`} title={name} />
             </List.Item>
         );
     };
