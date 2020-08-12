@@ -160,8 +160,6 @@ function Edit({ match: { params } }) {
             editor.current.onPublish({
                 tags: tags.map((tag) => tag.id),
                 groupId,
-                sourceType: source.type,
-                sourceData: source.data,
                 //remark,
             });
         }
@@ -174,7 +172,7 @@ function Edit({ match: { params } }) {
         }
 
         message.info('发布成功', 1, () => {
-            window.location.href = '/software/' + res.data.id;
+            window.location.href = '/download/' + res.data.id;
         });
     }, []);
 

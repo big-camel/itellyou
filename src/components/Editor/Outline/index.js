@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
-import { Card } from 'antd';
+import { Card, Space } from 'antd';
 import { GoogleDefault } from '@/components/AdSense';
 import { findReadingSection } from './utils';
 import { useEditor } from '../Hook';
@@ -71,6 +71,7 @@ export default ({ view, config, ...props }) => {
     return (
         <div className={classNames(styles['toc'], { [styles['fixed']]: !reachingTop })} {...props}>
             <Card>
+                <Space direction="vertical" size="large">
                 <ul className={styles['directory']}>
                     {contents.map(({ id, text, level, depth }, index) => (
                         <li
@@ -88,6 +89,8 @@ export default ({ view, config, ...props }) => {
                         </li>
                     ))}
                 </ul>
+                <GoogleDefault />
+                </Space>
             </Card>
         </div>
     );

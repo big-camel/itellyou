@@ -88,6 +88,22 @@ const SoftwareIndex = ({ location: { query } }) => {
         );
     };
 
+    const render = () => {
+        if(isMobile){
+            return  <Layout><Space direction="vertical" size="middle">
+                <Sider dataSource={menuData} activeKey={(group || '').toString()} />
+                {renderList()}
+            </Space></Layout>
+        }
+        return <Layout spans={6}>
+                <Space direction="vertical" size="middle">
+                    <Sider dataSource={menuData} activeKey={(group || '').toString()} />
+                    <GoogleSquare />
+                </Space>
+                {renderList()}
+            </Layout>
+    }
+   
     return (
         <>
             <Helmet>
@@ -108,13 +124,9 @@ const SoftwareIndex = ({ location: { query } }) => {
                 />
             </Helmet>
             <Container>
-                <Layout spans={6}>
-                    <Space direction="vertical" size="middle">
-                        <Sider dataSource={menuData} activeKey={(group || '').toString()} />
-                        <GoogleSquare />
-                    </Space>
-                    {renderList()}
-                </Layout>
+                {
+                    render()
+                }
             </Container>
         </>
     );
