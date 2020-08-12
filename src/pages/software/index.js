@@ -109,7 +109,7 @@ const SoftwareIndex = ({ location: { query } }) => {
             </Helmet>
             <Container>
                 <Layout spans={6}>
-                    <Space direction="vertical">
+                    <Space direction="vertical" size="middle">
                         <Sider dataSource={menuData} activeKey={(group || '').toString()} />
                         <GoogleSquare />
                     </Space>

@@ -217,7 +217,7 @@ const SoftwareDetail = ({ match: { params } }) => {
             title: '发布时间',
             dataIndex: 'publish_date',
             key: 'publish_date',
-            width: 90,
+            width: 105,
             render: (text) => {
                 return Time.format(text, { tpl: 'YYYY-MM-DD' });
             },
@@ -318,65 +318,68 @@ const SoftwareDetail = ({ match: { params } }) => {
                     <Space direction="vertical" size="large">
                         <div className={styles['software-view']}>
                             <Card>
-                                <div className={styles['header']}>
-                                    <h2 className={styles['title']}>
-                                        <Link
-                                            to={`/software/${id}`}
-                                            dangerouslySetInnerHTML={{ __html: name }}
-                                        />
-                                    </h2>
-                                    <Space className={styles['tags']}>
-                                        {tags &&
-                                            tags.map(({ id, name }) => (
-                                                <Tag
-                                                    key={id}
-                                                    id={id}
-                                                    href={`/tag/${id}`}
-                                                    title={name}
-                                                />
-                                            ))}
-                                        <span className={styles['view']}>{view}次浏览</span>
-                                    </Space>
-                                </div>
-                                {renderAttributes()}
-                                <GoogleHorizontal />
-                                {recommendFiles.length > 0 && (
-                                    <div className={styles['software-recommend']}>
-                                        <h2 className={styles['title']}>推荐版本</h2>
-                                        <Table
-                                            rowKey="id"
-                                            dataSource={recommendFiles}
-                                            columns={renderColumns()}
-                                            size="small"
-                                            pagination={false}
-                                            bordered
-                                        />
+                                <Space direction="vertical" size="middle">
+                                    <div className={styles['header']}>
+                                        <h2 className={styles['title']}>
+                                            <Link
+                                                to={`/software/${id}`}
+                                                dangerouslySetInnerHTML={{ __html: name }}
+                                            />
+                                        </h2>
+                                        <Space className={styles['tags']}>
+                                            {tags &&
+                                                tags.map(({ id, name }) => (
+                                                    <Tag
+                                                        key={id}
+                                                        id={id}
+                                                        href={`/tag/${id}`}
+                                                        title={name}
+                                                    />
+                                                ))}
+                                            <span className={styles['view']}>{view}次浏览</span>
+                                        </Space>
                                     </div>
-                                )}
-
-                                <h2 className={styles['title']}>所有版本</h2>
-                                {renderReleases()}
-                                <div className={styles['body']}>{renderContent()}</div>
-                                <RewardButton
-                                    author={author}
-                                    dataType="software"
-                                    dataKey={id}
-                                    dataSource={rewardData}
-                                />
-                                <Space size="large">
-                                    <Vote id={id} {...detail} />
-                                    <CommentButton
-                                        onClick={() => setCommentVisible(!commentVisible)}
-                                    >
-                                        {comment_count === 0
-                                            ? '添加评论'
-                                            : `${comment_count} 条评论`}
-                                    </CommentButton>
-                                    {!isMobile && !use_author && (
-                                        <ReportButton id={id} type="software" />
+                                    {renderAttributes()}
+                                    <GoogleHorizontal />
+                                    {recommendFiles.length > 0 && (
+                                        <div className={styles['software-recommend']}>
+                                            <h2 className={styles['title']}>推荐版本</h2>
+                                            <Table
+                                                rowKey="id"
+                                                dataSource={recommendFiles}
+                                                columns={renderColumns()}
+                                                size="small"
+                                                pagination={false}
+                                                bordered
+                                            />
+                                        </div>
                                     )}
+                                    <div>
+                                        <h2 className={styles['title']}>所有版本</h2>
+                                        {renderReleases()}
+                                    </div>
+                                    <div className={styles['body']}>{renderContent()}</div>
+                                    <RewardButton
+                                        author={author}
+                                        dataType="software"
+                                        dataKey={id}
+                                        dataSource={rewardData}
+                                    />
+                                    <Space size="large">
+                                        <Vote id={id} {...detail} />
+                                        <CommentButton
+                                            onClick={() => setCommentVisible(!commentVisible)}
+                                        >
+                                            {comment_count === 0
+                                                ? '添加评论'
+                                                : `${comment_count} 条评论`}
+                                        </CommentButton>
+                                        {!isMobile && !use_author && (
+                                            <ReportButton id={id} type="software" />
+                                        )}
+                                    </Space>
+                                    <div>{commentVisible && <Comment id={id} />}</div>
                                 </Space>
-                                <div>{commentVisible && <Comment id={id} />}</div>
                             </Card>
                         </div>
                         <GoogleHorizontal />
