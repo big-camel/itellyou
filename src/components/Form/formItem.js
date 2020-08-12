@@ -21,6 +21,7 @@ export default map => {
                             customProps={item.props}
                             rules={newRules}
                             help={item.help}
+                            label={item.label}
                             validateFirst={item.validateFirst}
                             validateTrigger={item.validateTrigger}
                             {...props}

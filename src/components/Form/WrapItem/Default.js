@@ -202,7 +202,7 @@ export default ({
     let isHidden = false;
     const renderComponent = () => {
         if (!component) component = Input;
-        if (typeof component !== 'object') {
+        if (!component.type){
             const Componet = component;
             component = <Componet />;
         }

@@ -90,12 +90,14 @@ export default ({ action, type, force }) => {
                 return renderAnswer(verb, target);
             case 'question':
             case 'article':
+            case 'software':
                 if (action === 'comment') return renderCommentCommon(type, verb, target);
                 return renderCommon(type, verb, target);
             case 'answer_comment':
                 return renderAnswerComment(verb, target);
             case 'question_comment':
             case 'article_comment':
+            case 'software_comment':
                 return renderCommentCommon(type.split('_')[0], verb, target);
         }
     };

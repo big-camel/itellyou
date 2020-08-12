@@ -11,6 +11,8 @@ const getNoun = (type, who) => {
             return `${who}回答`;
         case 'article':
             return `${who}文章`;
+        case 'software':
+            return `${who}软件`;
         case 'tag':
             return `标签`;
         case 'question_comment':
@@ -19,6 +21,8 @@ const getNoun = (type, who) => {
             return `回答下${who}评论`;
         case 'article_comment':
             return `文章下${who}评论`;
+        case 'software_comment':
+            return `软件下${who}评论`;
     }
 };
 

@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import styles from '../../index.less';
 import { Space } from 'antd';
 import Editor from '@/components/Editor';
-import { UserAuthor } from '@/components/User';
 
 export default ({ action, type, target }) => {
     const renderColumn = ({ name, path }) => {
@@ -103,12 +102,14 @@ export default ({ action, type, target }) => {
                 return renderAnswer(target);
             case 'question':
             case 'article':
+            case 'software':
                 if (action === 'comment') return renderCommentCommon(type, target);
                 return renderCommon(type, target);
             case 'answer_comment':
                 return renderAnswerComment(target);
             case 'question_comment':
             case 'article_comment':
+            case 'software_comment':
                 return renderCommentCommon(type.split('_')[0], target);
             default:
                 return null;

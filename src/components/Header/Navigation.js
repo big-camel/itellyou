@@ -26,22 +26,13 @@ const menus = [
         title: '标签',
     },
     {
-        key: 'msdn',
-        title: 'MSDN',
-        href: 'https://msdn.itellyou.cn',
-        target: '_blank',
-        onClick: () => {
-            if (typeof window !== 'undefined' && window._czc) {
-                window._czc.push(['_trackEvent', 'msdn', 'to']);
-            }
-        },
+        key: 'download',
+        title: '下载',
     },
 ];
 
 export default ({ location: { pathname }, isMobile, onChange }) => {
     const [defaultKey, setDefaultKey] = useState('');
-
-    const me = useSelector(state => state.user.me);
 
     useEffect(() => {
         let path = pathname.split('/');

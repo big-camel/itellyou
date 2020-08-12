@@ -1,0 +1,187 @@
+:global {
+    .lake-max-editor-wrapper-content .lake-content-editor-extra {
+        display: none;
+    }
+}
+
+.header {
+    position: relative;
+    z-index: 999;
+    width: 100%;
+    height: 60px;
+    background: #fff;
+
+    .container {
+        display: flex;
+        vertical-align: middle;
+        padding: 0 24px;
+        height: 100%;
+        align-items: center;
+
+        .logo {
+            display: flex;
+            align-items: center;
+
+            img {
+                height: 28px;
+            }
+        }
+
+        .right {
+            flex: 1;
+            justify-content: flex-end;
+
+            .ellipsis-button {
+                padding-left: 0;
+                padding-right: 0;
+
+                :global(.anticon) {
+                    font-size: 24px;
+                }
+            }
+        }
+
+        .sub-title {
+            margin-left: 24px;
+            max-width: 284px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            > span {
+                margin: 0 4px;
+            }
+        }
+
+        .save-status {
+            font-size: 12px;
+            color: #8c8c8c;
+            margin-left: 16px;
+        }
+    }
+
+    @media only screen and (max-width: 575px) {
+        .container {
+            padding: 0 16px;
+        }
+    }
+}
+
+.more-menu {
+    min-width: 130px;
+}
+
+.container {
+    margin: 0 auto;
+}
+
+.title {
+    .input {
+        color: #262626;
+        font-weight: 700;
+        font-size: 30px;
+    }
+
+    :global {
+        .ant-input,
+        .ant-input:focus {
+            border: none;
+            outline: none;
+            box-shadow: none;
+            padding: 0;
+            resize: none;
+        }
+    }
+}
+
+.editor {
+    :global {
+        .itellyou-max-editor {
+            height: calc(100vh - 60px);
+        }
+
+        @media only screen and (max-width: 575px) {
+            .itellyou-max-editor {
+                min-width: 0;
+                width: 100%;
+            }
+        }
+
+        .itellyou-max-editor-wrapper {
+            background: #fff;
+
+            .itellyou-toolbar {
+                background: #fff;
+                border-top: 1px solid #f9f9f9;
+                border-bottom: 0 none;
+                box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            }
+
+            .itellyou-common-sidebar {
+                padding-top: 24px;
+                width: calc(50% - 454px);
+                left: calc(50% + 428px);
+                padding-left: 24px;
+            }
+
+            .itellyou-max-editor-wrapper-content {
+                background-color: #fafafa;
+            }
+
+            .itellyou-max-editor-content {
+                background-color: #fafafa;
+                padding: 24px 0 64px;
+
+                .itellyou-content-editor {
+                    border: 1px solid #f0f0f0;
+                    box-shadow: none;
+
+                    .itellyou-anchor-button {
+                        width: 24px;
+                        text-align: center;
+                    }
+
+                    .itellyou-engine:not(.sub-editor-content) {
+                        min-height: 1024px;
+                        padding: 20px 60px 90px 60px;
+                    }
+
+                    @media only screen and (max-width: 575px) {
+                        .itellyou-engine:not(.sub-editor-content) {
+                            min-height: 200px;
+                            padding: 16px;
+                        }
+                    }
+                }
+
+                .itellyou-content-editor-extra {
+                    padding: 32px 60px 0 60px;
+                }
+
+                @media only screen and (max-width: 575px) {
+                    .itellyou-content-editor-extra {
+                        padding: 16px;
+                    }
+                }
+            }
+
+            @media only screen and (max-width: 575px) {
+                .itellyou-content-editor {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+.meta-warp {
+    width: 320px;
+}
+
+.version-extra {
+    .tags {
+        .tag {
+            margin-right: 8px;
+        }
+    }
+}

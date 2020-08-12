@@ -90,6 +90,28 @@ export default [
             },
         ],
     },
+    // software
+    {
+        path: '/software/(new|[\\d]+/edit)',
+        component: '../layouts/BlankLayout',
+        wrappers: ['@/wrappers/auth'],
+        access: 'isLogin',
+        routes: [
+            {
+                path: '/software/new',
+                name: 'software.page.new',
+                component: './software/edit',
+            },
+            {
+                path: '/software/:id(\\d+)/edit',
+                name: 'software.page.edit',
+                component: './software/edit',
+            },
+            {
+                component: '404',
+            },
+        ],
+    },
     // preview
     {
         path: '/preview',
@@ -162,6 +184,13 @@ export default [
                 name: 'column.page.apply',
                 component: './column/apply',
                 access: 'isLogin',
+            },
+            // Software
+            { path: '/download', name: 'download.page.index', component: './software' },
+            {
+                path: '/download/:id(\\d+)',
+                name: 'download.page.detail',
+                component: './software/detail',
             },
             // User
             {

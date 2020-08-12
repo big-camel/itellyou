@@ -5,9 +5,9 @@ import './index.less';
 
 const { Item, Divider } = Menu;
 
-function Sider({ dataSource, defaultKey }) {
+function Sider({ dataSource, defaultKey , activeKey }) {
     return (
-        <Menu defaultSelectedKeys={[defaultKey]} className="layout-sider">
+        <Menu defaultSelectedKeys={[defaultKey]} selectedKeys={[activeKey]} className="layout-sider">
             {dataSource.map((item, index) => {
                 if (item.key === 'divider') return <Divider key={index} />;
                 return (

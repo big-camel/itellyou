@@ -25,7 +25,6 @@ export default ({ values, onChange, ...props }) => {
     };
 
     const renderTags = () => {
-        console.log(values);
         return (
             <Space direction="vertical">
                 {values && (

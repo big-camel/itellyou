@@ -15,7 +15,7 @@ const Home = () => {
     return (
         <>
             <Helmet encodeSpecialCharacters={false}>
-                <title>{`${settings.title} - 知识创造价值`}</title>
+                <title>{`${settings.title} , 我告诉你`}</title>
                 <meta name="keywords" content={intl.formatMessage({ id: 'keywords' })} />
                 <meta name="description" content={intl.formatMessage({ id: 'description' })} />
             </Helmet>
