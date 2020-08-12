@@ -4,9 +4,9 @@ import { Space } from 'antd';
 import styles from './Selector.less';
 
 export default ({ values, onChange, ...props }) => {
-    onChange = onChange || function() {};
+    onChange = onChange || function () {};
     const onSelectChange = ({ id, name }) => {
-        if (!values.find(tag => tag.id === id)) {
+        if (!values.find((tag) => tag.id === id)) {
             onChange(
                 values.concat({
                     id,
@@ -16,8 +16,8 @@ export default ({ values, onChange, ...props }) => {
         }
     };
 
-    const onClose = id => {
-        const index = values.findIndex(tag => tag.id === id);
+    const onClose = (id) => {
+        const index = values.findIndex((tag) => tag.id === id);
         if (index > -1) {
             values.splice(index, 1);
             onChange(values.concat());

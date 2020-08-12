@@ -9,7 +9,7 @@ import { GoogleSquare } from '@/components/AdSense';
 import styles from './index.less';
 
 const Home = () => {
-    const settings = useSelector(state => state.settings);
+    const settings = useSelector((state) => state.settings);
     const intl = useIntl();
 
     return (

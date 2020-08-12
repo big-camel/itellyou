@@ -13,12 +13,12 @@ export default {
                 type: 'setList',
                 payload: { append, ...(response.data || {}) },
             });
-            return response
-        }
+            return response;
+        },
     },
     reducers: {
         setList(state, { payload }) {
             return setList('list', payload, state);
         },
-    }
-}
+    },
+};

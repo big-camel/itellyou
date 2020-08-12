@@ -15,13 +15,13 @@ export default ({ id, title, callback, ...props }) => {
             centered: true,
             icon: <ExclamationCircleOutlined />,
             onOk() {
-                return new Promise(resolve => {
+                return new Promise((resolve) => {
                     dispatch({
                         type: 'software/delete',
                         payload: {
                             id,
                         },
-                    }).then(res => {
+                    }).then((res) => {
                         resolve();
                         if (callback) callback(res);
                     });

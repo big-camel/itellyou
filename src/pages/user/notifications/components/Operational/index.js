@@ -16,7 +16,7 @@ export default ({ action, type, target }) => {
         );
     };
 
-    const renderAnswer = item => {
+    const renderAnswer = (item) => {
         const {
             id,
             description,

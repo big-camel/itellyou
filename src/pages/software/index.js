@@ -1,12 +1,12 @@
-import React , { useContext } from 'react'
-import { useDispatch , useSelector , Helmet , useIntl, Link } from 'umi'
-import { Card , Avatar } from 'antd';
+import React, { useContext } from 'react';
+import { useDispatch, useSelector, Helmet, useIntl, Link } from 'umi';
+import { Card, Avatar } from 'antd';
 import { RouteContext } from '@/context';
 import { GoogleSquare } from '@/components/AdSense';
-import Container, { Layout , Sider } from '@/components/Container';
+import Container, { Layout, Sider } from '@/components/Container';
 import List from '@/components/List';
 import { getPageQuery } from '@/utils/utils';
-import styles from './index.less'
+import styles from './index.less';
 
 const fetchGroupList = (dispatch, offset, limit, parmas) => {
     return dispatch({
@@ -27,41 +27,44 @@ const fetchList = (dispatch, offset, limit, groupId, parmas) => {
             append: offset > 0,
             offset,
             limit,
-            group_id:groupId,
+            group_id: groupId,
             ...parmas,
         },
     });
 };
 
 const SoftwareIndex = ({ location: { query } }) => {
-    let group = query.group
+    let group = query.group;
 
     const intl = useIntl();
-    const loadingEffect = useSelector(state => state.loading);
+    const loadingEffect = useSelector((state) => state.loading);
     const loading = loadingEffect.effects['software/list'];
     const dispatch = useDispatch();
-    const dataSource = useSelector(state => (state.software ? state.software.list : null));
-    const groupDataSource = useSelector(state => (state.softwareGroup ? state.softwareGroup.list : null));
-    const settings = useSelector(state => state.settings);
+    const dataSource = useSelector((state) => (state.software ? state.software.list : null));
+    const groupDataSource = useSelector((state) =>
+        state.softwareGroup ? state.softwareGroup.list : null,
+    );
+    const settings = useSelector((state) => state.settings);
 
-    let menuData = []
-    if(groupDataSource){
-        if(!group) group = groupDataSource.data[0].id
-        menuData = groupDataSource.data.map(({ id , name }) => {
-            return { key:id , title:name, to:`/download?group=${id}`}
-        })
+    let menuData = [];
+    if (groupDataSource) {
+        if (!group) group = groupDataSource.data[0].id;
+        menuData = groupDataSource.data.map(({ id, name }) => {
+            return { key: id, title: name, to: `/download?group=${id}` };
+        });
     }
 
-    const renderItem = ({ id , name, logo }) => {
+    const renderItem = ({ id, name, logo }) => {
         return (
             <List.Item key={id}>
                 <Card className={styles['item-card']}>
-                    { logo && <div>
+                    {logo && (
+                        <div>
                             <Link to={`/download/${id}`}>
                                 <img src={logo} alt={name} width="100%" />
                             </Link>
                         </div>
-                    }
+                    )}
                     <h4 className={styles.title}>
                         <Link to={`/download/${id}`}>{name}</Link>
                     </h4>
@@ -75,10 +78,10 @@ const SoftwareIndex = ({ location: { query } }) => {
     const renderList = () => {
         return (
             <List
-            grid={isMobile ? { gutter: 16, column: 1 } : { gutter: 16, column: 3 }}
-            loading={loading}
-            dataSource={dataSource ? dataSource.data : []}
-            renderItem={renderItem}
+                grid={isMobile ? { gutter: 16, column: 1 } : { gutter: 16, column: 3 }}
+                loading={loading}
+                dataSource={dataSource ? dataSource.data : []}
+                renderItem={renderItem}
             />
         );
     };
@@ -97,30 +100,30 @@ const SoftwareIndex = ({ location: { query } }) => {
                 />
                 <meta
                     name="description"
-                    content={`itellyou系统下载列表win10,win7,win8,Linux,macOs,Chromiumos,原版系统下载${intl.formatMessage({ id: 'description' })}`}
+                    content={`itellyou系统下载列表win10,win7,win8,Linux,macOs,Chromiumos,原版系统下载${intl.formatMessage(
+                        { id: 'description' },
+                    )}`}
                 />
             </Helmet>
             <Container>
                 <Layout spans={6}>
                     <div>
-                        <Sider dataSource={menuData} activeKey={(group || "").toString()} />
+                        <Sider dataSource={menuData} activeKey={(group || '').toString()} />
                         <GoogleSquare />
                     </div>
-                    {
-                        renderList()
-                    }
+                    {renderList()}
                 </Layout>
             </Container>
         </>
-    )
-}
+    );
+};
 
-SoftwareIndex.getInitialProps = async ({ isServer, store, params , history }) => {
+SoftwareIndex.getInitialProps = async ({ isServer, store, params, history }) => {
     const { dispatch, getState } = store;
     const groupList = await fetchGroupList(dispatch, 0, 1000, params);
     let groupId;
-    if(groupList.result && groupList.data.total > 0){
-        groupId = groupList.data.data[0].id
+    if (groupList.result && groupList.data.total > 0) {
+        groupId = groupList.data.data[0].id;
     }
     const { location } = history || {};
     let query = (location || {}).query;
@@ -128,7 +131,7 @@ SoftwareIndex.getInitialProps = async ({ isServer, store, params , history }) =>
         query = getPageQuery();
     }
     const group = query ? query.group : null;
-    await fetchList(dispatch,0,10000,group || groupId,params)
+    await fetchList(dispatch, 0, 10000, group || groupId, params);
 
     if (isServer) return getState();
 };

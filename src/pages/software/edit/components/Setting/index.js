@@ -9,11 +9,11 @@ import styles from './index.less';
 import { DeleteButton } from '@/components/Button';
 
 const { Dragger } = Upload;
-const { Logo , Desc } = Form.createItem(formMap);
+const { Logo, Desc } = Form.createItem(formMap);
 export default ({ visible, id, custom_description, description, logo, onCancel }) => {
     custom_description = custom_description || '';
     logo = logo || '';
-    onCancel = onCancel || function() {};
+    onCancel = onCancel || function () {};
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     const [uploadSrc, setUploadSrc] = useState();
@@ -25,12 +25,12 @@ export default ({ visible, id, custom_description, description, logo, onCancel }
     const uploadRejectRef = useRef();
     const uploadCallback = useRef();
 
-    const getBase64 = file => {
+    const getBase64 = (file) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
+            reader.onerror = (error) => reject(error);
         });
     };
 
@@ -54,9 +54,9 @@ export default ({ visible, id, custom_description, description, logo, onCancel }
                 }
             }
         },
-        beforeUpload: file => {
+        beforeUpload: (file) => {
             return new Promise((resolve, reject) => {
-                getBase64(file).then(base64 => {
+                getBase64(file).then((base64) => {
                     setUploadSrc(base64);
                 });
 
@@ -65,7 +65,7 @@ export default ({ visible, id, custom_description, description, logo, onCancel }
                 }
 
                 uploadRejectRef.current = reject;
-                uploadResolveRef.current = blob => {
+                uploadResolveRef.current = (blob) => {
                     resolve(new File([blob], file.name, { ...file }));
                 };
             });
@@ -109,7 +109,7 @@ export default ({ visible, id, custom_description, description, logo, onCancel }
 
     const onSubmit = () => {
         form.validateFields()
-            .then(values => {
+            .then((values) => {
                 const updateValues = {};
                 if (values.custom_description !== custom_description) {
                     updateValues.custom_description = values.custom_description;
@@ -127,7 +127,7 @@ export default ({ visible, id, custom_description, description, logo, onCancel }
                         data: { ...updateValues, id },
                         type: 'software',
                     },
-                }).then(res => {
+                }).then((res) => {
                     setLoading(false);
                     if (!res.result) {
                         message.error(res.message);
@@ -136,7 +136,7 @@ export default ({ visible, id, custom_description, description, logo, onCancel }
                     }
                 });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log(error);
             });
     };
@@ -146,7 +146,7 @@ export default ({ visible, id, custom_description, description, logo, onCancel }
         setLoading(true);
         if (cropperRef.current && uploadResolveRef.current) {
             uploadCallback.current = onSubmit;
-            cropperRef.current.getCanvas().toBlob(blob => {
+            cropperRef.current.getCanvas().toBlob((blob) => {
                 uploadResolveRef.current(blob);
             });
         } else {
@@ -176,42 +176,42 @@ export default ({ visible, id, custom_description, description, logo, onCancel }
                 }}
             >
                 <Logo
-                label="Logo"
-                name="logo"
-                extra={
-                    <div className={styles['logo']}>
-                        <div className={styles['copper']}>
-                            {
-                                <Dragger {...getUploadConfig} disabled={uploadSrc}>
-                                    {renderLogo()}
-                                </Dragger>
-                            }
-                        </div>
-                        <div className={styles['wrapper']}>
-                            {uploadSrc && (
-                                <div className={styles['preview']}>
-                                    <div ref={previewRef} className={styles['thumb']} />
-                                </div>
-                            )}
-                            <Space>
-                                <Upload {...getUploadConfig}>
-                                    <Button icon={uploadSrc ? null : <UploadOutlined />}>
-                                        {uploadSrc || logo ? '重新上传' : '上传图片'}
-                                    </Button>
-                                </Upload>
+                    label="Logo"
+                    name="logo"
+                    extra={
+                        <div className={styles['logo']}>
+                            <div className={styles['copper']}>
+                                {
+                                    <Dragger {...getUploadConfig} disabled={uploadSrc}>
+                                        {renderLogo()}
+                                    </Dragger>
+                                }
+                            </div>
+                            <div className={styles['wrapper']}>
                                 {uploadSrc && (
-                                    <DeleteButton
-                                        type="link"
-                                        className={styles['clear-img']}
-                                        onClick={() => setUploadSrc(null)}
-                                    >
-                                        清除图片
-                                    </DeleteButton>
+                                    <div className={styles['preview']}>
+                                        <div ref={previewRef} className={styles['thumb']} />
+                                    </div>
                                 )}
-                            </Space>
+                                <Space>
+                                    <Upload {...getUploadConfig}>
+                                        <Button icon={uploadSrc ? null : <UploadOutlined />}>
+                                            {uploadSrc || logo ? '重新上传' : '上传图片'}
+                                        </Button>
+                                    </Upload>
+                                    {uploadSrc && (
+                                        <DeleteButton
+                                            type="link"
+                                            className={styles['clear-img']}
+                                            onClick={() => setUploadSrc(null)}
+                                        >
+                                            清除图片
+                                        </DeleteButton>
+                                    )}
+                                </Space>
+                            </div>
                         </div>
-                    </div>
-                }
+                    }
                 />
                 <Desc label="摘要" name="custom_description" autoComplete="off" />
             </Form>

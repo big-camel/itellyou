@@ -20,7 +20,7 @@ function Edit({ match: { params } }) {
     const editor = useRef(null);
     const [id, setId] = useState(params.id ? parseInt(params.id) : null);
     const [settingVisible, setSettingVisible] = useState(false);
-    const [manageVisible,setManageVisible] = useState(false)
+    const [manageVisible, setManageVisible] = useState(false);
     const [name, setTitle] = useState('');
     const [tags, setTags] = useState([]);
     //const [remark, setRemark] = useState('');
@@ -32,7 +32,7 @@ function Edit({ match: { params } }) {
     const [drawerState, setDrawerState] = useState(false);
 
     const dispatch = useDispatch();
-    const { detail } = useSelector(state => state.doc);
+    const { detail } = useSelector((state) => state.doc);
     const { isMobile } = useContext(RouteContext);
     useEffect(() => {
         if ((id && detail) || !id) {
@@ -45,7 +45,7 @@ function Edit({ match: { params } }) {
         }
     }, [dispatch, detail, id]);
 
-    const onTitleChange = event => {
+    const onTitleChange = (event) => {
         setTitle(event.target.value);
     };
 
@@ -158,7 +158,7 @@ function Edit({ match: { params } }) {
         setPublishing(true);
         if (editor.current) {
             editor.current.onPublish({
-                tags: tags.map(tag => tag.id),
+                tags: tags.map((tag) => tag.id),
                 groupId,
                 sourceType: source.type,
                 sourceData: source.data,
@@ -167,7 +167,7 @@ function Edit({ match: { params } }) {
         }
     };
 
-    const onPublished = useCallback(res => {
+    const onPublished = useCallback((res) => {
         setPublishing(false);
         if (!res.result) {
             return;
@@ -316,11 +316,14 @@ function Edit({ match: { params } }) {
                     onCancel={() => setSettingVisible(false)}
                 />
             )}
-            {
-                detail && (
-                    <Manage visible={manageVisible} onVisibleChange={setManageVisible} softwareId={detail.id} releases={detail.releases} />
-                )
-            }
+            {detail && (
+                <Manage
+                    visible={manageVisible}
+                    onVisibleChange={setManageVisible}
+                    softwareId={detail.id}
+                    releases={detail.releases}
+                />
+            )}
         </Loading>
     );
 }

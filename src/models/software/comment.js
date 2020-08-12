@@ -34,7 +34,11 @@ export default {
             if (response && response.result) {
                 yield put({
                     type: 'replaceItem',
-                    payload: { type: 'list', softwareId: payload.softwareId, detail: response.data },
+                    payload: {
+                        type: 'list',
+                        softwareId: payload.softwareId,
+                        detail: response.data,
+                    },
                 });
                 yield put({
                     type: 'replaceItem',
@@ -105,7 +109,7 @@ export default {
             if (response && response.result) {
                 const { softwareId, type } = payload;
                 const { id, parent_id, support, oppose } = response.data;
-                const replaceDetail = item => {
+                const replaceDetail = (item) => {
                     return {
                         use_support: type === 'support' ? !item.use_support : false,
                         use_oppose: type === 'oppose' ? !item.use_oppose : false,
@@ -154,10 +158,10 @@ export default {
                 const data = list.data.concat();
                 list.comments += 1;
                 if (detail.parent_id && detail.parent_id > 0 && type !== 'detail') {
-                    const parent = data.find(item => item.id === detail.parent_id);
+                    const parent = data.find((item) => item.id === detail.parent_id);
                     if (parent) {
                         if (to && to > 0) {
-                            let index = parent.child.findIndex(child => child.id === to);
+                            let index = parent.child.findIndex((child) => child.id === to);
                             index =
                                 index < 0
                                     ? 0
@@ -171,7 +175,7 @@ export default {
                     }
                 } else {
                     if (to && to > 0) {
-                        let index = data.findIndex(child => child.id === to);
+                        let index = data.findIndex((child) => child.id === to);
                         index = index < 0 ? 0 : index >= data.length - 1 ? data.length : index + 1;
                         data.splice(index, 0, detail);
                     } else {
@@ -198,9 +202,9 @@ export default {
                 const replaceCallback = payload.callback;
                 const data = list.data.concat();
                 if (parent_id && parent_id > 0 && type !== 'detail') {
-                    const parent = data.find(item => item.id === parent_id);
+                    const parent = data.find((item) => item.id === parent_id);
                     if (parent) {
-                        const index = parent.child.findIndex(child => child.id === detail.id);
+                        const index = parent.child.findIndex((child) => child.id === detail.id);
                         if (index >= 0) {
                             const item = parent.child[index];
                             if (typeof replaceCallback === 'function') {
@@ -210,7 +214,7 @@ export default {
                         }
                     }
                 } else {
-                    const index = data.findIndex(item => item.id === detail.id);
+                    const index = data.findIndex((item) => item.id === detail.id);
                     if (index >= 0) {
                         const item = data[index];
                         if (typeof replaceCallback === 'function') {
@@ -240,15 +244,15 @@ export default {
             const list = state && state[softwareId] ? state[softwareId][type] : null;
             if (list) {
                 let data = list.data.concat();
-                const item = data.find(item => item.id === id);
+                const item = data.find((item) => item.id === id);
                 if ((item || type === 'detail') && childs) {
                     if (append === true) {
-                        childs.data.map(child => {
+                        childs.data.map((child) => {
                             if (type === 'detail') {
-                                if (!data.find(c => child.id === c.id)) {
+                                if (!data.find((c) => child.id === c.id)) {
                                     data.push(child);
                                 }
-                            } else if (!item.child.find(c => child.id === c.id)) {
+                            } else if (!item.child.find((c) => child.id === c.id)) {
                                 item.child.push(child);
                             }
                         });
@@ -260,7 +264,10 @@ export default {
                     const { start, end } = childs;
                     return {
                         ...state,
-                        [softwareId]: { ...state[softwareId], [type]: { ...list, data, start, end } },
+                        [softwareId]: {
+                            ...state[softwareId],
+                            [type]: { ...list, data, start, end },
+                        },
                     };
                 }
             }

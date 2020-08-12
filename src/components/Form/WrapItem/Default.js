@@ -55,7 +55,7 @@ export default ({
         setHelp({ ...help, ...props.help });
     }, [props.help]);
 
-    const getValue = e => {
+    const getValue = (e) => {
         return form.getFieldValue(name);
         //return e.target ? e.target.value : e
     };
@@ -76,14 +76,14 @@ export default ({
         return form.isFieldValidating(name) || !focus ? hasFeedback : false;
     };
 
-    const onValueIsChange = value => {
+    const onValueIsChange = (value) => {
         if (prevValue.current === value) valueIsChange.current = false;
         else {
             valueIsChange.current = true;
         }
     };
 
-    const handleFocus = e => {
+    const handleFocus = (e) => {
         const value = getValue(e);
         const error = form.getFieldError(name);
         if (error && error.length > 0) {
@@ -104,7 +104,7 @@ export default ({
         if (onFocus) onFocus(e);
     };
 
-    const handleBlur = e => {
+    const handleBlur = (e) => {
         const value = getValue(e);
         const { help, onBlur } = props;
         const { trigger = 'focus' } = help || {};
@@ -117,7 +117,7 @@ export default ({
         if (onBlur) onBlur(e);
     };
 
-    const handleChange = e => {
+    const handleChange = (e) => {
         const { onChange } = props;
         const { content } = props.help || {};
         const { visible } = help;
@@ -140,7 +140,7 @@ export default ({
                         validator: rule.validator,
                     },
                     value,
-                    error => {
+                    (error) => {
                         if (error && error.length > 0) {
                             hasError = true;
                         }
@@ -163,7 +163,7 @@ export default ({
                         validatorErrors.current = null;
                         resolve();
                     })
-                    .catch(message => {
+                    .catch((message) => {
                         validatorErrors.current = message;
                         reject(message);
                     });
@@ -184,14 +184,14 @@ export default ({
     );
 
     const otherProps = restProps || {};
-    if (asyncValidator && !rules.current.find(rule => rule._type === 'asyncValidator')) {
+    if (asyncValidator && !rules.current.find((rule) => rule._type === 'asyncValidator')) {
         rules.current.push({
             _type: 'asyncValidator',
             asyncValidator: doAsyncValidator,
         });
     }
 
-    if (!rules.current.find(rule => rule._type === 'errorValidator')) {
+    if (!rules.current.find((rule) => rule._type === 'errorValidator')) {
         rules.current.push({
             _type: 'errorValidator',
             validator: doErrorValidator,
@@ -202,7 +202,7 @@ export default ({
     let isHidden = false;
     const renderComponent = () => {
         if (!component) component = Input;
-        if (!component.type){
+        if (!component.type) {
             const Componet = component;
             component = <Componet />;
         }

@@ -8,7 +8,7 @@ export default ({ id, support, use_support, allow_support, oppose, use_oppose, a
     const [voting, setVoting] = useState(false);
     const [voteType, setVoteType] = useState();
 
-    const doVote = type => {
+    const doVote = (type) => {
         if (voting) return;
         setVoteType(type);
         setVoting(true);

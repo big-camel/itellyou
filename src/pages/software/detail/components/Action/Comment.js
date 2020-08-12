@@ -8,12 +8,12 @@ function SoftwareComment({ id }) {
     const [modelVisible, setModelVisible] = useState(false);
 
     const dispatch = useDispatch();
-    const comment = useSelector(state => state.softwareComment[id]) || {};
+    const comment = useSelector((state) => state.softwareComment[id]) || {};
     const [offset, setOffset] = useState(0);
     const [childOffset, setChildOffset] = useState(0);
     const limit = 20;
 
-    const loadingState = useSelector(state => state.loading);
+    const loadingState = useSelector((state) => state.loading);
     const loading = loadingState.effects['softwareComment/root'];
 
     const load = useCallback(
@@ -50,7 +50,7 @@ function SoftwareComment({ id }) {
         });
     };
 
-    const del = id => {
+    const del = (id) => {
         return dispatch({
             type: 'softwareComment/delete',
             payload: {

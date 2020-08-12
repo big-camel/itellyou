@@ -6,7 +6,7 @@ export default {
             type: 'hidden',
         },
     },
-    Name:{
+    Name: {
         props: {
             size: 'large',
             placeholder: '名称',
@@ -15,7 +15,7 @@ export default {
             {
                 required: true,
                 message: '请输入名称',
-            }
+            },
         ],
     },
     Desc: {

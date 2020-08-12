@@ -39,7 +39,7 @@ export default ({ location: { pathname }, isMobile, onChange }) => {
         if (path.length === 2 && path[1] === '') path = ['home'];
 
         for (let p of path) {
-            const menu = menus.find(m => m.key === p);
+            const menu = menus.find((m) => m.key === p);
             if (menu) {
                 setDefaultKey(menu.key);
                 break;

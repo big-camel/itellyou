@@ -1,4 +1,4 @@
-import { list , find , view , vote , del } from '@/services/software/index';
+import { list, find, view, vote, del } from '@/services/software/index';
 import { setList } from '@/utils/model';
 
 export default {
@@ -13,7 +13,7 @@ export default {
                 type: 'setList',
                 payload: { append, ...(response.data || {}) },
             });
-            return response
+            return response;
         },
         *find({ payload }, { call, put }) {
             const response = yield call(find, payload);
@@ -39,10 +39,10 @@ export default {
         *vote({ payload }, { call, put, select }) {
             const response = yield call(vote, payload);
             if (response && response.result) {
-                const software = yield select(state => state.software);
+                const software = yield select((state) => state.software);
                 let detail = software && software.detail ? software.detail : null;
 
-                const setUse = item => {
+                const setUse = (item) => {
                     response.data['use_support'] =
                         payload.type === 'support' ? !item.use_support : false;
                     response.data['use_oppose'] =
@@ -57,8 +57,8 @@ export default {
                         payload: { ...detail, ...response.data },
                     });
                 }
-                let list = yield select(state => (state.software ? state.software.list : null));
-                let dataItem = list ? list.data.find(item => item.id === response.data.id) : null;
+                let list = yield select((state) => (state.software ? state.software.list : null));
+                let dataItem = list ? list.data.find((item) => item.id === response.data.id) : null;
                 if (dataItem) {
                     response.data = setUse(dataItem);
                 }
@@ -78,7 +78,7 @@ export default {
                 });
             }
             return response;
-        }
+        },
     },
     reducers: {
         updateDetail(state, { payload }) {
@@ -111,5 +111,5 @@ export default {
                 response_status: payload,
             };
         },
-    }
-}
+    },
+};

@@ -12,7 +12,7 @@ export default ({ action, type, force }) => {
     const limit = 20;
 
     const dispatch = useDispatch();
-    const dataSource = useSelector(state => state.notifications.list[action]);
+    const dataSource = useSelector((state) => state.notifications.list[action]);
 
     useEffect(() => {
         dispatch({
@@ -119,7 +119,7 @@ export default ({ action, type, force }) => {
             limit={limit}
             dataSource={dataSource}
             renderItem={renderItem}
-            onChange={offset => setOffset(offset)}
+            onChange={(offset) => setOffset(offset)}
         />
     );
 };
