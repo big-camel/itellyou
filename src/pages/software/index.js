@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector, Helmet, useIntl, Link } from 'umi';
-import { Card, Avatar } from 'antd';
+import { Card, Avatar, Space } from 'antd';
 import { RouteContext } from '@/context';
 import { GoogleSquare } from '@/components/AdSense';
 import Container, { Layout, Sider } from '@/components/Container';
@@ -57,7 +57,7 @@ const SoftwareIndex = ({ location: { query } }) => {
     const renderItem = ({ id, name, logo }) => {
         return (
             <List.Item key={id}>
-                <Card className={styles['item-card']}>
+                <Card className={styles['item-card']} hoverable>
                     {logo && (
                         <div>
                             <Link to={`/download/${id}`}>
@@ -109,10 +109,10 @@ const SoftwareIndex = ({ location: { query } }) => {
             </Helmet>
             <Container>
                 <Layout spans={6}>
-                    <div>
+                    <Space direction="vertical">
                         <Sider dataSource={menuData} activeKey={(group || '').toString()} />
                         <GoogleSquare />
-                    </div>
+                    </Space>
                     {renderList()}
                 </Layout>
             </Container>
