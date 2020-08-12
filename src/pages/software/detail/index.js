@@ -340,7 +340,6 @@ const SoftwareDetail = ({ match: { params } }) => {
                                 </div>
                                 {renderAttributes()}
                                 <GoogleHorizontal />
-                                <div className={styles['body']}>{renderContent()}</div>
                                 {recommendFiles.length > 0 && (
                                     <div className={styles['software-recommend']}>
                                         <h2 className={styles['title']}>推荐版本</h2>
@@ -357,6 +356,7 @@ const SoftwareDetail = ({ match: { params } }) => {
 
                                 <h2 className={styles['title']}>所有版本</h2>
                                 {renderReleases()}
+                                <div className={styles['body']}>{renderContent()}</div>
                                 <RewardButton
                                     author={author}
                                     dataType="software"
