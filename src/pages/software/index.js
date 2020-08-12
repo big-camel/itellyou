@@ -65,9 +65,11 @@ const SoftwareIndex = ({ location: { query } }) => {
                             </Link>
                         </div>
                     )}
-                    <h4 className={styles.title}>
-                        <Link to={`/download/${id}`}>{name}</Link>
-                    </h4>
+                    {!logo && (
+                        <h4 className={styles.title}>
+                            <Link to={`/download/${id}`}>{name}</Link>
+                        </h4>
+                    )}
                 </Card>
             </List.Item>
         );
