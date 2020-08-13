@@ -23,9 +23,9 @@ function Detail({ match: { params } }) {
     const id = params.id ? parseInt(params.id) : null;
     const dispatch = useDispatch();
     const [historyViewer, setHistoryViewer] = useState(false);
-    const question = useSelector(state => state.question);
-    const settings = useSelector(state => state.settings);
-    const me = useSelector(state => state.user.me);
+    const question = useSelector((state) => state.question);
+    const settings = useSelector((state) => state.settings);
+    const me = useSelector((state) => state.user.me);
     const { detail, user_answer, response_status } = question;
     const { isMobile } = useContext(RouteContext);
 
@@ -33,7 +33,7 @@ function Detail({ match: { params } }) {
     const [editVisible, setEditVisible] = useState();
     const [commentVisible, setCommentVisible] = useState(false);
 
-    const loadingState = useSelector(state => state.loading);
+    const loadingState = useSelector((state) => state.loading);
     const loading = loadingState.effects['question/find'];
 
     const access = useAccess();
@@ -50,7 +50,7 @@ function Detail({ match: { params } }) {
     if (!detail || loading) return <Loading />;
 
     const { author, title, description, content, html, tags, use_star } = detail;
-    const onRevoke = answer_id => {
+    const onRevoke = (answer_id) => {
         dispatch({
             type: 'answer/revoke',
             payload: {
@@ -119,7 +119,7 @@ function Detail({ match: { params } }) {
     };
 
     const isEmpty = Editor.Utils.isBlank(content);
-    const keywords = tags.map(tag => tag.name) || [];
+    const keywords = tags.map((tag) => tag.name) || [];
     keywords.push('itellyou');
 
     const renderOther = () => {
@@ -240,7 +240,7 @@ function Detail({ match: { params } }) {
                             <Editor.History
                                 id={id}
                                 type="question"
-                                extra={data => <HistoryExtra {...data} />}
+                                extra={(data) => <HistoryExtra {...data} />}
                                 onCancel={() => setHistoryViewer(false)}
                             />
                         )}

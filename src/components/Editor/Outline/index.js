@@ -72,24 +72,24 @@ export default ({ view, config, ...props }) => {
         <div className={classNames(styles['toc'], { [styles['fixed']]: !reachingTop })} {...props}>
             <Card>
                 <Space direction="vertical" size="large">
-                <ul className={styles['directory']}>
-                    {contents.map(({ id, text, level, depth }, index) => (
-                        <li
-                            key={id}
-                            className={classNames(styles['item'], {
-                                [styles['active']]: index === readingSection,
-                            })}
-                        >
-                            <a
-                                className={classNames(styles['link'], styles[`link-${depth}`])}
-                                href={`#${id}`}
+                    <ul className={styles['directory']}>
+                        {contents.map(({ id, text, level, depth }, index) => (
+                            <li
+                                key={id}
+                                className={classNames(styles['item'], {
+                                    [styles['active']]: index === readingSection,
+                                })}
                             >
-                                {text}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-                <GoogleDefault />
+                                <a
+                                    className={classNames(styles['link'], styles[`link-${depth}`])}
+                                    href={`#${id}`}
+                                >
+                                    {text}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                    <GoogleDefault />
                 </Space>
             </Card>
         </div>
