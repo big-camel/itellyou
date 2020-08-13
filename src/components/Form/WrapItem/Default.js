@@ -48,11 +48,15 @@ export default ({
         fieldErrors.current = errors;
         if (Array.isArray(errors) ? errors.length > 0 : errors) {
             form.validateFields([name]);
+        } else if (form.getFieldError(name).length > 0) {
+            form.validateFields([name]);
         }
-    }, [errors]);
+    }, [form, errors, name]);
 
     useEffect(() => {
-        setHelp({ ...help, ...props.help });
+        setHelp((value) => {
+            return { ...value, ...props.help };
+        });
     }, [props.help]);
 
     const getValue = (e) => {
@@ -66,7 +70,6 @@ export default ({
         if (!visible) return null;
         const errors = form.getFieldError(name);
         content = typeof content === 'function' ? content(form.getFieldValue(name)) : content;
-
         return content || (errors && errors.length > 0 ? errors : null);
     };
 
