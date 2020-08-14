@@ -96,7 +96,7 @@ const SoftwareDetail = ({ match: { params } }) => {
                     />
                 }
                 <p className={styles['footer']}>
-                    <Link className={styles['time']} to={`/software/${id}`}>
+                    <Link className={styles['time']} to={`/download/${id}`}>
                         {updated_time === null || version === 1 ? '发布于' : '更新于'}
                         <Timer
                             time={
