@@ -192,6 +192,8 @@ export default [
                 name: 'download.page.detail',
                 component: './software/detail',
             },
+            // Yun
+            { path: '/yun', name: 'yun.page.index', component: './yun' },
             // User
             {
                 path: '/dashboard',

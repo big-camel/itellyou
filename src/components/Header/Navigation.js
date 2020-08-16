@@ -29,6 +29,10 @@ const menus = [
         key: 'download',
         title: '下载',
     },
+    {
+        key: 'yun',
+        title: '云服务',
+    },
 ];
 
 export default ({ location: { pathname }, isMobile, onChange }) => {

@@ -21,7 +21,7 @@
     "dependencies": {
         "@ant-design/icons": "^4.2.2",
         "@itellyou/itellyou-editor": "^2.2.17",
-        "@umijs/preset-react": "1.5.19",
+        "@umijs/preset-react": "1.5.21",
         "@umijs/test": "^3.0.13",
         "antd": "^4.5.4",
         "copy-to-clipboard": "^3.3.1",
@@ -45,7 +45,7 @@
         "react-infinite-scroller": "^1.2.4",
         "react-load-script": "^0.0.6",
         "reconnecting-websocket": "^4.4.0",
-        "umi": "^3.2.14",
+        "umi": "^3.2.15",
         "underscore.string": "^3.3.5",
         "use-media-antd-query": "^1.0.1",
         "yorkie": "^2.0.0"

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector, Helmet, useIntl, Link } from 'umi';
-import { Card, Avatar, Space } from 'antd';
+import { Card, Space } from 'antd';
 import { RouteContext } from '@/context';
 import { GoogleSquare } from '@/components/AdSense';
 import Container, { Layout, Sider } from '@/components/Container';
