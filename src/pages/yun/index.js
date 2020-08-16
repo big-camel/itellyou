@@ -10,7 +10,7 @@ const { Meta } = Card;
 
 const menu = [
     {
-        key: '',
+        key: 'all',
         title: '全部',
     },
     {
@@ -105,7 +105,7 @@ const data = [
 
 const Yun = () => {
     const intl = useIntl();
-    const [type, setType] = useState('');
+    const [type, setType] = useState('all');
     const settings = useSelector((state) => state.settings);
     const renderItem = ({ type, target, link, image, title }) => {
         return (
@@ -120,7 +120,7 @@ const Yun = () => {
     };
 
     const { isMobile } = useContext(RouteContext);
-    const dataSource = data.filter((item) => item.type === type || type === '');
+    const dataSource = data.filter((item) => item.type === type || type === 'all');
     const renderList = () => {
         return (
             <>

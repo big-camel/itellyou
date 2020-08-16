@@ -120,11 +120,11 @@ const SoftwareIndex = ({ location: { query } }) => {
                     name="keywords"
                     content={`${intl.formatMessage({
                         id: 'keywords',
-                    })},软件下载,Windows下载,itellyou下载,系统下载,win10下载`}
+                    })},软件下载,Windows下载,itellyou下载,系统下载,win10下载,windows10 iso,win10 iso`}
                 />
                 <meta
                     name="description"
-                    content={`itellyou系统下载列表win10,win7,win8,Linux,macOs,Chromiumos,原版系统下载${intl.formatMessage(
+                    content={`itellyou系统下载列表win10,win7,win8,Linux,macOs,Chromiumos,微软原版系统iso文件下载${intl.formatMessage(
                         { id: 'description' },
                     )}`}
                 />
