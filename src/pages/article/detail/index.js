@@ -41,7 +41,7 @@ function Detail({ match: { params } }) {
         });
     }, [dispatch, id]);
 
-    if (typeof response_status === 'number' && response_status > 200) return <Redirect to="/404" />;
+    if (response_status && response_status.id === id && response_status.code > 200) return <Redirect to="/404" />;
 
     if (!detail || loading) return <Loading />;
 
@@ -106,13 +106,12 @@ function Detail({ match: { params } }) {
 
 Detail.getInitialProps = async ({ isServer, match, store, params }) => {
     const { dispatch, getState } = store;
-
+    const id = parseInt(match.params.id || 0);
     const state = getState();
     const { article } = state;
-    if (article && typeof article.response_status === 'number' && article.response_status > 200)
+    if (article && article.response_status && article.response_status.id === id && article.response_status.code > 200)
         return state;
 
-    const id = parseInt(match.params.id || 0);
     const response = await dispatch({
         type: 'article/find',
         payload: {

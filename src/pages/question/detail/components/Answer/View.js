@@ -6,7 +6,7 @@ import styles from './Answer.less';
 import Loading from '@/components/Loading';
 import { Answer } from '@/components/Content';
 
-function AnswerView({ title }) {
+function AnswerView({ title , answer_id }) {
     const answer = useSelector(state => (state.answer ? state.answer : {}));
     const { detail, response_status } = answer;
 
@@ -21,7 +21,7 @@ function AnswerView({ title }) {
         );
     };
 
-    if (typeof response_status === 'number' && response_status > 200) return <Redirect to="/404" />;
+    if (response_status && response_status.id === answer_id && response_status > 200) return <Redirect to="/404" />;
     if (loading) return <Loading />;
 
     const data = detail ? [detail] : [];
@@ -38,7 +38,7 @@ AnswerView.getInitialProps = async ({ isServer, question_id, answer_id, store, p
     if (question_id && answer_id) {
         const state = getState();
         const { answer } = state;
-        if (answer && typeof answer.response_status === 'number' && answer.response_status > 200)
+        if (answer && answer.response_status && answer.response_status.id === answer_id && answer.response_status.code > 200)
             return state;
 
         const response = await dispatch({

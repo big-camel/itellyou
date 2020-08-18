@@ -45,7 +45,7 @@ function Detail({ match: { params } }) {
         }
     }, [answer_id, user_answer]);
 
-    if (typeof response_status !== 'undefined' && response_status > 200)
+    if (response_status && response_status.id === id && response_status > 200)
         return <Redirect to="/404" />;
     if (!detail || loading) return <Loading />;
 
@@ -261,7 +261,7 @@ Detail.getInitialProps = async ({ isServer, match, store, params }) => {
 
     const state = getState();
     const { question, user } = state;
-    if (question && typeof question.response_status === 'number' && question.response_status > 200)
+    if (question && question.response_status && question.response_status.id === id && question.response_status.code > 200)
         return state;
 
     const id = parseInt(match.params.id || 0);
