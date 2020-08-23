@@ -55,8 +55,8 @@ export default {
             yield put({
                 type: 'setResponseStatus',
                 payload: {
-                    code:status,
-                    id:payload.id
+                    code: status,
+                    id: payload.id,
                 },
             });
             return response;
@@ -103,7 +103,7 @@ export default {
         },
         updateListItem(state, { payload }) {
             const data = state.list ? state.list.data || [] : [];
-            const index = data.findIndex(item => item.id === payload.id);
+            const index = data.findIndex((item) => item.id === payload.id);
             if (index >= 0) {
                 data.splice(index, 1, { ...data[index], ...payload });
             }

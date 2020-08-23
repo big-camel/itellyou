@@ -40,8 +40,8 @@ export default {
             yield put({
                 type: 'setResponseStatus',
                 payload: {
-                    code:status,
-                    id:payload.id
+                    code: status,
+                    id: payload.id,
                 },
             });
             return response;
@@ -53,10 +53,10 @@ export default {
         *vote({ payload }, { call, put, select }) {
             const response = yield call(vote, payload);
             if (response && response.result) {
-                const article = yield select(state => state.article);
+                const article = yield select((state) => state.article);
                 let detail = article && article.detail ? article.detail : null;
 
-                const setUse = item => {
+                const setUse = (item) => {
                     response.data['use_support'] =
                         payload.type === 'support' ? !item.use_support : false;
                     response.data['use_oppose'] =
@@ -71,8 +71,8 @@ export default {
                         payload: { ...detail, ...response.data },
                     });
                 }
-                let list = yield select(state => (state.article ? state.article.list : null));
-                let dataItem = list ? list.data.find(item => item.id === response.data.id) : null;
+                let list = yield select((state) => (state.article ? state.article.list : null));
+                let dataItem = list ? list.data.find((item) => item.id === response.data.id) : null;
                 if (dataItem) {
                     response.data = setUse(dataItem);
                 }
@@ -81,10 +81,10 @@ export default {
                     payload: response.data,
                 });
 
-                list = yield select(state => (state.explore ? state.explore.recommends : null));
+                list = yield select((state) => (state.explore ? state.explore.recommends : null));
                 dataItem = list
                     ? list.data.find(
-                          item => item.type === 'article' && item.object.id === response.data.id,
+                          (item) => item.type === 'article' && item.object.id === response.data.id,
                       )
                     : null;
                 if (dataItem) {
@@ -112,7 +112,7 @@ export default {
         *paidread({ payload }, { call, put, select }) {
             const response = yield call(paidread, payload);
             if (response && response.result) {
-                const article = yield select(state => state.article);
+                const article = yield select((state) => state.article);
                 let detail = article && article.detail ? article.detail : null;
                 yield put({
                     type: 'updateDetail',

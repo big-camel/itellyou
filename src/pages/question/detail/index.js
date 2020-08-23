@@ -261,7 +261,12 @@ Detail.getInitialProps = async ({ isServer, match, store, params }) => {
 
     const state = getState();
     const { question, user } = state;
-    if (question && question.response_status && question.response_status.id === id && question.response_status.code > 200)
+    if (
+        question &&
+        question.response_status &&
+        question.response_status.id === id &&
+        question.response_status.code > 200
+    )
         return state;
 
     const id = parseInt(match.params.id || 0);

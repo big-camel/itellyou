@@ -52,7 +52,8 @@ const SoftwareDetail = ({ match: { params } }) => {
         });
     }, [dispatch, id]);
 
-    if (response_status && response_status.id === id && response_status.code > 200) return <Redirect to="/404" />;
+    if (response_status && response_status.id === id && response_status.code > 200)
+        return <Redirect to="/404" />;
 
     if (!detail || loading) return <Loading />;
     const {
@@ -400,7 +401,12 @@ SoftwareDetail.getInitialProps = async ({ isServer, match, store, params }) => {
     const id = parseInt(match.params.id || 0);
     const state = getState();
     const { software } = state;
-    if (software && software.response_status && software.response_status.id === id && software.response_status.code > 200)
+    if (
+        software &&
+        software.response_status &&
+        software.response_status.id === id &&
+        software.response_status.code > 200
+    )
         return state;
 
     const response = await dispatch({

@@ -18,10 +18,10 @@ function Detail({ match: { params } }) {
     const [contentData, setContentData] = useState({});
     const [historyViewer, setHistoryViewer] = useState(false);
 
-    const { detail, response_status } = useSelector(state => state.article);
-    const settings = useSelector(state => state.settings);
+    const { detail, response_status } = useSelector((state) => state.article);
+    const settings = useSelector((state) => state.settings);
     const { isMobile } = useContext(RouteContext);
-    const loadingState = useSelector(state => state.loading);
+    const loadingState = useSelector((state) => state.loading);
     const loading = loadingState.effects['article/find'];
 
     const dispatch = useDispatch();
@@ -41,7 +41,8 @@ function Detail({ match: { params } }) {
         });
     }, [dispatch, id]);
 
-    if (response_status && response_status.id === id && response_status.code > 200) return <Redirect to="/404" />;
+    if (response_status && response_status.id === id && response_status.code > 200)
+        return <Redirect to="/404" />;
 
     if (!detail || loading) return <Loading />;
 
@@ -52,7 +53,7 @@ function Detail({ match: { params } }) {
         });
     };
     const { title, tags, author, description } = detail;
-    const keywords = tags.map(tag => tag.name) || [];
+    const keywords = tags.map((tag) => tag.name) || [];
     keywords.push('itellyou');
 
     return (
@@ -87,7 +88,7 @@ function Detail({ match: { params } }) {
                             <Editor.History
                                 id={id}
                                 type="article"
-                                extra={data => <HistoryExtra {...data} />}
+                                extra={(data) => <HistoryExtra {...data} />}
                                 onCancel={() => setHistoryViewer(false)}
                             />
                         )}
@@ -109,7 +110,12 @@ Detail.getInitialProps = async ({ isServer, match, store, params }) => {
     const id = parseInt(match.params.id || 0);
     const state = getState();
     const { article } = state;
-    if (article && article.response_status && article.response_status.id === id && article.response_status.code > 200)
+    if (
+        article &&
+        article.response_status &&
+        article.response_status.id === id &&
+        article.response_status.code > 200
+    )
         return state;
 
     const response = await dispatch({

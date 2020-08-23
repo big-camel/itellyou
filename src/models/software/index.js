@@ -29,8 +29,8 @@ export default {
             yield put({
                 type: 'setResponseStatus',
                 payload: {
-                    code:status,
-                    id:payload.id
+                    code: status,
+                    id: payload.id,
                 },
             });
             return response;
