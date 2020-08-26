@@ -1,5 +1,5 @@
 ### ITELLYOU 前端
-使用 umijs react 框架开发，[ITELLYOU](https://www.itellyou.com)
+使用 umijs react 框架开发，[ITELLYOU 官网](https://www.itellyou.com)
 ### ITELLYOU 前端 SSR
 [itellyou-ssr](https://github.com/itellyou-com/itellyou-ssr)
 ### ITELLYOU 后台管理
