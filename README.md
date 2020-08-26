@@ -6,6 +6,9 @@
 [itellyou-admin](https://github.com/itellyou-com/itellyou-admin)
 ### ITELLYOU API
 [itellyou-api](https://github.com/itellyou-com/itellyou-api)
+### ITELLYOU 协同编辑服务端
+[itellyou-editor-server](https://github.com/itellyou-com/itellyou-editor-server)
+
 
 ### 本地启动
 
