@@ -4,7 +4,7 @@
 [itellyou-ssr](https://github.com/itellyou-com/itellyou-ssr)
 ### ITELLYOU 后台管理
 [itellyou-admin](https://github.com/itellyou-com/itellyou-admin)
-### ITELLYOU 后端
+### ITELLYOU API
 [itellyou-api](https://github.com/itellyou-com/itellyou-api)
 
 ### 本地启动
