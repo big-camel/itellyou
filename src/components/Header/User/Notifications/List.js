@@ -43,10 +43,11 @@ export default ({ action, type, force }) => {
         );
     };
 
-    const renderCommon = (type, verb, { id, title }) => {
+    const renderCommon = (type, verb, { id, title, name }) => {
         return (
             <span>
-                {verb}&nbsp;&nbsp;<Link to={`/${type}/${id}`}>{title}</Link>
+                {verb}&nbsp;&nbsp;
+                <Link to={`/${type}/${id}`}>{type === 'software' ? name : title}</Link>
             </span>
         );
     };
@@ -67,11 +68,12 @@ export default ({ action, type, force }) => {
 
     const renderCommentCommon = (type, verb, { content, reply, ...target }) => {
         const {
-            [type]: { id, title },
+            [type]: { id, title, name },
         } = reply ? reply : target;
         return (
             <span>
-                {verb}&nbsp;&nbsp;<Link to={`/${type}/${id}`}>{title}</Link>
+                {verb}&nbsp;&nbsp;
+                <Link to={`/${type}/${id}`}>{type === 'software' ? name : title}</Link>
             </span>
         );
     };

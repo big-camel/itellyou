@@ -34,11 +34,11 @@ export default ({ action, type, target }) => {
         );
     };
 
-    const renderCommon = (type, { id, title, description }) => {
+    const renderCommon = (type, { id, title, name, description }) => {
         return (
             <div className={classNames(styles['op-body'], styles['op-block'])}>
                 <Link className={styles['target']} to={`/${type}/${id}`}>
-                    {title}
+                    {type === 'software' ? name : title}
                 </Link>
                 {description && description !== '' && (
                     <div className={styles['op-block-content']}>{description}</div>
@@ -70,12 +70,12 @@ export default ({ action, type, target }) => {
 
     const renderCommentCommon = (type, { content, reply, ...target }) => {
         const {
-            [type]: { id, title },
+            [type]: { id, title, name },
         } = reply ? reply : target;
         return (
             <div className={classNames(styles['op-body'], styles['op-block'])}>
                 <Link className={styles['target']} to={`/${type}/${id}`}>
-                    {title}
+                    {type === 'software' ? name : title}
                 </Link>
                 {!Editor.Utils.isBlank(content) && (
                     <div className={styles['op-block-content']}>
