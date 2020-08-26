@@ -1,8 +1,9 @@
 ### ITELLYOU 前端
 使用 umijs react 框架开发
+### ITELLYOU 后端
+[itellyou-api](https://github.com/itellyou-com/itellyou-api)
 
 ### 本地启动
-@itellyou/itellyou-editor 编辑器模块为私有包，除非本地使用 itellyou-editor itellyou-engine itellyou-ajax itellyou-request 编译好本地包，否则需要 npm 账号权限
 
 在 config/config.js 中配置后端 api，http://g.itellyou.com/ 是编辑器中 文本绘图 功能的后端支持，项目在 drawing.itellyou.com
 
