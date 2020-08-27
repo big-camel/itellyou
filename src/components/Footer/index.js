@@ -5,9 +5,9 @@ import Container from '../Container';
 import styles from './index.less';
 
 export default () => {
-    const settings = useSelector(state => state.settings);
-    const { title, site, links } = settings || {};
-    const { copyright, icp_text, company_name } = site || {};
+    const settings = useSelector((state) => state.settings);
+    const { site, links } = settings || {};
+    const { copyright, icp_text, company_name, name } = site || {};
 
     return (
         <div className={styles['footer']}>
@@ -15,7 +15,7 @@ export default () => {
                 <Space className={styles['copyright']} direction="vertical" size="small">
                     <Space>
                         {copyright}
-                        {title}
+                        {name}
                     </Space>
                     <Space>
                         {icp_text}
