@@ -36,3 +36,7 @@ yarn
 
 yarn start
 ```
+### 注意
+需要配合itellyou-api使用，不然无法访问到api导致500错误
+
+需要从itellyou-ssr启动访问，不然进入不了用户中心
