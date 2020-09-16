@@ -73,7 +73,7 @@ function QuestionIndex({ location: { query }, match: { params } }) {
                 dataSource={dataSource}
                 offset={offset}
                 limit={limit}
-                pageLink={(current) =>  current === 1 ? "/question" : `${link}?page=${current}`}
+                pageLink={(current) => (current === 1 ? '/question' : `${link}?page=${current}`)}
             />
         );
     };

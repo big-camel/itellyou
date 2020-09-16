@@ -72,7 +72,9 @@ function ArticleIndex({ location: { query }, match: { params } }) {
                 offset={offset}
                 limit={limit}
                 dataSource={dataSource}
-                pageLink={(current) => current === 1 ? "/article" : `/article?page=${current}&type=${type}`}
+                pageLink={(current) =>
+                    current === 1 ? '/article' : `/article?page=${current}&type=${type}`
+                }
             />
         );
     };

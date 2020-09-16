@@ -53,7 +53,7 @@ const Page = ({ dataSource, offset, limit, onChange, pageLink, ...props }) => {
                     <Pagination
                         onChange={(page) => {
                             if (!loading) {
-                                if(!pageLink) {
+                                if (!pageLink) {
                                     setLoading(true);
                                     onChange((page - 1) * limit, limit);
                                 }

@@ -78,7 +78,7 @@ function TagList({ location: { query } }) {
                 renderItem={renderItem}
                 offset={offset}
                 limit={limit}
-                pageLink={(current) =>  current === 1 ? "/tag/list" : `/tag/list?page=${current}`}
+                pageLink={(current) => (current === 1 ? '/tag/list' : `/tag/list?page=${current}`)}
             />
         );
     };
