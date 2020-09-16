@@ -5,9 +5,10 @@ import { Card, Button, Space } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { GoogleHorizontal, GoogleSquare } from '@/components/AdSense';
 import { RouteContext } from '@/context';
+import { getPageQuery } from '@/utils/utils';
 import Container, { Layout } from '@/components/Container';
 import { Article } from '@/components/Content';
-import { MoreList } from '@/components/List';
+import { PageList } from '@/components/List';
 import HotColumn from './components/HotColumn';
 import HotTag from './components/HotTag';
 import styles from './index.less';
@@ -16,7 +17,7 @@ const fetchList = (dispatch, offset, limit, type, parmas) => {
     return dispatch({
         type: 'article/list',
         payload: {
-            append: offset > 0,
+            append: false,
             offset,
             limit,
             type,
@@ -26,12 +27,12 @@ const fetchList = (dispatch, offset, limit, type, parmas) => {
 };
 
 function ArticleIndex({ location: { query }, match: { params } }) {
-    const [offset, setOffset] = useState(parseInt(query.offset || 0));
-    const limit = parseInt(query.limit || 2);
+    const limit = parseInt(query.limit || 20);
+    const page = query.page ? (query.page - 1) * limit : undefined
+    const [offset, setOffset] = useState(parseInt(query.offset || page || 0));
     const type = params.type || 'default';
     const dataSource = useSelector(state => (state.article ? state.article.list : null));
     const me = useSelector(state => state.user.me);
-    const dispatch = useDispatch();
 
     const settings = useSelector(state => state.settings);
 
@@ -46,14 +47,14 @@ function ArticleIndex({ location: { query }, match: { params } }) {
     const renderItem = item => {
         if (item.type === 'AD')
             return (
-                <MoreList.Item>
+                <PageList.Item>
                     <GoogleHorizontal />
-                </MoreList.Item>
+                </PageList.Item>
             );
         return (
-            <MoreList.Item key={item.id}>
+            <PageList.Item key={item.id}>
                 <Article data={item} desc={true} authorSize="small" />
-            </MoreList.Item>
+            </PageList.Item>
         );
     };
 
@@ -65,15 +66,12 @@ function ArticleIndex({ location: { query }, match: { params } }) {
                 </p>
             );
         return (
-            <MoreList
+            <PageList
                 renderItem={renderItem}
                 offset={offset}
                 limit={limit}
                 dataSource={dataSource}
-                onChange={offset => {
-                    setOffset(offset);
-                    fetchList(dispatch, offset, limit, type);
-                }}
+                pageLink={current => `/article?page=${current}&type=${type}`}
             />
         );
     };
@@ -150,9 +148,16 @@ function ArticleIndex({ location: { query }, match: { params } }) {
     );
 }
 
-ArticleIndex.getInitialProps = async ({ isServer, match, store, params }) => {
+ArticleIndex.getInitialProps = async ({ isServer, match, store, params , history}) => {
     const { dispatch, getState } = store;
-    await fetchList(dispatch, 0, 20, match.params.type || 'default', params);
+    const limit = 20
+    const { location } = history || {};
+    let query = (location || {}).query;
+    if (!isServer) {
+        query = getPageQuery();
+    }
+    const page = query.page ? (query.page - 1) * limit : 0
+    await fetchList(dispatch, page, limit, match.params.type || 'default', params);
     await dispatch({
         type: 'column/list',
         payload: {

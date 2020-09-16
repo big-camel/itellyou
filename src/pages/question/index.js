@@ -5,7 +5,8 @@ import { Button, Card, Space } from 'antd';
 import { GoogleHorizontal, GoogleSquare } from '@/components/AdSense';
 import { RouteContext } from '@/context';
 import Container, { Layout } from '@/components/Container';
-import { MoreList } from '@/components/List';
+import { getPageQuery } from '@/utils/utils';
+import { PageList } from '@/components/List';
 import { Question } from '@/components/Content';
 import GroupUser from './components/GroupUser';
 import { EditOutlined } from '@ant-design/icons';
@@ -15,7 +16,7 @@ const fetchList = (dispatch, offset, limit, type, parmas) => {
     return dispatch({
         type: 'question/list',
         payload: {
-            append: offset > 0,
+            append: false,
             offset,
             limit,
             type,
@@ -26,9 +27,9 @@ const fetchList = (dispatch, offset, limit, type, parmas) => {
 };
 
 function QuestionIndex({ location: { query }, match: { params } }) {
-    const [offset, setOffset] = useState(parseInt(query.offset || 0));
-
     const limit = parseInt(query.limit || 20);
+    const page = query.page ? (query.page - 1) * limit : undefined
+    const [offset, setOffset] = useState(parseInt(query.offset || page || 0));
     const type = params.type || '';
 
     const dispatch = useDispatch();
@@ -46,14 +47,14 @@ function QuestionIndex({ location: { query }, match: { params } }) {
     const renderItem = item => {
         if (item.type === 'AD')
             return (
-                <MoreList.Item>
+                <PageList.Item>
                     <GoogleHorizontal />
-                </MoreList.Item>
+                </PageList.Item>
             );
         return (
-            <MoreList.Item key={item.id}>
+            <PageList.Item key={item.id}>
                 <Question data={item} authorSize="small" />
-            </MoreList.Item>
+            </PageList.Item>
         );
     };
 
@@ -65,16 +66,14 @@ function QuestionIndex({ location: { query }, match: { params } }) {
                     <Link to="/login">未登录</Link>
                 </p>
             );
+        const link = type ? `/question${type}` : "/question"
         return (
-            <MoreList
+            <PageList
                 renderItem={renderItem}
                 dataSource={dataSource}
                 offset={offset}
                 limit={limit}
-                onChange={offset => {
-                    setOffset(offset);
-                    fetchList(dispatch, offset, limit, type);
-                }}
+                pageLink={current => `${link}?page=${current}`}
             />
         );
     };
@@ -163,9 +162,16 @@ function QuestionIndex({ location: { query }, match: { params } }) {
     );
 }
 
-QuestionIndex.getInitialProps = async ({ isServer, match, store, params }) => {
+QuestionIndex.getInitialProps = async ({ isServer, match, store, params , history }) => {
     const { dispatch, getState } = store;
-    await fetchList(dispatch, 0, 20, match.params.type || '', params);
+    const limit = 20
+    const { location } = history || {};
+    let query = (location || {}).query;
+    if (!isServer) {
+        query = getPageQuery();
+    }
+    const page = query.page ? (query.page - 1) * limit : 0
+    await fetchList(dispatch, page, limit, match.params.type || '', params);
 
     await GroupUser.getInitialProps({ isServer, store, match, params });
 

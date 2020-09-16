@@ -18,7 +18,7 @@ export default ({
     let avatarSize = 40;
     if (size === 'small') {
         avatarShape = 'circle';
-        avatarSize = 24;
+        avatarSize = 20;
         description = undefined;
     }
     if (size === 'middle') avatarSize = 32;
@@ -31,12 +31,13 @@ export default ({
             </Link>
         );
     };
+    const sizeClass = model ? `user-author-${model}` : ""
     return (
         <div
             className={classnames(
                 'user-author',
                 `user-author-${size}`,
-                `${model ? `user-author-${model}` : null}`,
+                sizeClass,
                 className,
             )}
         >

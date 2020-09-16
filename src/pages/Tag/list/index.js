@@ -1,8 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { Card } from 'antd';
 import { Link, useDispatch, useSelector, useIntl, Helmet } from 'umi';
-import { MoreList } from '@/components/List';
+import { PageList } from '@/components/List';
 import Tag from '@/components/Tag';
+import { getPageQuery } from '@/utils/utils';
 import Container from '@/components/Container';
 import styles from './index.less';
 import { RouteContext } from '@/context';
@@ -11,7 +12,7 @@ const fetchList = (dispatch, offset, limit, parmas) => {
     return dispatch({
         type: 'tag/list',
         payload: {
-            append: offset !== 0,
+            append: false,
             offset,
             limit,
             ...parmas,
@@ -20,9 +21,9 @@ const fetchList = (dispatch, offset, limit, parmas) => {
 };
 
 function TagList({ location: { query } }) {
-    const [page, setPage] = useState(query.page || 1);
-    const [limit, setLimit] = useState(query.size || 18);
-    const [offset, setOffset] = useState((page - 1) * limit);
+    const limit = parseInt(query.limit || 20);
+    const page = query.page ? (query.page - 1) * limit : undefined
+    const [offset, setOffset] = useState(parseInt(query.offset || page || 0));
     const dispatch = useDispatch();
     const list = useSelector(state => (state.tag ? state.tag.list : null));
     const settings = useSelector(state => state.settings);
@@ -38,7 +39,7 @@ function TagList({ location: { query } }) {
         description,
     }) => {
         return (
-            <MoreList.Item key={id}>
+            <PageList.Item key={id}>
                 <Card bordered={false} className={styles['tag-card']} hoverable={true}>
                     <Card.Meta
                         className={styles['description']}
@@ -60,7 +61,7 @@ function TagList({ location: { query } }) {
                         <Tag.Star id={id} name={name} use_star={use_star} />
                     </div>
                 </Card>
-            </MoreList.Item>
+            </PageList.Item>
         );
     };
 
@@ -68,7 +69,7 @@ function TagList({ location: { query } }) {
 
     const renderList = () => {
         return (
-            <MoreList
+            <PageList
                 grid={{
                     gutter: 16,
                     column: isMobile ? 1 : 3,
@@ -77,10 +78,7 @@ function TagList({ location: { query } }) {
                 renderItem={renderItem}
                 offset={offset}
                 limit={limit}
-                onChange={offset => {
-                    setOffset(offset);
-                    fetchList(dispatch, offset, limit);
-                }}
+                pageLink={current => `/tag/list?page=${current}`}
             />
         );
     };
@@ -119,10 +117,16 @@ function TagList({ location: { query } }) {
     );
 }
 
-TagList.getInitialProps = async ({ isServer, store, params }) => {
+TagList.getInitialProps = async ({ isServer, store, params , history }) => {
     const { dispatch, getState } = store;
-
-    await fetchList(dispatch, 0, 18, params);
+    const limit = 18
+    const { location } = history || {};
+    let query = (location || {}).query;
+    if (!isServer) {
+        query = getPageQuery();
+    }
+    const page = query.page ? (query.page - 1) * limit : 0
+    await fetchList(dispatch, page, limit, params);
 
     if (isServer) return getState();
 };
