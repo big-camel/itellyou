@@ -28,7 +28,7 @@ const fetchList = (dispatch, offset, limit, type, parmas) => {
 
 function QuestionIndex({ location: { query }, match: { params } }) {
     const limit = parseInt(query.limit || 20);
-    const page = query.page ? (query.page - 1) * limit : undefined;
+    const page = query.page ? (parseInt(query.page) - 1) * limit : undefined;
     const [offset, setOffset] = useState(parseInt(query.offset || page || 0));
     const type = params.type || '';
 
@@ -73,7 +73,7 @@ function QuestionIndex({ location: { query }, match: { params } }) {
                 dataSource={dataSource}
                 offset={offset}
                 limit={limit}
-                pageLink={(current) => `${link}?page=${current}`}
+                pageLink={(current) =>  current === 1 ? "/question" : `${link}?page=${current}`}
             />
         );
     };
@@ -170,7 +170,7 @@ QuestionIndex.getInitialProps = async ({ isServer, match, store, params, history
     if (!isServer) {
         query = getPageQuery();
     }
-    const page = query.page ? (query.page - 1) * limit : 0;
+    const page = query.page ? (parseInt(query.page) - 1) * limit : 0;
     await fetchList(dispatch, page, limit, match.params.type || '', params);
 
     await GroupUser.getInitialProps({ isServer, store, match, params });

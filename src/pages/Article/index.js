@@ -28,7 +28,7 @@ const fetchList = (dispatch, offset, limit, type, parmas) => {
 
 function ArticleIndex({ location: { query }, match: { params } }) {
     const limit = parseInt(query.limit || 20);
-    const page = query.page ? (query.page - 1) * limit : undefined;
+    const page = query.page ? (parseInt(query.page) - 1) * limit : undefined;
 
     const [offset, setOffset] = useState(parseInt(query.offset || page || 0));
     const type = params.type || 'default';
@@ -72,7 +72,7 @@ function ArticleIndex({ location: { query }, match: { params } }) {
                 offset={offset}
                 limit={limit}
                 dataSource={dataSource}
-                pageLink={(current) => `/article?page=${current}&type=${type}`}
+                pageLink={(current) => current === 1 ? "/article" : `/article?page=${current}&type=${type}`}
             />
         );
     };
@@ -157,7 +157,7 @@ ArticleIndex.getInitialProps = async ({ isServer, match, store, params, history 
     if (!isServer) {
         query = getPageQuery();
     }
-    const page = query.page ? (query.page - 1) * limit : 0;
+    const page = query.page ? (parseInt(query.page) - 1) * limit : 0;
     await fetchList(dispatch, page, limit, match.params.type || 'default', params);
     await dispatch({
         type: 'column/list',
