@@ -28,13 +28,14 @@ const fetchList = (dispatch, offset, limit, type, parmas) => {
 
 function ArticleIndex({ location: { query }, match: { params } }) {
     const limit = parseInt(query.limit || 20);
-    const page = query.page ? (query.page - 1) * limit : undefined
+    const page = query.page ? (query.page - 1) * limit : undefined;
+
     const [offset, setOffset] = useState(parseInt(query.offset || page || 0));
     const type = params.type || 'default';
-    const dataSource = useSelector(state => (state.article ? state.article.list : null));
-    const me = useSelector(state => state.user.me);
+    const dataSource = useSelector((state) => (state.article ? state.article.list : null));
+    const me = useSelector((state) => state.user.me);
 
-    const settings = useSelector(state => state.settings);
+    const settings = useSelector((state) => state.settings);
 
     if (dataSource && dataSource.data.length > 3) {
         if (dataSource.data[2].type !== 'AD') {
@@ -44,7 +45,7 @@ function ArticleIndex({ location: { query }, match: { params } }) {
         }
     }
 
-    const renderItem = item => {
+    const renderItem = (item) => {
         if (item.type === 'AD')
             return (
                 <PageList.Item>
@@ -71,7 +72,7 @@ function ArticleIndex({ location: { query }, match: { params } }) {
                 offset={offset}
                 limit={limit}
                 dataSource={dataSource}
-                pageLink={current => `/article?page=${current}&type=${type}`}
+                pageLink={(current) => `/article?page=${current}&type=${type}`}
             />
         );
     };
@@ -148,15 +149,15 @@ function ArticleIndex({ location: { query }, match: { params } }) {
     );
 }
 
-ArticleIndex.getInitialProps = async ({ isServer, match, store, params , history}) => {
+ArticleIndex.getInitialProps = async ({ isServer, match, store, params, history }) => {
     const { dispatch, getState } = store;
-    const limit = 20
+    const limit = 20;
     const { location } = history || {};
     let query = (location || {}).query;
     if (!isServer) {
         query = getPageQuery();
     }
-    const page = query.page ? (query.page - 1) * limit : 0
+    const page = query.page ? (query.page - 1) * limit : 0;
     await fetchList(dispatch, page, limit, match.params.type || 'default', params);
     await dispatch({
         type: 'column/list',

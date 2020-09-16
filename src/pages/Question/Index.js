@@ -28,13 +28,13 @@ const fetchList = (dispatch, offset, limit, type, parmas) => {
 
 function QuestionIndex({ location: { query }, match: { params } }) {
     const limit = parseInt(query.limit || 20);
-    const page = query.page ? (query.page - 1) * limit : undefined
+    const page = query.page ? (query.page - 1) * limit : undefined;
     const [offset, setOffset] = useState(parseInt(query.offset || page || 0));
     const type = params.type || '';
 
     const dispatch = useDispatch();
-    const dataSource = useSelector(state => (state.question ? state.question.list : null));
-    const settings = useSelector(state => state.settings);
+    const dataSource = useSelector((state) => (state.question ? state.question.list : null));
+    const settings = useSelector((state) => state.settings);
 
     if (dataSource && dataSource.data.length > 3) {
         if (dataSource.data[2].type !== 'AD') {
@@ -44,7 +44,7 @@ function QuestionIndex({ location: { query }, match: { params } }) {
         }
     }
 
-    const renderItem = item => {
+    const renderItem = (item) => {
         if (item.type === 'AD')
             return (
                 <PageList.Item>
@@ -59,21 +59,21 @@ function QuestionIndex({ location: { query }, match: { params } }) {
     };
 
     const renderList = () => {
-        const me = useSelector(state => state.user.me);
+        const me = useSelector((state) => state.user.me);
         if (!me && type === 'star')
             return (
                 <p>
                     <Link to="/login">未登录</Link>
                 </p>
             );
-        const link = type ? `/question${type}` : "/question"
+        const link = type ? `/question${type}` : '/question';
         return (
             <PageList
                 renderItem={renderItem}
                 dataSource={dataSource}
                 offset={offset}
                 limit={limit}
-                pageLink={current => `${link}?page=${current}`}
+                pageLink={(current) => `${link}?page=${current}`}
             />
         );
     };
@@ -162,15 +162,15 @@ function QuestionIndex({ location: { query }, match: { params } }) {
     );
 }
 
-QuestionIndex.getInitialProps = async ({ isServer, match, store, params , history }) => {
+QuestionIndex.getInitialProps = async ({ isServer, match, store, params, history }) => {
     const { dispatch, getState } = store;
-    const limit = 20
+    const limit = 20;
     const { location } = history || {};
     let query = (location || {}).query;
     if (!isServer) {
         query = getPageQuery();
     }
-    const page = query.page ? (query.page - 1) * limit : 0
+    const page = query.page ? (query.page - 1) * limit : 0;
     await fetchList(dispatch, page, limit, match.params.type || '', params);
 
     await GroupUser.getInitialProps({ isServer, store, match, params });

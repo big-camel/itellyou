@@ -47,7 +47,7 @@ const Article = ({
     description = (custom_description || description).trim();
 
     const dispatch = useDispatch();
-    const rewardData = useSelector(state => state.articleReward.list);
+    const rewardData = useSelector((state) => state.articleReward.list);
 
     const doPaidReadPay = () => {
         return dispatch({
@@ -55,7 +55,7 @@ const Article = ({
             payload: {
                 id,
             },
-        }).then(res => {
+        }).then((res) => {
             if (res.result) {
                 message.success('支付成功', 1, () => {
                     window.location.reload();
@@ -133,14 +133,16 @@ const Article = ({
                 <h2 className={classNames(styles['title'], titleClass)}>
                     <Link to={`/article/${id}`} dangerouslySetInnerHTML={{ __html: title }} />
                 </h2>
-                <Space className={styles['tags']}>
-                    {tag &&
-                        tags &&
-                        tags.map(({ id, name }) => (
-                            <Tag key={id} id={id} href={`/tag/${id}`} title={name} />
-                        ))}
-                    {view && <span className={styles['view']}>{item.view}次浏览</span>}
-                </Space>
+                {(tag || view) && (
+                    <Space className={styles['tags']}>
+                        {tag &&
+                            tags &&
+                            tags.map(({ id, name }) => (
+                                <Tag key={id} id={id} href={`/tag/${id}`} title={name} />
+                            ))}
+                        {view && <span className={styles['view']}>{item.view}次浏览</span>}
+                    </Space>
+                )}
                 {author && <Author className={styles['author']} info={author} size={authorSize} />}
             </div>
             <div className={classNames(styles['body'], { [styles['has-cover']]: cover && desc })}>

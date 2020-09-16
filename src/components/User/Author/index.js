@@ -22,7 +22,7 @@ export default ({
         description = undefined;
     }
     if (size === 'middle') avatarSize = 32;
-    const settings = useSelector(state => state.settings) || {};
+    const settings = useSelector((state) => state.settings) || {};
     const getLink = () => {
         return (
             <Link to={`/${path}`}>
@@ -31,16 +31,9 @@ export default ({
             </Link>
         );
     };
-    const sizeClass = model ? `user-author-${model}` : ""
+    const sizeClass = model ? `user-author-${model}` : '';
     return (
-        <div
-            className={classnames(
-                'user-author',
-                `user-author-${size}`,
-                sizeClass,
-                className,
-            )}
-        >
+        <div className={classnames('user-author', `user-author-${size}`, sizeClass, className)}>
             {(!model || model === 'avatar') && (
                 <div className="user-author-avatar">
                     <UserBrand id={id}>

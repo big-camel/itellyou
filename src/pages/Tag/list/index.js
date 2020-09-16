@@ -22,11 +22,11 @@ const fetchList = (dispatch, offset, limit, parmas) => {
 
 function TagList({ location: { query } }) {
     const limit = parseInt(query.limit || 20);
-    const page = query.page ? (query.page - 1) * limit : undefined
+    const page = query.page ? (query.page - 1) * limit : undefined;
     const [offset, setOffset] = useState(parseInt(query.offset || page || 0));
     const dispatch = useDispatch();
-    const list = useSelector(state => (state.tag ? state.tag.list : null));
-    const settings = useSelector(state => state.settings);
+    const list = useSelector((state) => (state.tag ? state.tag.list : null));
+    const settings = useSelector((state) => state.settings);
 
     const renderItem = ({
         id,
@@ -78,7 +78,7 @@ function TagList({ location: { query } }) {
                 renderItem={renderItem}
                 offset={offset}
                 limit={limit}
-                pageLink={current => `/tag/list?page=${current}`}
+                pageLink={(current) => `/tag/list?page=${current}`}
             />
         );
     };
@@ -117,15 +117,15 @@ function TagList({ location: { query } }) {
     );
 }
 
-TagList.getInitialProps = async ({ isServer, store, params , history }) => {
+TagList.getInitialProps = async ({ isServer, store, params, history }) => {
     const { dispatch, getState } = store;
-    const limit = 18
+    const limit = 18;
     const { location } = history || {};
     let query = (location || {}).query;
     if (!isServer) {
         query = getPageQuery();
     }
-    const page = query.page ? (query.page - 1) * limit : 0
+    const page = query.page ? (query.page - 1) * limit : 0;
     await fetchList(dispatch, page, limit, params);
 
     if (isServer) return getState();
