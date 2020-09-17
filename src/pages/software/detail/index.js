@@ -342,6 +342,22 @@ const SoftwareDetail = ({ match: { params } }) => {
                                     </div>
                                     {renderAttributes()}
                                     <GoogleHorizontal />
+                                    {(id === 87 || id === 88 || id === 89 || id === 90) && (
+                                        <h2>
+                                            <a
+                                                style={{
+                                                    fontSize: 20,
+                                                    fontWeight: 700,
+                                                    color: 'red',
+                                                }}
+                                                target="_blank"
+                                                href="https://s.click.taobao.com/CHEWRwu"
+                                            >
+                                                购买Windows10/7/8
+                                                企业版、家庭版、专业版、旗舰版永久激活序列号
+                                            </a>
+                                        </h2>
+                                    )}
                                     {recommendFiles.length > 0 && (
                                         <div className={styles['software-recommend']}>
                                             <h2 className={styles['title']}>推荐版本</h2>
