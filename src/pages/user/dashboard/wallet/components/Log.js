@@ -10,7 +10,7 @@ const fetchList = (dispatch, offset, limit, parmas) => {
     return dispatch({
         type: 'bank/log',
         payload: {
-            append: offset > 0,
+            append: false,
             offset,
             limit,
             ...parmas,
@@ -23,8 +23,8 @@ const WalletLog = () => {
     const limit = 20;
 
     const dispatch = useDispatch();
-    const dataSource = useSelector(state => (state.bank ? state.bank.list : null));
-    const loadingEffect = useSelector(state => state.loading);
+    const dataSource = useSelector((state) => (state.bank ? state.bank.list : null));
+    const loadingEffect = useSelector((state) => state.loading);
     const loading = loadingEffect.effects['bank/log'];
 
     const renderPage = (_, type, originalElement) => {
@@ -43,7 +43,7 @@ const WalletLog = () => {
             dataIndex: 'type',
             key: 'type',
             width: 80,
-            render: text => {
+            render: (text) => {
                 if (text === 'credit') return '积分';
                 if (text === 'cash') return '余额';
                 if (text === 'score') return '等级分';
@@ -72,7 +72,7 @@ const WalletLog = () => {
             dataIndex: 'created_time',
             key: 'created_time',
             width: 120,
-            render: text => {
+            render: (text) => {
                 return <Timer time={text} />;
             },
         },
@@ -111,11 +111,12 @@ const WalletLog = () => {
         return (
             <Loading loading={loading}>
                 <Table
-                    rowKey={row => row.id}
+                    rowKey={(row) => row.id}
                     columns={columns}
                     dataSource={dataSource.data}
                     pagination={{
-                        onChange: page => {
+                        position: 'bottomCenter',
+                        onChange: (page) => {
                             setPage(page);
                             fetchList(dispatch, (page - 1) * limit, limit);
                         },
@@ -123,6 +124,8 @@ const WalletLog = () => {
                         itemRender: renderPage,
                         hideOnSinglePage: true,
                         pageSize: limit,
+                        showSizeChanger: false,
+                        showLessItems: true,
                         total: dataSource ? dataSource.total : 0,
                         style: isMobile
                             ? { float: 'none', clear: 'both', textAlign: 'center' }
