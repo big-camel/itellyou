@@ -25,7 +25,7 @@ const Activity = ({ id }) => {
     const limit = 20;
 
     const dispatch = useDispatch();
-    const dataSource = useSelector(state => state.userActivity.list);
+    const dataSource = useSelector((state) => state.userActivity.list);
 
     const renderColumn = ({ name, avatar, path, description }) => {
         return (
@@ -65,7 +65,7 @@ const Activity = ({ id }) => {
         );
     };
 
-    const renderArticle = target => {
+    const renderArticle = (target) => {
         return <Article data={target} desc={true} />;
     };
 
@@ -115,9 +115,9 @@ const Activity = ({ id }) => {
             limit={limit}
             renderItem={renderItem}
             dataSource={dataSource}
-            onChange={offset => {
+            onChange={(offset) => {
                 setOffset(offset);
-                fetchList(dispatch, 0, 20, id);
+                fetchList(dispatch, offset, limit, id);
             }}
         />
     );
