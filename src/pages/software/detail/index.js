@@ -342,21 +342,6 @@ const SoftwareDetail = ({ match: { params } }) => {
                                     </div>
                                     {renderAttributes()}
                                     <GoogleHorizontal />
-                                    {id === 87 && (
-                                        <h2>
-                                            <a
-                                                style={{
-                                                    fontSize: 20,
-                                                    fontWeight: 700,
-                                                    color: 'red',
-                                                }}
-                                                target="_blank"
-                                                href="https://s.click.taobao.com/t?e=m%3D2%26s%3DhMTVZH9gvoEcQipKwQzePOeEDrYVVa64K7Vc7tFgwiHjf2vlNIV67oScvW1E%2F6PGz%2BnB8CFd%2BwJpgWVRUC9a8289w6Xt2PiTTZop%2FJ0xZil1FkID2miGDz2WTmiIVrR8bNt%2BQ9Mb0tem2vAytx9kdMFji9Zfn1uwNO4PCuEgf%2B3y54PgitzAlMYMXU3NNCg%2F&scm=null&pvid=null&app_pvid=59590_11.26.37.202_529_1600449632881&ptl=floorId%3A17741&originalFloorId%3A17741&app_pvid%3A59590_11.26.37.202_529_1600449632881&union_lens=lensId%3APUB%401600449614%400b175192_7300_174a23b10e7_05c2%40025wtOaaT806MFTuO6P6RoqE"
-                                            >
-                                                微软官方店铺购买Windows10专业版永久激活序列号
-                                            </a>
-                                        </h2>
-                                    )}
                                     {recommendFiles.length > 0 && (
                                         <div className={styles['software-recommend']}>
                                             <h2 className={styles['title']}>推荐版本</h2>
