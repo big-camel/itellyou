@@ -6,11 +6,11 @@ import { UserAuthor } from '@/components/User';
 import Loading from '@/components/Loading';
 
 export default ({ className }) => {
-    const dataSource = useSelector(state => state.explore.answerer);
+    const dataSource = useSelector((state) => state.explore.answerer);
 
     if (!dataSource) return <Loading />;
 
-    const renderItem = item => {
+    const renderItem = (item) => {
         return (
             <List.Item>
                 <UserAuthor info={item} size="middle" />

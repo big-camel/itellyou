@@ -179,55 +179,56 @@ function Edit({ match: { params } }) {
 
     return (
         <>
-            {!loading && <header className={styles.header}>
-                <div className={styles.container}>
-                    <div className={styles.logo}>
-                        <a href="/">
-                            <img src={logo} alt="" />
-                        </a>
-                    </div>
-                    {!isMobile && (
-                        <div className={styles['sub-title']}>
-                            软件编辑<span>-</span>
-                            {name}
+            {!loading && (
+                <header className={styles.header}>
+                    <div className={styles.container}>
+                        <div className={styles.logo}>
+                            <a href="/">
+                                <img src={logo} alt="" />
+                            </a>
                         </div>
-                    )}
-                    <div className={styles['save-status']}>{renderSaveStatus()}</div>
-                    <Space className={styles.right}>
-                        {!isMobile && detail && (
-                            <Button onClick={() => editor.current.showHistory()}>历史</Button>
+                        {!isMobile && (
+                            <div className={styles['sub-title']}>
+                                软件编辑<span>-</span>
+                                {name}
+                            </div>
                         )}
-                        <Button type="primary" onClick={onShowDrawer}>
-                            发布
-                        </Button>
-                        <Popover
-                            overlayClassName={'popover-menu'}
-                            placement="bottomLeft"
-                            arrowPointAtCenter
-                            content={
-                                <Menu className={styles['more-menu']}>
-                                    {id && (
-                                        <Menu.Item onClick={() => setSettingVisible(true)}>
-                                            软件设置
+                        <div className={styles['save-status']}>{renderSaveStatus()}</div>
+                        <Space className={styles.right}>
+                            {!isMobile && detail && (
+                                <Button onClick={() => editor.current.showHistory()}>历史</Button>
+                            )}
+                            <Button type="primary" onClick={onShowDrawer}>
+                                发布
+                            </Button>
+                            <Popover
+                                overlayClassName={'popover-menu'}
+                                placement="bottomLeft"
+                                arrowPointAtCenter
+                                content={
+                                    <Menu className={styles['more-menu']}>
+                                        {id && (
+                                            <Menu.Item onClick={() => setSettingVisible(true)}>
+                                                软件设置
+                                            </Menu.Item>
+                                        )}
+                                        {id && (
+                                            <Menu.Item onClick={() => setManageVisible(true)}>
+                                                版本管理
+                                            </Menu.Item>
+                                        )}
+                                        <Menu.Item>
+                                            <a href="/dashboard">退出编辑</a>
                                         </Menu.Item>
-                                    )}
-                                    {id && (
-                                        <Menu.Item onClick={() => setManageVisible(true)}>
-                                            版本管理
-                                        </Menu.Item>
-                                    )}
-                                    <Menu.Item>
-                                        <a href="/dashboard">退出编辑</a>
-                                    </Menu.Item>
-                                </Menu>
-                            }
-                        >
-                            <EllipsisButton className={styles['ellipsis-button']} />
-                        </Popover>
-                    </Space>
-                </div>
-            </header>
-            }
+                                    </Menu>
+                                }
+                            >
+                                <EllipsisButton className={styles['ellipsis-button']} />
+                            </Popover>
+                        </Space>
+                    </div>
+                </header>
+            )}
             <div className={styles.container}>
                 <div className={styles['editor']}>
                     <Editor

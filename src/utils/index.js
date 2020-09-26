@@ -28,10 +28,7 @@ export function limitFloat(val, min) {
     }
     sNum = sNum.replace(/[^\d.]/g, ''); //清除“数字”和“.”以外的字符
     sNum = sNum.replace(/\.{2,}/g, '.'); //只保留第一个. 清除多余的
-    sNum = sNum
-        .replace('.', '$#$')
-        .replace(/\./g, '')
-        .replace('$#$', '.');
+    sNum = sNum.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.');
     sNum = sNum.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
     if (sNum.trim() === '') sNum = `${min || 0}`;
     //以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额
@@ -51,7 +48,7 @@ export const getScrollTop = () => {
     return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
 };
 
-export const getOffset = element => {
+export const getOffset = (element) => {
     if (!element.getClientRects().length)
         return {
             top: 0,
@@ -80,26 +77,23 @@ export const calcHeight = (element, isTop) => {
     return height;
 };
 
-export const scrollToElement = element => {
-    if(element ){
-        let top = getOffset(element).top - 80
+export const scrollToElement = (element) => {
+    if (element) {
+        let top = getOffset(element).top - 80;
         let i = 0;
-        let step = 15
-        if(top > 200 && top <= 500)
-            step = 25
-        else if(top > 500 && top <= 1000)
-            step = 30
-        else if(top > 1000)
-            step = 50
+        let step = 15;
+        if (top > 200 && top <= 500) step = 25;
+        else if (top > 500 && top <= 1000) step = 30;
+        else if (top > 1000) step = 50;
 
         const scrollInterval = setInterval(() => {
-            window.scrollTo(0,i)
-            if((i + step) >= top){
-                i = top
-                clearInterval(scrollInterval)
-            }else{
-                i += step
+            window.scrollTo(0, i);
+            if (i + step >= top) {
+                i = top;
+                clearInterval(scrollInterval);
+            } else {
+                i += step;
             }
         }, 5);
     }
-}
+};

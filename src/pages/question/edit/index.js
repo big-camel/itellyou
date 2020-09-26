@@ -28,9 +28,9 @@ function Edit({ match: { params } }) {
     const [collabUsers, setCollabUsers] = useState([]);
     const dispatch = useDispatch();
 
-    const { detail } = useSelector(state => state.doc);
+    const { detail } = useSelector((state) => state.doc);
 
-    const bank = useSelector(state => state.bank.detail) || {};
+    const bank = useSelector((state) => state.bank.detail) || {};
     const { isMobile } = useContext(RouteContext);
     useEffect(() => {
         if ((id && detail) || !id) {
@@ -43,7 +43,7 @@ function Edit({ match: { params } }) {
         }
     }, [detail, id]);
 
-    const onTitleChange = event => {
+    const onTitleChange = (event) => {
         setTitle(event.target.value);
     };
 
@@ -169,14 +169,14 @@ function Edit({ match: { params } }) {
         setPublishing(true);
         if (editor.current) {
             editor.current.onPublish({
-                tags: tags.map(tag => tag.id),
+                tags: tags.map((tag) => tag.id),
                 reward,
                 //remark,
             });
         }
     };
 
-    const onPublished = useCallback(res => {
+    const onPublished = useCallback((res) => {
         setPublishing(false);
         if (!res.result) {
             if (res.status === 1001 || res.status === 1002) {
@@ -201,7 +201,7 @@ function Edit({ match: { params } }) {
         if (isMobile) return null;
         return (
             <Space>
-                {collabUsers.map(user => (
+                {collabUsers.map((user) => (
                     <div key={user.id} className={styles['collab-user']}>
                         <UserAuthor model="avatar" size="small" info={user} />
                         <Badge color={user.color} />
@@ -215,8 +215,8 @@ function Edit({ match: { params } }) {
 
     return (
         <>
-            {
-                !loading && <header className={styles.header}>
+            {!loading && (
+                <header className={styles.header}>
                     <div className={styles.container}>
                         <div className={styles.logo}>
                             <a href="/">
@@ -240,7 +240,7 @@ function Edit({ match: { params } }) {
                         </div>
                     </div>
                 </header>
-            }
+            )}
             <div className={styles.container}>
                 <div className={styles.title}>
                     <Input
@@ -271,7 +271,7 @@ function Edit({ match: { params } }) {
                                 : null
                         }
                         toc={false}
-                        historyExtra={data => <HistoryExtra {...data} />}
+                        historyExtra={(data) => <HistoryExtra {...data} />}
                         onSave={onSave}
                         onReverted={onReverted}
                         onPublished={onPublished}

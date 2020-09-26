@@ -35,8 +35,8 @@ function Search({ location: { query } }) {
 
     const dispatch = useDispatch();
 
-    const search = useSelector(state => state.search);
-    const settings = useSelector(state => state.settings);
+    const search = useSelector((state) => state.search);
+    const settings = useSelector((state) => state.settings);
     const list = search ? search.list : null;
 
     useEffect(() => {
@@ -116,7 +116,7 @@ function Search({ location: { query } }) {
         return <UserAuthor info={{ ...object, name, description }} />;
     };
 
-    const renderItem = item => {
+    const renderItem = (item) => {
         const { type } = item;
         let child = <div>Unknow type</div>;
         switch (type) {
@@ -184,7 +184,7 @@ function Search({ location: { query } }) {
                                     offset={offset}
                                     limit={limit}
                                     renderItem={renderItem}
-                                    onChange={offset => {
+                                    onChange={(offset) => {
                                         setOffset(offset);
                                         fetch(
                                             dispatch,

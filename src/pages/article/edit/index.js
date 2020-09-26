@@ -39,7 +39,7 @@ function Edit({ match: { params } }) {
     const [paidReadSetting, setPaidReadSetting] = useState(false);
 
     const dispatch = useDispatch();
-    const { detail } = useSelector(state => state.doc);
+    const { detail } = useSelector((state) => state.doc);
     const { isMobile } = useContext(RouteContext);
     useEffect(() => {
         if ((id && detail) || !id) {
@@ -53,7 +53,7 @@ function Edit({ match: { params } }) {
         }
     }, [dispatch, detail, id]);
 
-    const onTitleChange = event => {
+    const onTitleChange = (event) => {
         setTitle(event.target.value);
     };
 
@@ -166,7 +166,7 @@ function Edit({ match: { params } }) {
         setPublishing(true);
         if (editor.current) {
             editor.current.onPublish({
-                tags: tags.map(tag => tag.id),
+                tags: tags.map((tag) => tag.id),
                 columnId,
                 sourceType: source.type,
                 sourceData: source.data,
@@ -175,7 +175,7 @@ function Edit({ match: { params } }) {
         }
     };
 
-    const onPublished = useCallback(res => {
+    const onPublished = useCallback((res) => {
         setPublishing(false);
         if (!res.result) {
             return;
@@ -186,8 +186,8 @@ function Edit({ match: { params } }) {
         });
     }, []);
 
-    const onPaidReadSubmit = value => {
-        return new Promise(resolve => {
+    const onPaidReadSubmit = (value) => {
+        return new Promise((resolve) => {
             dispatch({
                 type: 'doc/paidread',
                 payload: {
@@ -207,107 +207,109 @@ function Edit({ match: { params } }) {
     const error = getError();
     return (
         <>
-            {!loading && <header className={styles.header}>
-                <div className={styles.container}>
-                    <div className={styles.logo}>
-                        <a href="/">
-                            <img src={logo} alt="" />
-                        </a>
-                    </div>
-                    {!isMobile && (
-                        <div className={styles['sub-title']}>
-                            文章编辑<span>-</span>
-                            {title}
+            {!loading && (
+                <header className={styles.header}>
+                    <div className={styles.container}>
+                        <div className={styles.logo}>
+                            <a href="/">
+                                <img src={logo} alt="" />
+                            </a>
                         </div>
-                    )}
-                    <div className={styles['save-status']}>{renderSaveStatus()}</div>
-                    <Space className={styles.right}>
-                        {!isMobile && detail && (
-                            <Button onClick={() => editor.current.showHistory()}>历史</Button>
+                        {!isMobile && (
+                            <div className={styles['sub-title']}>
+                                文章编辑<span>-</span>
+                                {title}
+                            </div>
                         )}
-                        <Button type="primary" onClick={onShowDrawer}>
-                            发布
-                        </Button>
-                        <Popover
-                            overlayClassName={'popover-menu'}
-                            placement="bottomLeft"
-                            arrowPointAtCenter
-                            content={
-                                <Menu className={styles['more-menu']}>
-                                    {id && (
-                                        <Menu.Item onClick={() => setSettingVisible(true)}>
-                                            文章设置
-                                        </Menu.Item>
-                                    )}
-                                    {id && (
-                                        <Menu.Item onClick={() => setPaidReadSetting(true)}>
-                                            付费阅读
-                                        </Menu.Item>
-                                    )}
-                                    {id && (
+                        <div className={styles['save-status']}>{renderSaveStatus()}</div>
+                        <Space className={styles.right}>
+                            {!isMobile && detail && (
+                                <Button onClick={() => editor.current.showHistory()}>历史</Button>
+                            )}
+                            <Button type="primary" onClick={onShowDrawer}>
+                                发布
+                            </Button>
+                            <Popover
+                                overlayClassName={'popover-menu'}
+                                placement="bottomLeft"
+                                arrowPointAtCenter
+                                content={
+                                    <Menu className={styles['more-menu']}>
+                                        {id && (
+                                            <Menu.Item onClick={() => setSettingVisible(true)}>
+                                                文章设置
+                                            </Menu.Item>
+                                        )}
+                                        {id && (
+                                            <Menu.Item onClick={() => setPaidReadSetting(true)}>
+                                                付费阅读
+                                            </Menu.Item>
+                                        )}
+                                        {id && (
+                                            <Menu.Item>
+                                                <Article.Delete
+                                                    id={id}
+                                                    title={title}
+                                                    icon={null}
+                                                    text="删除文章"
+                                                    callback={(res) => {
+                                                        if (res && res.result) {
+                                                            window.location.href = '/dashboard';
+                                                        } else {
+                                                            message.error(res.message);
+                                                        }
+                                                    }}
+                                                />
+                                            </Menu.Item>
+                                        )}
                                         <Menu.Item>
-                                            <Article.Delete
-                                                id={id}
-                                                title={title}
-                                                icon={null}
-                                                text="删除文章"
-                                                callback={res => {
-                                                    if (res && res.result) {
-                                                        window.location.href = '/dashboard';
-                                                    } else {
-                                                        message.error(res.message);
-                                                    }
-                                                }}
-                                            />
+                                            <a href="/dashboard">退出编辑</a>
                                         </Menu.Item>
-                                    )}
-                                    <Menu.Item>
-                                        <a href="/dashboard">退出编辑</a>
-                                    </Menu.Item>
-                                </Menu>
-                            }
-                        >
-                            <EllipsisButton className={styles['ellipsis-button']} />
-                        </Popover>
-                    </Space>
-                </div>
-            </header>}
+                                    </Menu>
+                                }
+                            >
+                                <EllipsisButton className={styles['ellipsis-button']} />
+                            </Popover>
+                        </Space>
+                    </div>
+                </header>
+            )}
             <div className={styles.container}>
                 <div className={styles['editor']}>
                     <Editor
-                    type={isMobile ? 'mini' : 'full'}
-                    ref={editor}
-                    id={id}
-                    ot={false}
-                    dataType="article"
-                    toolbar={
-                        isMobile
-                            ? [
-                                    ['heading', 'bold'],
-                                    ['codeblock'],
-                                    ['orderedlist', 'unorderedlist'],
-                                    ['image', 'video', 'file'],
-                                ]
-                            : null
-                    }
-                    toc={isMobile ? false : true}
-                    header={
-                        <div className={styles['title']}>
-                            <Input
-                                className={styles['input']}
-                                size="large"
-                                placeholder="请输入标题(最多50个字)"
-                                value={title}
-                                onChange={onTitleChange}
-                                onBlur={onTitleBlur}
-                                maxLength={50}
-                            />
-                        </div>
-                    }
-                    historyExtra={data => <HistoryExtra {...data} />}
-                    onSave={onSave}
-                    onReverted={onReverted}
-                    onPublished={onPublished}
+                        type={isMobile ? 'mini' : 'full'}
+                        ref={editor}
+                        id={id}
+                        ot={false}
+                        dataType="article"
+                        toolbar={
+                            isMobile
+                                ? [
+                                      ['heading', 'bold'],
+                                      ['codeblock'],
+                                      ['orderedlist', 'unorderedlist'],
+                                      ['image', 'video', 'file'],
+                                  ]
+                                : null
+                        }
+                        toc={isMobile ? false : true}
+                        header={
+                            <div className={styles['title']}>
+                                <Input
+                                    className={styles['input']}
+                                    size="large"
+                                    placeholder="请输入标题(最多50个字)"
+                                    value={title}
+                                    onChange={onTitleChange}
+                                    onBlur={onTitleBlur}
+                                    maxLength={50}
+                                />
+                            </div>
+                        }
+                        historyExtra={(data) => <HistoryExtra {...data} />}
+                        onSave={onSave}
+                        onReverted={onReverted}
+                        onPublished={onPublished}
                     />
                 </div>
             </div>

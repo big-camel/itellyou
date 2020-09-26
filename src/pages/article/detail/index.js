@@ -2,17 +2,17 @@ import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useSelector, Helmet, Redirect, useDispatch } from 'umi';
 import { Space } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import TweenOne from 'rc-tween-one'
-import Animate from 'rc-animate'
-import { LikeOutlined } from '@ant-design/icons'
+import TweenOne from 'rc-tween-one';
+import Animate from 'rc-animate';
+import { LikeOutlined } from '@ant-design/icons';
 import { RouteContext } from '@/context';
 import Loading from '@/components/Loading';
 import { Article } from '@/components/Content';
 import Editor from '@/components/Editor';
 import { GoogleHorizontal } from '@/components/AdSense';
 import { EditButton, EllipsisButton, HistoryButton } from '@/components/Button';
-import { HeaderContainer , HeaderLogo } from '@/components/Header'
-import { getScrollTop , scrollToElement } from '@/utils'
+import { HeaderContainer, HeaderLogo } from '@/components/Header';
+import { getScrollTop, scrollToElement } from '@/utils';
 import HistoryExtra from '../components/HistoryExtra';
 import Related from './Related';
 import styles from './index.less';
@@ -20,8 +20,8 @@ import styles from './index.less';
 function Detail({ match: { params } }) {
     const id = parseInt(params.id || 0);
 
-    const [viewMode,setViewMode] = useState("")
-    const [scrollVisible,setScrollVisible] = useState(false)
+    const [viewMode, setViewMode] = useState('');
+    const [scrollVisible, setScrollVisible] = useState(false);
     const [contentData, setContentData] = useState({});
     const [historyViewer, setHistoryViewer] = useState(false);
 
@@ -41,9 +41,9 @@ function Detail({ match: { params } }) {
 
     const handleScroll = useCallback(() => {
         const min = 80;
-        const top = getScrollTop()
-        setScrollVisible(top > min)
-    }, [])
+        const top = getScrollTop();
+        setScrollVisible(top > min);
+    }, []);
 
     useEffect(() => {
         dispatch({
@@ -71,21 +71,20 @@ function Detail({ match: { params } }) {
             view,
             config,
         });
-        const hasOutline = (config || {}).outline && config.outline.length > 0
+        const hasOutline = (config || {}).outline && config.outline.length > 0;
 
-        setViewMode(hasOutline ? "middle" : "")
-       
-        if(window.location.hash){
-            const scrollId = window.location.hash.substr(1)
-            scrollToElement(document.getElementById(scrollId))
+        setViewMode(hasOutline ? 'middle' : '');
+
+        if (window.location.hash) {
+            const scrollId = window.location.hash.substr(1);
+            scrollToElement(document.getElementById(scrollId));
         }
     };
 
-    const { title, tags, author, description , support } = detail;
+    const { title, tags, author, description, support } = detail;
 
     const keywords = tags.map((tag) => tag.name) || [];
     keywords.push('itellyou');
-    
 
     return (
         <>
@@ -95,19 +94,21 @@ function Detail({ match: { params } }) {
                 <meta name="keywords" content={keywords.join(',')} />
                 <meta name="description" content={description} />
             </Helmet>
-            <HeaderContainer 
-            mode={scrollVisible ? viewMode : ""}
-            className={styles['header-top']}
-            after={
-                <Space size="large">
-                    <EditButton type="primary" href="/article/new">写文章</EditButton>
-                    <EllipsisButton style={{fontSize:26,lineHeight:"34px"}} />
-                </Space>
-            }
+            <HeaderContainer
+                mode={scrollVisible ? viewMode : ''}
+                className={styles['header-top']}
+                after={
+                    <Space size="large">
+                        <EditButton type="primary" href="/article/new">
+                            写文章
+                        </EditButton>
+                        <EllipsisButton style={{ fontSize: 26, lineHeight: '34px' }} />
+                    </Space>
+                }
             >
                 <HeaderLogo />
             </HeaderContainer>
-            <div className={styles["main-wrapper"]}>
+            <div className={styles['main-wrapper']}>
                 <Space direction="vertical" size="large" className={styles['main-body']}>
                     <div className={styles['article-view']}>
                         <Article
@@ -131,24 +132,27 @@ function Detail({ match: { params } }) {
                         />
                     )}
                 </Space>
-                <QueueAnim animConfig={[{opacity: [1, 0]}]} className={styles["side"]}>
-                    {
-                        scrollVisible ? (
-                            <div key="side">
-                                <div className={styles['like-action']}>
+                <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['side']}>
+                    {scrollVisible ? (
+                        <div key="side">
+                            <div className={styles['like-action']}>
                                 <Space direction="vertical">
                                     <LikeOutlined />
                                     <span>赞同 {support}</span>
                                 </Space>
-                                </div>
                             </div>
-                        ) : null
-                    }
+                        </div>
+                    ) : null}
                 </QueueAnim>
-                <QueueAnim animConfig={[{opacity: [1, 0]}]} className={styles["outline"]}>
-                    { scrollVisible ? <Editor.Outline key="outline" className={styles["outline-view"]} {...contentData} /> : null }
+                <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['outline']}>
+                    {scrollVisible ? (
+                        <Editor.Outline
+                            key="outline"
+                            className={styles['outline-view']}
+                            {...contentData}
+                        />
+                    ) : null}
                 </QueueAnim>
-                
             </div>
         </>
     );

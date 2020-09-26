@@ -17,7 +17,7 @@ function Edit({ match: { params } }) {
     const [saving, setSaving] = useState(false);
     const [publishing, setPublishing] = useState(false);
     const [collabUsers, setCollabUsers] = useState([]);
-    const { detail } = useSelector(state => state.doc);
+    const { detail } = useSelector((state) => state.doc);
     const { isMobile } = useContext(RouteContext);
     useEffect(() => {
         if ((id && detail) || !id) {
@@ -25,7 +25,7 @@ function Edit({ match: { params } }) {
         }
     }, [detail, id]);
 
-    const onSave = useCallback(action => {
+    const onSave = useCallback((action) => {
         setSaving(action === 'begin');
     }, []);
 
@@ -66,7 +66,7 @@ function Edit({ match: { params } }) {
         }
     };
 
-    const onPublished = useCallback(res => {
+    const onPublished = useCallback((res) => {
         setPublishing(false);
         if (res && !res.result) {
             message.error(res.message);
@@ -82,7 +82,7 @@ function Edit({ match: { params } }) {
         if (isMobile) return null;
         return (
             <Space>
-                {collabUsers.map(user => (
+                {collabUsers.map((user) => (
                     <div key={user.id} className={styles['collab-user']}>
                         <UserAuthor model="avatar" size="small" info={user} />
                         <Badge color={user.color} />
@@ -94,32 +94,33 @@ function Edit({ match: { params } }) {
 
     return (
         <>
-            {!loading && <header className={styles.header}>
-                <div className={styles.container}>
-                    <div className={styles.logo}>
-                        <a href="/">
-                            <img src={logo} alt="" />
-                        </a>
-                    </div>
-                    {!isMobile && (
-                        <div className={styles['sub-title']}>
-                            标签编辑<span>-</span>
-                            {detail ? detail.name : null}
+            {!loading && (
+                <header className={styles.header}>
+                    <div className={styles.container}>
+                        <div className={styles.logo}>
+                            <a href="/">
+                                <img src={logo} alt="" />
+                            </a>
                         </div>
-                    )}
-                    <div className={styles['save-status']}>{renderSaveStatus()}</div>
-                    <div className={styles.right}>
-                        {renderCollabUsers()}
-                        {!isMobile && detail && (
-                            <Button onClick={() => editor.current.showHistory()}>历史</Button>
+                        {!isMobile && (
+                            <div className={styles['sub-title']}>
+                                标签编辑<span>-</span>
+                                {detail ? detail.name : null}
+                            </div>
                         )}
-                        <Button type="primary" loading={publishing} onClick={onPublish}>
-                            {publishing ? '发布中...' : '发布'}
-                        </Button>
+                        <div className={styles['save-status']}>{renderSaveStatus()}</div>
+                        <div className={styles.right}>
+                            {renderCollabUsers()}
+                            {!isMobile && detail && (
+                                <Button onClick={() => editor.current.showHistory()}>历史</Button>
+                            )}
+                            <Button type="primary" loading={publishing} onClick={onPublish}>
+                                {publishing ? '发布中...' : '发布'}
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            </header>
-            }
+                </header>
+            )}
             <div className={styles.container}>
                 <div className={styles['editor']}>
                     <Editor

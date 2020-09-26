@@ -21,14 +21,14 @@ const fetchList = (dispatch, offset, limit, type, parmas) => {
 };
 function Column({ location: { query } }) {
     const [offset, setOffset] = useState(parseInt(query.offset || 0));
-    const loadingEffect = useSelector(state => state.loading);
+    const loadingEffect = useSelector((state) => state.loading);
     const loading = loadingEffect.effects['column/list'];
     const limit = parseInt(query.limit || 8);
     const type = query.type || 'hot';
 
     const dispatch = useDispatch();
 
-    const list = useSelector(state => {
+    const list = useSelector((state) => {
         if (state.column) return state.column.list;
     });
 

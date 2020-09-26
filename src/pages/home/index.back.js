@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, Space , Carousel } from 'antd';
-import { BulbOutlined } from '@ant-design/icons'
+import { Card, Space, Carousel } from 'antd';
+import { BulbOutlined } from '@ant-design/icons';
 import { useSelector, useIntl, Helmet } from 'umi';
 import Container, { Layout } from '@/components/Container';
 import Recommends from './components/Recommends';
@@ -19,8 +19,8 @@ const Home = () => {
         lineHeight: '160px',
         textAlign: 'center',
         background: '#364d79',
-        margin:0,
-      };
+        margin: 0,
+    };
 
     return (
         <>
@@ -34,18 +34,27 @@ const Home = () => {
             <Container>
                 <Layout>
                     <Space direction="vertical" size="small">
-                    <Card className={styles['home-carousel']}>
-                        <Carousel  autoplay>
-                            <div>
-                                <img src="https://image-static.segmentfault.com/393/054/3930546268-5f61c0a926086" width="100%" />
-                            </div>
-                            <div>
-                                <img src="https://image-static.segmentfault.com/146/815/1468153747-5f5c2157ce9a0" width="100%" />
-                            </div>
-                            <div>
-                                <img src="https://image-static.segmentfault.com/399/635/3996357443-5f48a9552a200" width="100%" />
-                            </div>
-                        </Carousel>
+                        <Card className={styles['home-carousel']}>
+                            <Carousel autoplay>
+                                <div>
+                                    <img
+                                        src="https://image-static.segmentfault.com/393/054/3930546268-5f61c0a926086"
+                                        width="100%"
+                                    />
+                                </div>
+                                <div>
+                                    <img
+                                        src="https://image-static.segmentfault.com/146/815/1468153747-5f5c2157ce9a0"
+                                        width="100%"
+                                    />
+                                </div>
+                                <div>
+                                    <img
+                                        src="https://image-static.segmentfault.com/399/635/3996357443-5f48a9552a200"
+                                        width="100%"
+                                    />
+                                </div>
+                            </Carousel>
                         </Card>
                         <div className={styles['recommends']}>
                             <Card>
@@ -54,7 +63,11 @@ const Home = () => {
                         </div>
                     </Space>
                     <Space direction="vertical" size="small">
-                        <Card size="small" className={styles['recruit-card']} title="ITELLYOU 帮助创作者轻松获得收入🎉">
+                        <Card
+                            size="small"
+                            className={styles['recruit-card']}
+                            title="ITELLYOU 帮助创作者轻松获得收入🎉"
+                        >
                             <p>📘 文章创作获得打赏</p>
                             <p>🎨 出售知识获得收益</p>
                             <p>💊 解决问题获得悬赏</p>

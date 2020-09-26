@@ -29,7 +29,7 @@ const codeMessage = {
 /**
  * 异常处理程序
  */
-const errorHandler = error => {
+const errorHandler = (error) => {
     if (!isBrowser()) {
         return console.log('umi-request error:', error);
     }
