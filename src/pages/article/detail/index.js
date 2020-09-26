@@ -1,11 +1,10 @@
-import React, { useState, useContext, useCallback, useEffect } from 'react';
+import React, { useState, useContext, useCallback, useEffect, useRef } from 'react';
 import { useSelector, Helmet, Redirect, useDispatch } from 'umi';
 import { Space } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import TweenOne from 'rc-tween-one';
-import Animate from 'rc-animate';
-import { LikeOutlined } from '@ant-design/icons';
+import { LikeOutlined, LikeFilled } from '@ant-design/icons';
 import { RouteContext } from '@/context';
+import List from '@/components/List';
 import Loading from '@/components/Loading';
 import { Article } from '@/components/Content';
 import Editor from '@/components/Editor';
@@ -13,6 +12,7 @@ import { GoogleHorizontal } from '@/components/AdSense';
 import { EditButton, EllipsisButton, HistoryButton } from '@/components/Button';
 import { HeaderContainer, HeaderLogo } from '@/components/Header';
 import { getScrollTop, scrollToElement } from '@/utils';
+import { ColumnDetail } from '@/components/Column';
 import HistoryExtra from '../components/HistoryExtra';
 import Related from './Related';
 import styles from './index.less';
@@ -24,8 +24,11 @@ function Detail({ match: { params } }) {
     const [scrollVisible, setScrollVisible] = useState(false);
     const [contentData, setContentData] = useState({});
     const [historyViewer, setHistoryViewer] = useState(false);
-
+    const commentViewRef = useRef();
     const { detail, response_status } = useSelector((state) => state.article);
+    const column = useSelector((state) =>
+        detail && detail.column ? state.column.detail[detail.column.id] : null,
+    );
     const settings = useSelector((state) => state.settings);
     const { isMobile } = useContext(RouteContext);
     const loadingState = useSelector((state) => state.loading);
@@ -81,11 +84,10 @@ function Detail({ match: { params } }) {
         }
     };
 
-    const { title, tags, author, description, support } = detail;
+    const { title, tags, author, description, support, use_support } = detail;
 
     const keywords = tags.map((tag) => tag.name) || [];
     keywords.push('itellyou');
-
     return (
         <>
             <Helmet>
@@ -112,34 +114,60 @@ function Detail({ match: { params } }) {
                 <Space direction="vertical" size="large" className={styles['main-body']}>
                     <div className={styles['article-view']}>
                         <Article
+                            tag={true}
                             className={styles['article']}
-                            data={{ ...detail, cover: null }}
-                            defaultComment={true}
+                            data={detail}
+                            view={true}
+                            comment={{
+                                onClick: () => scrollToElement(commentViewRef.current),
+                            }}
                             headerClass={styles['header']}
                             titleClass={styles['title']}
                             onContentReady={onContentReady}
                             renderAction={renderAction}
                         />
+                        {historyViewer && (
+                            <Editor.History
+                                id={id}
+                                type="article"
+                                extra={(data) => <HistoryExtra {...data} />}
+                                onCancel={() => setHistoryViewer(false)}
+                            />
+                        )}
                     </div>
-                    <GoogleHorizontal />
-                    <Related id={id} />
-                    {historyViewer && (
-                        <Editor.History
-                            id={id}
-                            type="article"
-                            extra={(data) => <HistoryExtra {...data} />}
-                            onCancel={() => setHistoryViewer(false)}
-                        />
+                    {column && (
+                        <div className={styles['column']}>
+                            <List
+                                renderHeader={() => <h3>文章发表在以下专栏</h3>}
+                                dataSource={[column]}
+                                renderItem={(info) => {
+                                    return (
+                                        <List.Item key={info.id}>
+                                            <ColumnDetail info={info} type="line" />
+                                        </List.Item>
+                                    );
+                                }}
+                            />
+                        </div>
                     )}
+                    <GoogleHorizontal />
+                    <div ref={commentViewRef}>
+                        <Article.Comment id={id} />
+                    </div>
+                    <Related id={id} />
                 </Space>
                 <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['side']}>
                     {scrollVisible ? (
                         <div key="side">
                             <div className={styles['like-action']}>
-                                <Space direction="vertical">
-                                    <LikeOutlined />
-                                    <span>赞同 {support}</span>
-                                </Space>
+                                <Article.Vote
+                                    id={id}
+                                    {...detail}
+                                    allow_oppose={false}
+                                    text={use_support ? `已点赞 ${support}` : `点赞 ${support}`}
+                                    icon={use_support ? <LikeFilled /> : <LikeOutlined />}
+                                    loading={false}
+                                />
                             </div>
                         </div>
                     ) : null}

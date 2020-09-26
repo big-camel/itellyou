@@ -1,12 +1,16 @@
 .user-card {
-    width: 316px;
+    width: 346px;
     padding: 4px 0;
 
     .body {
         display: flex;
-
+        :global(.ant-avatar) {
+            min-width: 48px;
+        }
         .info {
             margin-left: 16px;
+            word-wrap: break-word;
+            word-break: break-all;
         }
     }
 

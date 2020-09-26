@@ -34,6 +34,12 @@ export default {
                     type: 'updateDetail',
                     payload: data,
                 });
+                if (data.column) {
+                    yield put({
+                        type: 'column/updateDetail',
+                        payload: data.column,
+                    });
+                }
             } else if (status > 200) {
                 if (history) history.push(`/${status}`);
             }

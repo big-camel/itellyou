@@ -1,13 +1,13 @@
 import React from 'react';
 import { Avatar, Space } from 'antd';
-import { Link, useSelector } from 'umi';
+import { Link } from 'umi';
 import classnames from 'classnames';
-import UserBrand from '../Brand';
-import UserStar from '../Star';
+import ColumnBrand from '../Brand';
+import ColumnStar from '../Star';
 import './index.less';
 
 export default ({
-    info: { id, path, name, avatar, description, use_author, use_star },
+    info: { id, path, name, avatar, description, use_star },
     size,
     extra,
     className,
@@ -24,43 +24,42 @@ export default ({
         description = undefined;
     }
     if (size === 'middle') avatarSize = 34;
-    const settings = useSelector((state) => state.settings) || {};
     const getLink = () => {
         return (
             <Link to={`/${path}`}>
                 <span dangerouslySetInnerHTML={{ __html: name }} />
-                {use_author && <span>(作者)</span>}
             </Link>
         );
     };
-    const sizeClass = model ? `user-author-${model}` : '';
+    const sizeClass = model ? `column-author-${model}` : '';
 
     const renderDetail = () => {
         return (
             <Space
                 size="small"
-                className={classnames('user-author', `user-author-${size}`, sizeClass, className)}
+                className={classnames(
+                    'column-author',
+                    `column-author-${size}`,
+                    sizeClass,
+                    className,
+                )}
             >
                 {(!model || model === 'avatar') && (
-                    <div className="user-author-avatar">
-                        <UserBrand id={id}>
-                            <Avatar
-                                shape={avatarShape}
-                                size={avatarSize}
-                                src={avatar || settings.defaultAvatar}
-                            />
-                        </UserBrand>
+                    <div className="column-author-avatar">
+                        <ColumnBrand id={id}>
+                            <Avatar shape={avatarShape} size={avatarSize} src={avatar} />
+                        </ColumnBrand>
                     </div>
                 )}
                 {(!model || model === 'name') && (
-                    <div className="user-author-content">
-                        <div className="user-author-name">
-                            {brand && <UserBrand id={id}>{getLink()}</UserBrand>}
+                    <div className="column-author-content">
+                        <div className="column-author-name">
+                            {brand && <ColumnBrand id={id}>{getLink()}</ColumnBrand>}
                             {!brand && getLink()}
                         </div>
                         {description && (
                             <p
-                                className="user-author-desc"
+                                className="column-author-desc"
                                 dangerouslySetInnerHTML={{ __html: description }}
                             />
                         )}
@@ -74,12 +73,11 @@ export default ({
 
     if (type === 'line') {
         return (
-            <div className="user-full-line">
+            <div className="column-full-line">
                 {renderDetail()}
-                <UserStar id={id} use_star={use_star} text="+ 加关注" />
+                <ColumnStar id={id} use_star={use_star} text="关注专栏" />
             </div>
         );
     }
-
     return renderDetail();
 };

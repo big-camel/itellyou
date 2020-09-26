@@ -8,6 +8,10 @@ export default {
     },
     theme: {
         'primary-color': primaryColor,
+        'font-family':
+            'Chinese Quote, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC,Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif',
+        'text-color': '#595959',
+        'body-background': '#fafafa !important',
     },
     antd: {},
     dva: {

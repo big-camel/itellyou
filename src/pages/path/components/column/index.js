@@ -13,10 +13,10 @@ const Column = ({ id, paths, location: { query } }) => {
     const setting = paths && paths.length > 1 ? paths[1] === 'setting' : null;
 
     const dispatch = useDispatch();
-    const detail = useSelector(state => state.column.detail);
-    const me = useSelector(state => state.user.me);
-    const settings = useSelector(state => state.settings);
-    const loadingEffect = useSelector(state => state.loading);
+    const detail = useSelector((state) => state.column.detail[id]);
+    const me = useSelector((state) => state.user.me);
+    const settings = useSelector((state) => state.settings);
+    const loadingEffect = useSelector((state) => state.loading);
 
     const { isMobile } = useContext(RouteContext);
 

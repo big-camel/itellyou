@@ -8,12 +8,12 @@ function ArticleComment({ id }) {
     const [modelVisible, setModelVisible] = useState(false);
 
     const dispatch = useDispatch();
-    const comment = useSelector(state => state.articleComment[id]) || {};
+    const comment = useSelector((state) => state.articleComment[id]) || {};
     const [offset, setOffset] = useState(0);
     const [childOffset, setChildOffset] = useState(0);
     const limit = 20;
 
-    const loadingState = useSelector(state => state.loading);
+    const loadingState = useSelector((state) => state.loading);
     const loading = loadingState.effects['articleComment/root'];
 
     const load = useCallback(
@@ -50,7 +50,7 @@ function ArticleComment({ id }) {
         });
     };
 
-    const del = id => {
+    const del = (id) => {
         return dispatch({
             type: 'articleComment/delete',
             payload: {

@@ -8,10 +8,16 @@
     background: #ffffff;
     padding-bottom: 46px;
 
+    :global(.ant-card) {
+        box-shadow: none;
+        border: 1px solid #f0f0f0;
+    }
+
     .main-body {
         width: 758px;
         margin: 0 auto;
         height: 100%;
+        padding: 0 34px;
     }
 
     .side {
@@ -21,20 +27,44 @@
         top: 106px;
 
         .like-action {
-            display: block;
+            display: flex;
             width: 96px;
             text-align: center;
-            color: @primary-color;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
 
-            :global(.anticon) {
-                font-size: 20px;
+            button {
                 display: block;
-                height: 48px;
-                width: 48px;
-                margin: 0 auto;
-                border-radius: 50%;
-                background: rgba(0, 132, 255, 0.1);
-                line-height: 48px;
+                height: 100%;
+                color: @primary-color;
+
+                :global(.anticon) {
+                    transition: 0.3s;
+                    font-size: 20px;
+                    display: block;
+                    height: 48px;
+                    width: 48px;
+                    margin: 0 auto;
+                    border-radius: 50%;
+                    background: rgba(0, 132, 255, 0.1);
+                    line-height: 48px;
+                    margin-bottom: 6px;
+                }
+
+                span:last-child {
+                    margin: 0;
+                    display: block;
+                }
+            }
+        }
+
+        .like-action:hover {
+            :global(.anticon) {
+                width: 52px;
+                line-height: 52px;
+                height: 52px;
+                font-size: 22px;
             }
         }
     }
@@ -55,7 +85,14 @@
 }
 
 .article-view {
-    padding: 0 34px;
+    .column {
+        margin-top: 20px;
+        :global(.ant-list-header) {
+            h3 {
+                margin: 0;
+            }
+        }
+    }
 }
 
 @media only screen and (max-width: 575px) {

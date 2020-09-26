@@ -33,7 +33,9 @@ const Article = ({
     tag = false,
     view = false,
     authorSize,
-    defaultComment = false,
+    comment = {
+        defaultVisible: false,
+    },
     desc,
     headerClass,
     titleClass,
@@ -41,7 +43,7 @@ const Article = ({
     ...props
 }) => {
     const [fullVisible, setFullVisible] = useState(false);
-    const [commentVisible, setCommentVisible] = useState(defaultComment);
+    const [commentVisible, setCommentVisible] = useState(comment.defaultVisible);
     const allowEdit = !desc && allow_edit;
 
     description = (custom_description || description).trim();
@@ -90,10 +92,21 @@ const Article = ({
                         onLoad={onContentReady}
                     />
                 }
-                <p className={styles['footer']}>
+                {!paid_read && !desc && (
+                    <RewardButton
+                        author={author}
+                        dataType="article"
+                        dataKey={id}
+                        dataSource={rewardData}
+                    />
+                )}
+                <Space className={styles['footer']}>
+                    {view && <span className={styles['view']}>阅读 {item.view} , </span>}
                     {!paid_read && (
                         <Link className={styles['time']} to={`/article/${id}`}>
-                            {item.updated_time === null || item.version === 1 ? '发布于' : '更新于'}
+                            {item.updated_time === null || item.version === 1
+                                ? '发布于 '
+                                : '更新于 '}
                             <Timer
                                 time={
                                     item.updated_time === null || item.version === 1
@@ -108,25 +121,32 @@ const Article = ({
                             className={styles['edit']}
                             type="link"
                             href={`/article/${id}/edit`}
+                            size="small"
                         >
                             编辑{item.draft_version > item.version ? '（有未发布的草稿）' : ''}
                         </EditButton>
                     )}
-                </p>
+                </Space>
                 <PaidReadPurchase data={paid_read} author={author} doPay={doPaidReadPay} />
-                {!paid_read && (
-                    <RewardButton
-                        author={author}
-                        dataType="article"
-                        dataKey={id}
-                        dataSource={rewardData}
-                    />
-                )}
             </div>
         );
     };
 
     const { isMobile } = useContext(RouteContext);
+    const renderAuthor = () => {
+        if (author) {
+            if (desc)
+                return (
+                    <Space size="middle">
+                        <Author className={styles['author']} info={author} size={authorSize} />
+                        <Timer className={styles['item-desc-time']} time={item.created_time} />
+                    </Space>
+                );
+            return (
+                <Author className={styles['author']} info={author} size={authorSize} type="line" />
+            );
+        }
+    };
     return (
         <article
             className={classNames(styles['item'], { [styles['item-desc']]: desc }, props.className)}
@@ -139,24 +159,7 @@ const Article = ({
                         dangerouslySetInnerHTML={{ __html: title }}
                     />
                 </h2>
-                {(tag || view) && (
-                    <Space className={styles['tags']}>
-                        {tag &&
-                            tags &&
-                            tags.map(({ id, name }) => (
-                                <Tag key={id} id={id} href={`/tag/${id}`} title={name} />
-                            ))}
-                        {view && <span className={styles['view']}>{item.view}次浏览</span>}
-                    </Space>
-                )}
-                {author && (
-                    <Space size="middle">
-                        <Author className={styles['author']} info={author} size={authorSize} />
-                        {desc && (
-                            <Timer className={styles['item-desc-time']} time={item.created_time} />
-                        )}
-                    </Space>
-                )}
+                {renderAuthor()}
             </div>
             <div className={classNames(styles['body'], { [styles['has-cover']]: cover && desc })}>
                 {renderContent()}
@@ -164,27 +167,43 @@ const Article = ({
                     <div className={styles['cover']} style={{ backgroundImage: `url(${cover})` }} />
                 )}
             </div>
-            <Space size="middle">
-                <Vote id={id} {...item} size="small" />
-                <CommentButton onClick={() => setCommentVisible(!commentVisible)} size="small">
-                    {commentVisible
-                        ? '收起评论'
-                        : comment_count === 0
-                        ? '添加评论'
-                        : `${comment_count} 条评论`}
-                </CommentButton>
-                {!isMobile && item.allow_star && (
-                    <Favorite
-                        id={id}
-                        use_star={item.use_star}
-                        allow_star={item.allow_star}
+            <Space direction="vertical">
+                {tag && (
+                    <Space className={styles['tags']}>
+                        {tags &&
+                            tags.map(({ id, name }) => (
+                                <Tag key={id} id={id} href={`/tag/${id}`} title={name} />
+                            ))}
+                    </Space>
+                )}
+                <Space size="middle">
+                    <Vote id={id} {...item} size="small" />
+                    <CommentButton
+                        onClick={() => {
+                            if (comment.onClick) comment.onClick(commentVisible);
+                            else setCommentVisible(!commentVisible);
+                        }}
                         size="small"
-                    />
-                )}
-                {!isMobile && !item.use_author && (
-                    <ReportButton id={id} type="article" size="small" />
-                )}
-                {props.renderAction && props.renderAction()}
+                    >
+                        {commentVisible
+                            ? '收起评论'
+                            : comment_count === 0
+                            ? '添加评论'
+                            : `${comment_count} 条评论`}
+                    </CommentButton>
+                    {!isMobile && item.allow_star && (
+                        <Favorite
+                            id={id}
+                            use_star={item.use_star}
+                            allow_star={item.allow_star}
+                            size="small"
+                        />
+                    )}
+                    {!isMobile && !item.use_author && (
+                        <ReportButton id={id} type="article" size="small" />
+                    )}
+                    {props.renderAction && props.renderAction()}
+                </Space>
             </Space>
             {commentVisible && <Comment id={id} />}
         </article>

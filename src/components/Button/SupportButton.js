@@ -1,22 +1,21 @@
 import React from 'react';
-import BaseButton from './BaseButton';
 import { LikeFilled } from '@ant-design/icons';
+import BaseButton from './BaseButton';
 
-function SupportButton({ text, count, children, ...props }) {
-    text = text || '赞';
+function SupportButton({ text, count, icon, children, ...props }) {
     count = count || 0;
     const renderContent = () => {
         if (children) return children;
         return (
             <span>
-                {count > 0 && <span>{count}</span>}
-                <span>{text}</span>
+                {!text && count > 0 && count}
+                {text || '赞'}
             </span>
         );
     };
 
     return (
-        <BaseButton icon={<LikeFilled />} {...props}>
+        <BaseButton icon={icon || <LikeFilled />} {...props}>
             {renderContent()}
         </BaseButton>
     );

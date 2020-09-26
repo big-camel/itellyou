@@ -12,7 +12,7 @@ export default ({ id, use_star, text, ...props }) => {
         setLoading(true);
         const type = use_star === false ? 'follow' : 'unfollow';
         dispatch({
-            type: `userStar/${type}`,
+            type: `columnStar/${type}`,
             payload: {
                 id,
             },

@@ -11,7 +11,10 @@ export default ({
     oppose,
     use_oppose,
     allow_oppose,
-    size,
+    size = 'small',
+    text,
+    icon,
+    loading = true,
 }) => {
     const dispatch = useDispatch();
     const [voting, setVoting] = useState(false);
@@ -37,9 +40,11 @@ export default ({
             active={use_support}
             disabled={!allow_support}
             onClick={() => doVote('support')}
-            loading={voting && voteType === 'support'}
+            loading={loading && voting && voteType === 'support'}
             count={support}
             size={size}
+            text={text}
+            icon={icon}
         />
     );
 

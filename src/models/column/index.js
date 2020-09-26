@@ -7,14 +7,14 @@ export default {
 
     state: {
         list: null,
-        detail: null,
+        detail: {},
     },
 
     effects: {
         *create({ payload }, { call, put, select }) {
             const response = yield call(create, payload);
             if (response && response.result) {
-                const list = yield select(state => state.column.list) || {
+                const list = yield select((state) => state.column.list) || {
                     total: 1,
                     start: true,
                     end: true,
@@ -39,9 +39,9 @@ export default {
             if (result) {
                 yield put({
                     type: 'updateDetail',
-                    payload: response.data || {},
+                    payload: data || {},
                 });
-            } else if (status > 200) {
+            } else if (payload.redirect !== false && status > 200) {
                 history.push(`/${status}`);
             }
         },
@@ -65,7 +65,10 @@ export default {
         updateDetail(state, { payload }) {
             return {
                 ...state,
-                detail: { ...state.detail, ...payload },
+                detail: {
+                    ...state.detail,
+                    [payload.id]: { ...state.detail[payload.id], ...payload },
+                },
             };
         },
         replaceItem(state, { payload: { detail } }) {
