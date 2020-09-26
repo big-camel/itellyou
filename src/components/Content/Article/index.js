@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { Link, useDispatch, useSelector } from 'umi';
 import { Space, message } from 'antd';
 import classNames from 'classnames';
@@ -45,7 +45,7 @@ const Article = ({
     const [fullVisible, setFullVisible] = useState(false);
     const [commentVisible, setCommentVisible] = useState(comment.defaultVisible);
     const allowEdit = !desc && allow_edit;
-
+    const commentRef = useRef();
     description = (custom_description || description).trim();
 
     const dispatch = useDispatch();
@@ -179,8 +179,11 @@ const Article = ({
                 <Space size="middle">
                     <Vote id={id} {...item} size="small" />
                     <CommentButton
+                        ref={commentRef}
                         onClick={() => {
-                            if (comment.onClick) comment.onClick(commentVisible);
+                            console.log(commentRef);
+                            if (comment.onClick)
+                                comment.onClick(commentRef.current, commentVisible);
                             else setCommentVisible(!commentVisible);
                         }}
                         size="small"

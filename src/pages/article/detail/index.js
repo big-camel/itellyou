@@ -119,7 +119,8 @@ function Detail({ match: { params } }) {
                             data={detail}
                             view={true}
                             comment={{
-                                onClick: () => scrollToElement(commentViewRef.current),
+                                onClick: (element) =>
+                                    scrollToElement(element, commentViewRef.current),
                             }}
                             headerClass={styles['header']}
                             titleClass={styles['title']}
