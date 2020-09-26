@@ -80,14 +80,16 @@ export const calcHeight = (element, isTop) => {
 export const scrollToElement = (from, to) => {
     let top = getOffset(to ? to : from).top - 80;
     let i = to ? getOffset(from).top : 0;
-    let step = 15;
-    if (top > 200 && top <= 500) step = 25;
-    else if (top > 500 && top <= 1000) step = 30;
-    else if (top > 1000) step = 50;
+    const value = Math.abs(top - i);
+    let step = 5;
+    if (value > 200 && value <= 500) step = 15;
+    else if (value > 500 && value <= 1000) step = 30;
+    else if (value > 1000) step = 50;
+    if (top < i) step = -step;
 
     const scrollInterval = setInterval(() => {
         window.scrollTo(0, i);
-        if (i + step >= top) {
+        if (i + step >= top || (step < 0 && i + step <= top)) {
             i = top;
             clearInterval(scrollInterval);
         } else {

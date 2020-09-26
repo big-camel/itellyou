@@ -181,7 +181,6 @@ const Article = ({
                     <CommentButton
                         ref={commentRef}
                         onClick={() => {
-                            console.log(commentRef);
                             if (comment.onClick)
                                 comment.onClick(commentRef.current, commentVisible);
                             else setCommentVisible(!commentVisible);
