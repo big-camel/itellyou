@@ -6,7 +6,6 @@ import styles from './index.less';
 import logo from '@/assets/logo.svg';
 import moment from 'moment';
 import Timer from '@/components/Timer';
-import Loading from '@/components/Loading';
 import { Selector } from '@/components/Tag';
 import { RouteContext } from '@/context';
 import QuestionAlert from './components/Alert';
@@ -215,31 +214,33 @@ function Edit({ match: { params } }) {
     const error = getError();
 
     return (
-        <Loading loading={loading}>
-            <header className={styles.header}>
-                <div className={styles.container}>
-                    <div className={styles.logo}>
-                        <a href="/">
-                            <img src={logo} alt="" />
-                        </a>
-                    </div>
-                    {!isMobile && (
-                        <small>
-                            <span>·</span>提问编辑
-                        </small>
-                    )}
-                    <div className={styles['save-status']}>{renderSaveStatus()}</div>
-                    <div className={styles.right}>
-                        {renderCollabUsers()}
-                        {!isMobile && detail && (
-                            <Button onClick={() => editor.current.showHistory()}>历史</Button>
+        <>
+            {
+                !loading && <header className={styles.header}>
+                    <div className={styles.container}>
+                        <div className={styles.logo}>
+                            <a href="/">
+                                <img src={logo} alt="" />
+                            </a>
+                        </div>
+                        {!isMobile && (
+                            <small>
+                                <span>·</span>提问编辑
+                            </small>
                         )}
-                        <Button type="primary" onClick={onShowDrawer}>
-                            发布
-                        </Button>
+                        <div className={styles['save-status']}>{renderSaveStatus()}</div>
+                        <div className={styles.right}>
+                            {renderCollabUsers()}
+                            {!isMobile && detail && (
+                                <Button onClick={() => editor.current.showHistory()}>历史</Button>
+                            )}
+                            <Button type="primary" onClick={onShowDrawer}>
+                                发布
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            </header>
+                </header>
+            }
             <div className={styles.container}>
                 <div className={styles.title}>
                     <Input
@@ -324,7 +325,7 @@ function Edit({ match: { params } }) {
                     )}
                 </Form>
             </Drawer>
-        </Loading>
+        </>
     );
 }
 Edit.getInitialProps = async ({ isServer, store }) => {

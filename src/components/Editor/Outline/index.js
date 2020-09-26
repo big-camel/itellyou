@@ -1,15 +1,15 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
-import { Card, Space } from 'antd';
-import { GoogleDefault } from '@/components/AdSense';
+import { Space } from 'antd';
+import { isBrowser } from 'umi';
+import { Link } from 'rc-scroll-anim';
 import { findReadingSection } from './utils';
-import { useEditor } from '../Hook';
+import { Outline } from '../Async';
 import styles from './index.less';
 
-export default ({ view, config, ...props }) => {
+export default ({ view, config, className, ...props }) => {
     const lastScrollTop = useRef(0);
     const headings = useRef([]);
-    const { Outline } = useEditor() || {};
     const [contents, setContents] = useState([]);
     const [readingSection, setReadingSection] = useState(0);
     const [reachingTop, setReachingTop] = useState(true);
@@ -19,20 +19,19 @@ export default ({ view, config, ...props }) => {
     }, []);
 
     const listenerViewChange = useCallback(() => {
-        const index = findReadingSection(headings.current, 60);
+        const index = findReadingSection(headings.current, 140);
         setReadingSection(index);
     }, []);
 
     const handleScroll = useCallback(() => {
         const min = 5;
-        const top =
+        let top =
             window.pageYOffset ||
             document.documentElement.scrollTop ||
             document.body.scrollTop ||
             0;
-
         if (!Math.abs(lastScrollTop.current - top) <= min) {
-            setReachingTop(top < 60);
+            setReachingTop(top < 80);
             listenerViewChange();
 
             lastScrollTop.current = top;
@@ -40,7 +39,7 @@ export default ({ view, config, ...props }) => {
     }, []);
 
     useEffect(() => {
-        if (view && config) {
+        if (view && config && isBrowser()) {
             const contents =
                 config && config.outline ? config.outline : Outline.extractFromDom(view);
             headings.current = contents.map(({ id }) => {
@@ -67,31 +66,36 @@ export default ({ view, config, ...props }) => {
         }, 200);
     }, [contents]);
 
-    if (!contents || contents.length === 0) return Outline ? <GoogleDefault /> : null;
+    const onLinkFocus = (target) => {
+        window.location.hash = `#${target.to}`;
+    };
+
     return (
-        <div className={classNames(styles['toc'], { [styles['fixed']]: !reachingTop })} {...props}>
-            <Card>
-                <Space direction="vertical" size="large">
-                    <ul className={styles['directory']}>
-                        {contents.map(({ id, text, level, depth }, index) => (
-                            <li
-                                key={id}
-                                className={classNames(styles['item'], {
-                                    [styles['active']]: index === readingSection,
-                                })}
+        <div
+            className={classNames(styles['toc'], { [styles['fixed']]: !reachingTop }, className)}
+            {...props}
+        >
+            <Space direction="vertical" size="large">
+                <ul className={styles['directory']}>
+                    {contents.map(({ id, text, level, depth }, index) => (
+                        <li
+                            key={id}
+                            className={classNames(styles['item'], {
+                                [styles['active']]: index === readingSection,
+                            })}
+                        >
+                            <Link
+                                offsetTop={80}
+                                onFocus={onLinkFocus}
+                                className={classNames(styles['link'], styles[`link-${depth}`])}
+                                to={`${id}`}
                             >
-                                <a
-                                    className={classNames(styles['link'], styles[`link-${depth}`])}
-                                    href={`#${id}`}
-                                >
-                                    {text}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                    <GoogleDefault />
-                </Space>
-            </Card>
+                                {text}
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </Space>
         </div>
     );
 };

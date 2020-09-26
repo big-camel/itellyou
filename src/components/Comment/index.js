@@ -26,7 +26,7 @@ function Comment({
     ...props
 }) {
     const [loading, setLoading] = useState(false);
-    const onChange = props.onChange || function() {};
+    const onChange = props.onChange || function () {};
 
     const [page, setPage] = useState(props.page || 1);
     offset = offset || 0;
@@ -40,12 +40,12 @@ function Comment({
         if (title) return <h2 className={styles['comment-title']}>{title}</h2>;
         return (
             <h2 className={styles['comment-title']}>
-                {dataSource ? dataSource.comments : 0}个评论
+                {dataSource ? dataSource.comments : 0} 条评论
             </h2>
         );
     };
 
-    const renderItem = item => {
+    const renderItem = (item) => {
         return (
             <Item
                 onDelete={onDelete}
@@ -72,7 +72,7 @@ function Comment({
     let data = dataSource ? dataSource.data || [] : [];
     const hots = [];
     const comments = [];
-    data.forEach(item => {
+    data.forEach((item) => {
         if (
             exclude &&
             ((Array.isArray(exclude) && exclude.indexOf(item.id) >= 0) || exclude === item.id)
@@ -88,6 +88,9 @@ function Comment({
     const renderList = () => {
         return (
             <List
+                locale={{
+                    emptyText: <></>,
+                }}
                 loading={loading && !scroll}
                 header={renderHeader()}
                 dataSource={comments}
@@ -125,7 +128,7 @@ function Comment({
                 {renderList()}
                 <Pagination
                     className={styles['comment-page']}
-                    onChange={page => {
+                    onChange={(page) => {
                         if (!loading) {
                             setLoading(true);
                             onChange((page - 1) * limit, limit);
@@ -153,7 +156,13 @@ function Comment({
     };
 
     return (
-        <div className={classnames(styles['comment-list'], className)}>
+        <div
+            className={classnames(
+                styles['comment-list'],
+                { [styles['comment-empty']]: data.length === 0 },
+                className,
+            )}
+        >
             {hots.length > 0 && (
                 <List
                     header={

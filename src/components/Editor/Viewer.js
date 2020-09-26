@@ -1,13 +1,18 @@
 import React from 'react';
-import { useEditor } from './Hook';
+import { isBrowser, useSelector } from 'umi';
+import { Skeleton } from 'antd';
+import { ContentView } from './Async';
 
 export default ({ content, html, onLoad, genAnchor, ...props }) => {
-    const { ContentView } = useEditor() || {};
+    const settings = useSelector((state) => state.settings);
 
     const renderContent = () => {
         // 内容为空时，不执行渲染
         if (!content) return <span></span>;
-        if (!ContentView) return <div dangerouslySetInnerHTML={{ __html: html }} />;
+
+        if (!isBrowser() && settings.isSpider)
+            return <div dangerouslySetInnerHTML={{ __html: html }} />;
+        if (!isBrowser()) return <Skeleton active />;
         return (
             <ContentView
                 content={content}

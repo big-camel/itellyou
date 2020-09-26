@@ -73,9 +73,9 @@ const Article = ({
                 : '';
             return (
                 <div className={styles['description']}>
-                    <Link to={`/article/${id}`}>
+                    <a target="_blank" href={`/article/${id}`}>
                         <div dangerouslySetInnerHTML={{ __html: description + paidReadHtml }} />
-                    </Link>
+                    </a>
                 </div>
             );
         }
@@ -128,10 +128,16 @@ const Article = ({
 
     const { isMobile } = useContext(RouteContext);
     return (
-        <div className={classNames(styles['item'], props.className)}>
+        <article
+            className={classNames(styles['item'], { [styles['item-desc']]: desc }, props.className)}
+        >
             <div className={classNames(styles['header'], headerClass)}>
                 <h2 className={classNames(styles['title'], titleClass)}>
-                    <Link to={`/article/${id}`} dangerouslySetInnerHTML={{ __html: title }} />
+                    <a
+                        target="_blank"
+                        href={`/article/${id}`}
+                        dangerouslySetInnerHTML={{ __html: title }}
+                    />
                 </h2>
                 {(tag || view) && (
                     <Space className={styles['tags']}>
@@ -143,7 +149,14 @@ const Article = ({
                         {view && <span className={styles['view']}>{item.view}次浏览</span>}
                     </Space>
                 )}
-                {author && <Author className={styles['author']} info={author} size={authorSize} />}
+                {author && (
+                    <Space size="middle">
+                        <Author className={styles['author']} info={author} size={authorSize} />
+                        {desc && (
+                            <Timer className={styles['item-desc-time']} time={item.created_time} />
+                        )}
+                    </Space>
+                )}
             </div>
             <div className={classNames(styles['body'], { [styles['has-cover']]: cover && desc })}>
                 {renderContent()}
@@ -151,19 +164,30 @@ const Article = ({
                     <div className={styles['cover']} style={{ backgroundImage: `url(${cover})` }} />
                 )}
             </div>
-            <Space size="large">
-                <Vote id={id} {...item} />
-                <CommentButton onClick={() => setCommentVisible(!commentVisible)}>
-                    {comment_count === 0 ? '添加评论' : `${comment_count} 条评论`}
+            <Space size="middle">
+                <Vote id={id} {...item} size="small" />
+                <CommentButton onClick={() => setCommentVisible(!commentVisible)} size="small">
+                    {commentVisible
+                        ? '收起评论'
+                        : comment_count === 0
+                        ? '添加评论'
+                        : `${comment_count} 条评论`}
                 </CommentButton>
                 {!isMobile && item.allow_star && (
-                    <Favorite id={id} use_star={item.use_star} allow_star={item.allow_star} />
+                    <Favorite
+                        id={id}
+                        use_star={item.use_star}
+                        allow_star={item.allow_star}
+                        size="small"
+                    />
                 )}
-                {!isMobile && !item.use_author && <ReportButton id={id} type="article" />}
+                {!isMobile && !item.use_author && (
+                    <ReportButton id={id} type="article" size="small" />
+                )}
                 {props.renderAction && props.renderAction()}
             </Space>
-            <div>{commentVisible && <Comment id={id} />}</div>
-        </div>
+            {commentVisible && <Comment id={id} />}
+        </article>
     );
 };
 Article.Vote = Vote;

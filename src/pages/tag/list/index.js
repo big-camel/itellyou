@@ -3,7 +3,7 @@ import { Card } from 'antd';
 import { Link, useDispatch, useSelector, useIntl, Helmet } from 'umi';
 import { PageList } from '@/components/List';
 import Tag from '@/components/Tag';
-import { getPageQuery } from '@/utils/utils';
+import { getPageQuery } from '@/utils';
 import Container from '@/components/Container';
 import styles from './index.less';
 import { RouteContext } from '@/context';

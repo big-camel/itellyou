@@ -39,7 +39,7 @@ const Answer = ({
     const [fullVisible, setFullVisible] = useState(false);
     const [historyViewer, setHistoryViewer] = useState(false);
     const dispatch = useDispatch();
-    const rewardList = useSelector(state => state.answerReward.list);
+    const rewardList = useSelector((state) => state.answerReward.list);
     const rewardData = (rewardList ? rewardList.data : []).filter(
         ({ data_key }) => data_key === id,
     );
@@ -51,7 +51,7 @@ const Answer = ({
                 question_id,
                 id,
             },
-        }).then(res => {
+        }).then((res) => {
             if (res.result) {
                 message.success('支付成功', 1, () => {
                     window.location.reload();
@@ -66,7 +66,7 @@ const Answer = ({
         setEditVisible(false);
     };
 
-    const onEditSubmit = async doc => {
+    const onEditSubmit = async (doc) => {
         setEditVisible(false);
         if (doc) {
             await dispatch({
@@ -162,36 +162,47 @@ const Answer = ({
     const { isMobile } = useContext(RouteContext);
     const renderAction = () => {
         return (
-            <Space size="large">
+            <Space size="middle">
                 {(allow_adopt || adopted) && (
                     <Adopt
                         id={id}
                         question_id={question_id}
                         allow_adopt={allow_adopt}
                         adopted={adopted}
+                        size="small"
                     />
                 )}
-                <Vote id={id} question_id={question_id} {...item} />
-                <CommentButton onClick={() => setCommentVisible(!commentVisible)}>
-                    {comments === 0 ? '添加评论' : `${comments} 条评论`}
+                <Vote id={id} question_id={question_id} {...item} size="small" />
+                <CommentButton onClick={() => setCommentVisible(!commentVisible)} size="small">
+                    {commentVisible
+                        ? '收起评论'
+                        : comments === 0
+                        ? '添加评论'
+                        : `${comments} 条评论`}
                 </CommentButton>
                 {!isMobile && item.allow_star && (
-                    <Favorite id={id} use_star={item.use_star} allow_star={item.allow_star} />
+                    <Favorite
+                        id={id}
+                        use_star={item.use_star}
+                        allow_star={item.allow_star}
+                        size="small"
+                    />
                 )}
-                {!isMobile && !allowEdit && <ReportButton id={id} type="answer" />}
+                {!isMobile && !allowEdit && <ReportButton id={id} type="answer" size="small" />}
                 {!isMobile && allow_delete && (
                     <Delete
                         id={id}
                         question_id={question_id}
                         allow_delete={allow_delete}
                         callback={() => history.push(`/question/${question_id}`)}
+                        size="small"
                     />
                 )}
                 {!isMobile && allowEdit && (
-                    <EditButton onClick={() => setEditVisible(!editVisible)} />
+                    <EditButton onClick={() => setEditVisible(!editVisible)} size="small" />
                 )}
                 {!isMobile && !desc && !paid_read && (
-                    <HistoryButton onClick={() => setHistoryViewer(true)} />
+                    <HistoryButton onClick={() => setHistoryViewer(true)} size="small" />
                 )}
             </Space>
         );

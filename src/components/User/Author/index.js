@@ -21,7 +21,7 @@ export default ({
         avatarSize = 20;
         description = undefined;
     }
-    if (size === 'middle') avatarSize = 32;
+    if (size === 'middle') avatarSize = 34;
     const settings = useSelector((state) => state.settings) || {};
     const getLink = () => {
         return (

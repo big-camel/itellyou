@@ -1,5 +1,5 @@
 import React from 'react';
-import { getPageQuery } from '@/utils/utils';
+import { getPageQuery } from '@/utils';
 import Layout from '../components/Layout';
 import Article from './Article';
 import Answer from './Answer';

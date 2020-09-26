@@ -5,7 +5,7 @@ import { RouteContext } from '@/context';
 import { GoogleSquare } from '@/components/AdSense';
 import Container, { Layout, Sider } from '@/components/Container';
 import List from '@/components/List';
-import { getPageQuery } from '@/utils/utils';
+import { getPageQuery } from '@/utils';
 import styles from './index.less';
 
 const fetchGroupList = (dispatch, offset, limit, parmas) => {

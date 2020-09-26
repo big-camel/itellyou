@@ -4,7 +4,7 @@ import { Row, Col, Input, Button, Space, Modal } from 'antd';
 import classNames from 'classnames';
 import { PayQrCode } from '@/components/Pay';
 import { UserAuthor } from '@/components/User';
-import { limitFloat } from '@/utils/utils';
+import { limitFloat } from '@/utils';
 import { AlipayIcon } from '@/components/ThirdParty';
 import styles from './index.less';
 
@@ -48,7 +48,7 @@ export default ({ visible, onVisibleChange, author, amount, type, doPay }) => {
     const [autoVisible, setAutoVisible] = useState(false);
     const [payType, setPayType] = useState('alipay');
     const [paying, setPaying] = useState(false);
-    const me = useSelector(state => state.user.me);
+    const me = useSelector((state) => state.user.me);
 
     useEffect(() => {
         if (me && me.bank.cash > 0) {
@@ -64,12 +64,12 @@ export default ({ visible, onVisibleChange, author, amount, type, doPay }) => {
                         ref={autoRef}
                         placeholder="自定义"
                         value={autoValue}
-                        onChange={e => {
+                        onChange={(e) => {
                             const curValue = limitFloat(e.target.value, 1);
                             setAutoValue(curValue);
                             setValue(curValue);
                         }}
-                        onBlur={e => {
+                        onBlur={(e) => {
                             const curValue = parseFloat(e.target.value);
                             setAutoValue(curValue);
                             setValue(curValue);
@@ -116,7 +116,7 @@ export default ({ visible, onVisibleChange, author, amount, type, doPay }) => {
         return defaultData.map((row, index) => {
             return (
                 <Row key={index} gutter={[24, 24]}>
-                    {row.map(item => (
+                    {row.map((item) => (
                         <Col key={item.key} span={24 / row.length}>
                             <div
                                 className={classNames(styles['reward-item'], {
@@ -226,7 +226,7 @@ export default ({ visible, onVisibleChange, author, amount, type, doPay }) => {
     };
 
     const onPayCallback = useCallback(
-        status => {
+        (status) => {
             setPayVisibel(false);
             if (status === 'succeed') {
                 doPay('cash', value);

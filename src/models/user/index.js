@@ -7,7 +7,7 @@ import {
     logout,
     fetchAccount,
 } from '@/services/user/index';
-import { getPageQuery } from '@/utils/utils';
+import { getPageQuery } from '@/utils';
 
 export default {
     namespace: 'user',

@@ -7,7 +7,7 @@ import Notifications from './Notifications';
 import { Button, Space } from 'antd';
 
 const User = ({ isMobile }) => {
-    const me = useSelector(state => state.user.me);
+    const me = useSelector((state) => state.user.me);
 
     const renderUnLogin = () => {
         if (isMobile) {
@@ -32,7 +32,7 @@ const User = ({ isMobile }) => {
     return (
         <div className={styles['user']}>
             {me ? (
-                <Space size="middle">
+                <Space size="large">
                     <ActionMenu />
                     <Notifications />
                     <UserMenu isMobile={isMobile} />

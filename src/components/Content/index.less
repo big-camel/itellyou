@@ -5,7 +5,6 @@
         .title {
             font-size: 18px;
             font-weight: 700;
-            margin-bottom: 16px;
 
             > a,
             > a:hover,
@@ -39,8 +38,7 @@
         .cover {
             background-size: cover;
             background-position: 50%;
-            width: 96px;
-            height: 60px;
+            width: 196px;
             border-radius: 2px;
             justify-content: flex-end;
             margin: 16px 0 0 16px;
@@ -92,5 +90,18 @@
             font-size: 14px;
             color: #8590a6;
         }
+    }
+}
+
+.item-desc {
+    .author {
+        :global {
+            .user-author-name {
+                font-weight: normal;
+            }
+        }
+    }
+    .item-desc-time {
+        color: #8c8c8c;
     }
 }

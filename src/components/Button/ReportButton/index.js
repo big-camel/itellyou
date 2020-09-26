@@ -5,10 +5,10 @@ import { useSelector } from 'umi';
 import { message } from 'antd';
 import { FlagOutlined } from '@ant-design/icons';
 
-function ReportButton({ id, type, children, ...props }) {
+function ReportButton({ id, type, children, size }) {
     const [visible, setVisible] = useState(false);
 
-    const me = useSelector(state => state.user.me);
+    const me = useSelector((state) => state.user.me);
 
     const onClick = () => {
         if (!me) {
@@ -25,7 +25,7 @@ function ReportButton({ id, type, children, ...props }) {
 
     return (
         <React.Fragment>
-            <BaseButton onClick={onClick} icon={<FlagOutlined />} {...props}>
+            <BaseButton onClick={onClick} icon={<FlagOutlined />} size={size}>
                 {getContent()}
             </BaseButton>
             {
@@ -33,7 +33,7 @@ function ReportButton({ id, type, children, ...props }) {
                     id={id}
                     type={type}
                     visible={visible}
-                    onVisibleChange={visible => setVisible(visible)}
+                    onVisibleChange={(visible) => setVisible(visible)}
                 />
             }
         </React.Fragment>

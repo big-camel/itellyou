@@ -16,8 +16,10 @@ import History from './History';
 import Outline from './Outline';
 import Collab, { EVENT, STATUS, ERROR_CODE } from './Collab';
 import EditorBiz from './Biz';
-import { useEditor } from './Hook';
+import { FullEditor, MiniEditor } from './Async';
 import * as Utils from './utils';
+import Loading from '../Loading';
+
 const { SAVE_TYPE } = EditorBiz;
 
 function Editor(
@@ -38,7 +40,6 @@ function Editor(
     },
     ref,
 ) {
-    const { FullEditor, MiniEditor } = useEditor() || {};
     const [loadScripts, setLoadScripts] = useState(true);
     const [editorLoaded, setEditorLoaded] = useState(false);
     const [collabLoaded, setCollabLoaded] = useState(false);
@@ -47,7 +48,7 @@ function Editor(
     const [saving, setSaving] = useState(false);
     const [status, setStaus] = useState(STATUS.initialize);
     const [collabUsers, setCollabUsers] = useState([]);
-    const doc = useSelector(state => state.doc);
+    const doc = useSelector((state) => state.doc);
     const engine = useRef();
 
     const collab = useRef();
@@ -56,7 +57,7 @@ function Editor(
 
     onPublished = onPublished || useCallback(() => {}, []);
 
-    const onEditorLoaded = inst => {
+    const onEditorLoaded = (inst) => {
         engine.current = inst;
         setEditorLoaded(true);
         if (onReady) onReady(engine.current);
@@ -76,7 +77,7 @@ function Editor(
             if (!save) return;
             const content = engine.current.getPureContent();
             const html = engine.current.getPureHtml();
-            const userSave = props.onSave || function() {};
+            const userSave = props.onSave || function () {};
             userSave('begin', { content, html });
             collab.current.doSaveContent(
                 {
@@ -85,7 +86,7 @@ function Editor(
                     html,
                     ...params,
                 },
-                res => {
+                (res) => {
                     userSave('finish', res);
                     callback(res);
                 },
@@ -96,7 +97,7 @@ function Editor(
 
     const onSave = useCallback(
         (type, params, callback) => {
-            callback = callback || function() {};
+            callback = callback || function () {};
             if (status !== STATUS.active) {
                 console.log('on save, editor not active, ignore');
                 return;
@@ -109,7 +110,7 @@ function Editor(
                 .then(() => {
                     doSave(type, params, callback);
                 })
-                .catch(error => {
+                .catch((error) => {
                     if (type === SAVE_TYPE.USER_PUBLISH) {
                         setPublishing(false);
                         message.error(error);
@@ -137,7 +138,7 @@ function Editor(
     const onDebounceSave = useCallback(debounce(onAutoSave, 60000), [onAutoSave]);
 
     const onEditorChange = useCallback(
-        content => {
+        (content) => {
             collab.current.cache(content);
             onDebounceSave();
             onChange(content);
@@ -146,11 +147,11 @@ function Editor(
     );
 
     const onCollabReady = useCallback(
-        collabBiz => {
+        (collabBiz) => {
             collabBiz.on(EVENT.statusChange, ({ to }) => {
                 setStaus(to);
             });
-            collabBiz.on(EVENT.usersChange, users => {
+            collabBiz.on(EVENT.usersChange, (users) => {
                 setCollabUsers(users);
                 if (onCollabUsers) onCollabUsers(users);
             });
@@ -208,7 +209,7 @@ function Editor(
         };
     }, [collabLoaded, props.onReverted]);
 
-    const onPublish = params => {
+    const onPublish = (params) => {
         if (publishing) return;
         setPublishing(true);
         onSave(SAVE_TYPE.USER_PUBLISH, null, () => {
@@ -258,23 +259,10 @@ function Editor(
         ];
     }
 
-    return (
-        <div className={className}>
-            <Script url="https://cdn-object.itellyou.com/ali-sdk/aliyun-oss-sdk-5.3.1.min.js" />
-            <Script
-                onLoad={() => setLoadScripts(false)}
-                url="https://cdn-object.itellyou.com/ali-sdk/aliyun-upload-sdk-1.5.0.min.js"
-            />
-            {editorLoaded && (
-                <Collab
-                    id={id}
-                    type={dataType}
-                    ot={ot}
-                    engine={engine.current}
-                    onReady={onCollabReady}
-                />
-            )}
-            {!loadScripts && EditorType && (
+    const renderEditor = () => {
+        if (loadScripts) return <Loading />;
+        if (isBrowser()) {
+            return (
                 <EditorType
                     defaultValue={null}
                     onSave={onUserSave}
@@ -332,7 +320,27 @@ function Editor(
                     }}
                     {...restProps}
                 />
+            );
+        }
+    };
+
+    return (
+        <div className={className}>
+            <Script url="https://cdn-object.itellyou.com/ali-sdk/aliyun-oss-sdk-5.3.1.min.js" />
+            <Script
+                onLoad={() => setLoadScripts(false)}
+                url="https://cdn-object.itellyou.com/ali-sdk/aliyun-upload-sdk-1.5.0.min.js"
+            />
+            {editorLoaded && (
+                <Collab
+                    id={id}
+                    type={dataType}
+                    ot={ot}
+                    engine={engine.current}
+                    onReady={onCollabReady}
+                />
             )}
+            {renderEditor()}
             {historyView && (
                 <History
                     id={id}
@@ -355,4 +363,3 @@ Editor.Viewer = Viewer;
 Editor.History = History;
 Editor.Utils = Utils;
 export default Editor;
-export { useEditor };

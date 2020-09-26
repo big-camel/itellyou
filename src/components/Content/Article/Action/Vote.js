@@ -3,12 +3,21 @@ import { Button, Space } from 'antd';
 import { useDispatch } from 'umi';
 import { SupportButton, OpposeButton } from '@/components/Button';
 
-export default ({ id, support, use_support, allow_support, oppose, use_oppose, allow_oppose }) => {
+export default ({
+    id,
+    support,
+    use_support,
+    allow_support,
+    oppose,
+    use_oppose,
+    allow_oppose,
+    size,
+}) => {
     const dispatch = useDispatch();
     const [voting, setVoting] = useState(false);
     const [voteType, setVoteType] = useState();
 
-    const doVote = type => {
+    const doVote = (type) => {
         if (voting) return;
         setVoteType(type);
         setVoting(true);
@@ -30,6 +39,7 @@ export default ({ id, support, use_support, allow_support, oppose, use_oppose, a
             onClick={() => doVote('support')}
             loading={voting && voteType === 'support'}
             count={support}
+            size={size}
         />
     );
 
@@ -38,13 +48,14 @@ export default ({ id, support, use_support, allow_support, oppose, use_oppose, a
     }
 
     return (
-        <Space size="large">
+        <Space size="middle">
             {renderSupport()}
             {allow_oppose && (
                 <OpposeButton
                     active={use_oppose}
                     onClick={() => doVote('oppose')}
                     loading={voting && voteType === 'oppose'}
+                    size={size}
                 />
             )}
         </Space>

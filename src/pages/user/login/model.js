@@ -1,5 +1,5 @@
 import { loginByAccount, loginByMobile, loginByOauth } from './service';
-import { getPageQuery } from '@/utils/utils';
+import { getPageQuery } from '@/utils';
 
 const onRedirect = () => {
     const urlParams = new URL(window.location.href);

@@ -4,7 +4,7 @@ import { Empty, Menu, Card, Avatar } from 'antd';
 import Container, { Layout } from '@/components/Container';
 import { MoreList } from '@/components/List';
 import Loading from '@/components/Loading';
-import { getPageQuery } from '@/utils/utils';
+import { getPageQuery } from '@/utils';
 import styles from './index.less';
 
 import menus from './menus';

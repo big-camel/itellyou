@@ -12,12 +12,13 @@ export default ({
     oppose,
     use_oppose,
     allow_oppose,
+    size,
 }) => {
     const dispatch = useDispatch();
     const [voting, setVoting] = useState(false);
     const [voteType, setVoteType] = useState();
 
-    const doVote = type => {
+    const doVote = (type) => {
         if (voting) return;
         setVoteType(type);
         setVoting(true);
@@ -40,6 +41,7 @@ export default ({
             onClick={() => doVote('support')}
             loading={voting && voteType === 'support'}
             count={support}
+            size={size}
         />
     );
 
@@ -55,6 +57,7 @@ export default ({
                     active={use_oppose}
                     onClick={() => doVote('oppose')}
                     loading={voting && voteType === 'oppose'}
+                    size={size}
                 />
             )}
         </Space>

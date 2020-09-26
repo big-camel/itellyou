@@ -19,7 +19,7 @@ export default ({ className }) => {
     };
 
     return (
-        <Card title="优秀创作者" className={className}>
+        <Card title="推荐作者" className={className}>
             <List dataSource={dataSource.data} renderItem={renderItem} split={false} />
         </Card>
     );

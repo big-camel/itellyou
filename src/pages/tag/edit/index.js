@@ -6,7 +6,6 @@ import styles from './index.less';
 import logo from '@/assets/logo.svg';
 import moment from 'moment';
 import Timer from '@/components/Timer';
-import Loading from '@/components/Loading';
 import { RouteContext } from '@/context';
 import { UserAuthor } from '@/components/User';
 
@@ -94,8 +93,8 @@ function Edit({ match: { params } }) {
     };
 
     return (
-        <Loading loading={loading}>
-            <header className={styles.header}>
+        <>
+            {!loading && <header className={styles.header}>
                 <div className={styles.container}>
                     <div className={styles.logo}>
                         <a href="/">
@@ -120,6 +119,7 @@ function Edit({ match: { params } }) {
                     </div>
                 </div>
             </header>
+            }
             <div className={styles.container}>
                 <div className={styles['editor']}>
                     <Editor
@@ -146,7 +146,7 @@ function Edit({ match: { params } }) {
                     />
                 </div>
             </div>
-        </Loading>
+        </>
     );
 }
 Edit.getInitialProps = async ({ isServer, store }) => {

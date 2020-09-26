@@ -5,7 +5,6 @@ import moment from 'moment';
 import Editor from '@/components/Editor';
 import { RouteContext } from '@/context';
 import Timer from '@/components/Timer';
-import Loading from '@/components/Loading';
 import { Selector } from '@/components/Tag';
 import Group from './components/Group';
 import { EllipsisButton } from '@/components/Button';
@@ -179,8 +178,8 @@ function Edit({ match: { params } }) {
     const error = getError();
 
     return (
-        <Loading loading={loading}>
-            <header className={styles.header}>
+        <>
+            {!loading && <header className={styles.header}>
                 <div className={styles.container}>
                     <div className={styles.logo}>
                         <a href="/">
@@ -228,6 +227,7 @@ function Edit({ match: { params } }) {
                     </Space>
                 </div>
             </header>
+            }
             <div className={styles.container}>
                 <div className={styles['editor']}>
                     <Editor
@@ -322,7 +322,7 @@ function Edit({ match: { params } }) {
                     releases={detail.releases}
                 />
             )}
-        </Loading>
+        </>
     );
 }
 Edit.getInitialProps = async ({ isServer, store }) => {

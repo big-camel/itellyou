@@ -1,13 +1,13 @@
 ### ITELLYOU 前端
-使用 umijs react 框架开发，[ITELLYOU 官网](https://www.itellyou.com)
+UmiJs[ITELLYOU 官网](https://www.itellyou.com)
 ### ITELLYOU 前端 SSR
-[itellyou-ssr](https://github.com/itellyou-com/itellyou-ssr)
+NodeJs [itellyou-ssr](https://github.com/itellyou-com/itellyou-ssr)
 ### ITELLYOU 后台管理
-[itellyou-admin](https://github.com/itellyou-com/itellyou-admin)
+UmiJs [itellyou-admin](https://github.com/itellyou-com/itellyou-admin)
 ### ITELLYOU API
-[itellyou-api](https://github.com/itellyou-com/itellyou-api)
+SpringBoot2 [itellyou-api](https://github.com/itellyou-com/itellyou-api)
 ### ITELLYOU 协同编辑服务端
-[itellyou-editor-server](https://github.com/itellyou-com/itellyou-editor-server)
+NodeJs [itellyou-editor-server](https://github.com/itellyou-com/itellyou-editor-server)
 
 
 ### 本地启动
@@ -16,20 +16,20 @@
 
 ```
 proxy: {
-        '/api/(latex|puml|graphviz|flowchart|mermaid)': {
-            target: 'http://g.itellyou.com/',
-            changeOrigin: true,
-            pathRewrite: { '^/api': '' },
-        },
-        '/api': {
-            target: 'http://localhost:8082',
-            changeOrigin: true,
-            pathRewrite: { '^/api': '' },
-        }
+    '/api/(latex|puml|graphviz|flowchart|mermaid)': {
+        target: 'http://g.itellyou.com/',
+        changeOrigin: true,
+        pathRewrite: { '^/api': '' },
+    },
+    '/api': {
+        target: 'http://localhost:8082',
+        changeOrigin: true,
+        pathRewrite: { '^/api': '' },
+    }
     },
 ```
 
-在 clone itellyou 项目到本地后，进入 itellyou 项目目录，使用 npm / 或 yarn（推荐） 命令
+在 clone itellyou 项目到本地后，进入 itellyou 项目目录，使用 npm / yarn（推荐） 命令
 
 ```
 yarn

@@ -1,36 +1,3 @@
-export const getScrollTop = () => {
-    return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-};
-
-export const getOffset = element => {
-    if (!element.getClientRects().length)
-        return {
-            top: 0,
-            left: 0,
-        };
-    const rect = element.getBoundingClientRect();
-    const view = element.ownerDocument.defaultView;
-
-    return {
-        top: rect.top + view.pageYOffset,
-        left: rect.left + view.pageXOffset,
-    };
-};
-
-export const calcHeight = (element, isTop) => {
-    const offset = getOffset(element);
-    const { offsetHeight } = element;
-    const scrollTop = getScrollTop();
-
-    let height = 0;
-    if (window.innerHeight + scrollTop <= offsetHeight + offset.top) {
-        height = isTop ? window.innerHeight - 32 : window.innerHeight - offset.top - 16;
-    } else {
-        height = offsetHeight + offset.top - scrollTop - offset.top - 102;
-    }
-    return height;
-};
-
 export const findReadingSection = (elements, top) => {
     top = top || 0;
     if (!elements || elements.length === 0) return -1;

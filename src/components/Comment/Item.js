@@ -27,7 +27,7 @@ function CommentItem({ item, onDelete, onCreate, onVote, onChild, onDetail }) {
             cancelText: '取消',
             centered: true,
             onOk() {
-                return new Promise(resolve => {
+                return new Promise((resolve) => {
                     if (onDelete) {
                         const result = onDelete(item.id);
                         if (typeof result === 'object') {
@@ -46,7 +46,7 @@ function CommentItem({ item, onDelete, onCreate, onVote, onChild, onDetail }) {
 
     const doCreate = (content, html) => {
         if (onCreate) {
-            return new Promise(resolve => {
+            return new Promise((resolve) => {
                 const parentId = item.parent_id != 0 ? item.parent_id : item.id;
                 const result = onCreate(content, html, parentId, item.id);
                 if (typeof result === 'object') {
@@ -64,7 +64,7 @@ function CommentItem({ item, onDelete, onCreate, onVote, onChild, onDetail }) {
         }
     };
 
-    const doVote = type => {
+    const doVote = (type) => {
         if (voting) return;
         if (onVote) {
             setVoting(true);
@@ -141,20 +141,25 @@ function CommentItem({ item, onDelete, onCreate, onVote, onChild, onDetail }) {
                         disabled={!item.allow_support}
                         onClick={() => doVote('support')}
                         count={item.support}
+                        size="small"
                     />
                     {item.allow_oppose && (
-                        <OpposeButton active={item.use_oppose} onClick={() => doVote('oppose')}>
+                        <OpposeButton
+                            active={item.use_oppose}
+                            onClick={() => doVote('oppose')}
+                            size="small"
+                        >
                             踩
                         </OpposeButton>
                     )}
                 </Button.Group>
                 {item.allow_reply && (
-                    <ReplyButton onClick={() => setEditVisible(!editVisible)}>
+                    <ReplyButton onClick={() => setEditVisible(!editVisible)} size="small">
                         {editVisible && '取消'}回复
                     </ReplyButton>
                 )}
-                {!item.use_author && <ReportButton type="comment" />}
-                {item.allow_delete && <DeleteButton onClick={doDelete} />}
+                {!item.use_author && <ReportButton type="comment" size="small" />}
+                {item.allow_delete && <DeleteButton onClick={doDelete} size="small" />}
             </div>
         );
     };
@@ -180,7 +185,7 @@ function CommentItem({ item, onDelete, onCreate, onVote, onChild, onDetail }) {
         if (item.child.length === 0) return;
         return (
             <ul className={styles['comment-child']}>
-                {item.child.map(child => {
+                {item.child.map((child) => {
                     return (
                         <CommentItem
                             key={child.id}

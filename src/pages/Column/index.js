@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link, useDispatch, useSelector } from 'umi';
 import { ReloadOutlined } from '@ant-design/icons';
 import { Card, Avatar, Button } from 'antd';
-import { getPageQuery } from '@/utils/utils';
+import { getPageQuery } from '@/utils';
 import Container from '@/components/Container';
 import List from '@/components/List';
 import { RouteContext } from '@/context';

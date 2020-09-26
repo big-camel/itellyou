@@ -14,7 +14,7 @@ export default {
         hmr: true,
     },
     dynamicImport: {
-        //loading: '@/components/Loading',
+        loading: '@/components/Loading',
     },
     nodeModulesTransform: {
         type: 'none',

@@ -8,11 +8,6 @@ import pathToRegexp from 'path-to-regexp';
 import { isBrowser, history } from 'umi';
 import omit from 'omit.js';
 
-let notification;
-import(/* webpackChunkName: "async-antd" */ 'antd').then(module => {
-    notification = module.notification;
-});
-
 const codeMessage = {
     200: '服务器成功返回请求的数据。',
     201: '新建或修改数据成功。',
@@ -50,17 +45,11 @@ const errorHandler = error => {
             if (status === 401) url = 'login';
             else if (status >= 500) url = 500;
             history.push(`/${url}`);
-        } else if (notification) {
-            notification.error({
-                message: `请求错误 ${status}: ${url}`,
-                description: errorText,
-            });
+        } else {
+            history.push(`/500?m=${errorText}`);
         }
-    } else if (!response && notification) {
-        notification.error({
-            description: '您的网络发生异常，无法连接服务器',
-            message: '网络异常',
-        });
+    } else if (!response) {
+        history.push(`/500?m=您的网络发生异常，无法连接服务器`);
     }
     return response;
 };

@@ -3,7 +3,7 @@ import { useDispatch } from 'umi';
 import { FavoriteButton } from '@/components/Button';
 import { useState } from 'react';
 
-export default ({ id, use_star, allow_star }) => {
+export default ({ id, use_star, allow_star, size }) => {
     const dispatch = useDispatch();
     const [following, setFollowing] = useState(false);
 
@@ -22,7 +22,7 @@ export default ({ id, use_star, allow_star }) => {
     };
 
     return (
-        <FavoriteButton disabled={!allow_star} loading={following} onClick={onStar}>
+        <FavoriteButton disabled={!allow_star} loading={following} onClick={onStar} size={size}>
             {use_star ? '取消收藏' : '收藏'}
         </FavoriteButton>
     );

@@ -5,7 +5,7 @@ import { Card, Button, Space } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { GoogleHorizontal, GoogleSquare } from '@/components/AdSense';
 import { RouteContext } from '@/context';
-import { getPageQuery } from '@/utils/utils';
+import { getPageQuery } from '@/utils';
 import Container, { Layout } from '@/components/Container';
 import { Article } from '@/components/Content';
 import { PageList } from '@/components/List';
@@ -100,15 +100,6 @@ function ArticleIndex({ location: { query }, match: { params } }) {
                     <Card
                         title={
                             <div className={styles['header']}>
-                                {!isMobile && (
-                                    <Button
-                                        type="primary"
-                                        href="/article/new"
-                                        icon={<EditOutlined />}
-                                    >
-                                        发文章
-                                    </Button>
-                                )}
                                 <div className={styles['type-list']}>
                                     <Link
                                         className={classNames({
@@ -140,10 +131,11 @@ function ArticleIndex({ location: { query }, match: { params } }) {
                     >
                         {renderList()}
                     </Card>
-                    <Space direction="vertical" size="large">
-                        <GoogleSquare />
+                    <Space direction="vertical">
                         <HotColumn />
+                        <GoogleSquare />
                         <HotTag />
+                        <GoogleSquare />
                     </Space>
                 </Layout>
             </Container>

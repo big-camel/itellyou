@@ -1,9 +1,9 @@
 .comment-list {
-    border: 1px solid #f0f0f0;
     background: #fff;
     margin-top: 16px;
     overflow: visible;
     border-radius: 4px;
+    border: 1px solid #ebebeb;
 
     :global(.ant-list) {
         :global {
@@ -12,12 +12,15 @@
                 border-top: 1px solid #f6f6f6;
                 border-bottom: 1px solid #f6f6f6;
                 justify-content: space-between;
-                line-height: 48px;
-                padding: 0 20px;
+                padding: 12px 20px;
             }
 
             .ant-list-item-meta-title {
                 margin-bottom: 0;
+            }
+
+            .ant-list-empty-text {
+                padding: 0;
             }
         }
     }
@@ -29,7 +32,7 @@
     }
 
     .comment-title {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 600;
         color: #1a1a1a;
         margin-bottom: 0;
@@ -39,8 +42,8 @@
         position: relative;
         -ms-flex-negative: 0;
         flex-shrink: 0;
-        padding: 12px 20px 4px;
-        font-size: 15px;
+        padding: 10px 10px 4px;
+        font-size: 14px;
         border-bottom: 0 none;
     }
 
@@ -58,7 +61,7 @@
         right: 0;
         bottom: 0;
         display: block;
-        margin: 0 20px;
+        margin: 0 10px;
         border-bottom: 1px solid #f6f6f6;
         content: '';
     }
@@ -186,14 +189,20 @@
     }
 
     .comment-footer {
-        padding: 0 20px;
+        padding: 12px 20px;
         background: transparent;
         border-top: 1px solid #f0f0f0;
     }
 }
 
+.comment-empty {
+    .comment-footer {
+        border-top: 0 none;
+    }
+}
+
 .comment-editor {
-    padding: 16px 0;
+    padding: 10px 0;
 
     .comment-not-login {
         text-align: center;
@@ -201,31 +210,89 @@
     }
 
     .comment-warp {
-        display: flex;
-        align-items: flex-end;
+        position: relative;
+        padding-right: 82px;
+        transition: padding-right 0.3s ease;
 
         :global {
             .itellyou-line-editor {
-                flex: 1;
-
-                border: 1px solid #8590a6;
+                border: 1px solid #ebebeb;
                 border-radius: 4px;
 
                 .itellyou-content-editor {
-                    border: 1px solid transparent;
+                    border: 0 none;
                     border-radius: 4px;
+                    overflow: hidden;
+                    width: 100%;
+
+                    .itellyou-engine {
+                        background: transparent;
+                    }
+                }
+
+                .itellyou-editor-bottom {
+                    display: flex;
+                    justify-content: flex-end;
                 }
 
                 .itellyou-toolbar {
-                    height: 32px;
-                    line-height: 32px;
+                    height: auto;
                     padding: 0 6px;
+
+                    .itellyou-toolbar-content {
+                        height: 36px;
+                        line-height: 36px;
+
+                        .itellyou-toolbar-content-plugins {
+                            max-height: 36px;
+                        }
+                    }
+
+                    button[accessbilityid='main-emoji-button'] {
+                        font-size: 20px;
+                        padding-right: 0;
+                    }
                 }
             }
         }
 
         .comment-editor-submit {
-            margin-left: 16px;
+            position: absolute;
+            right: 0;
+            bottom: 1px;
+            height: 36px;
+            transition: opacity 0.3s ease, transform 0.3s ease, -webkit-transform 0.3s ease;
+            transform: scale(1);
+        }
+    }
+
+    .comment-single {
+        :global {
+            .itellyou-line-editor {
+                display: flex;
+                align-items: flex-end;
+                flex: 1 1;
+
+                .itellyou-editor-bottom {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    .comment-active {
+        :global {
+            .itellyou-line-editor {
+                border: 1px solid #8590a6;
+            }
+        }
+    }
+
+    .comment-hide-btn {
+        padding-right: 0;
+
+        .comment-editor-submit {
+            transform: scale(0);
         }
     }
 }

@@ -1,13 +1,18 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useSelector, Helmet, Redirect, useDispatch } from 'umi';
-import { Card, Space } from 'antd';
+import { Space } from 'antd';
+import QueueAnim from 'rc-queue-anim';
+import TweenOne from 'rc-tween-one'
+import Animate from 'rc-animate'
+import { LikeOutlined } from '@ant-design/icons'
 import { RouteContext } from '@/context';
-import Container, { Layout } from '@/components/Container';
 import Loading from '@/components/Loading';
 import { Article } from '@/components/Content';
 import Editor from '@/components/Editor';
 import { GoogleHorizontal } from '@/components/AdSense';
-import { HistoryButton } from '@/components/Button';
+import { EditButton, EllipsisButton, HistoryButton } from '@/components/Button';
+import { HeaderContainer , HeaderLogo } from '@/components/Header'
+import { getScrollTop , scrollToElement } from '@/utils'
 import HistoryExtra from '../components/HistoryExtra';
 import Related from './Related';
 import styles from './index.less';
@@ -15,6 +20,8 @@ import styles from './index.less';
 function Detail({ match: { params } }) {
     const id = parseInt(params.id || 0);
 
+    const [viewMode,setViewMode] = useState("")
+    const [scrollVisible,setScrollVisible] = useState(false)
     const [contentData, setContentData] = useState({});
     const [historyViewer, setHistoryViewer] = useState(false);
 
@@ -32,6 +39,12 @@ function Detail({ match: { params } }) {
         return null;
     }, [isMobile, detail]);
 
+    const handleScroll = useCallback(() => {
+        const min = 80;
+        const top = getScrollTop()
+        setScrollVisible(top > min)
+    }, [])
+
     useEffect(() => {
         dispatch({
             type: 'article/view',
@@ -40,6 +53,13 @@ function Detail({ match: { params } }) {
             },
         });
     }, [dispatch, id]);
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [handleScroll]);
 
     if (response_status && response_status.id === id && response_status.code > 200)
         return <Redirect to="/404" />;
@@ -51,10 +71,21 @@ function Detail({ match: { params } }) {
             view,
             config,
         });
+        const hasOutline = (config || {}).outline && config.outline.length > 0
+
+        setViewMode(hasOutline ? "middle" : "")
+       
+        if(window.location.hash){
+            const scrollId = window.location.hash.substr(1)
+            scrollToElement(document.getElementById(scrollId))
+        }
     };
-    const { title, tags, author, description } = detail;
+
+    const { title, tags, author, description , support } = detail;
+
     const keywords = tags.map((tag) => tag.name) || [];
     keywords.push('itellyou');
+    
 
     return (
         <>
@@ -64,43 +95,61 @@ function Detail({ match: { params } }) {
                 <meta name="keywords" content={keywords.join(',')} />
                 <meta name="description" content={description} />
             </Helmet>
-            <Container>
-                <Layout>
-                    <Space direction="vertical" size="large">
-                        <div className={styles['article-view']}>
-                            <Card>
-                                <Article
-                                    className={styles['article']}
-                                    data={{ ...detail, cover: null }}
-                                    tag={true}
-                                    view={true}
-                                    defaultComment={true}
-                                    headerClass={styles['header']}
-                                    titleClass={styles['title']}
-                                    onContentReady={onContentReady}
-                                    renderAction={renderAction}
-                                />
-                            </Card>
-                        </div>
-                        <GoogleHorizontal />
-                        <Related id={id} />
-                        {historyViewer && (
-                            <Editor.History
-                                id={id}
-                                type="article"
-                                extra={(data) => <HistoryExtra {...data} />}
-                                onCancel={() => setHistoryViewer(false)}
-                            />
-                        )}
-                    </Space>
-                    <React.Fragment>
-                        <Editor.Outline
-                            {...contentData}
-                            style={{ width: (1056 * 29.16666667) / 100 - 22 }}
+            <HeaderContainer 
+            mode={scrollVisible ? viewMode : ""}
+            className={styles['header-top']}
+            after={
+                <Space size="large">
+                    <EditButton type="primary" href="/article/new">写文章</EditButton>
+                    <EllipsisButton style={{fontSize:26,lineHeight:"34px"}} />
+                </Space>
+            }
+            >
+                <HeaderLogo />
+            </HeaderContainer>
+            <div className={styles["main-wrapper"]}>
+                <Space direction="vertical" size="large" className={styles['main-body']}>
+                    <div className={styles['article-view']}>
+                        <Article
+                            className={styles['article']}
+                            data={{ ...detail, cover: null }}
+                            defaultComment={true}
+                            headerClass={styles['header']}
+                            titleClass={styles['title']}
+                            onContentReady={onContentReady}
+                            renderAction={renderAction}
                         />
-                    </React.Fragment>
-                </Layout>
-            </Container>
+                    </div>
+                    <GoogleHorizontal />
+                    <Related id={id} />
+                    {historyViewer && (
+                        <Editor.History
+                            id={id}
+                            type="article"
+                            extra={(data) => <HistoryExtra {...data} />}
+                            onCancel={() => setHistoryViewer(false)}
+                        />
+                    )}
+                </Space>
+                <QueueAnim animConfig={[{opacity: [1, 0]}]} className={styles["side"]}>
+                    {
+                        scrollVisible ? (
+                            <div key="side">
+                                <div className={styles['like-action']}>
+                                <Space direction="vertical">
+                                    <LikeOutlined />
+                                    <span>赞同 {support}</span>
+                                </Space>
+                                </div>
+                            </div>
+                        ) : null
+                    }
+                </QueueAnim>
+                <QueueAnim animConfig={[{opacity: [1, 0]}]} className={styles["outline"]}>
+                    { scrollVisible ? <Editor.Outline key="outline" className={styles["outline-view"]} {...contentData} /> : null }
+                </QueueAnim>
+                
+            </div>
         </>
     );
 }

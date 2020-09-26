@@ -5,7 +5,6 @@ import moment from 'moment';
 import Editor from '@/components/Editor';
 import { RouteContext } from '@/context';
 import Timer from '@/components/Timer';
-import Loading from '@/components/Loading';
 import { Selector } from '@/components/Tag';
 import Column from './components/Column';
 import Source from './components/Source';
@@ -206,10 +205,9 @@ function Edit({ match: { params } }) {
     };
 
     const error = getError();
-
     return (
-        <Loading loading={loading}>
-            <header className={styles.header}>
+        <>
+            {!loading && <header className={styles.header}>
                 <div className={styles.container}>
                     <div className={styles.logo}>
                         <a href="/">
@@ -273,43 +271,43 @@ function Edit({ match: { params } }) {
                         </Popover>
                     </Space>
                 </div>
-            </header>
+            </header>}
             <div className={styles.container}>
                 <div className={styles['editor']}>
                     <Editor
-                        type={isMobile ? 'mini' : 'full'}
-                        ref={editor}
-                        id={id}
-                        ot={false}
-                        dataType="article"
-                        toolbar={
-                            isMobile
-                                ? [
-                                      ['heading', 'bold'],
-                                      ['codeblock'],
-                                      ['orderedlist', 'unorderedlist'],
-                                      ['image', 'video', 'file'],
-                                  ]
-                                : null
-                        }
-                        toc={isMobile ? false : true}
-                        header={
-                            <div className={styles['title']}>
-                                <Input
-                                    className={styles['input']}
-                                    size="large"
-                                    placeholder="请输入标题(最多50个字)"
-                                    value={title}
-                                    onChange={onTitleChange}
-                                    onBlur={onTitleBlur}
-                                    maxLength={50}
-                                />
-                            </div>
-                        }
-                        historyExtra={data => <HistoryExtra {...data} />}
-                        onSave={onSave}
-                        onReverted={onReverted}
-                        onPublished={onPublished}
+                    type={isMobile ? 'mini' : 'full'}
+                    ref={editor}
+                    id={id}
+                    ot={false}
+                    dataType="article"
+                    toolbar={
+                        isMobile
+                            ? [
+                                    ['heading', 'bold'],
+                                    ['codeblock'],
+                                    ['orderedlist', 'unorderedlist'],
+                                    ['image', 'video', 'file'],
+                                ]
+                            : null
+                    }
+                    toc={isMobile ? false : true}
+                    header={
+                        <div className={styles['title']}>
+                            <Input
+                                className={styles['input']}
+                                size="large"
+                                placeholder="请输入标题(最多50个字)"
+                                value={title}
+                                onChange={onTitleChange}
+                                onBlur={onTitleBlur}
+                                maxLength={50}
+                            />
+                        </div>
+                    }
+                    historyExtra={data => <HistoryExtra {...data} />}
+                    onSave={onSave}
+                    onReverted={onReverted}
+                    onPublished={onPublished}
                     />
                 </div>
             </div>
@@ -372,7 +370,7 @@ function Edit({ match: { params } }) {
                     onSubmit={onPaidReadSubmit}
                 />
             )}
-        </Loading>
+        </>
     );
 }
 Edit.getInitialProps = async ({ isServer, store }) => {

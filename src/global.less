@@ -22,7 +22,7 @@ ul {
 .layout-container-middle,
 .layout-container-full {
     max-width: 1056px;
-    padding: 24px 16px;
+    padding: 10px 16px;
     margin-left: auto;
     margin-right: auto;
     height: 100%;
@@ -165,9 +165,19 @@ body {
         border: 0 none;
     }
 
-    .ant-card-head-title {
-        line-height: 32px;
+    .ant-btn-primary[disabled],
+    .ant-btn-primary[disabled]:active,
+    .ant-btn-primary[disabled]:focus,
+    .ant-btn-primary[disabled]:hover {
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+        border-color: @primary-color;
+        color: #fff;
+        background: @primary-color;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+        opacity: 0.5;
+    }
 
+    .ant-card-head-title {
         .ant-menu {
             border-bottom: none;
             line-height: 56px;
@@ -175,10 +185,12 @@ body {
         }
     }
 
+    .ant-card-head {
+        padding: 0 20px;
+    }
+
     .ant-card-body {
-        .ant-list-item {
-            padding: 24px 0;
-        }
+        padding: 20px;
 
         .ant-list-item:first-child {
             padding-top: 0;
@@ -213,5 +225,10 @@ body {
 
     .ant-space-vertical {
         display: block !important;
+    }
+
+    .ant-card {
+        box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+        border: 0 none;
     }
 }

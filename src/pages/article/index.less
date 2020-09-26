@@ -7,26 +7,17 @@
         font-weight: normal;
 
         a {
-            color: #595959;
-            font-size: 14px;
+            color: #586069;
+            font-size: 16px;
+            margin:0 22px;
+        }
+
+        a:first-child {
+            margin-left: 0;
         }
 
         a.active {
             color: @primary-color;
-        }
-
-        a:first-child:before {
-            display: none;
-        }
-
-        a:before {
-            content: '';
-            display: inline-block;
-            vertical-align: middle;
-            margin: 0 15px;
-            width: 1px;
-            height: 14px;
-            background-color: #ddd;
         }
     }
 }

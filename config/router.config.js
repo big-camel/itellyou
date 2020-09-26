@@ -36,18 +36,23 @@ export default [
     {
         path: '/question/(new|[\\d]+/edit)',
         component: '../layouts/BlankLayout',
-        access: 'isLogin',
-        wrappers: ['@/wrappers/auth'],
         routes: [
             {
-                path: '/question/new',
-                name: 'question.page.new',
-                component: './question/edit',
-            },
-            {
-                path: '/question/:id([\\d]+)/edit',
-                name: 'question.page.edit',
-                component: './question/edit',
+                path: '/question/(new|[\\d]+/edit)',
+                wrappers: ['@/wrappers/auth'],
+                access: 'isLogin',
+                routes: [
+                    {
+                        path: '/question/new',
+                        name: 'question.page.new',
+                        component: './question/edit',
+                    },
+                    {
+                        path: '/question/:id([\\d]+)/edit',
+                        name: 'question.page.edit',
+                        component: './question/edit',
+                    },
+                ],
             },
             {
                 component: '404',
@@ -58,13 +63,18 @@ export default [
     {
         path: '/tag/:id(\\d+)/edit',
         component: '../layouts/BlankLayout',
-        access: 'isLogin',
-        wrappers: ['@/wrappers/auth'],
         routes: [
             {
                 path: '/tag/:id(\\d+)/edit',
-                name: 'tag.page.edit',
-                component: './tag/edit',
+                wrappers: ['@/wrappers/auth'],
+                access: 'isLogin',
+                routes: [
+                    {
+                        path: '/tag/:id(\\d+)/edit',
+                        name: 'tag.page.edit',
+                        component: './tag/edit',
+                    },
+                ],
             },
         ],
     },
@@ -72,18 +82,23 @@ export default [
     {
         path: '/article/(new|[\\d]+/edit)',
         component: '../layouts/BlankLayout',
-        wrappers: ['@/wrappers/auth'],
-        access: 'isLogin',
         routes: [
             {
-                path: '/article/new',
-                name: 'article.page.new',
-                component: './article/edit',
-            },
-            {
-                path: '/article/:id(\\d+)/edit',
-                name: 'article.page.edit',
-                component: './article/edit',
+                path: '/article/(new|[\\d]+/edit)',
+                wrappers: ['@/wrappers/auth'],
+                access: 'isLogin',
+                routes: [
+                    {
+                        path: '/article/new',
+                        name: 'article.page.new',
+                        component: './article/edit',
+                    },
+                    {
+                        path: '/article/:id(\\d+)/edit',
+                        name: 'article.page.edit',
+                        component: './article/edit',
+                    },
+                ],
             },
             {
                 component: '404',
@@ -94,18 +109,23 @@ export default [
     {
         path: '/software/(new|[\\d]+/edit)',
         component: '../layouts/BlankLayout',
-        wrappers: ['@/wrappers/auth'],
-        access: 'isLogin',
         routes: [
             {
-                path: '/software/new',
-                name: 'software.page.new',
-                component: './software/edit',
-            },
-            {
-                path: '/software/:id(\\d+)/edit',
-                name: 'software.page.edit',
-                component: './software/edit',
+                path: '/software/(new|[\\d]+/edit)',
+                wrappers: ['@/wrappers/auth'],
+                access: 'isLogin',
+                routes: [
+                    {
+                        path: '/software/new',
+                        name: 'software.page.new',
+                        component: './software/edit',
+                    },
+                    {
+                        path: '/software/:id(\\d+)/edit',
+                        name: 'software.page.edit',
+                        component: './software/edit',
+                    },
+                ],
             },
             {
                 component: '404',
@@ -124,11 +144,21 @@ export default [
             },
         ],
     },
+    {
+        path: '/article/:id(\\d+)',
+        component: '../layouts/BlankLayout',
+        routes: [
+            {
+                path: '/article/:id(\\d+)',
+                name: 'article.page.detail',
+                component: './article/detail',
+            },
+        ],
+    },
     //app
     {
         path: '/',
         component: '../layouts/BasicLayout',
-        wrappers: ['@/wrappers/auth'],
         routes: [
             { path: '/', name: 'home.page.index', component: './home' },
             // Question
@@ -155,6 +185,7 @@ export default [
                 path: '/tag/review',
                 name: 'tagReview',
                 component: './tag/Review',
+                wrappers: ['@/wrappers/auth'],
                 access: 'isAdmin',
             },
             { path: '/tag/:id(\\d+)', name: 'tag.page.detail', component: './tag/detail' },
@@ -169,11 +200,6 @@ export default [
                 path: '/article/:type(hot|star)',
                 name: 'article.page.index',
                 component: './article',
-            },
-            {
-                path: '/article/:id(\\d+)',
-                name: 'article.page.detail',
-                component: './article/detail',
             },
             // Search
             { path: '/search', name: 'search.page.index', component: './search' },
@@ -192,11 +218,19 @@ export default [
                 name: 'download.page.detail',
                 component: './software/detail',
             },
+            // Knowledge
+            { path: '/knowledge', name: 'knowledge.page.index', component: './knowledge' },
+            {
+                path: '/knowledge',
+                name: 'knowledge.page.index',
+                component: './knowledge',
+            },
             // Yun
             { path: '/yun', name: 'yun.page.index', component: './yun' },
             // User
             {
                 path: '/dashboard',
+                wrappers: ['@/wrappers/auth'],
                 access: 'isLogin',
                 routes: [
                     {
@@ -248,6 +282,7 @@ export default [
             },
             {
                 path: '/settings',
+                wrappers: ['@/wrappers/auth'],
                 access: 'isLogin',
                 routes: [
                     {
@@ -269,9 +304,15 @@ export default [
             },
             {
                 path: '/notifications:path(/[a-zA-Z0-9_]+)?',
-                name: 'user.notifications',
-                component: './user/notifications',
+                wrappers: ['@/wrappers/auth'],
                 access: 'isLogin',
+                routes: [
+                    {
+                        path: '/notifications:path(/[a-zA-Z0-9_]+)?',
+                        name: 'user.notifications',
+                        component: './user/notifications',
+                    },
+                ],
             },
             {
                 path: '/403',

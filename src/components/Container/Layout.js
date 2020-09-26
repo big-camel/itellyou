@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Row, Col } from 'antd';
 import { RouteContext } from '@/context';
 
-function Layout({ spans = 17, gutter = 24, children }) {
+function Layout({ spans = 17, gutter = 10, children }) {
     const spanData = 24;
 
     if (!Array.isArray(spans)) spans = [spans, spanData - spans];

@@ -1,24 +1,76 @@
-.article-view {
-    overflow: hidden;
+.header-top {
+    position:fixed;
+}
+.main-wrapper {
+    width: 100%;
+    padding-top: 60px;
+    min-height: calc(100vh - 136px);
+    background: #ffffff;
+    padding-bottom: 46px;
 
-    :global(.ant-card-body) {
-        padding: 24px 34px;
+    .main-body {
+        width: 758px;
+        margin: 0 auto;
+        height: 100%;
     }
+
+    .side {
+        position: fixed;
+        left: calc((100vw - 990px)/2);
+        margin: auto;
+        top: 106px;
+
+        .like-action {
+            display: block;
+            width: 96px;
+            text-align: center;
+            color: @primary-color;
+
+            :global(.anticon){
+                font-size: 20px;
+                display: block;
+                height: 48px;
+                width: 48px;
+                margin: 0 auto;
+                border-radius: 50%;
+                background: rgba(0,132,255,.1);
+                line-height: 48px;
+            }
+        }
+    }
+
+    .outline {
+        position: fixed;
+        left: calc((100vw - 758px)/2 + 758px + 44px);
+        margin: auto;
+        top: 106px;
+
+        .outline-view {
+            position: relative;
+            padding: 0;
+            max-width: 160px;
+            min-width: 160px;
+        }
+    }
+}
+
+.article-view {
+    padding:0 34px;
 }
 
 @media only screen and (max-width: 575px) {
     .article-view {
-        :global(.ant-card-body) {
-            padding: 12px 16px;
-        }
+        padding: 12px 16px;
     }
 }
 
 .article {
     .header {
+        margin-bottom: 24px;
+
         .title {
-            font-size: 30px;
-            margin-bottom: 16px;
+            font-size: 24px;
+            margin: 24px 0;
             word-break: break-word;
         }
     }

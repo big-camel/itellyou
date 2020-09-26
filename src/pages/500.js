@@ -1,8 +1,10 @@
 import React from 'react';
 import Exception from '@/components/Exception';
 
-const PageException = () => {
-    return <Exception status={500} />;
+const PageException = ({ location: { query } }) => {
+    const msg = query.m;
+    const title = query.t;
+    return <Exception status={500} title={title} subTitle={msg} />;
 };
 
 PageException.getInitialProps = async ({ isServer, store }) => {

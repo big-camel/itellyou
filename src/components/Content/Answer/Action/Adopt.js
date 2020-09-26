@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AdoptButton } from '@/components/Button';
 import { useDispatch } from 'umi';
 
-export default ({ id, question_id, allow_adopt, adopted }) => {
+export default ({ id, question_id, allow_adopt, adopted, size = 'small' }) => {
     const [adopting, setAdopting] = useState(false);
     const dispatch = useDispatch();
 
@@ -23,7 +23,7 @@ export default ({ id, question_id, allow_adopt, adopted }) => {
 
     return (
         <AdoptButton
-            size="small"
+            size={size}
             onClick={doAdopt}
             loading={adopting}
             active={adopted}

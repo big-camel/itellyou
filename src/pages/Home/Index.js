@@ -28,9 +28,9 @@ const Home = () => {
                             <Recommends />
                         </Card>
                     </div>
-                    <Space direction="vertical" size="large">
-                        <GoogleSquare />
+                    <Space direction="vertical" size="small">
                         <Writer />
+                        <GoogleSquare />
                         <Answerer />
                     </Space>
                 </Layout>
@@ -55,7 +55,7 @@ Home.getInitialProps = async ({ isServer, store, params }) => {
         payload: {
             append: false,
             offset: 0,
-            limit: 20,
+            limit: 5,
             ...params,
         },
     });
@@ -65,7 +65,7 @@ Home.getInitialProps = async ({ isServer, store, params }) => {
         payload: {
             append: false,
             offset: 0,
-            limit: 20,
+            limit: 5,
             ...params,
         },
     });

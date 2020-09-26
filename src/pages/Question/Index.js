@@ -5,7 +5,7 @@ import { Button, Card, Space } from 'antd';
 import { GoogleHorizontal, GoogleSquare } from '@/components/AdSense';
 import { RouteContext } from '@/context';
 import Container, { Layout } from '@/components/Container';
-import { getPageQuery } from '@/utils/utils';
+import { getPageQuery } from '@/utils';
 import { PageList } from '@/components/List';
 import { Question } from '@/components/Content';
 import GroupUser from './components/GroupUser';
@@ -104,15 +104,6 @@ function QuestionIndex({ location: { query }, match: { params } }) {
                     <Card
                         title={
                             <div className={styles['header']}>
-                                {!isMobile && (
-                                    <Button
-                                        type="primary"
-                                        href="/question/new"
-                                        icon={<EditOutlined />}
-                                    >
-                                        提问题
-                                    </Button>
-                                )}
                                 <div className={styles['type-list']}>
                                     <Link
                                         className={classNames({
@@ -152,9 +143,9 @@ function QuestionIndex({ location: { query }, match: { params } }) {
                     >
                         {renderList()}
                     </Card>
-                    <Space direction="vertical" size="large">
-                        <GoogleSquare />
+                    <Space direction="vertical" size="small">
                         <GroupUser />
+                        <GoogleSquare />
                     </Space>
                 </Layout>
             </Container>

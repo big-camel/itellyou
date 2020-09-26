@@ -9,8 +9,8 @@ import 'nprogress/nprogress.css';
 function BlankLayout({ route, children, location: { pathname }, title }) {
     const href = pathname;
     const hrefRef = useRef();
-    const settings = useSelector(state => state.settings);
-    const loading = useSelector(state => state.loading);
+    const settings = useSelector((state) => state.settings);
+    const loading = useSelector((state) => state.loading);
 
     const { routes = [] } = route || {};
 
@@ -72,7 +72,16 @@ function BlankLayout({ route, children, location: { pathname }, title }) {
     );
 }
 
-BlankLayout.getInitialProps = ({ isServer, isMobile, user, site, links, store, params }) => {
+BlankLayout.getInitialProps = ({
+    isServer,
+    isMobile,
+    isSpider,
+    user,
+    site,
+    links,
+    store,
+    params,
+}) => {
     const { dispatch, getState } = store;
 
     const state = getState();
@@ -85,6 +94,7 @@ BlankLayout.getInitialProps = ({ isServer, isMobile, user, site, links, store, p
             type: 'settings/setSettings',
             payload: {
                 isMobile,
+                isSpider,
                 site,
                 links,
             },
