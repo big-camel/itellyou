@@ -155,6 +155,17 @@ export default [
             },
         ],
     },
+    {
+        path: '/download/:id(\\d+)',
+        component: '../layouts/BlankLayout',
+        routes: [
+            {
+                path: '/download/:id(\\d+)',
+                name: 'download.page.detail',
+                component: './software/detail',
+            },
+        ],
+    },
     //app
     {
         path: '/',
@@ -213,11 +224,6 @@ export default [
             },
             // Software
             { path: '/download', name: 'download.page.index', component: './software' },
-            {
-                path: '/download/:id(\\d+)',
-                name: 'download.page.detail',
-                component: './software/detail',
-            },
             // Knowledge
             { path: '/knowledge', name: 'knowledge.page.index', component: './knowledge' },
             {

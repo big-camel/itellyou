@@ -10,18 +10,7 @@ import { Favorite, Delete } from './Action';
 import { Tag, Space } from 'antd';
 
 const Question = ({
-    data: {
-        id,
-        title,
-        description,
-        answers,
-        answer_list,
-        tags,
-        author,
-        comment_count,
-        reward_type,
-        reward_value,
-    },
+    data: { id, title, answers, answer_list, tags, reward_type, reward_value },
     tag = true,
     number = true,
     authorSize,
@@ -71,7 +60,7 @@ const Question = ({
                     )}
                 </div>
             </div>
-            {answer_list.map(answer => (
+            {answer_list.map((answer) => (
                 <Answer key={answer.id} data={answer} desc={true} authorSize={authorSize} />
             ))}
         </div>

@@ -11,6 +11,8 @@ import EllipsisButton from './EllipsisButton';
 import AdoptButton from './AdoptButton';
 import EditButton from './EditButton';
 import HistoryButton from './HistoryButton';
+import BackTopButton from './BackTopButton';
+import { RewardButton, RewardPanel } from './RewardButton';
 
 export default BaseButton;
 export {
@@ -26,4 +28,7 @@ export {
     AdoptButton,
     EditButton,
     HistoryButton,
+    BackTopButton,
+    RewardButton,
+    RewardPanel,
 };

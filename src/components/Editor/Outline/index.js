@@ -66,8 +66,8 @@ export default ({ view, config, className, ...props }) => {
         }, 200);
     }, [contents]);
 
-    const onLinkFocus = (target) => {
-        window.location.hash = `#${target.to}`;
+    const onLinkClick = (id) => {
+        window.location.hash = `#${id}`;
     };
 
     return (
@@ -86,7 +86,7 @@ export default ({ view, config, className, ...props }) => {
                         >
                             <Link
                                 offsetTop={80}
-                                onFocus={onLinkFocus}
+                                onClick={() => onLinkClick(id)}
                                 className={classNames(styles['link'], styles[`link-${depth}`])}
                                 to={`${id}`}
                             >

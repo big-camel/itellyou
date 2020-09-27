@@ -2,7 +2,7 @@ import React from 'react';
 import { LikeFilled } from '@ant-design/icons';
 import BaseButton from './BaseButton';
 
-function SupportButton({ text, count, icon, children, ...props }) {
+const SupportButton = React.forwardRef(({ text, count, icon, children, ...props }, ref) => {
     count = count || 0;
     const renderContent = () => {
         if (children) return children;
@@ -15,9 +15,9 @@ function SupportButton({ text, count, icon, children, ...props }) {
     };
 
     return (
-        <BaseButton icon={icon || <LikeFilled />} {...props}>
+        <BaseButton icon={icon || <LikeFilled />} ref={ref} {...props}>
             {renderContent()}
         </BaseButton>
     );
-}
+});
 export default SupportButton;

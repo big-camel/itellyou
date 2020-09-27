@@ -64,7 +64,7 @@ function Column({ location: { query } }) {
     const renderList = () => {
         return (
             <List
-                grid={isMobile ? { gutter: 16, column: 1 } : { gutter: 24, column: 4 }}
+                grid={isMobile ? { gutter: 16, column: 1 } : { gutter: 8, column: 4 }}
                 loading={loading}
                 dataSource={list ? list.data : []}
                 renderItem={renderItem}

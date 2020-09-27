@@ -8,7 +8,7 @@ import { CommentButton, EditButton, ReportButton } from '@/components/Button';
 import Timer from '@/components/Timer';
 import Tag from '@/components/Tag';
 import { RouteContext } from '@/context';
-import { RewardButton } from '@/components/Reward';
+import { RewardButton } from '@/components/Button';
 import { PaidReadPurchase } from '@/components/PaidRead';
 import { Vote, Favorite, Comment, Delete } from './Action';
 import styles from '../index.less';

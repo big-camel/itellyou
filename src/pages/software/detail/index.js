@@ -1,30 +1,22 @@
-import React, { useState, useContext, useCallback, useEffect } from 'react';
+import React, { useState, useContext, useRef, useEffect, useCallback } from 'react';
 import { useSelector, Helmet, Redirect, useDispatch, Link } from 'umi';
-import {
-    Card,
-    Space,
-    Descriptions,
-    Tabs,
-    message,
-    Empty,
-    Collapse,
-    Table,
-    Tooltip,
-    Popover,
-} from 'antd';
+import { Space, Descriptions, Tabs, message, Empty, Collapse, Table, Tooltip, Popover } from 'antd';
 import copyToClipboard from 'copy-to-clipboard';
 import filesize from 'filesize';
+import QueueAnim from 'rc-queue-anim';
+import { LikeOutlined } from '@ant-design/icons';
 import { RouteContext } from '@/context';
-import { RewardButton } from '@/components/Reward';
-import Container, { Layout } from '@/components/Container';
+import { RewardButton } from '@/components/Button';
 import Loading from '@/components/Loading';
 import Editor from '@/components/Editor';
 import { GoogleHorizontal } from '@/components/AdSense';
-import { CommentButton, EditButton, ReportButton } from '@/components/Button';
-import { Vote, Comment } from './components/Action';
+import { CommentButton, EditButton, ReportButton, ShareButton } from '@/components/Button';
+import { HeaderContainer, HeaderLogo } from '@/components/Header';
 import Timer from '@/components/Timer';
 import Time from '@/utils/time';
 import Tag from '@/components/Tag';
+import { getScrollTop, scrollToElement } from '@/utils';
+import { Vote, Comment } from './components/Action';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -32,6 +24,9 @@ const { Panel } = Collapse;
 
 const SoftwareDetail = ({ match: { params } }) => {
     const id = parseInt(params.id || 0);
+    const [scrollVisible, setScrollVisible] = useState(false);
+    const [viewMode, setViewMode] = useState('');
+    const commentViewRef = useRef();
     const [contentData, setContentData] = useState({});
     const rewardData = useSelector((state) => state.softwareReward.list);
     const { detail, response_status } = useSelector((state) => state.software);
@@ -39,7 +34,6 @@ const SoftwareDetail = ({ match: { params } }) => {
     const { isMobile } = useContext(RouteContext);
     const loadingState = useSelector((state) => state.loading);
     const loading = loadingState.effects['software/find'];
-    const [commentVisible, setCommentVisible] = useState(true);
 
     const dispatch = useDispatch();
 
@@ -52,21 +46,32 @@ const SoftwareDetail = ({ match: { params } }) => {
         });
     }, [dispatch, id]);
 
+    const handleScroll = useCallback(() => {
+        const min = 80;
+        const top = getScrollTop();
+        setScrollVisible(top > min);
+    }, []);
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [handleScroll]);
+
     if (response_status && response_status.id === id && response_status.code > 200)
         return <Redirect to="/404" />;
 
     if (!detail || loading) return <Loading />;
+
     const {
         name,
         attributes,
         description,
         releases,
-        custom_description,
-        logo,
         content,
         html,
         author,
-        column,
         use_author,
         comment_count,
         allow_edit,
@@ -77,11 +82,20 @@ const SoftwareDetail = ({ match: { params } }) => {
         view,
         tags,
     } = detail;
+
     const onContentReady = (view, config) => {
         setContentData({
             view,
             config,
         });
+        const hasOutline = (config || {}).outline && config.outline.length > 0;
+
+        setViewMode(hasOutline ? 'middle' : '');
+
+        if (window.location.hash) {
+            const scrollId = window.location.hash.substr(1);
+            scrollToElement(document.getElementById(scrollId));
+        }
     };
 
     const renderContent = () => {
@@ -96,25 +110,6 @@ const SoftwareDetail = ({ match: { params } }) => {
                         onLoad={onContentReady}
                     />
                 }
-                <p className={styles['footer']}>
-                    <Link className={styles['time']} to={`/download/${id}`}>
-                        {updated_time === null || version === 1 ? '发布于' : '更新于'}
-                        <Timer
-                            time={
-                                updated_time === null || version === 1 ? created_time : updated_time
-                            }
-                        />
-                    </Link>
-                    {allow_edit && (
-                        <EditButton
-                            className={styles['edit']}
-                            type="link"
-                            href={`/software/${id}/edit`}
-                        >
-                            编辑{draft_version > version ? '（有未发布的草稿）' : ''}
-                        </EditButton>
-                    )}
-                </p>
             </div>
         );
     };
@@ -314,85 +309,139 @@ const SoftwareDetail = ({ match: { params } }) => {
                 <meta name="keywords" content={keywords.join(',')} />
                 <meta name="description" content={description} />
             </Helmet>
-            <Container>
-                <Layout>
-                    <Space direction="vertical" size="large">
-                        <div className={styles['software-view']}>
-                            <Card>
-                                <Space direction="vertical" size="middle">
-                                    <div className={styles['header']}>
-                                        <h2 className={styles['title']}>
-                                            <Link
-                                                to={`/software/${id}`}
-                                                dangerouslySetInnerHTML={{ __html: name }}
-                                            />
-                                        </h2>
-                                        <Space className={styles['tags']}>
-                                            {tags &&
-                                                tags.map(({ id, name }) => (
-                                                    <Tag
-                                                        key={id}
-                                                        id={id}
-                                                        href={`/tag/${id}`}
-                                                        title={name}
-                                                    />
-                                                ))}
-                                            <span className={styles['view']}>{view}次浏览</span>
-                                        </Space>
-                                    </div>
-                                    {renderAttributes()}
-                                    <GoogleHorizontal />
-                                    {recommendFiles.length > 0 && (
-                                        <div className={styles['software-recommend']}>
-                                            <h2 className={styles['title']}>推荐版本</h2>
-                                            <Table
-                                                rowKey="id"
-                                                dataSource={recommendFiles}
-                                                columns={renderColumns()}
-                                                size="small"
-                                                pagination={false}
-                                                bordered
-                                            />
-                                        </div>
-                                    )}
-                                    <div>
-                                        <h2 className={styles['title']}>所有版本</h2>
-                                        {renderReleases()}
-                                    </div>
-                                    <div className={styles['body']}>{renderContent()}</div>
-                                    <RewardButton
-                                        author={author}
-                                        dataType="software"
-                                        dataKey={id}
-                                        dataSource={rewardData}
-                                    />
-                                    <Space size="large">
-                                        <Vote id={id} {...detail} />
-                                        <CommentButton
-                                            onClick={() => setCommentVisible(!commentVisible)}
-                                        >
-                                            {comment_count === 0
-                                                ? '添加评论'
-                                                : `${comment_count} 条评论`}
-                                        </CommentButton>
-                                        {!isMobile && !use_author && (
-                                            <ReportButton id={id} type="software" />
-                                        )}
-                                    </Space>
-                                    <div>{commentVisible && <Comment id={id} />}</div>
-                                </Space>
-                            </Card>
-                        </div>
-                        <GoogleHorizontal />
+            <HeaderContainer
+                mode={scrollVisible ? viewMode : ''}
+                className={styles['header-top']}
+                after={
+                    <Space size="large">
+                        <EditButton type="primary" href="/article/new">
+                            写文章
+                        </EditButton>
                     </Space>
-                    <React.Fragment>
+                }
+            >
+                <HeaderLogo />
+            </HeaderContainer>
+            <div className={styles['main-wrapper']}>
+                <Space direction="vertical" size="large" className={styles['main-body']}>
+                    <div className={styles['software-view']}>
+                        <Space direction="vertical" size="middle">
+                            <div className={styles['header']}>
+                                <h2 className={styles['title']}>
+                                    <Link
+                                        to={`/software/${id}`}
+                                        dangerouslySetInnerHTML={{ __html: name }}
+                                    />
+                                </h2>
+                            </div>
+                            {renderAttributes()}
+                            <GoogleHorizontal />
+                            {recommendFiles.length > 0 && (
+                                <div className={styles['software-recommend']}>
+                                    <h2 className={styles['title']}>推荐版本</h2>
+                                    <Table
+                                        rowKey="id"
+                                        dataSource={recommendFiles}
+                                        columns={renderColumns()}
+                                        size="small"
+                                        pagination={false}
+                                        bordered
+                                    />
+                                </div>
+                            )}
+                            <div>
+                                <h2 className={styles['title']}>所有版本</h2>
+                                {renderReleases()}
+                            </div>
+                            <div className={styles['body']}>{renderContent()}</div>
+                            <RewardButton
+                                author={author}
+                                dataType="software"
+                                dataKey={id}
+                                dataSource={rewardData}
+                            />
+                            <Space className={styles['footer']}>
+                                <span className={styles['view']}>阅读 {view} , </span>
+                                <Link className={styles['time']} to={`/download/${id}`}>
+                                    {updated_time === null || version === 1 ? '发布于 ' : '更新于 '}
+                                    <Timer
+                                        time={
+                                            updated_time === null || version === 1
+                                                ? created_time
+                                                : updated_time
+                                        }
+                                    />
+                                </Link>
+                                {allow_edit && (
+                                    <EditButton
+                                        className={styles['edit']}
+                                        type="link"
+                                        href={`/software/${id}/edit`}
+                                        size="small"
+                                    >
+                                        编辑{draft_version > version ? '（有未发布的草稿）' : ''}
+                                    </EditButton>
+                                )}
+                            </Space>
+                            <Space className={styles['tags']}>
+                                {tags &&
+                                    tags.map(({ id, name }) => (
+                                        <Tag key={id} id={id} href={`/tag/${id}`} title={name} />
+                                    ))}
+                            </Space>
+                            <Space size="middle">
+                                <Vote id={id} {...detail} />
+                                <CommentButton
+                                    onClick={() => scrollToElement(commentViewRef.current)}
+                                >
+                                    {comment_count === 0 ? '添加评论' : `${comment_count} 条评论`}
+                                </CommentButton>
+                                {!isMobile && !use_author && (
+                                    <ReportButton id={id} type="software" />
+                                )}
+                            </Space>
+                            <GoogleHorizontal />
+                            <div ref={commentViewRef}>
+                                <Comment id={id} />
+                            </div>
+                        </Space>
+                    </div>
+                    <GoogleHorizontal />
+                </Space>
+                <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['side']}>
+                    {scrollVisible ? (
+                        <Space key="side" size="large" direction="vertical">
+                            <div className={styles['like-action']}>
+                                <Vote
+                                    id={id}
+                                    {...detail}
+                                    allow_oppose={false}
+                                    text={
+                                        detail.use_support
+                                            ? `已点赞 ${detail.support}`
+                                            : `点赞 ${detail.support}`
+                                    }
+                                    icon={detail.use_support ? <LikeFilled /> : <LikeOutlined />}
+                                    loading={false}
+                                />
+                            </div>
+                            <RewardButton block simple author={detail.author}>
+                                打赏
+                            </RewardButton>
+                            <ShareButton block>分享</ShareButton>
+                        </Space>
+                    ) : null}
+                </QueueAnim>
+                <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['outline']}>
+                    {scrollVisible ? (
                         <Editor.Outline
+                            key="outline"
+                            className={styles['outline-view']}
                             {...contentData}
-                            style={{ width: (1056 * 29.16666667) / 100 - 22 }}
                         />
-                    </React.Fragment>
-                </Layout>
-            </Container>
+                    ) : null}
+                </QueueAnim>
+            </div>
         </>
     );
 };

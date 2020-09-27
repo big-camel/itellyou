@@ -1,8 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link, useSelector, useIntl, Helmet } from 'umi';
 import classNames from 'classnames';
-import { Card, Button, Space } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { Card, Space, Empty } from 'antd';
 import { GoogleHorizontal, GoogleSquare } from '@/components/AdSense';
 import { RouteContext } from '@/context';
 import { getPageQuery } from '@/utils';
@@ -62,9 +61,13 @@ function ArticleIndex({ location: { query }, match: { params } }) {
     const renderList = () => {
         if (!me && type === 'star')
             return (
-                <p>
-                    <Link to="/login">未登录</Link>
-                </p>
+                <Empty
+                    description={
+                        <p>
+                            请先<Link to="/login">登录</Link>
+                        </p>
+                    }
+                />
             );
         return (
             <PageList

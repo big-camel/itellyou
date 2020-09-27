@@ -6,9 +6,11 @@ import { UserAuthor } from '@/components/User';
 import List from '@/components/List';
 import Timer from '@/components/Timer';
 import Panel from '../Panel';
+import BaseButton from '../../BaseButton';
 import styles from './index.less';
 
-export default ({ author, dataType, dataKey, dataSource }) => {
+export default ({ author, dataType, dataKey, dataSource, text, children, ...props }) => {
+    text = text || children || '打赏支持';
     const [visible, setVisible] = useState(false);
     const [moreVisible, setMoreVisible] = useState(false);
     const dispatch = useDispatch();
@@ -79,17 +81,35 @@ export default ({ author, dataType, dataKey, dataSource }) => {
         );
     };
 
-    return (
-        <>
+    const renderButton = () => {
+        const button = (btnProps) => (
+            <BaseButton icon={<PayCircleFilled />} onClick={() => setVisible(true)} {...btnProps}>
+                {text}
+            </BaseButton>
+        );
+        if (props.hasOwnProperty('simple')) {
+            const { simple, ...btnProps } = props;
+            return button(btnProps);
+        }
+
+        return (
             <Space className={styles['reward-warpper']} direction="vertical" size="middle">
                 <div className={styles['reward-desc']}>如果对您有帮助，可以打赏支持我一下~</div>
-                <div className={styles['reward-btn']} onClick={() => setVisible(true)}>
-                    <Button icon={<PayCircleFilled />} type="primary" shape="round">
-                        打赏支持
-                    </Button>
+                <div className={styles['reward-btn']}>
+                    {button({
+                        ...props,
+                        type: 'primary',
+                        shape: 'round',
+                    })}
                 </div>
                 {renderRewardList()}
             </Space>
+        );
+    };
+
+    return (
+        <>
+            {renderButton()}
             <Panel
                 visible={visible}
                 onVisibleChange={setVisible}

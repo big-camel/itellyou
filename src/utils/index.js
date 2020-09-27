@@ -77,9 +77,10 @@ export const calcHeight = (element, isTop) => {
     return height;
 };
 
-export const scrollToElement = (from, to) => {
-    let top = getOffset(to ? to : from).top - 80;
-    let i = to ? getOffset(from).top : 0;
+export const scrollToElement = (from, to, offsetTop = 80) => {
+    if (!from) return;
+    let top = getOffset(to ? to : from).top - offsetTop;
+    let i = to ? getOffset(from).top : getScrollTop();
     const value = Math.abs(top - i);
     let step = 5;
     if (value > 200 && value <= 500) step = 15;

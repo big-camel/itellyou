@@ -1,3 +1,84 @@
+.header-top {
+    position: fixed;
+}
+.main-wrapper {
+    width: 100%;
+    padding-top: 60px;
+    min-height: calc(100vh - 136px);
+    background: #ffffff;
+    padding-bottom: 46px;
+
+    :global(.ant-card) {
+        box-shadow: none;
+        border: 1px solid #f0f0f0;
+    }
+
+    .main-body {
+        width: 758px;
+        margin: 0 auto;
+        height: 100%;
+        padding: 0 34px;
+    }
+
+    .side {
+        position: fixed;
+        left: calc((100vw - 990px) / 2);
+        margin: auto;
+        top: 106px;
+
+        button {
+            display: block;
+            height: 100%;
+
+            :global(.anticon) {
+                font-size: 20px;
+                display: block;
+                margin-bottom: 4px;
+            }
+
+            span:last-child {
+                margin: 0;
+                display: block;
+            }
+        }
+
+        .like-action {
+            display: flex;
+            width: 96px;
+            text-align: center;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+
+            button {
+                color: @primary-color;
+
+                :global(.anticon) {
+                    height: 48px;
+                    width: 48px;
+                    border-radius: 50%;
+                    background: rgba(0, 132, 255, 0.1);
+                    line-height: 48px;
+                }
+            }
+        }
+    }
+
+    .outline {
+        position: fixed;
+        left: calc((100vw - 758px) / 2 + 758px + 44px);
+        margin: auto;
+        top: 106px;
+
+        .outline-view {
+            position: relative;
+            padding: 0;
+            max-width: 160px;
+            min-width: 160px;
+        }
+    }
+}
+
 .software-view {
     overflow: hidden;
 
@@ -8,12 +89,6 @@
 
     :global(.ant-card-body) {
         padding: 24px 34px;
-    }
-
-    .software-attributes {
-    }
-
-    .software-recommend {
     }
 
     .software-release {
@@ -31,6 +106,14 @@
             }
         }
     }
+
+    .footer {
+        color: #8590a6;
+        .time {
+            color: #8590a6;
+            font-size: 14px;
+        }
+    }
 }
 
 @media only screen and (max-width: 575px) {
@@ -42,9 +125,11 @@
 }
 
 .header {
+    margin-bottom: 24px;
+
     .title {
-        font-size: 30px;
-        margin-bottom: 16px;
+        font-size: 24px;
+        margin: 24px 0;
         word-break: break-word;
 
         a {

@@ -60,14 +60,16 @@ const SoftwareIndex = ({ location: { query } }) => {
                 <Card className={styles['item-card']} hoverable>
                     {logo && (
                         <div>
-                            <Link to={`/download/${id}`}>
+                            <a href={`/download/${id}`} target="_blank">
                                 <img src={logo} alt={name} width="100%" />
-                            </Link>
+                            </a>
                         </div>
                     )}
                     {!logo && (
                         <h4 className={styles.title}>
-                            <Link to={`/download/${id}`}>{name}</Link>
+                            <a href={`/download/${id}`} target="_blank">
+                                {name}
+                            </a>
                         </h4>
                     )}
                 </Card>

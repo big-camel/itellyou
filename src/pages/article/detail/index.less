@@ -26,6 +26,22 @@
         margin: auto;
         top: 106px;
 
+        button {
+            display: block;
+            height: 100%;
+
+            :global(.anticon) {
+                font-size: 20px;
+                display: block;
+                margin-bottom: 4px;
+            }
+
+            span:last-child {
+                margin: 0;
+                display: block;
+            }
+        }
+
         .like-action {
             display: flex;
             width: 96px;
@@ -35,36 +51,15 @@
             justify-content: center;
 
             button {
-                display: block;
-                height: 100%;
                 color: @primary-color;
 
                 :global(.anticon) {
-                    transition: 0.3s;
-                    font-size: 20px;
-                    display: block;
                     height: 48px;
                     width: 48px;
-                    margin: 0 auto;
                     border-radius: 50%;
                     background: rgba(0, 132, 255, 0.1);
                     line-height: 48px;
-                    margin-bottom: 6px;
                 }
-
-                span:last-child {
-                    margin: 0;
-                    display: block;
-                }
-            }
-        }
-
-        .like-action:hover {
-            :global(.anticon) {
-                width: 52px;
-                line-height: 52px;
-                height: 52px;
-                font-size: 22px;
             }
         }
     }

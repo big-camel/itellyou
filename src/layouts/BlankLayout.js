@@ -4,6 +4,7 @@ import NProgress from 'nprogress';
 import { getRoute, getTitle, getMetas } from '@/utils/page';
 import { RouteContext } from '@/context';
 import useMedia from 'use-media-antd-query';
+import { BackTopButton } from '@/components/Button';
 import 'nprogress/nprogress.css';
 
 function BlankLayout({ route, children, location: { pathname }, title }) {
@@ -67,6 +68,7 @@ function BlankLayout({ route, children, location: { pathname }, title }) {
                 }}
             >
                 {children}
+                <BackTopButton />
             </RouteContext.Provider>
         </>
     );

@@ -9,7 +9,7 @@ import Loading from '@/components/Loading';
 import { Article } from '@/components/Content';
 import Editor from '@/components/Editor';
 import { GoogleHorizontal } from '@/components/AdSense';
-import { EditButton, EllipsisButton, HistoryButton } from '@/components/Button';
+import { EditButton, HistoryButton, RewardButton, ShareButton } from '@/components/Button';
 import { HeaderContainer, HeaderLogo } from '@/components/Header';
 import { getScrollTop, scrollToElement } from '@/utils';
 import { ColumnDetail } from '@/components/Column';
@@ -104,7 +104,6 @@ function Detail({ match: { params } }) {
                         <EditButton type="primary" href="/article/new">
                             写文章
                         </EditButton>
-                        <EllipsisButton style={{ fontSize: 26, lineHeight: '34px' }} />
                     </Space>
                 }
             >
@@ -159,7 +158,7 @@ function Detail({ match: { params } }) {
                 </Space>
                 <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['side']}>
                     {scrollVisible ? (
-                        <div key="side">
+                        <Space key="side" size="large" direction="vertical">
                             <div className={styles['like-action']}>
                                 <Article.Vote
                                     id={id}
@@ -170,7 +169,11 @@ function Detail({ match: { params } }) {
                                     loading={false}
                                 />
                             </div>
-                        </div>
+                            <RewardButton block simple author={detail.author}>
+                                打赏
+                            </RewardButton>
+                            <ShareButton block>分享</ShareButton>
+                        </Space>
                     ) : null}
                 </QueueAnim>
                 <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['outline']}>

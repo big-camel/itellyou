@@ -140,7 +140,7 @@ function Detail({ match: { params } }) {
             </Helmet>
             <Container>
                 <Layout>
-                    <React.Fragment>
+                    <Space direction="vertical">
                         <Card>
                             <div
                                 className={classNames(styles.header, {
@@ -229,28 +229,28 @@ function Detail({ match: { params } }) {
                                 exclude={[answer_id]}
                             />
                         }
-                        {
-                            <Comment
-                                question_id={id}
-                                visible={commentVisible}
-                                onVisibleChange={setCommentVisible}
-                            />
-                        }
-                        {historyViewer && (
-                            <Editor.History
-                                id={id}
-                                type="question"
-                                extra={(data) => <HistoryExtra {...data} />}
-                                onCancel={() => setHistoryViewer(false)}
-                            />
-                        )}
-                    </React.Fragment>
-                    <Space direction="vertical" size="large">
+                    </Space>
+                    <Space direction="vertical">
                         {detail && <Author {...detail.author} />}
                         <GoogleSquare />
                         <Related id={id} />
                     </Space>
                 </Layout>
+                {
+                    <Comment
+                        question_id={id}
+                        visible={commentVisible}
+                        onVisibleChange={setCommentVisible}
+                    />
+                }
+                {historyViewer && (
+                    <Editor.History
+                        id={id}
+                        type="question"
+                        extra={(data) => <HistoryExtra {...data} />}
+                        onCancel={() => setHistoryViewer(false)}
+                    />
+                )}
             </Container>
         </>
     );
