@@ -47,7 +47,9 @@ export default ({ action, type, force }) => {
         return (
             <span>
                 {verb}&nbsp;&nbsp;
-                <Link to={`/${type}/${id}`}>{type === 'software' ? name : title}</Link>
+                <Link to={`/${type === 'software' ? 'download' : type}/${id}`}>
+                    {type === 'software' ? name : title}
+                </Link>
             </span>
         );
     };
@@ -73,7 +75,9 @@ export default ({ action, type, force }) => {
         return (
             <span>
                 {verb}&nbsp;&nbsp;
-                <Link to={`/${type}/${id}`}>{type === 'software' ? name : title}</Link>
+                <Link to={`/${type === 'software' ? 'download' : type}/${id}`}>
+                    {type === 'software' ? name : title}
+                </Link>
             </span>
         );
     };

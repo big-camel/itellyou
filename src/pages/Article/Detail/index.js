@@ -97,6 +97,7 @@ function Detail({ match: { params } }) {
                 <meta name="description" content={description} />
             </Helmet>
             <HeaderContainer
+                isMobile={isMobile}
                 mode={scrollVisible ? viewMode : ''}
                 className={styles['header-top']}
                 after={
@@ -156,35 +157,39 @@ function Detail({ match: { params } }) {
                     </div>
                     <Related id={id} />
                 </Space>
-                <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['side']}>
-                    {scrollVisible ? (
-                        <Space key="side" size="large" direction="vertical">
-                            <div className={styles['like-action']}>
-                                <Article.Vote
-                                    id={id}
-                                    {...detail}
-                                    allow_oppose={false}
-                                    text={use_support ? `已点赞 ${support}` : `点赞 ${support}`}
-                                    icon={use_support ? <LikeFilled /> : <LikeOutlined />}
-                                    loading={false}
-                                />
-                            </div>
-                            <RewardButton block simple author={detail.author}>
-                                打赏
-                            </RewardButton>
-                            <ShareButton block>分享</ShareButton>
-                        </Space>
-                    ) : null}
-                </QueueAnim>
-                <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['outline']}>
-                    {scrollVisible ? (
-                        <Editor.Outline
-                            key="outline"
-                            className={styles['outline-view']}
-                            {...contentData}
-                        />
-                    ) : null}
-                </QueueAnim>
+                {!isMobile && (
+                    <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['side']}>
+                        {scrollVisible ? (
+                            <Space key="side" size="large" direction="vertical">
+                                <div className={styles['like-action']}>
+                                    <Article.Vote
+                                        id={id}
+                                        {...detail}
+                                        allow_oppose={false}
+                                        text={use_support ? `已点赞 ${support}` : `点赞 ${support}`}
+                                        icon={use_support ? <LikeFilled /> : <LikeOutlined />}
+                                        loading={false}
+                                    />
+                                </div>
+                                <RewardButton block simple author={detail.author}>
+                                    打赏
+                                </RewardButton>
+                                <ShareButton block>分享</ShareButton>
+                            </Space>
+                        ) : null}
+                    </QueueAnim>
+                )}
+                {!isMobile && (
+                    <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['outline']}>
+                        {scrollVisible ? (
+                            <Editor.Outline
+                                key="outline"
+                                className={styles['outline-view']}
+                                {...contentData}
+                            />
+                        ) : null}
+                    </QueueAnim>
+                )}
             </div>
         </>
     );

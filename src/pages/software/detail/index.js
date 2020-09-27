@@ -4,7 +4,7 @@ import { Space, Descriptions, Tabs, message, Empty, Collapse, Table, Tooltip, Po
 import copyToClipboard from 'copy-to-clipboard';
 import filesize from 'filesize';
 import QueueAnim from 'rc-queue-anim';
-import { LikeOutlined } from '@ant-design/icons';
+import { LikeOutlined, LikeFilled } from '@ant-design/icons';
 import { RouteContext } from '@/context';
 import { RewardButton } from '@/components/Button';
 import Loading from '@/components/Loading';
@@ -310,6 +310,7 @@ const SoftwareDetail = ({ match: { params } }) => {
                 <meta name="description" content={description} />
             </Helmet>
             <HeaderContainer
+                isMobile={isMobile}
                 mode={scrollVisible ? viewMode : ''}
                 className={styles['header-top']}
                 after={
@@ -408,39 +409,45 @@ const SoftwareDetail = ({ match: { params } }) => {
                     </div>
                     <GoogleHorizontal />
                 </Space>
-                <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['side']}>
-                    {scrollVisible ? (
-                        <Space key="side" size="large" direction="vertical">
-                            <div className={styles['like-action']}>
-                                <Vote
-                                    id={id}
-                                    {...detail}
-                                    allow_oppose={false}
-                                    text={
-                                        detail.use_support
-                                            ? `已点赞 ${detail.support}`
-                                            : `点赞 ${detail.support}`
-                                    }
-                                    icon={detail.use_support ? <LikeFilled /> : <LikeOutlined />}
-                                    loading={false}
-                                />
-                            </div>
-                            <RewardButton block simple author={detail.author}>
-                                打赏
-                            </RewardButton>
-                            <ShareButton block>分享</ShareButton>
-                        </Space>
-                    ) : null}
-                </QueueAnim>
-                <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['outline']}>
-                    {scrollVisible ? (
-                        <Editor.Outline
-                            key="outline"
-                            className={styles['outline-view']}
-                            {...contentData}
-                        />
-                    ) : null}
-                </QueueAnim>
+                {!isMobile && (
+                    <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['side']}>
+                        {scrollVisible ? (
+                            <Space key="side" size="large" direction="vertical">
+                                <div className={styles['like-action']}>
+                                    <Vote
+                                        id={id}
+                                        {...detail}
+                                        allow_oppose={false}
+                                        text={
+                                            detail.use_support
+                                                ? `已点赞 ${detail.support}`
+                                                : `点赞 ${detail.support}`
+                                        }
+                                        icon={
+                                            detail.use_support ? <LikeFilled /> : <LikeOutlined />
+                                        }
+                                        loading={false}
+                                    />
+                                </div>
+                                <RewardButton block simple author={detail.author}>
+                                    打赏
+                                </RewardButton>
+                                <ShareButton block>分享</ShareButton>
+                            </Space>
+                        ) : null}
+                    </QueueAnim>
+                )}
+                {!isMobile && (
+                    <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['outline']}>
+                        {scrollVisible ? (
+                            <Editor.Outline
+                                key="outline"
+                                className={styles['outline-view']}
+                                {...contentData}
+                            />
+                        ) : null}
+                    </QueueAnim>
+                )}
             </div>
         </>
     );

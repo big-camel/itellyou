@@ -184,10 +184,11 @@ function Detail({ match: { params } }) {
                                         {detail.comments > 0 ? `${detail.comments} 条评论` : '评论'}
                                     </CommentButton>
                                     <ReportButton />
-                                    {((me && me.id === author.id) ||
-                                        access.webQuestionPublicEdit) && (
-                                        <EditButton type="link" href={`/question/${id}/edit`} />
-                                    )}
+                                    {!isMobile &&
+                                        ((me && me.id === author.id) ||
+                                            access.webQuestionPublicEdit) && (
+                                            <EditButton type="link" href={`/question/${id}/edit`} />
+                                        )}
                                     {!isMobile && (
                                         <HistoryButton onClick={() => setHistoryViewer(true)} />
                                     )}

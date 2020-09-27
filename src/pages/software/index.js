@@ -82,7 +82,7 @@ const SoftwareIndex = ({ location: { query } }) => {
     const renderList = () => {
         return (
             <List
-                grid={isMobile ? { gutter: 16, column: 1 } : { gutter: 16, column: 3 }}
+                grid={isMobile ? { gutter: 8, column: 2 } : { gutter: 16, column: 3 }}
                 loading={loading}
                 dataSource={dataSource ? dataSource.data : []}
                 renderItem={renderItem}

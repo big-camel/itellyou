@@ -5,14 +5,14 @@ import BaseButton from './BaseButton';
 
 export default React.forwardRef((_, ref) => {
     return (
-        <Tooltip title="回到顶部" placement="left">
-            <BackTop className="default-back-top" ref={ref}>
+        <BackTop className="default-back-top" ref={ref}>
+            <Tooltip title="回到顶部" placement="left">
                 <BaseButton
                     className="ant-back-top-content"
                     icon={<VerticalAlignTopOutlined />}
                     shape="circle"
                 />
-            </BackTop>
-        </Tooltip>
+            </Tooltip>
+        </BackTop>
     );
 });

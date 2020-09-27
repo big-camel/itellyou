@@ -104,6 +104,13 @@ export default ({ location: { pathname }, isMobile, onChange }) => {
             selectedKeys={[defaultKey]}
         >
             {menus.map((item) => {
+                if (isMobile && item.child) {
+                    return item.child.map((child) => (
+                        <Menu.Item key={child.key} className={styles['item']}>
+                            {renderLink(child)}
+                        </Menu.Item>
+                    ));
+                }
                 return (
                     <Menu.Item key={item.key} className={styles['item']}>
                         {item.child ? renderPopoverMenu(item) : renderLink(item)}

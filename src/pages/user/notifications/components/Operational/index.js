@@ -37,7 +37,10 @@ export default ({ action, type, target }) => {
     const renderCommon = (type, { id, title, name, description }) => {
         return (
             <div className={classNames(styles['op-body'], styles['op-block'])}>
-                <Link className={styles['target']} to={`/${type}/${id}`}>
+                <Link
+                    className={styles['target']}
+                    to={`/${type === 'software' ? 'download' : type}/${id}`}
+                >
                     {type === 'software' ? name : title}
                 </Link>
                 {description && description !== '' && (
@@ -74,7 +77,10 @@ export default ({ action, type, target }) => {
         } = reply ? reply : target;
         return (
             <div className={classNames(styles['op-body'], styles['op-block'])}>
-                <Link className={styles['target']} to={`/${type}/${id}`}>
+                <Link
+                    className={styles['target']}
+                    to={`/${type === 'software' ? 'download' : type}/${id}`}
+                >
                     {type === 'software' ? name : title}
                 </Link>
                 {!Editor.Utils.isBlank(content) && (

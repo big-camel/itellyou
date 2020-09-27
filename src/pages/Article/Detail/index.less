@@ -91,8 +91,32 @@
 }
 
 @media only screen and (max-width: 575px) {
+    .header-top {
+        position: relative;
+    }
+
+    .main-wrapper {
+        padding-top: 0;
+        .main-body {
+            width: 100%;
+            padding: 0 8px;
+            margin: 0;
+        }
+    }
+
     .article-view {
-        padding: 12px 16px;
+        padding: 8px;
+    }
+
+    .article {
+        .header {
+            margin-bottom: 12px !important;
+
+            .title {
+                font-size: 16px !important;
+                margin: 12px 0 !important;
+            }
+        }
     }
 }
 

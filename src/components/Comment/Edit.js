@@ -1,9 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import classNames from 'classnames';
 import { Button, message } from 'antd';
 import { useSelector, Link, isBrowser } from 'umi';
-import QueueAnim from 'rc-queue-anim';
-import TweenOne from 'rc-tween-one';
+import { RouteContext } from '@/context';
 import { LineEditor } from '@/components/Editor/Async';
 import { isBlank } from '@/components/Editor/utils';
 import styles from './index.less';
@@ -17,7 +16,7 @@ function CommentEdit({ defaultValue, onSubmit }) {
     const [isFocus, setIsFocus] = useState(false);
     const [content, setContent] = useState();
     const me = useSelector((state) => state.user.me);
-
+    const { isMobile } = useContext(RouteContext);
     const doSubmit = () => {
         if (onSubmit && editor.current && !submiting) {
             if (isBlank(content)) {
@@ -89,7 +88,7 @@ function CommentEdit({ defaultValue, onSubmit }) {
                             defaultValue={defaultValue}
                             onLoad={onEditorLoad}
                             onChange={onEditorChange}
-                            toolbar={[['emoji']]}
+                            toolbar={isMobile ? [] : [['emoji']]}
                             onFoucs={() => {
                                 console.log('onfous');
                             }}

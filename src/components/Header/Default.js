@@ -30,7 +30,6 @@ export default ({ mode, ...props }) => {
                         }
                     />
                     <Logo />
-                    <User {...props} />
                 </>
             );
         }
@@ -43,7 +42,7 @@ export default ({ mode, ...props }) => {
         );
     };
     return (
-        <Container mode={mode} after={<User {...props} />}>
+        <Container mode={mode} isMobile={isMobile} after={<User {...props} />}>
             {render()}
         </Container>
     );

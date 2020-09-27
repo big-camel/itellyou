@@ -68,7 +68,7 @@ function BlankLayout({ route, children, location: { pathname }, title }) {
                 }}
             >
                 {children}
-                <BackTopButton />
+                {!isMobile && <BackTopButton />}
             </RouteContext.Provider>
         </>
     );
