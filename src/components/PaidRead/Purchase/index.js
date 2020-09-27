@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
-import { RewardPanel } from '@/components/Reward';
+import { RewardPanel } from '@/components/Button';
 import styles from './index.less';
 
 export default ({ data, author, doPay }) => {

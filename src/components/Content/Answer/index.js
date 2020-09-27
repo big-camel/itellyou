@@ -5,7 +5,7 @@ import { history, Link, useDispatch, useSelector } from 'umi';
 import Editor from '@/components/Editor';
 import Timer from '@/components/Timer';
 import { RouteContext } from '@/context';
-import { RewardButton } from '@/components/Reward';
+import { RewardButton } from '@/components/Button';
 import { PaidReadPurchase } from '@/components/PaidRead';
 import Author from '@/components/User/Author';
 import { CommentButton, EditButton, ReportButton, HistoryButton } from '@/components/Button';
