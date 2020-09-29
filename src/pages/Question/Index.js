@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { Link, useDispatch, useSelector, useIntl, Helmet } from 'umi';
 import classNames from 'classnames';
-import { Button, Card, Space } from 'antd';
-import { GoogleHorizontal, GoogleSquare } from '@/components/AdSense';
+import { Card, Space } from 'antd';
+import { GoogleDefault } from '@/components/AdSense';
 import { RouteContext } from '@/context';
 import Container, { Layout } from '@/components/Container';
 import { getPageQuery } from '@/utils';
@@ -36,7 +36,7 @@ function QuestionIndex({ location: { query }, match: { params } }) {
     const dataSource = useSelector((state) => (state.question ? state.question.list : null));
     const settings = useSelector((state) => state.settings);
 
-    if (dataSource && dataSource.data.length > 3) {
+    if (dataSource && dataSource.data && dataSource.data.length > 3) {
         if (dataSource.data[2].type !== 'AD') {
             dataSource.data.splice(2, 0, {
                 type: 'AD',
@@ -48,7 +48,7 @@ function QuestionIndex({ location: { query }, match: { params } }) {
         if (item.type === 'AD')
             return (
                 <PageList.Item>
-                    <GoogleHorizontal />
+                    <GoogleDefault />
                 </PageList.Item>
             );
         return (
@@ -145,7 +145,7 @@ function QuestionIndex({ location: { query }, match: { params } }) {
                     </Card>
                     <Space direction="vertical" size="small">
                         <GroupUser />
-                        <GoogleSquare />
+                        <GoogleDefault />
                     </Space>
                 </Layout>
             </Container>

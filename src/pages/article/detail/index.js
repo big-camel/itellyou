@@ -8,7 +8,7 @@ import List from '@/components/List';
 import Loading from '@/components/Loading';
 import { Article } from '@/components/Content';
 import Editor from '@/components/Editor';
-import { GoogleHorizontal } from '@/components/AdSense';
+import { GoogleDefault } from '@/components/AdSense';
 import { EditButton, HistoryButton, RewardButton, ShareButton } from '@/components/Button';
 import { HeaderContainer, HeaderLogo } from '@/components/Header';
 import { getScrollTop, scrollToElement } from '@/utils';
@@ -151,7 +151,7 @@ function Detail({ match: { params } }) {
                             />
                         </div>
                     )}
-                    <GoogleHorizontal />
+                    <GoogleDefault />
                     <div ref={commentViewRef}>
                         <Article.Comment id={id} />
                     </div>

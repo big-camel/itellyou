@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector, Helmet, useIntl, Link } from 'umi';
 import { Card, Space } from 'antd';
 import { RouteContext } from '@/context';
-import { GoogleSquare } from '@/components/AdSense';
+import { GoogleDefault } from '@/components/AdSense';
 import Container, { Layout, Sider } from '@/components/Container';
 import List from '@/components/List';
 import { getPageQuery } from '@/utils';
@@ -105,7 +105,7 @@ const SoftwareIndex = ({ location: { query } }) => {
             <Layout spans={6}>
                 <Space direction="vertical" size="middle">
                     <Sider dataSource={menuData} activeKey={(group || '').toString()} />
-                    <GoogleSquare />
+                    <GoogleDefault />
                 </Space>
                 {renderList()}
             </Layout>

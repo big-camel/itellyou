@@ -3,7 +3,7 @@ import { Card, Space } from 'antd';
 import { Helmet, useIntl, useSelector } from 'umi';
 import { RouteContext } from '@/context';
 import List from '@/components/List';
-import { GoogleSquare } from '@/components/AdSense';
+import { GoogleDefault } from '@/components/AdSense';
 import Container, { Layout, Sider } from '@/components/Container';
 
 const { Meta } = Card;
@@ -172,7 +172,7 @@ const Yun = () => {
                         activeKey={type}
                         onSelect={({ key }) => setType(key)}
                     />
-                    <GoogleSquare />
+                    <GoogleDefault />
                 </Space>
                 {renderList()}
             </Layout>

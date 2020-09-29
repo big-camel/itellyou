@@ -6,7 +6,7 @@ import Container, { Layout } from '@/components/Container';
 import Recommends from './components/Recommends';
 import Writer from './components/Writer';
 import Answerer from './components/Answerer';
-import { GoogleSquare } from '@/components/AdSense';
+import { GoogleDefault } from '@/components/AdSense';
 import styles from './index.less';
 
 const Home = () => {
@@ -73,10 +73,10 @@ const Home = () => {
                             <p>💊 解决问题获得悬赏</p>
                             <p>🎪 平台广告收益分成</p>
                         </Card>
-                        <GoogleSquare />
+                        <GoogleDefault />
                         <Writer />
                         <Answerer />
-                        <GoogleSquare />
+                        <GoogleDefault />
                     </Space>
                 </Layout>
             </Container>

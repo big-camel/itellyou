@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useRef } from 'react';
 import { RouteContext } from '@/context';
 
 const Google = ({ className, style, client, slot, layout, layoutKey, format, responsive }) => {
@@ -6,8 +6,8 @@ const Google = ({ className, style, client, slot, layout, layoutKey, format, res
 
     useEffect(() => {
         try {
-            if (typeof window !== 'undefined' && window)
-                (window.adsbygoogle = window.adsbygoogle || []).push({});
+            if (typeof window === 'undefined') return;
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
         } catch (e) {
             console.error(e.message);
         }
@@ -32,7 +32,7 @@ const Google = ({ className, style, client, slot, layout, layoutKey, format, res
             data-ad-layout-key={layoutKey}
             data-ad-format={format}
             data-full-width-responsive={responsive}
-        ></ins>
+        />
     );
 };
 Google.defaultProps = {

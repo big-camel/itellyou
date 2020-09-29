@@ -15,7 +15,7 @@ import Loading from '@/components/Loading';
 import Related from './components/Related';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import Author from './components/Author';
-import { GoogleSquare } from '@/components/AdSense';
+import { GoogleDefault } from '@/components/AdSense';
 import HistoryExtra from '../components/HistoryExtra';
 import styles from './index.less';
 
@@ -233,7 +233,7 @@ function Detail({ match: { params } }) {
                     </Space>
                     <Space direction="vertical">
                         {detail && <Author {...detail.author} />}
-                        <GoogleSquare />
+                        <GoogleDefault />
                         <Related id={id} />
                     </Space>
                 </Layout>

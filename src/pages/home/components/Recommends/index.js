@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'umi';
 import { MoreList } from '@/components/List';
 import { Article, Question } from '@/components/Content';
-import { GoogleHorizontal } from '@/components/AdSense';
+import { GoogleDefault } from '@/components/AdSense';
 
 const Recommends = () => {
     const [offset, setOffset] = useState(0);
     const limit = 20;
 
     const dispatch = useDispatch();
-    const dataSource = useSelector(state => state.explore.recommends);
+    const dataSource = useSelector((state) => state.explore.recommends);
 
     const loadData = (offset, limit) => {
         dispatch({
@@ -22,7 +22,7 @@ const Recommends = () => {
         });
     };
 
-    if (dataSource && dataSource.data.length > 3) {
+    if (dataSource && dataSource.data && dataSource.data.length > 3) {
         if (dataSource.data[2].type !== 'AD') {
             dataSource.data.splice(2, 0, {
                 type: 'AD',
@@ -30,11 +30,11 @@ const Recommends = () => {
         }
     }
 
-    const renderArticle = item => {
+    const renderArticle = (item) => {
         return <Article data={item} desc={true} authorSize="small" />;
     };
 
-    const renderQuestion = item => {
+    const renderQuestion = (item) => {
         return <Question data={item} number={false} tag={false} authorSize="small" />;
     };
 
@@ -42,7 +42,7 @@ const Recommends = () => {
         if (type === 'AD')
             return (
                 <MoreList.Item>
-                    <GoogleHorizontal />
+                    <GoogleDefault />
                 </MoreList.Item>
             );
         return (
@@ -58,7 +58,7 @@ const Recommends = () => {
             offset={offset}
             limit={limit}
             dataSource={dataSource}
-            onChange={offset => {
+            onChange={(offset) => {
                 setOffset(offset);
                 loadData(offset, limit);
             }}

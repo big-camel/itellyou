@@ -9,7 +9,7 @@ import { RouteContext } from '@/context';
 import { RewardButton } from '@/components/Button';
 import Loading from '@/components/Loading';
 import Editor from '@/components/Editor';
-import { GoogleHorizontal } from '@/components/AdSense';
+import { GoogleDefault } from '@/components/AdSense';
 import { CommentButton, EditButton, ReportButton, ShareButton } from '@/components/Button';
 import { HeaderContainer, HeaderLogo } from '@/components/Header';
 import Timer from '@/components/Timer';
@@ -336,7 +336,7 @@ const SoftwareDetail = ({ match: { params } }) => {
                                 </h2>
                             </div>
                             {renderAttributes()}
-                            <GoogleHorizontal />
+                            <GoogleDefault />
                             {recommendFiles.length > 0 && (
                                 <div className={styles['software-recommend']}>
                                     <h2 className={styles['title']}>推荐版本</h2>
@@ -401,13 +401,13 @@ const SoftwareDetail = ({ match: { params } }) => {
                                     <ReportButton id={id} type="software" />
                                 )}
                             </Space>
-                            <GoogleHorizontal />
+                            <GoogleDefault />
                             <div ref={commentViewRef}>
                                 <Comment id={id} />
                             </div>
                         </Space>
                     </div>
-                    <GoogleHorizontal />
+                    <GoogleDefault />
                 </Space>
                 {!isMobile && (
                     <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['side']}>
