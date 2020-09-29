@@ -48,7 +48,7 @@ function ArticleIndex({ location: { query }, match: { params } }) {
         if (item.type === 'AD')
             return (
                 <PageList.Item>
-                    <GoogleDefault />
+                    <GoogleDefault type="rectangle" />
                 </PageList.Item>
             );
         return (
@@ -136,9 +136,9 @@ function ArticleIndex({ location: { query }, match: { params } }) {
                     </Card>
                     <Space direction="vertical">
                         <HotColumn />
-                        <GoogleDefault />
+                        <GoogleDefault type="square" />
                         <HotTag />
-                        <GoogleDefault />
+                        <GoogleDefault type="square" />
                     </Space>
                 </Layout>
             </Container>

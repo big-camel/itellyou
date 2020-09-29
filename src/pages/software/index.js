@@ -105,7 +105,7 @@ const SoftwareIndex = ({ location: { query } }) => {
             <Layout spans={6}>
                 <Space direction="vertical" size="middle">
                     <Sider dataSource={menuData} activeKey={(group || '').toString()} />
-                    <GoogleDefault />
+                    <GoogleDefault style={{ width: '248px' }} />
                 </Space>
                 {renderList()}
             </Layout>

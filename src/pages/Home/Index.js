@@ -30,7 +30,7 @@ const Home = () => {
                     </div>
                     <Space direction="vertical" size="small">
                         <Writer />
-                        <GoogleDefault />
+                        <GoogleDefault type="square" />
                         <Answerer />
                     </Space>
                 </Layout>

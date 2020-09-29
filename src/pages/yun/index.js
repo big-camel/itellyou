@@ -172,7 +172,7 @@ const Yun = () => {
                         activeKey={type}
                         onSelect={({ key }) => setType(key)}
                     />
-                    <GoogleDefault />
+                    <GoogleDefault style={{ width: '48px' }} />
                 </Space>
                 {renderList()}
             </Layout>

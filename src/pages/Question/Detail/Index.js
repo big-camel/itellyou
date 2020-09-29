@@ -233,7 +233,7 @@ function Detail({ match: { params } }) {
                     </Space>
                     <Space direction="vertical">
                         {detail && <Author {...detail.author} />}
-                        <GoogleDefault />
+                        <GoogleDefault type="square" />
                         <Related id={id} />
                     </Space>
                 </Layout>

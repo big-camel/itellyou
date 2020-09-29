@@ -73,10 +73,10 @@ const Home = () => {
                             <p>💊 解决问题获得悬赏</p>
                             <p>🎪 平台广告收益分成</p>
                         </Card>
-                        <GoogleDefault />
+                        <GoogleDefault type="square" />
                         <Writer />
                         <Answerer />
-                        <GoogleDefault />
+                        <GoogleDefault type="square" />
                     </Space>
                 </Layout>
             </Container>

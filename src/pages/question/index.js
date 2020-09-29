@@ -48,7 +48,7 @@ function QuestionIndex({ location: { query }, match: { params } }) {
         if (item.type === 'AD')
             return (
                 <PageList.Item>
-                    <GoogleDefault />
+                    <GoogleDefault type="rectangle" />
                 </PageList.Item>
             );
         return (
@@ -145,7 +145,7 @@ function QuestionIndex({ location: { query }, match: { params } }) {
                     </Card>
                     <Space direction="vertical" size="small">
                         <GroupUser />
-                        <GoogleDefault />
+                        <GoogleDefault type="square" />
                     </Space>
                 </Layout>
             </Container>

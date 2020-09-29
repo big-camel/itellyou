@@ -324,7 +324,7 @@ const SoftwareDetail = ({ match: { params } }) => {
                 <HeaderLogo />
             </HeaderContainer>
             <div className={styles['main-wrapper']}>
-                <Space direction="vertical" size="large" className={styles['main-body']}>
+                <div className={styles['main-body']}>
                     <div className={styles['software-view']}>
                         <Space direction="vertical" size="middle">
                             <div className={styles['header']}>
@@ -336,7 +336,7 @@ const SoftwareDetail = ({ match: { params } }) => {
                                 </h2>
                             </div>
                             {renderAttributes()}
-                            <GoogleDefault />
+                            <GoogleDefault type="rectangle" />
                             {recommendFiles.length > 0 && (
                                 <div className={styles['software-recommend']}>
                                     <h2 className={styles['title']}>推荐版本</h2>
@@ -401,14 +401,13 @@ const SoftwareDetail = ({ match: { params } }) => {
                                     <ReportButton id={id} type="software" />
                                 )}
                             </Space>
-                            <GoogleDefault />
+                            <GoogleDefault type="rectangle" />
                             <div ref={commentViewRef}>
                                 <Comment id={id} />
                             </div>
                         </Space>
                     </div>
-                    <GoogleDefault />
-                </Space>
+                </div>
                 {!isMobile && (
                     <QueueAnim animConfig={[{ opacity: [1, 0] }]} className={styles['side']}>
                         {scrollVisible ? (
@@ -432,6 +431,12 @@ const SoftwareDetail = ({ match: { params } }) => {
                                 <RewardButton block simple author={detail.author}>
                                     打赏
                                 </RewardButton>
+                                <CommentButton
+                                    block
+                                    onClick={() => scrollToElement(commentViewRef.current)}
+                                >
+                                    {comment_count === 0 ? '评论' : `${comment_count} 评论`}
+                                </CommentButton>
                                 <ShareButton block>分享</ShareButton>
                             </Space>
                         ) : null}

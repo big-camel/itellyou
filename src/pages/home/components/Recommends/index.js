@@ -42,7 +42,7 @@ const Recommends = () => {
         if (type === 'AD')
             return (
                 <MoreList.Item>
-                    <GoogleDefault />
+                    <GoogleDefault type="rectangle" />
                 </MoreList.Item>
             );
         return (

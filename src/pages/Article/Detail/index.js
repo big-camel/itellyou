@@ -9,7 +9,13 @@ import Loading from '@/components/Loading';
 import { Article } from '@/components/Content';
 import Editor from '@/components/Editor';
 import { GoogleDefault } from '@/components/AdSense';
-import { EditButton, HistoryButton, RewardButton, ShareButton } from '@/components/Button';
+import {
+    CommentButton,
+    EditButton,
+    HistoryButton,
+    RewardButton,
+    ShareButton,
+} from '@/components/Button';
 import { HeaderContainer, HeaderLogo } from '@/components/Header';
 import { getScrollTop, scrollToElement } from '@/utils';
 import { ColumnDetail } from '@/components/Column';
@@ -151,7 +157,7 @@ function Detail({ match: { params } }) {
                             />
                         </div>
                     )}
-                    <GoogleDefault />
+                    <GoogleDefault type="rectangle" />
                     <div ref={commentViewRef}>
                         <Article.Comment id={id} />
                     </div>
@@ -174,6 +180,15 @@ function Detail({ match: { params } }) {
                                 <RewardButton block simple author={detail.author}>
                                     打赏
                                 </RewardButton>
+                                <CommentButton
+                                    onClick={() => scrollToElement(commentViewRef.current)}
+                                    block
+                                    size="small"
+                                >
+                                    {detail.comment_count === 0
+                                        ? '评论'
+                                        : `${detail.comment_count} 评论`}
+                                </CommentButton>
                                 <ShareButton block>分享</ShareButton>
                             </Space>
                         ) : null}
