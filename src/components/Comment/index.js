@@ -40,7 +40,7 @@ function Comment({
         if (title) return <h2 className={styles['comment-title']}>{title}</h2>;
         return (
             <h2 className={styles['comment-title']}>
-                {dataSource ? dataSource.comments : 0} 条评论
+                {dataSource ? `${dataSource.comment_count} 条评论` : '还没有评论'}
             </h2>
         );
     };

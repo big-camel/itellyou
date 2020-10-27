@@ -24,11 +24,12 @@ function Detail({ match: { params } }) {
     const dispatch = useDispatch();
     const [historyViewer, setHistoryViewer] = useState(false);
     const question = useSelector((state) => state.question);
+    const answer = useSelector((state) => state.answer);
     const settings = useSelector((state) => state.settings);
     const me = useSelector((state) => state.user.me);
-    const { detail, user_answer, response_status } = question;
+    const { detail, response_status } = question;
     const { isMobile } = useContext(RouteContext);
-
+    const { user_answer } = detail || {};
     const answer_id = params.answer_id ? parseInt(params.answer_id) : null;
     const [editVisible, setEditVisible] = useState();
     const [commentVisible, setCommentVisible] = useState(false);
@@ -44,6 +45,23 @@ function Detail({ match: { params } }) {
             setEditVisible(true);
         }
     }, [answer_id, user_answer]);
+    // 更新浏览数量
+    useEffect(() => {
+        dispatch({
+            type: 'question/view',
+            payload: {
+                id,
+            },
+        });
+        if (!answer_id) return;
+        dispatch({
+            type: 'answer/view',
+            payload: {
+                question_id: id,
+                id: answer_id,
+            },
+        });
+    }, [dispatch, id, answer_id]);
 
     if (response_status && response_status.id === id && response_status > 200)
         return <Redirect to="/404" />;
@@ -125,7 +143,7 @@ function Detail({ match: { params } }) {
     const renderOther = () => {
         return (
             <Space>
-                <span className={styles['view']}>{detail.view}次浏览</span>
+                <span className={styles['view']}>{detail.view_count}次浏览</span>
                 <Timer time={detail.created_time} />
             </Space>
         );
@@ -181,7 +199,9 @@ function Detail({ match: { params } }) {
                                     />
                                     {renderStatusButton()}
                                     <CommentButton onClick={() => setCommentVisible(true)}>
-                                        {detail.comments > 0 ? `${detail.comments} 条评论` : '评论'}
+                                        {detail.comment_count > 0
+                                            ? `${detail.comment_count} 条评论`
+                                            : '评论'}
                                     </CommentButton>
                                     <ReportButton />
                                     {!isMobile &&
@@ -215,7 +235,7 @@ function Detail({ match: { params } }) {
                                 <div className={styles['view-all']}>
                                     <Card>
                                         <Link to={`/question/${detail.id}`}>
-                                            查看全部 {detail.answers} 个回答
+                                            查看全部 {detail.answer_count} 个回答
                                         </Link>
                                     </Card>
                                 </div>
@@ -232,7 +252,8 @@ function Detail({ match: { params } }) {
                         }
                     </Space>
                     <Space direction="vertical">
-                        {detail && <Author {...detail.author} />}
+                        {answer && answer.detail && <Author {...answer.detail.author} />}
+                        {detail && !answer_id && <Author {...detail.author} />}
                         <GoogleDefault type="square" />
                         <Related id={id} />
                     </Space>
@@ -277,29 +298,12 @@ Detail.getInitialProps = async ({ isServer, match, store, params }) => {
         type: 'question/find',
         payload: {
             id,
+            include: 'user_answer',
             ...params,
         },
     });
 
     if (!response || !response.result) return getState();
-
-    if (user && user.me) {
-        await dispatch({
-            type: 'answer/findDraft',
-            payload: {
-                question_id: id,
-                ...params,
-            },
-        });
-    }
-
-    await dispatch({
-        type: 'question/view',
-        payload: {
-            id,
-            ...params,
-        },
-    });
 
     await dispatch({
         type: 'answerReward/list',

@@ -14,36 +14,8 @@ export default {
                 payload: { ...response.data, append },
             });
         },
-        *follow({ payload }, { call, put }) {
+        *follow({ payload }, { call }) {
             const response = yield call(follow, payload);
-            if (response.result) {
-                const detail = {
-                    id: payload.id,
-                    use_star: true,
-                    star_count: response.data,
-                };
-                yield put({
-                    type: 'setList',
-                    payload: {
-                        append: true,
-                        end: true,
-                        data: [
-                            {
-                                answer: detail,
-                                created_time: new Date(),
-                            },
-                        ],
-                    },
-                });
-                yield put({
-                    type: 'answer/updateListItem',
-                    payload: detail,
-                });
-                yield put({
-                    type: 'explore/replaceRecommendsAnswer',
-                    payload: detail,
-                });
-            }
             return response;
         },
         *unfollow({ payload: { remove, ...payload } }, { call, put }) {
@@ -65,14 +37,6 @@ export default {
                 } else {
                     yield put({
                         type: 'replaceItem',
-                        payload: detail,
-                    });
-                    yield put({
-                        type: 'answer/updateListItem',
-                        payload: detail,
-                    });
-                    yield put({
-                        type: 'explore/replaceRecommendsAnswer',
                         payload: detail,
                     });
                 }
@@ -98,15 +62,15 @@ export default {
             );
         },
         removeItem(state, { payload }) {
-            return removeItem('list', null, state, item => item.answer.id === payload.id);
+            return removeItem('list', null, state, (item) => item.answer.id === payload.id);
         },
         replaceItem(state, { payload: { created_time, ...payload } }) {
             return replaceItem(
                 'list',
                 payload,
                 state,
-                item => item.answer.id === payload.id,
-                item => {
+                (item) => item.answer.id === payload.id,
+                (item) => {
                     return { ...item, answer: { ...item.answer, ...payload }, created_time };
                 },
             );

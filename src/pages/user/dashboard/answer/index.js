@@ -3,7 +3,7 @@ import { Table, Popover, Tag, Space, Tooltip } from 'antd';
 import Layout from '../components/Layout';
 import Loading from '@/components/Loading';
 import { Link, useDispatch, useSelector } from 'umi';
-import CardTable from '../components/CardTable';
+import CardMenu from '../components/CardMenu';
 import { EditButton } from '@/components/Button';
 import { Answer } from '@/components/Content';
 
@@ -24,8 +24,8 @@ const UserAnswer = () => {
     const limit = 20;
 
     const dispatch = useDispatch();
-    const dataSource = useSelector(state => (state.userAnswer ? state.userAnswer.list : null));
-    const loadingEffect = useSelector(state => state.loading);
+    const dataSource = useSelector((state) => (state.userAnswer ? state.userAnswer.list : null));
+    const loadingEffect = useSelector((state) => state.loading);
     const loading = loadingEffect.effects['userAnswer/list'];
 
     const renderPage = (_, type, originalElement) => {
@@ -40,33 +40,22 @@ const UserAnswer = () => {
 
     const columns = [
         {
-            title: '标题',
+            title: '回答内容',
             dataIndex: 'title',
-            key: 'title',
             ellipsis: true,
             render: (_, { question: { title }, question_id, description, id, published }) => {
                 let url = `/question/${question_id}`;
                 if (published) url += `/answer/${id}`;
                 return (
-                    <Popover
-                        placement="bottomLeft"
-                        content={
-                            <div style={{ maxWidth: 380, wordBreak: 'break-word' }}>
-                                {description || '无摘要'}
-                            </div>
-                        }
-                    >
-                        <Link className="table-column-title" to={url}>
-                            {title}
-                        </Link>
-                    </Popover>
+                    <Link className="table-column-title" to={url}>
+                        {description || title}
+                    </Link>
                 );
             },
         },
         {
             title: '是否采纳',
-            dataIndex: 'answers',
-            key: 'answers',
+            dataIndex: 'answer_count',
             width: 120,
             render: (_, { adopted }) => {
                 return adopted ? <Tag color="success">已采纳</Tag> : '';
@@ -74,14 +63,12 @@ const UserAnswer = () => {
         },
         {
             title: '评论',
-            dataIndex: 'comments',
-            key: 'comments',
+            dataIndex: 'comment_count',
             width: 80,
         },
         {
             title: '状态',
             dataIndex: 'status',
-            key: 'status',
             width: 80,
             render: (_, { published, draft_version, version }) => {
                 return (
@@ -130,11 +117,11 @@ const UserAnswer = () => {
         return (
             <Loading loading={loading}>
                 <Table
-                    rowKey={row => row.id}
+                    rowKey={(row) => row.id}
                     columns={columns}
                     dataSource={dataSource.data}
                     pagination={{
-                        onChange: page => {
+                        onChange: (page) => {
                             setPage(page);
                             fetchList(dispatch, (page - 1) * limit, limit);
                         },
@@ -151,7 +138,7 @@ const UserAnswer = () => {
 
     return (
         <Layout defaultKey="answer">
-            <CardTable>{renderTable()}</CardTable>
+            <CardMenu>{renderTable()}</CardMenu>
         </Layout>
     );
 };

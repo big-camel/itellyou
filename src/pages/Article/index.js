@@ -31,6 +31,7 @@ function ArticleIndex({ location: { query }, match: { params } }) {
 
     const [offset, setOffset] = useState(parseInt(query.offset || page || 0));
     const type = params.type || 'default';
+
     const dataSource = useSelector((state) => (state.article ? state.article.list : null));
     const me = useSelector((state) => state.user.me);
 

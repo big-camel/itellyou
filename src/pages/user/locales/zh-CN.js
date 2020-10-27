@@ -22,4 +22,6 @@ export default {
     'user.dashboard.collections': '我的收藏',
     'user.dashboard.history': '最近浏览',
     'user.notifications': '通知中心',
+    'user.dashboard.analytics': '内容分析',
+    'user.dashboard.income': '收益',
 };

@@ -6,16 +6,16 @@ import { UserAuthor } from '@/components/User';
 import styles from './index.less';
 
 const GroupUser = () => {
-    const loadingState = useSelector(state => state.loading);
+    const loadingState = useSelector((state) => state.loading);
     const loading = loadingState.effects['answerGroupUser/list'];
-    const dataSource = useSelector(state => state.answerGroupUser.list);
+    const dataSource = useSelector((state) => state.answerGroupUser.list);
 
-    const renderItem = ({ user, count }) => {
+    const renderItem = ({ user, total_count }) => {
         return (
             <List.Item>
                 <div className={styles['group-item']}>
                     <UserAuthor info={user} size="small" />
-                    <div>{count} 个回答</div>
+                    <div>{total_count} 个回答</div>
                 </div>
             </List.Item>
         );

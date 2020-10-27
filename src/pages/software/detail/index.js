@@ -16,6 +16,7 @@ import Timer from '@/components/Timer';
 import Time from '@/utils/time';
 import Tag from '@/components/Tag';
 import { getScrollTop, scrollToElement } from '@/utils';
+import Footer from '@/components/Footer';
 import { Vote, Comment } from './components/Action';
 import styles from './index.less';
 
@@ -79,7 +80,7 @@ const SoftwareDetail = ({ match: { params } }) => {
         updated_time,
         version,
         draft_version,
-        view,
+        view_count,
         tags,
     } = detail;
 
@@ -362,7 +363,7 @@ const SoftwareDetail = ({ match: { params } }) => {
                                 dataSource={rewardData}
                             />
                             <Space className={styles['footer']}>
-                                <span className={styles['view']}>阅读 {view} , </span>
+                                <span className={styles['view']}>阅读 {view_count} , </span>
                                 <Link className={styles['time']} to={`/download/${id}`}>
                                     {updated_time === null || version === 1 ? '发布于 ' : '更新于 '}
                                     <Timer
@@ -419,8 +420,8 @@ const SoftwareDetail = ({ match: { params } }) => {
                                         allow_oppose={false}
                                         text={
                                             detail.use_support
-                                                ? `已点赞 ${detail.support}`
-                                                : `点赞 ${detail.support}`
+                                                ? `已点赞 ${detail.support_count}`
+                                                : `点赞 ${detail.support_count}`
                                         }
                                         icon={
                                             detail.use_support ? <LikeFilled /> : <LikeOutlined />
@@ -453,6 +454,7 @@ const SoftwareDetail = ({ match: { params } }) => {
                         ) : null}
                     </QueueAnim>
                 )}
+                <Footer />
             </div>
         </>
     );

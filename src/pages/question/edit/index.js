@@ -36,7 +36,6 @@ function Edit({ match: { params } }) {
         if ((id && detail) || !id) {
             if (detail) {
                 setTitle(detail.title);
-                console.log(detail.tags);
                 setTags(detail.tags);
             }
             setLoading(false);

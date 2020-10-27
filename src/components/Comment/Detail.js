@@ -18,7 +18,7 @@ function CommentDetail({ dataSource, onDelete, onCreate, onVote, onChange, ...pr
                         <div className={styles['comment-detail-divider']}></div>
                     </div>
                 }
-                title={detail.comments + '条评论'}
+                title={detail.comment_count + '条评论'}
                 dataSource={data}
                 onChange={onChange}
                 onDelete={onDelete}

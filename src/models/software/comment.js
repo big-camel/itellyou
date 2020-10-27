@@ -108,13 +108,13 @@ export default {
             const response = yield call(vote, payload);
             if (response && response.result) {
                 const { softwareId, type } = payload;
-                const { id, parent_id, support, oppose } = response.data;
+                const { id, parent_id, support_count, oppose_count } = response.data;
                 const replaceDetail = (item) => {
                     return {
                         use_support: type === 'support' ? !item.use_support : false,
                         use_oppose: type === 'oppose' ? !item.use_oppose : false,
-                        support,
-                        oppose,
+                        support_count,
+                        oppose_count,
                     };
                 };
                 yield put({
@@ -156,7 +156,7 @@ export default {
             const list = state && state[softwareId] ? state[softwareId][type] : null;
             if (list) {
                 const data = list.data.concat();
-                list.comments += 1;
+                list.comment_count += 1;
                 if (detail.parent_id && detail.parent_id > 0 && type !== 'detail') {
                     const parent = data.find((item) => item.id === detail.parent_id);
                     if (parent) {
@@ -184,7 +184,7 @@ export default {
                 }
                 const newList = { ...list, data };
                 if (type === 'detail' && list.detail && list.detail.id === detail.id) {
-                    newList.detail.comments += 1;
+                    newList.detail.comment_count += 1;
                 }
                 return {
                     ...state,

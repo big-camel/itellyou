@@ -7,6 +7,9 @@ import {
     HeartOutlined,
     StarOutlined,
     HistoryOutlined,
+    ContainerOutlined,
+    LineChartOutlined,
+    CalculatorOutlined,
 } from '@ant-design/icons';
 
 export default [
@@ -40,8 +43,29 @@ export default [
     {
         key: 'column',
         title: '专栏',
-        icon: <BugOutlined />,
+        icon: <ContainerOutlined />,
         to: '/dashboard/column',
+    },
+    /**{
+        key: 'knowledge',
+        title: '知识',
+        icon: <ContainerOutlined />,
+        to: '/dashboard/knowledge',
+    },**/
+    {
+        key: 'analytics',
+        title: '分析',
+        icon: <LineChartOutlined />,
+        to: '/dashboard/analytics',
+    },
+    {
+        type: 'divider',
+    },
+    {
+        key: 'income',
+        title: '收益',
+        icon: <CalculatorOutlined />,
+        to: '/dashboard/income',
     },
     {
         key: 'wallet',

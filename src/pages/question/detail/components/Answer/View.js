@@ -2,9 +2,9 @@ import React from 'react';
 import { Redirect, useSelector } from 'umi';
 import { Card } from 'antd';
 import List from '@/components/List';
-import styles from './Answer.less';
 import Loading from '@/components/Loading';
 import { Answer } from '@/components/Content';
+import styles from './index.less';
 
 function AnswerView({ title, answer_id }) {
     const answer = useSelector((state) => (state.answer ? state.answer : {}));

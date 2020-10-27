@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MoreList } from '@/components/List';
 import { useDispatch, useSelector } from 'umi';
 import { Question } from '@/components/Content';
@@ -21,7 +21,7 @@ const Answer = ({ id }) => {
     const limit = 20;
 
     const dispatch = useDispatch();
-    const dataSource = useSelector(state => state.answer.list);
+    const dataSource = useSelector((state) => state.answer.list);
 
     const renderItem = ({ question, ...item }) => {
         return (
@@ -42,7 +42,7 @@ const Answer = ({ id }) => {
             limit={limit}
             renderItem={renderItem}
             dataSource={dataSource}
-            onChange={offset => {
+            onChange={(offset) => {
                 setOffset(offset);
                 fetchList(dispatch, 0, limit, id);
             }}

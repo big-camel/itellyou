@@ -100,13 +100,13 @@ export default {
             const response = yield call(vote, payload);
             if (response && response.result) {
                 const { question_id, type } = payload;
-                const { id, parent_id, support, oppose } = response.data;
-                const replaceDetail = item => {
+                const { id, parent_id, support_count, oppose_count } = response.data;
+                const replaceDetail = (item) => {
                     return {
                         use_support: type === 'support' ? !item.use_support : false,
                         use_oppose: type === 'oppose' ? !item.use_oppose : false,
-                        support,
-                        oppose,
+                        support_count,
+                        oppose_count,
                     };
                 };
                 yield put({
@@ -139,8 +139,8 @@ export default {
         setList(state, { payload: { question_id, append, data } }) {
             const list = state ? state[question_id] : null;
             if (append && list) {
-                data.data.forEach(item => {
-                    if (!list.data.find(child => child.id === item.id)) {
+                data.data.forEach((item) => {
+                    if (!list.data.find((child) => child.id === item.id)) {
                         list.data.push(item);
                     }
                 });
@@ -161,12 +161,12 @@ export default {
             const list = state ? state[question_id] : null;
             if (list) {
                 const data = list.data.concat();
-                list.comments += 1;
+                list.comment_count += 1;
                 if (detail.parent_id && detail.parent_id > 0 && question_id !== 'detail') {
-                    const parent = data.find(item => item.id === detail.parent_id);
+                    const parent = data.find((item) => item.id === detail.parent_id);
                     if (parent) {
                         if (to && to > 0) {
-                            let index = parent.child.findIndex(child => child.id === to);
+                            let index = parent.child.findIndex((child) => child.id === to);
                             index =
                                 index < 0
                                     ? 0
@@ -180,7 +180,7 @@ export default {
                     }
                 } else {
                     if (to && to > 0) {
-                        let index = data.findIndex(child => child.id === to);
+                        let index = data.findIndex((child) => child.id === to);
                         index = index < 0 ? 0 : index >= data.length - 1 ? data.length : index + 1;
                         data.splice(index, 0, detail);
                     } else {
@@ -189,7 +189,7 @@ export default {
                 }
                 const newList = { ...list, data };
                 if (question_id === 'detail' && list.detail && list.detail.id === detail.id) {
-                    newList.detail.comments += 1;
+                    newList.detail.comment_count += 1;
                 }
                 return {
                     ...state,
@@ -207,9 +207,9 @@ export default {
                 const replaceCallback = payload.callback;
                 const data = list.data.concat();
                 if (parent_id && parent_id > 0 && question_id !== 'detail') {
-                    const parent = data.find(item => item.id === parent_id);
+                    const parent = data.find((item) => item.id === parent_id);
                     if (parent) {
-                        const index = parent.child.findIndex(child => child.id === detail.id);
+                        const index = parent.child.findIndex((child) => child.id === detail.id);
                         if (index >= 0) {
                             const item = parent.child[index];
                             if (typeof replaceCallback === 'function') {
@@ -219,7 +219,7 @@ export default {
                         }
                     }
                 } else {
-                    const index = data.findIndex(item => item.id === detail.id);
+                    const index = data.findIndex((item) => item.id === detail.id);
                     if (index >= 0) {
                         const item = data[index];
                         if (typeof replaceCallback === 'function') {
@@ -249,15 +249,15 @@ export default {
             const list = state ? state[question_id] : null;
             if (list) {
                 let data = list.data.concat();
-                const item = data.find(item => item.id === id);
+                const item = data.find((item) => item.id === id);
                 if ((item || question_id === 'detail') && childs) {
                     if (append === true) {
-                        childs.data.map(child => {
+                        childs.data.map((child) => {
                             if (question_id === 'detail') {
-                                if (!data.find(c => child.id === c.id)) {
+                                if (!data.find((c) => child.id === c.id)) {
                                     data.push(child);
                                 }
-                            } else if (!item.child.find(c => child.id === c.id)) {
+                            } else if (!item.child.find((c) => child.id === c.id)) {
                                 item.child.push(child);
                             }
                         });

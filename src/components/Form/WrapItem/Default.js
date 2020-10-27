@@ -7,15 +7,12 @@ import styles from './Default.less';
 export default ({
     form,
     name,
-    label,
-    extra,
     customProps = {},
     component,
     errors,
-    dependencies,
     asyncValidator,
-    noStyle,
-    normalize,
+    validateFirst,
+    validateTrigger,
     ...props
 }) => {
     const [focus, setFocus] = useState(false);
@@ -30,6 +27,8 @@ export default ({
     const validatorErrors = useRef();
     const fieldErrors = useRef();
     const valueIsChange = useRef(false);
+
+    const { onBlur, onChange, onFocus, ...restProps } = customProps;
 
     useEffect(() => {
         const value = form.getFieldValue(name);
@@ -51,12 +50,10 @@ export default ({
         } else if (form.getFieldError(name).length > 0) {
             form.validateFields([name]);
         }
-    }, [form, errors, name]);
+    }, [errors]);
 
     useEffect(() => {
-        setHelp((value) => {
-            return { ...value, ...props.help };
-        });
+        setHelp({ ...help, ...props.help });
     }, [props.help]);
 
     const getValue = (e) => {
@@ -70,6 +67,7 @@ export default ({
         if (!visible) return null;
         const errors = form.getFieldError(name);
         content = typeof content === 'function' ? content(form.getFieldValue(name)) : content;
+
         return content || (errors && errors.length > 0 ? errors : null);
     };
 
@@ -98,7 +96,7 @@ export default ({
                 },
             ]);
         }
-        const { help, onFocus } = props;
+        const { help } = props;
         const { trigger = 'focus' } = help || {};
         setFocus(true);
         if (trigger === 'focus') setHelp({ ...help, visible: true });
@@ -109,7 +107,7 @@ export default ({
 
     const handleBlur = (e) => {
         const value = getValue(e);
-        const { help, onBlur } = props;
+        const { help } = props;
         const { trigger = 'focus' } = help || {};
         setFocus(false);
         if (trigger === 'focus') setHelp({ ...help, visible: false, content: null });
@@ -121,7 +119,6 @@ export default ({
     };
 
     const handleChange = (e) => {
-        const { onChange } = props;
         const { content } = props.help || {};
         const { visible } = help;
         if (visible) setHelp({ ...help, content });
@@ -181,12 +178,6 @@ export default ({
         return Promise.resolve();
     };
 
-    const { validateFirst, validateTrigger, onBlur, onChange, onFocus, ...restProps } = omit(
-        props,
-        ['help', 'rules', 'hasFeedback'],
-    );
-
-    const otherProps = restProps || {};
     if (asyncValidator && !rules.current.find((rule) => rule._type === 'asyncValidator')) {
         rules.current.push({
             _type: 'asyncValidator',
@@ -210,13 +201,11 @@ export default ({
             component = <Componet />;
         }
         canFeedback = component.type === Input || component.type === Select;
-
         component = React.cloneElement(component, {
             onFocus: handleFocus,
             onBlur: handleBlur,
             onChange: handleChange,
-            ...customProps,
-            ...otherProps,
+            ...restProps,
         });
 
         const { type } = component.props;
@@ -233,16 +222,12 @@ export default ({
                 [styles['hidden']]: isHidden,
             })}
             name={name}
-            label={label}
             help={renderHelp()}
             hasFeedback={canFeedback ? hasFeedback() : false}
-            extra={extra}
             rules={rules.current}
             validateFirst={validateFirst || 'parallel'}
             validateTrigger={validateTrigger || 'onBlur'}
-            dependencies={dependencies}
-            noStyle={noStyle}
-            normalize={normalize}
+            {...omit(props, ['help', 'rules', 'hasFeedback'])}
         >
             {children}
         </Form.Item>

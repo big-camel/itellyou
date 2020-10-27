@@ -16,11 +16,11 @@ const AnswerEdit = ({ id, onSubmit, onCancel, ...props }) => {
     const [paidReadSetting, setPaidReadSetting] = useState(false);
 
     const dispatch = useDispatch();
-    const { detail } = useSelector(state => state.doc);
-    const question = useSelector(state => state.question);
-    const me = useSelector(state => state.user.me);
+    const { detail } = useSelector((state) => state.doc);
+    const question = useSelector((state) => state.question);
+    const me = useSelector((state) => state.user.me);
     const question_id = question.detail ? question.detail.id : null;
-    const userAnswer = question.user_answer;
+    const userAnswer = question.detail ? question.detail.user_answer : null;
 
     const onSaveExit = () => {
         if (editor.current) {
@@ -54,13 +54,13 @@ const AnswerEdit = ({ id, onSubmit, onCancel, ...props }) => {
             );
     };
 
-    const onDeleteDraft = callback => [
+    const onDeleteDraft = (callback) => [
         dispatch({
             type: 'answer/deleteDraft',
             payload: {
                 id: detail.id,
             },
-        }).then(res => {
+        }).then((res) => {
             if (res.result) {
                 if (userAnswer && !userAnswer.published) {
                     dispatch({
@@ -96,7 +96,7 @@ const AnswerEdit = ({ id, onSubmit, onCancel, ...props }) => {
             cancelText: '取消',
             centered: true,
             onOk() {
-                return new Promise(resolve => {
+                return new Promise((resolve) => {
                     if (editor.current) {
                         editor.current.onSave('user', null, () => {
                             onDeleteDraft(resolve);
@@ -149,8 +149,8 @@ const AnswerEdit = ({ id, onSubmit, onCancel, ...props }) => {
         [question_id, onSubmit],
     );
 
-    const onPaidReadSubmit = value => {
-        return new Promise(resolve => {
+    const onPaidReadSubmit = (value) => {
+        return new Promise((resolve) => {
             dispatch({
                 type: 'doc/paidread',
                 payload: {

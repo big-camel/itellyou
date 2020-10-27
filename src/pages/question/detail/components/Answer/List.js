@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'umi';
 import { List, Card } from 'antd';
-import { MoreList } from '@/components/List';
-import { Answer } from '@/components/Content';
-import styles from './Answer.less';
 import { StarTwoTone } from '@ant-design/icons';
 import Loading from '@/components/Loading';
+import { MoreList } from '@/components/List';
+import { Answer } from '@/components/Content';
+import { findVisibleSection } from '@/utils';
+import styles from './index.less';
 
 const fetchList = (dispatch, offset, limit, id, parmas) => {
     return dispatch({
@@ -25,9 +26,81 @@ function AnswerList({ question_id, exclude, title, ...props }) {
     const limit = parseInt(props.size || 20);
     const [offset, setOffset] = useState((page - 1) * limit);
     const dispatch = useDispatch();
-    const list = useSelector(state => (state.answer ? state.answer.list : null));
-    const loadingState = useSelector(state => state.loading);
+    const list = useSelector((state) => (state.answer ? state.answer.list : null));
+    const loadingState = useSelector((state) => state.loading);
     const loading = loadingState.effects['answer/list'];
+
+    const lastScrollTop = useRef(0);
+    const timeout = useRef(null);
+    const contents = useRef([]);
+
+    const handleResize = useCallback(() => {
+        listenerViewChange();
+    }, []);
+
+    const listenerViewChange = useCallback(() => {
+        const indexArray = findVisibleSection(
+            contents.current.map(({ element }) => {
+                if (element) {
+                    const elements = element.getElementsByClassName('anticon-like');
+                    if (elements && elements.length > 0) {
+                        return elements[0].parentNode;
+                    }
+                }
+                return null;
+            }),
+        );
+        // 记录回答浏览记录
+        indexArray.forEach((index) => {
+            dispatch({
+                type: 'answer/view',
+                payload: {
+                    question_id,
+                    id: contents.current[index].id,
+                },
+            });
+            contents.current[index].element = undefined;
+        });
+    }, []);
+
+    const handleScroll = useCallback(() => {
+        if (timeout.current) clearTimeout(timeout.current);
+
+        timeout.current = setTimeout(() => {
+            const min = 5;
+            const top =
+                window.pageYOffset ||
+                document.documentElement.scrollTop ||
+                document.body.scrollTop ||
+                0;
+
+            if (!Math.abs(lastScrollTop.current - top) <= min) {
+                listenerViewChange();
+
+                lastScrollTop.current = top;
+            }
+        }, 1000);
+    }, []);
+
+    useEffect(() => {
+        listenerViewChange();
+    }, [listenerViewChange]);
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', handleResize);
+        listenerViewChange();
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [handleScroll, listenerViewChange, handleResize]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+        }, 200);
+    }, [contents]);
 
     if (loading) return <Loading />;
 
@@ -35,7 +108,7 @@ function AnswerList({ question_id, exclude, title, ...props }) {
 
     const adopts = [];
     const answers = [];
-    data.forEach(item => {
+    data.forEach((item) => {
         if (!item || item.deleted) return;
         if (
             exclude &&
@@ -59,10 +132,16 @@ function AnswerList({ question_id, exclude, title, ...props }) {
         );
     };
 
-    const renderItem = item => {
+    const renderItem = (item) => {
         return (
             <MoreList.Item key={item.id}>
-                <Answer data={{ ...item, cover: null }} />
+                <Answer
+                    ref={(element) => {
+                        if (!contents.current.find((ele) => ele.id === item.id))
+                            contents.current.push({ id: item.id, element });
+                    }}
+                    data={{ ...item, cover: null }}
+                />
             </MoreList.Item>
         );
     };
@@ -88,7 +167,7 @@ function AnswerList({ question_id, exclude, title, ...props }) {
                     renderItem={renderItem}
                     offset={offset}
                     limit={limit}
-                    onChange={offset => {
+                    onChange={(offset) => {
                         setOffset(offset);
                         fetchList(dispatch, offset, limit, question_id);
                     }}

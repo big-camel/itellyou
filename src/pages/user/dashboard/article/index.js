@@ -3,7 +3,7 @@ import { Table, Tag, Space, Tooltip, Modal } from 'antd';
 import Layout from '../components/Layout';
 import Loading from '@/components/Loading';
 import { Link, useDispatch, useSelector } from 'umi';
-import CardTable from '../components/CardTable';
+import CardMenu from '../components/CardMenu';
 import { EditButton } from '@/components/Button';
 import { Article } from '@/components/Content';
 
@@ -24,8 +24,8 @@ const UserArticle = () => {
     const limit = 20;
 
     const dispatch = useDispatch();
-    const dataSource = useSelector(state => (state.userArticle ? state.userArticle.list : null));
-    const loadingEffect = useSelector(state => state.loading);
+    const dataSource = useSelector((state) => (state.userArticle ? state.userArticle.list : null));
+    const loadingEffect = useSelector((state) => state.loading);
     const loading = loadingEffect.effects['userArticle/list'];
 
     const renderPage = (_, type, originalElement) => {
@@ -42,7 +42,6 @@ const UserArticle = () => {
         {
             title: '标题',
             dataIndex: 'title',
-            key: 'title',
             ellipsis: true,
             render: (text, { id, published }) => {
                 let url = `/article/${id}`;
@@ -56,8 +55,7 @@ const UserArticle = () => {
         },
         {
             title: '赞',
-            dataIndex: 'support',
-            key: 'support',
+            dataIndex: 'support_count',
             width: 80,
         },
         /**{
@@ -68,13 +66,11 @@ const UserArticle = () => {
         {
             title: '评论',
             dataIndex: 'comment_count',
-            key: 'comment_count',
             width: 80,
         },
         {
             title: '状态',
             dataIndex: 'status',
-            key: 'status',
             width: 80,
             render: (_, { published, draft_version, version }) => {
                 return (
@@ -116,11 +112,11 @@ const UserArticle = () => {
         return (
             <Loading loading={loading}>
                 <Table
-                    rowKey={row => row.id}
+                    rowKey={(row) => row.id}
                     columns={columns}
                     dataSource={dataSource.data}
                     pagination={{
-                        onChange: page => {
+                        onChange: (page) => {
                             setPage(page);
                             fetchList(dispatch, (page - 1) * limit, limit);
                         },
@@ -137,7 +133,7 @@ const UserArticle = () => {
 
     return (
         <Layout defaultKey="article">
-            <CardTable>{renderTable()}</CardTable>
+            <CardMenu>{renderTable()}</CardMenu>
         </Layout>
     );
 };

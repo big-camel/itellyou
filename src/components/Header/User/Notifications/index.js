@@ -19,13 +19,14 @@ const { TabPane } = Tabs;
 export default ({ overflowCount }) => {
     overflowCount = overflowCount || 99;
 
-    const { groupCount } = useSelector(state => state.notifications);
-    const { ws } = useSelector(state => state.settings) || {};
+    const { groupCount } = useSelector((state) => state.notifications);
+    const { ws } = useSelector((state) => state.settings) || {};
     const [visible, setVisible] = useState(false);
     const [force, setForce] = useState(false);
     const [activeKey, setActiveKey] = useState('default');
     const dispatch = useDispatch();
     const socket = useRef();
+    const heartbeat = useRef();
 
     useEffect(() => {
         const connection = () => {
@@ -48,10 +49,10 @@ export default ({ overflowCount }) => {
                 };
                 webSocket.send(JSON.stringify(message));
             };
-            webSocket.onerror = event => {
+            webSocket.onerror = (event) => {
                 //console.log('websocket error:', event);
             };
-            webSocket.onmessage = event => {
+            webSocket.onmessage = (event) => {
                 const {
                     notifications: { count, group },
                 } = JSON.parse(event.data);
@@ -70,9 +71,18 @@ export default ({ overflowCount }) => {
         };
         if (!socket.current) {
             connection();
+            heartbeat.current = setInterval(() => {
+                socket.current.send(
+                    JSON.stringify({
+                        action: 'heartbeat',
+                    }),
+                );
+            }, 30000);
         }
+
         return () => {
             if (socket.current) {
+                if (heartbeat.current) clearInterval(heartbeat.current);
                 socket.current.close();
             }
         };
@@ -91,7 +101,7 @@ export default ({ overflowCount }) => {
             <Tabs
                 className={styles['tabs']}
                 activeKey={activeKey}
-                onChange={activeKey => setActiveKey(activeKey)}
+                onChange={(activeKey) => setActiveKey(activeKey)}
             >
                 <TabPane key="default" tab={<BarsOutlined />}>
                     <NotificationsList action="default" force={force} />
@@ -123,7 +133,7 @@ export default ({ overflowCount }) => {
             destroyTooltipOnHide={true}
             arrowPointAtCenter
             placement="bottomRight"
-            onVisibleChange={visible => setVisible(visible)}
+            onVisibleChange={(visible) => setVisible(visible)}
         >
             <Badge
                 count={groupCount.count}

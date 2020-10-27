@@ -3,7 +3,7 @@ import { useDispatch, useSelector, Link } from 'umi';
 import { Table, Avatar } from 'antd';
 import Layout from '../components/Layout';
 import Loading from '@/components/Loading';
-import CardTable from '../components/CardTable';
+import CardMenu from '../components/CardMenu';
 import Timer from '@/components/Timer';
 import styles from './index.less';
 
@@ -24,9 +24,9 @@ const UserColumn = () => {
     const [page, setPage] = useState(1);
     const limit = 20;
     const dispatch = useDispatch();
-    const dataSource = useSelector(state => state.column.list);
-    const me = useSelector(state => state.user.me);
-    const loadingEffect = useSelector(state => state.loading);
+    const dataSource = useSelector((state) => state.column.list);
+    const me = useSelector((state) => state.user.me);
+    const loadingEffect = useSelector((state) => state.loading);
     const loading = loadingEffect.effects['column/list'];
 
     const renderPage = (_, type, originalElement) => {
@@ -64,7 +64,7 @@ const UserColumn = () => {
             dataIndex: 'created_time',
             key: 'created_time',
             width: 120,
-            render: text => {
+            render: (text) => {
                 return <Timer time={text} />;
             },
         },
@@ -75,11 +75,11 @@ const UserColumn = () => {
         return (
             <Loading loading={loading}>
                 <Table
-                    rowKey={row => row.id}
+                    rowKey={(row) => row.id}
                     columns={columns}
                     dataSource={dataSource.data}
                     pagination={{
-                        onChange: page => {
+                        onChange: (page) => {
                             setPage(page);
                             fetchList(dispatch, (page - 1) * limit, limit, me.id);
                         },
@@ -96,7 +96,7 @@ const UserColumn = () => {
 
     return (
         <Layout defaultKey="column">
-            <CardTable>{renderTable()}</CardTable>
+            <CardMenu>{renderTable()}</CardMenu>
         </Layout>
     );
 };

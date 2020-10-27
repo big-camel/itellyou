@@ -13,8 +13,7 @@ const Time = {
      *   MM-DD HH:mm (今年)
      *   YYYY-MM-DD HH:mm (今年以前, 以及今天以后)
      */
-    format: function(datetime) {
-        if (typeof datetime === 'string') datetime = new Date(datetime.replace(/-/g, '/'));
+    format: function (datetime) {
         const opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         const dateTime = moment(datetime);
 

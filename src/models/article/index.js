@@ -60,7 +60,7 @@ export default {
             const response = yield call(vote, payload);
             if (response && response.result) {
                 const article = yield select((state) => state.article);
-                let detail = article && article.detail ? article.detail : null;
+                const detail = article && article.detail ? article.detail : null;
 
                 const setUse = (item) => {
                     response.data['use_support'] =
@@ -75,31 +75,6 @@ export default {
                     yield put({
                         type: 'updateDetail',
                         payload: { ...detail, ...response.data },
-                    });
-                }
-                let list = yield select((state) => (state.article ? state.article.list : null));
-                let dataItem = list ? list.data.find((item) => item.id === response.data.id) : null;
-                if (dataItem) {
-                    response.data = setUse(dataItem);
-                }
-                yield put({
-                    type: 'updateListItem',
-                    payload: response.data,
-                });
-
-                list = yield select((state) => (state.explore ? state.explore.recommends : null));
-                dataItem = list
-                    ? list.data.find(
-                          (item) => item.type === 'article' && item.object.id === response.data.id,
-                      )
-                    : null;
-                if (dataItem) {
-                    response.data = setUse(dataItem);
-                    yield put({
-                        type: 'explore/replaceRecommendsArticle',
-                        payload: {
-                            ...response.data,
-                        },
                     });
                 }
             }
@@ -146,7 +121,7 @@ export default {
             if (detail && detail.id === id) {
                 return {
                     ...state,
-                    detail: { ...detail, comments: detail.comments + (value || 1) },
+                    detail: { ...detail, comment_count: detail.comment_count + (value || 1) },
                 };
             }
             return {

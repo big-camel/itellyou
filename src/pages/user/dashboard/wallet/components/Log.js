@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'umi';
 import { Table, Space } from 'antd';
 import Loading from '@/components/Loading';
 import Timer from '@/components/Timer';
-import CardTable from '../../components/CardTable';
+import CardMenu from '../../components/CardMenu';
 import { RouteContext } from '@/context';
 
 const fetchList = (dispatch, offset, limit, parmas) => {
@@ -136,7 +136,7 @@ const WalletLog = () => {
         );
     };
 
-    return <CardTable>{renderTable()}</CardTable>;
+    return <CardMenu>{renderTable()}</CardMenu>;
 };
 
 WalletLog.getInitialProps = async ({ isServer, store, params }) => {

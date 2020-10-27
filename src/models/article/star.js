@@ -23,28 +23,7 @@ export default {
                     star_count: response.data,
                 };
                 yield put({
-                    type: 'setList',
-                    payload: {
-                        append: true,
-                        end: true,
-                        data: [
-                            {
-                                article: detail,
-                                created_time: new Date(),
-                            },
-                        ],
-                    },
-                });
-                yield put({
                     type: 'article/updateDetail',
-                    payload: detail,
-                });
-                yield put({
-                    type: 'article/updateListItem',
-                    payload: detail,
-                });
-                yield put({
-                    type: 'explore/replaceRecommendsArticle',
                     payload: detail,
                 });
             }
@@ -75,14 +54,6 @@ export default {
                         type: 'article/updateDetail',
                         payload: detail,
                     });
-                    yield put({
-                        type: 'article/updateListItem',
-                        payload: detail,
-                    });
-                    yield put({
-                        type: 'explore/replaceRecommendsArticle',
-                        payload: detail,
-                    });
                 }
             }
             return response;
@@ -104,7 +75,7 @@ export default {
             );
         },
         removeItem(state, { payload }) {
-            return removeItem('list', payload.id, state, item => {
+            return removeItem('list', payload.id, state, (item) => {
                 return item.article.id === payload.id;
             });
         },
@@ -113,10 +84,10 @@ export default {
                 'list',
                 payload,
                 state,
-                item => {
+                (item) => {
                     return item.article.id === payload.id;
                 },
-                item => {
+                (item) => {
                     return { ...item, article: { ...item.article, ...payload }, created_time };
                 },
             );

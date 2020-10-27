@@ -9,7 +9,6 @@ import { getPageQuery } from '@/utils';
 import { PageList } from '@/components/List';
 import { Question } from '@/components/Content';
 import GroupUser from './components/GroupUser';
-import { EditOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 const fetchList = (dispatch, offset, limit, type, parmas) => {

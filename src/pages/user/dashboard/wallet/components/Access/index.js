@@ -1,20 +1,20 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { useSelector, useDispatch, Link } from 'umi';
+import React, { useState, useContext } from 'react';
+import { useSelector, Link } from 'umi';
+import { Card, Space, Statistic, Button } from 'antd';
 import Loading from '@/components/Loading';
 import Pay from '@/components/Pay';
-import { Card, Space, Statistic, Button } from 'antd';
 import { RouteContext } from '@/context';
-import styles from './index.less';
 import Withdraw from './Withdraw';
+import styles from './index.less';
 
 const Access = () => {
     const [payVisible, setPayVisible] = useState(false);
     const [withdrawVisible, setWithdrawVisible] = useState(false);
-    const me = useSelector(state => state.user.me);
+    const me = useSelector((state) => state.user.me);
 
-    const { alipay } = useSelector(state => state.thirdAccount) || {};
+    const { alipay } = useSelector((state) => state.thirdAccount) || {};
 
-    const onClose = status => {
+    const onClose = (status) => {
         if (status === 'succeed') {
             window.location.reload();
         } else {
@@ -61,7 +61,7 @@ const Access = () => {
                         <Statistic title="我的余额(元)" value={cash} precision={2} />
                         <Statistic
                             title="我的等级"
-                            valueRender={node => (
+                            valueRender={(node) => (
                                 <span>
                                     {rank.name}({node})
                                 </span>

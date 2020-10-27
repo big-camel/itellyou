@@ -9,6 +9,8 @@ import Loading from '@/components/Loading';
 import { Article } from '@/components/Content';
 import Editor from '@/components/Editor';
 import { GoogleDefault } from '@/components/AdSense';
+import Footer from '@/components/Footer';
+
 import {
     CommentButton,
     EditButton,
@@ -90,7 +92,7 @@ function Detail({ match: { params } }) {
         }
     };
 
-    const { title, tags, author, description, support, use_support } = detail;
+    const { title, tags, author, description, support_count, use_support } = detail;
 
     const keywords = tags.map((tag) => tag.name) || [];
     keywords.push('itellyou');
@@ -172,7 +174,11 @@ function Detail({ match: { params } }) {
                                         id={id}
                                         {...detail}
                                         allow_oppose={false}
-                                        text={use_support ? `已点赞 ${support}` : `点赞 ${support}`}
+                                        text={
+                                            use_support
+                                                ? `已点赞 ${support_count}`
+                                                : `点赞 ${support_count}`
+                                        }
                                         icon={use_support ? <LikeFilled /> : <LikeOutlined />}
                                         loading={false}
                                     />
@@ -205,6 +211,7 @@ function Detail({ match: { params } }) {
                         ) : null}
                     </QueueAnim>
                 )}
+                <Footer />
             </div>
         </>
     );

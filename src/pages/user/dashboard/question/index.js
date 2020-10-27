@@ -3,7 +3,7 @@ import { useDispatch, useSelector, Link } from 'umi';
 import { Table, Tag, Space, Tooltip } from 'antd';
 import Layout from '../components/Layout';
 import Loading from '@/components/Loading';
-import CardTable from '../components/CardTable';
+import CardMenu from '../components/CardMenu';
 import { Question } from '@/components/Content';
 import { EditButton } from '@/components/Button';
 
@@ -24,8 +24,10 @@ const UserQuestion = () => {
     const limit = 20;
 
     const dispatch = useDispatch();
-    const dataSource = useSelector(state => (state.userQuestion ? state.userQuestion.list : null));
-    const loadingEffect = useSelector(state => state.loading);
+    const dataSource = useSelector((state) =>
+        state.userQuestion ? state.userQuestion.list : null,
+    );
+    const loadingEffect = useSelector((state) => state.loading);
     const loading = loadingEffect.effects['userQuestion/list'];
 
     const renderPage = (_, type, originalElement) => {
@@ -42,7 +44,6 @@ const UserQuestion = () => {
         {
             title: '标题',
             dataIndex: 'title',
-            key: 'title',
             ellipsis: true,
             render: (text, { id, published }) => {
                 let url = `/question/${id}`;
@@ -56,8 +57,7 @@ const UserQuestion = () => {
         },
         {
             title: '回答数',
-            dataIndex: 'answers',
-            key: 'answers',
+            dataIndex: 'answer_count',
             width: 120,
             render: (text, { adopted }) => {
                 return (
@@ -70,14 +70,12 @@ const UserQuestion = () => {
         },
         {
             title: '评论',
-            dataIndex: 'comments',
-            key: 'comments',
+            dataIndex: 'comment_count',
             width: 80,
         },
         {
             title: '状态',
             dataIndex: 'status',
-            key: 'status',
             width: 80,
             render: (_, { published, draft_version, version }) => {
                 return (
@@ -121,11 +119,11 @@ const UserQuestion = () => {
         return (
             <Loading loading={loading}>
                 <Table
-                    rowKey={row => row.id}
+                    rowKey={(row) => row.id}
                     columns={columns}
                     dataSource={dataSource.data}
                     pagination={{
-                        onChange: page => {
+                        onChange: (page) => {
                             setPage(page);
                             fetchList(dispatch, (page - 1) * limit, limit);
                         },
@@ -142,7 +140,7 @@ const UserQuestion = () => {
 
     return (
         <Layout defaultKey="question">
-            <CardTable>{renderTable()}</CardTable>
+            <CardMenu>{renderTable()}</CardMenu>
         </Layout>
     );
 };

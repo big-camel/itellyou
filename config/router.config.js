@@ -284,6 +284,24 @@ export default [
                         name: 'user.dashboard.history',
                         component: './user/dashboard/history',
                     },
+                    {
+                        path: '/dashboard/analytics',
+                        name: 'user.dashboard.analytics',
+                        component: './user/dashboard/analytics',
+                    },
+                    {
+                        path: '/dashboard/analytics/:type([A-Za-z0-9_]+)',
+                        name: 'user.dashboard.analytics',
+                        component: './user/dashboard/analytics',
+                    },
+                    {
+                        path: '/dashboard/income',
+                        name: 'user.dashboard.income',
+                        component: './user/dashboard/income',
+                    },
+                    {
+                        component: '404',
+                    },
                 ],
             },
             {
@@ -305,6 +323,9 @@ export default [
                         path: '/settings/notifications',
                         name: 'user.settings.notifications',
                         component: './user/settings/notifications',
+                    },
+                    {
+                        component: '404',
                     },
                 ],
             },

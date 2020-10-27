@@ -10,12 +10,6 @@ export async function list({ question_id, ...params }) {
     });
 }
 
-export async function findDraft({ question_id, ...params }) {
-    return request(`/api/question/${question_id}/answer/draft`, {
-        params,
-    });
-}
-
 export async function find({ question_id, id, ...params }) {
     return request(`/api/question/${question_id}/answer/${id}`, {
         params,
@@ -49,5 +43,11 @@ export async function vote({ question_id, id, type }) {
 export async function paidread({ question_id, id }) {
     return request(`/api/question/${question_id}/answer/${id}/paidread`, {
         method: 'POST',
+    });
+}
+
+export async function view({ question_id, id, ...params }) {
+    return request(`/api/question/${question_id}/answer/${id}/view`, {
+        params,
     });
 }

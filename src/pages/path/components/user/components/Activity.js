@@ -60,13 +60,13 @@ const Activity = ({ id }) => {
                 <h2 className={styles['question-title']}>
                     <Link to={`/question/${question.id}/answer/${id}`}>{title}</Link>
                 </h2>
-                <Answer data={{ ...target, id }} desc={true} />
+                <Answer data={{ ...target, id }} desc={true} authorSize="small" />
             </div>
         );
     };
 
     const renderArticle = (target) => {
-        return <Article data={target} desc={true} />;
+        return <Article data={target} desc={true} authorSize="small" />;
     };
 
     const renderQuestion = ({ id, title }) => {

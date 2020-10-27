@@ -1,12 +1,12 @@
 import { history } from 'umi';
 import {
     find,
-    findDraft,
     deleteDraft,
     deleteAnswer,
     revokeDelete,
     list,
     vote,
+    view,
     paidread,
 } from '@/services/answer/index';
 import { setList } from '@/utils/model';
@@ -47,22 +47,6 @@ export default {
             });
             return response;
         },
-        *findDraft({ payload }, { call, put, select }) {
-            if (!payload) {
-                const question = yield select((state) => state.question);
-                const detail = question ? question.detail : null;
-                if (!detail) return;
-                payload = { question_id: detail.id };
-            }
-            const response = yield call(findDraft, payload);
-            if (response && response.result) {
-                yield put({
-                    type: 'question/setUserAnswer',
-                    payload: response.data,
-                });
-            }
-            return response;
-        },
         *deleteDraft({ payload }, { call, put, select }) {
             const question = yield select((state) => state.question);
             const detail = question ? question.detail : null;
@@ -71,9 +55,13 @@ export default {
             const response = yield call(deleteDraft, payload);
             if (response && response.result) {
                 yield put({
-                    type: 'question/setUserAnswer',
+                    type: 'question/updateDetail',
                     payload: {
-                        draft: false,
+                        ...detail,
+                        user_answer: {
+                            ...detail.user_answer,
+                            draft: false,
+                        },
                     },
                 });
             }
@@ -82,32 +70,35 @@ export default {
         *delete({ payload }, { call, put, select }) {
             const response = yield call(deleteAnswer, payload);
             if (response && response.result) {
-                const userAnswer = yield select((state) =>
-                    state.question ? state.question.user_answer : null,
-                );
+                const question = yield select((state) => state.question);
+                const userAnswer = question && question.detail ? question.detail.user_answer : null;
                 const answer = yield select((state) => state.answer);
-                let detail = answer && answer.detail ? { ...answer.detail, deleted: true } : null;
-                if (detail && userAnswer && userAnswer.id === detail.id) {
+                const answerDetail =
+                    answer && answer.detail ? { ...answer.detail, deleted: true } : null;
+                if (userAnswer && userAnswer.id === payload.id) {
                     yield put({
                         type: 'setDetail',
-                        payload: detail,
+                        payload: answerDetail,
                     });
-                } else {
-                    detail = response.data;
                 }
-                if (userAnswer && userAnswer.id === detail.id) {
+
+                if (userAnswer && userAnswer.id === payload.id) {
                     yield put({
-                        type: 'question/setUserAnswer',
+                        type: 'question/updateDetail',
                         payload: {
-                            deleted: detail.deleted,
+                            ...question.detail,
+                            user_answer: {
+                                ...question.detail.user_answer,
+                                deleted: true,
+                            },
                         },
                     });
                 }
                 const list = answer ? answer.list : null;
                 if (list) {
-                    const data = list.data;
-                    const index = data.findIndex((item) => item.id === detail.id);
-                    data.splice(index, 1, detail);
+                    const data = list.data.concat();
+                    const index = data.findIndex((item) => item.id === payload.id);
+                    data.splice(index, 1);
                     yield put({
                         type: 'setList',
                         payload: { ...list, data, total: list.total - 1 },
@@ -123,9 +114,8 @@ export default {
         *revoke({ payload }, { call, put, select }) {
             const response = yield call(revokeDelete, payload);
             if (response && response.result) {
-                const userAnswer = yield select((state) =>
-                    state.question ? state.question.user_answer : null,
-                );
+                const question = yield select((state) => state.question);
+                const userAnswer = question && question.detail ? question.detail.user_answer : null;
                 const answer = yield select((state) => state.answer);
                 let detail = answer && answer.detail ? { ...answer.detail, deleted: false } : null;
                 if (detail && userAnswer && userAnswer.id === detail.id) {
@@ -139,17 +129,21 @@ export default {
 
                 if (userAnswer && userAnswer.id === detail.id) {
                     yield put({
-                        type: 'question/setUserAnswer',
+                        type: 'question/updateDetail',
                         payload: {
-                            deleted: detail.deleted,
-                            draft: true,
+                            ...question.detail,
+                            user_answer: {
+                                ...question.detail.user_answer,
+                                deleted: detail.deleted,
+                                draft: true,
+                            },
                         },
                     });
                 }
 
-                const list = answer ? answer.list : null;
+                const list = answer ? answer.list : { data: [], total: 0 };
                 if (list) {
-                    let data = list.data;
+                    const data = list.data.concat();
                     const index = data.findIndex((item) => item.id === detail.id);
 
                     if (index >= 0) {
@@ -186,38 +180,6 @@ export default {
                         payload: { ...detail, ...response.data },
                     });
                 }
-                let list = yield select((state) => (state.answer ? state.answer.list : {}));
-
-                let dataItem = list ? list.data.find((item) => item.id === response.data.id) : null;
-                if (dataItem) {
-                    response.data = setUse(dataItem);
-                }
-                yield put({
-                    type: 'updateListItem',
-                    payload: response.data,
-                });
-
-                list = yield select((state) => (state.explore ? state.explore.recommends : null));
-                dataItem = list
-                    ? list.data.find((item) => {
-                          const { type, object } = item;
-                          if (type === 'question') {
-                              const answer = object.answer_list.find(
-                                  (answer) => answer.id === payload.id,
-                              );
-                              if (answer) return answer;
-                          }
-                      })
-                    : null;
-                if (dataItem) {
-                    response.data = setUse(dataItem);
-                    yield put({
-                        type: 'explore/replaceRecommendsArticle',
-                        payload: {
-                            ...response.data,
-                        },
-                    });
-                }
             }
             return response;
         },
@@ -231,6 +193,10 @@ export default {
                     payload: { ...detail, paid_read: null },
                 });
             }
+            return response;
+        },
+        *view({ payload }, { call }) {
+            const response = yield call(view, payload);
             return response;
         },
     },
@@ -262,7 +228,7 @@ export default {
             if (index >= 0) {
                 data.splice(index, 1, {
                     ...data[index],
-                    comments: data[index].comments + (value || 1),
+                    comment_count: data[index].comment_count + (value || 1),
                 });
             }
             return {

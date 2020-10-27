@@ -98,3 +98,47 @@ export const scrollToElement = (from, to, offsetTop = 80) => {
         }
     }, 5);
 };
+
+export const findReadingSection = (elements, top) => {
+    top = top || 0;
+    if (!elements || elements.length === 0) return -1;
+    let i = 0;
+    let index = -1;
+    const len = elements.length;
+    for (; i < len; i++) {
+        const element = elements[i];
+        if (!element || !element.getBoundingClientRect) continue;
+        const rect = element.getBoundingClientRect();
+        if (rect.top <= top + 1) {
+            if (i === len - 1) {
+                index = i;
+            } else {
+                const nexElement = elements[i + 1];
+                if (!nexElement || !nexElement.getBoundingClientRect) continue;
+                const nextRect = nexElement.getBoundingClientRect();
+                if (nextRect.top > top + 1) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+    }
+    return index;
+};
+
+export const findVisibleSection = (elements, top) => {
+    top = top || 0;
+    const height = document.documentElement
+        ? document.documentElement.clientHeight
+        : window.innerHeight;
+    if (!elements || elements.length === 0) return [];
+    const indexArray = [];
+    const len = elements.length;
+    for (let i = 0; i < len; i++) {
+        const element = elements[i];
+        if (!element || !element.getBoundingClientRect) continue;
+        const rect = element.getBoundingClientRect();
+        if (rect.top - top - height + rect.height < 0) indexArray.push(i);
+    }
+    return indexArray;
+};

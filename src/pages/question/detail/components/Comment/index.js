@@ -8,9 +8,9 @@ function QuestionComment({ question_id, visible, onVisibleChange }) {
     const [detailVisible, setDetailVisible] = useState(false);
 
     const dispatch = useDispatch();
-    const question = useSelector(state => state.question);
+    const question = useSelector((state) => state.question);
     const questionDetail = question ? question.detail : null;
-    const comment = useSelector(state => state.questionComment);
+    const comment = useSelector((state) => state.questionComment);
 
     const [offset, setOffset] = useState(0);
     const [childOffset, setChildOffset] = useState(0);
@@ -50,7 +50,7 @@ function QuestionComment({ question_id, visible, onVisibleChange }) {
         });
     };
 
-    const del = id => {
+    const del = (id) => {
         return dispatch({
             type: 'questionComment/delete',
             payload: {
@@ -120,7 +120,7 @@ function QuestionComment({ question_id, visible, onVisibleChange }) {
                     {detailVisible ? (
                         <Button onClick={() => setDetailVisible(false)}>返回评论</Button>
                     ) : (
-                        `${questionDetail.comments} 个评论`
+                        `${questionDetail.comment_count} 个评论`
                     )}
                 </div>
             }

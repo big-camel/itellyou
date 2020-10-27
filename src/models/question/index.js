@@ -94,7 +94,7 @@ export default {
             if (detail && detail.id === id) {
                 return {
                     ...state,
-                    detail: { ...detail, comments: detail.comments + (value || 1) },
+                    detail: { ...detail, comment_count: detail.comment_count + (value || 1) },
                 };
             }
             return {
@@ -110,12 +110,6 @@ export default {
             return {
                 ...state,
                 list: { ...state.list, data },
-            };
-        },
-        setUserAnswer(state, { payload }) {
-            return {
-                ...state,
-                user_answer: { ...state.user_answer, ...payload },
             };
         },
         setResponseStatus(state, { payload }) {

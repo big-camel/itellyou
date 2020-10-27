@@ -1,7 +1,7 @@
 import { Empty } from 'antd';
 import React from 'react';
 
-export default () => {
+const KnowLedge = () => {
     return (
         <Empty
             style={{ margin: '60px 0' }}
@@ -20,3 +20,10 @@ export default () => {
         />
     );
 };
+KnowLedge.getInitialProps = async ({ isServer, store }) => {
+    const { getState } = store;
+
+    if (isServer) return getState();
+};
+
+export default KnowLedge;

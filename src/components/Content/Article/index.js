@@ -17,7 +17,7 @@ const Article = ({
     data: {
         id,
         title,
-        description,
+        description = '',
         custom_description,
         cover,
         content,
@@ -101,7 +101,7 @@ const Article = ({
                     />
                 )}
                 <Space className={styles['footer']}>
-                    {view && <span className={styles['view']}>阅读 {item.view} , </span>}
+                    {view && <span className={styles['view']}>阅读 {item.view_count} , </span>}
                     {!paid_read && (
                         <Link className={styles['time']} to={`/article/${id}`}>
                             {item.updated_time === null || item.version === 1

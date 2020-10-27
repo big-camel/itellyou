@@ -60,15 +60,6 @@ export default {
                         payload: { ...detail, ...response.data },
                     });
                 }
-                let list = yield select((state) => (state.software ? state.software.list : null));
-                let dataItem = list ? list.data.find((item) => item.id === response.data.id) : null;
-                if (dataItem) {
-                    response.data = setUse(dataItem);
-                }
-                yield put({
-                    type: 'updateListItem',
-                    payload: response.data,
-                });
             }
             return response;
         },
@@ -98,7 +89,7 @@ export default {
             if (detail && detail.id === id) {
                 return {
                     ...state,
-                    detail: { ...detail, comments: detail.comments + (value || 1) },
+                    detail: { ...detail, comment_count: detail.comment_count + (value || 1) },
                 };
             }
             return {

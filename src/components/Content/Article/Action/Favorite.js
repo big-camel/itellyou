@@ -6,6 +6,7 @@ import { useState } from 'react';
 export default ({ id, use_star, allow_star, size }) => {
     const dispatch = useDispatch();
     const [following, setFollowing] = useState(false);
+    const [useStar, setUseStar] = useState(use_star);
 
     const onStar = () => {
         if (following) return;
@@ -17,13 +18,19 @@ export default ({ id, use_star, allow_star, size }) => {
                 id,
             },
         }).then(() => {
+            setUseStar(!useStar);
             setFollowing(false);
         });
     };
 
     return (
-        <FavoriteButton disabled={!allow_star} loading={following} onClick={onStar} size={size}>
-            {use_star ? '取消收藏' : '收藏'}
+        <FavoriteButton
+            disabled={!allow_star}
+            //loading={following}
+            onClick={onStar}
+            size={size}
+        >
+            {useStar ? '取消收藏' : '收藏'}
         </FavoriteButton>
     );
 };

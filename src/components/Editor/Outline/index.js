@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { Space } from 'antd';
 import { isBrowser } from 'umi';
 import { Link } from 'rc-scroll-anim';
-import { findReadingSection } from './utils';
+import { findReadingSection } from '@/utils';
 import { Outline } from '../Async';
 import styles from './index.less';
 

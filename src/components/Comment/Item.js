@@ -140,7 +140,7 @@ function CommentItem({ item, onDelete, onCreate, onVote, onChild, onDetail }) {
                         active={item.use_support}
                         disabled={!item.allow_support}
                         onClick={() => doVote('support')}
-                        count={item.support}
+                        count={item.support_count}
                         size="small"
                     />
                     {item.allow_oppose && (
@@ -181,7 +181,7 @@ function CommentItem({ item, onDelete, onCreate, onVote, onChild, onDetail }) {
     };
 
     const renderChild = () => {
-        const moreCount = item.child.length === 0 ? 0 : item.comments - item.child.length;
+        const moreCount = item.child.length === 0 ? 0 : item.comment_count - item.child.length;
         if (item.child.length === 0) return;
         return (
             <ul className={styles['comment-child']}>
@@ -198,17 +198,17 @@ function CommentItem({ item, onDelete, onCreate, onVote, onChild, onDetail }) {
                         />
                     );
                 })}
-                {moreCount > 0 && item.comments <= 5 && (
+                {moreCount > 0 && item.comment_count <= 5 && (
                     <li className={`ant-list-item ${styles['comment-child-more']}`}>
                         <Button onClick={doChild} loading={loading} type="link">
                             展开其他{moreCount}条回复
                         </Button>
                     </li>
                 )}
-                {moreCount > 0 && item.comments > 5 && (
+                {moreCount > 0 && item.comment_count > 5 && (
                     <li className={`ant-list-item ${styles['comment-child-more']}`}>
                         <Button onClick={doDetail} type="link">
-                            查看全部{item.comments}条回复
+                            查看全部{item.comment_count}条回复
                         </Button>
                     </li>
                 )}

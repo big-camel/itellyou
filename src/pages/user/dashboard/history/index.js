@@ -24,14 +24,16 @@ const UserHistory = () => {
 
     const dispatch = useDispatch();
     const prevTime = useRef();
-    const dataSource = useSelector(state => (state.history ? state.history.list : null));
+    const dataSource = useSelector((state) => (state.history ? state.history.list : null));
 
-    const renderUrl = (type, key) => {
+    const renderUrl = (type, key, target) => {
         switch (type) {
             case 'article':
                 return `/article/${key}`;
             case 'question':
                 return `/question/${key}`;
+            case 'answer':
+                return `/question/${target.question_id}/answer/${key}`;
             case 'tag':
                 return `/tag/${key}`;
             default:
@@ -39,7 +41,7 @@ const UserHistory = () => {
         }
     };
 
-    const renderItem = ({ data_type, data_key, title, updated_time }) => {
+    const renderItem = ({ data_type, data_key, title, updated_time, target }) => {
         const time = timeUtils.format(updated_time, { tpl: 'YYYY-MM-DD' });
         const getTime = () => {
             if (time !== prevTime.current) {
@@ -54,7 +56,7 @@ const UserHistory = () => {
                 {getTime()}
                 <div className={styles['content']}>
                     <h2>
-                        <Link to={renderUrl(data_type, data_key)}>{title}</Link>
+                        <Link to={renderUrl(data_type, data_key, target)}>{title}</Link>
                     </h2>
                     <time>{timeUtils.format(updated_time, { tpl: 'HH:mm' })}</time>
                 </div>
@@ -71,7 +73,7 @@ const UserHistory = () => {
                     split={false}
                     offset={offset}
                     limit={limit}
-                    onChange={offset => {
+                    onChange={(offset) => {
                         setOffset(offset);
                         fetchList(dispatch, offset, limit);
                     }}

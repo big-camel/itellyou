@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MoreList } from '@/components/List';
 import { useDispatch, useSelector } from 'umi';
 import { Question } from '@/components/Content';
@@ -23,10 +23,10 @@ const UserQuestion = ({ id }) => {
     const limit = 20;
 
     const dispatch = useDispatch();
-    const dataSource = useSelector(state => state.question.list);
+    const dataSource = useSelector((state) => state.question.list);
 
-    const renderItem = item => {
-        const { created_time, answers, star_count } = item;
+    const renderItem = (item) => {
+        const { created_time, answer_count, star_count } = item;
         return (
             <MoreList.Item key={item.id}>
                 <div>
@@ -34,7 +34,7 @@ const UserQuestion = ({ id }) => {
                     <Space>
                         <Timer time={created_time} />
                         <span>
-                            <strong>{answers}</strong> 个回答
+                            <strong>{answer_count}</strong> 个回答
                         </span>
                         <span>
                             <strong>{star_count}</strong> 个关注
@@ -51,7 +51,7 @@ const UserQuestion = ({ id }) => {
             limit={limit}
             renderItem={renderItem}
             dataSource={dataSource}
-            onChange={offset => {
+            onChange={(offset) => {
                 setOffset(offset);
                 fetchList(dispatch, 0, limit, id);
             }}
