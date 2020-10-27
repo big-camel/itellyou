@@ -24,6 +24,10 @@ NodeJs [itellyou-editor-server](https://github.com/itellyou-com/itellyou-editor-
 + 全站基于Lucene搜索
 + ...
 
+### Todo
++ 文章、回答中，可以潜入多个付费模块，可出售课程，文章，漫画，创意作品，软件，电子书，音乐，游戏，咨询等服务轻松获得收入
++ 小程序、App
+
 ### 本地启动
 
 在 config/config.js 中配置后端 api，http://g.itellyou.com/ 是编辑器中 文本绘图 功能的后端支持，项目在 drawing.itellyou.com
