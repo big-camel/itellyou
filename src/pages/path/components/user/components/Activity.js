@@ -93,6 +93,7 @@ const Activity = ({ id }) => {
     };
 
     const renderItem = ({ id, created_time, action, type, target }) => {
+        if (!target) return;
         const verb = getVerb(action, type);
         return (
             <MoreList.Item key={id}>
