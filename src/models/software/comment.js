@@ -240,7 +240,7 @@ export default {
                 ...state,
             };
         },
-        addChild(state, { payload: { type, softwareId, id, append, childs } }) {
+        addChild(state, { payload: { type = 'list', softwareId, id, append, childs } }) {
             const list = state && state[softwareId] ? state[softwareId][type] : null;
             if (list) {
                 let data = list.data.concat();
