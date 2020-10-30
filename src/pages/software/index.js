@@ -105,7 +105,7 @@ const SoftwareIndex = ({ location: { query } }) => {
             <Layout spans={6}>
                 <Space direction="vertical" size="middle">
                     <Sider dataSource={menuData} activeKey={(group || '').toString()} />
-                    <Ad width={248} height={420} />
+                    <Ad width={248} height="auto" />
                 </Space>
                 {renderList()}
             </Layout>
