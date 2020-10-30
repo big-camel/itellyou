@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'umi';
 import { MoreList } from '@/components/List';
 import { Article, Question } from '@/components/Content';
-import { GoogleDefault } from '@/components/AdSense';
+import Ad from '@/components/Ad';
 
 const Recommends = () => {
     const [offset, setOffset] = useState(0);
@@ -10,6 +10,7 @@ const Recommends = () => {
 
     const dispatch = useDispatch();
     const dataSource = useSelector((state) => state.explore.recommends);
+    const ad = useSelector((state) => state.ad.detail);
 
     const loadData = (offset, limit) => {
         dispatch({
@@ -23,7 +24,7 @@ const Recommends = () => {
     };
 
     if (dataSource && dataSource.data && dataSource.data.length > 3) {
-        if (dataSource.data[2].type !== 'AD') {
+        if (dataSource.data[2].type !== 'AD' && ad) {
             dataSource.data.splice(2, 0, {
                 type: 'AD',
             });
@@ -42,7 +43,7 @@ const Recommends = () => {
         if (type === 'AD')
             return (
                 <MoreList.Item>
-                    <GoogleDefault type="rectangle" />
+                    <Ad />
                 </MoreList.Item>
             );
         return (

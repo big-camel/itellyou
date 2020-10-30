@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link, useDispatch, useSelector, useIntl, Helmet } from 'umi';
 import classNames from 'classnames';
 import { Card, Space } from 'antd';
-import { GoogleDefault } from '@/components/AdSense';
+import Ad from '@/components/Ad';
 import { RouteContext } from '@/context';
 import Container, { Layout } from '@/components/Container';
 import { getPageQuery } from '@/utils';
@@ -34,9 +34,10 @@ function QuestionIndex({ location: { query }, match: { params } }) {
     const dispatch = useDispatch();
     const dataSource = useSelector((state) => (state.question ? state.question.list : null));
     const settings = useSelector((state) => state.settings);
+    const ad = useSelector((state) => state.ad.detail);
 
     if (dataSource && dataSource.data && dataSource.data.length > 3) {
-        if (dataSource.data[2].type !== 'AD') {
+        if (dataSource.data[2].type !== 'AD' && ad) {
             dataSource.data.splice(2, 0, {
                 type: 'AD',
             });
@@ -47,7 +48,7 @@ function QuestionIndex({ location: { query }, match: { params } }) {
         if (item.type === 'AD')
             return (
                 <PageList.Item>
-                    <GoogleDefault type="rectangle" />
+                    <Ad />
                 </PageList.Item>
             );
         return (
@@ -144,7 +145,7 @@ function QuestionIndex({ location: { query }, match: { params } }) {
                     </Card>
                     <Space direction="vertical" size="small">
                         <GroupUser />
-                        <GoogleDefault type="square" />
+                        <Ad type="square" />
                     </Space>
                 </Layout>
             </Container>

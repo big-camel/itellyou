@@ -15,7 +15,7 @@ import Loading from '@/components/Loading';
 import Related from './components/Related';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import Author from './components/Author';
-import { GoogleDefault } from '@/components/AdSense';
+import Ad from '@/components/Ad';
 import HistoryExtra from '../components/HistoryExtra';
 import styles from './index.less';
 
@@ -254,7 +254,7 @@ function Detail({ match: { params } }) {
                     <Space direction="vertical">
                         {answer && answer.detail && <Author {...answer.detail.author} />}
                         {detail && !answer_id && <Author {...detail.author} />}
-                        <GoogleDefault type="square" />
+                        <Ad type="square" />
                         <Related id={id} />
                     </Space>
                 </Layout>

@@ -78,6 +78,7 @@ BlankLayout.getInitialProps = ({
     isServer,
     isMobile,
     isSpider,
+    ad,
     user,
     site,
     links,
@@ -101,8 +102,13 @@ BlankLayout.getInitialProps = ({
                 links,
             },
         });
+        dispatch({
+            type: 'ad/setAd',
+            payload: ad,
+        });
         return Promise.resolve({
             ...state,
+            ad,
             user: { ...state.user, me: user },
             settings: { ...state.settings, site, links },
         });

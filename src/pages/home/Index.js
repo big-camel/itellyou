@@ -5,7 +5,7 @@ import Container, { Layout } from '@/components/Container';
 import Recommends from './components/Recommends';
 import Writer from './components/Writer';
 import Answerer from './components/Answerer';
-import { GoogleDefault } from '@/components/AdSense';
+import Ad from '@/components/Ad';
 import styles from './index.less';
 
 const Home = () => {
@@ -30,7 +30,7 @@ const Home = () => {
                     </div>
                     <Space direction="vertical" size="small">
                         <Writer />
-                        <GoogleDefault type="square" />
+                        <Ad type="square" />
                         <Answerer />
                     </Space>
                 </Layout>

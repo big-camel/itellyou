@@ -8,7 +8,7 @@ import List from '@/components/List';
 import Loading from '@/components/Loading';
 import { Article } from '@/components/Content';
 import Editor from '@/components/Editor';
-import { GoogleDefault } from '@/components/AdSense';
+import Ad from '@/components/Ad';
 import Footer from '@/components/Footer';
 
 import {
@@ -159,7 +159,7 @@ function Detail({ match: { params } }) {
                             />
                         </div>
                     )}
-                    <GoogleDefault type="rectangle" />
+                    <Ad />
                     <div ref={commentViewRef}>
                         <Article.Comment id={id} />
                     </div>

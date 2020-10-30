@@ -6,21 +6,12 @@ import Container, { Layout } from '@/components/Container';
 import Recommends from './components/Recommends';
 import Writer from './components/Writer';
 import Answerer from './components/Answerer';
-import { GoogleDefault } from '@/components/AdSense';
+import Ad from '@/components/Ad';
 import styles from './index.less';
 
 const Home = () => {
     const settings = useSelector((state) => state.settings);
     const intl = useIntl();
-
-    const contentStyle = {
-        height: '160px',
-        color: '#fff',
-        lineHeight: '160px',
-        textAlign: 'center',
-        background: '#364d79',
-        margin: 0,
-    };
 
     return (
         <>
@@ -73,10 +64,10 @@ const Home = () => {
                             <p>💊 解决问题获得悬赏</p>
                             <p>🎪 平台广告收益分成</p>
                         </Card>
-                        <GoogleDefault type="square" />
+                        <Ad type="square" />
                         <Writer />
                         <Answerer />
-                        <GoogleDefault type="square" />
+                        <Ad type="square" />
                     </Space>
                 </Layout>
             </Container>

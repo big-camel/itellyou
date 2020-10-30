@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link, useSelector, useIntl, Helmet } from 'umi';
 import classNames from 'classnames';
 import { Card, Space, Empty } from 'antd';
-import { GoogleDefault } from '@/components/AdSense';
+import Ad from '@/components/Ad';
 import { RouteContext } from '@/context';
 import { getPageQuery } from '@/utils';
 import Container, { Layout } from '@/components/Container';
@@ -34,11 +34,12 @@ function ArticleIndex({ location: { query }, match: { params } }) {
 
     const dataSource = useSelector((state) => (state.article ? state.article.list : null));
     const me = useSelector((state) => state.user.me);
+    const ad = useSelector((state) => state.ad.detail);
 
     const settings = useSelector((state) => state.settings);
 
     if (dataSource && dataSource.data && dataSource.data.length > 3) {
-        if (dataSource.data[2].type !== 'AD') {
+        if (dataSource.data[2].type !== 'AD' && ad) {
             dataSource.data.splice(2, 0, {
                 type: 'AD',
             });
@@ -49,7 +50,7 @@ function ArticleIndex({ location: { query }, match: { params } }) {
         if (item.type === 'AD')
             return (
                 <PageList.Item>
-                    <GoogleDefault type="rectangle" />
+                    <Ad />
                 </PageList.Item>
             );
         return (
@@ -137,9 +138,9 @@ function ArticleIndex({ location: { query }, match: { params } }) {
                     </Card>
                     <Space direction="vertical">
                         <HotColumn />
-                        <GoogleDefault type="square" />
+                        <Ad type="square" />
                         <HotTag />
-                        <GoogleDefault type="square" />
+                        <Ad type="square" />
                     </Space>
                 </Layout>
             </Container>
