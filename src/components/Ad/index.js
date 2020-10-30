@@ -25,8 +25,9 @@ export default ({ className, type = 'rectangle', width, height, ...props }) => {
     const { isMobile } = useContext(RouteContext);
     type = isMobile ? 'mobile' : type;
     const rectsData = rects[type];
-    width = width || rectsData ? rectsData.width : 0;
-    height = height || rectsData ? rectsData.height : 0;
+    console.log(width);
+    width = width || (rectsData ? rectsData.width : 0);
+    height = height || (rectsData ? rectsData.height : 0);
 
     const ad = useSelector((state) => state.ad.detail);
     if (!ad || !width || !height) return null;
