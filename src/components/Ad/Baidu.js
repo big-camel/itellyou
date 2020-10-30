@@ -8,6 +8,7 @@ export default ({ style, slot_id }) => {
         if (!id) {
             id = '_' + Math.random().toString(36).slice(2);
             div.current.setAttribute('id', id);
+            div.current.setAttribute('style', style);
         }
         try {
             if (typeof window === 'undefined') return;
@@ -20,6 +21,5 @@ export default ({ style, slot_id }) => {
             console.error(e.message);
         }
     }, []);
-
-    return <div ref={div} style={style} />;
+    return <div ref={div} />;
 };
