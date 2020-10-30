@@ -22,6 +22,7 @@ NodeJs [itellyou-editor-server](https://github.com/itellyou-com/itellyou-editor-
 + 可订阅消息通知
 + 用户每项操作可定制等级、积分增减。现金可充值、可提现
 + 全站基于Lucene搜索
++ 百度联盟和Google Adsense可根据国内国外切换显示
 + ...
 
 ### Todo
