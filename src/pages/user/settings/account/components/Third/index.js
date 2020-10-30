@@ -13,8 +13,8 @@ export default () => {
     const [unbindType, setUnbindType] = useState(null);
     const dispatch = useDispatch();
 
-    const loaddingState = useSelector(state => state.loading);
-    const { alipay, github } = useSelector(state => state.thirdAccount) || {};
+    const loaddingState = useSelector((state) => state.loading);
+    const { alipay, github } = useSelector((state) => state.thirdAccount) || {};
 
     const onSucceed = useCallback(() => {
         if (!verifyType) return verifyType;
@@ -31,7 +31,6 @@ export default () => {
 
     const onUnBindSucceed = useCallback(() => {
         if (!unbindType) return;
-        console.log(unbindType);
         const type = unbindType;
         setUnbindType(null);
         let text = '';
@@ -45,7 +44,7 @@ export default () => {
             centered: true,
             icon: <ExclamationCircleOutlined />,
             onOk() {
-                return new Promise(resolve => {
+                return new Promise((resolve) => {
                     dispatch({
                         type: 'thirdAccount/delete',
                         payload: {

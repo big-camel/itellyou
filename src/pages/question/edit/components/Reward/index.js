@@ -4,11 +4,11 @@ import { Radio, InputNumber } from 'antd';
 import styles from './index.less';
 
 export default ({ current, data, onChange, adopted }) => {
-    onChange = onChange || function() {};
+    onChange = onChange || function () {};
 
     const dispatch = useDispatch();
-    const config = useSelector(state => (state.reward ? state.reward.config : null));
-    const bank = useSelector(state => state.bank.detail);
+    const config = useSelector((state) => (state.reward ? state.reward.config : null));
+    const bank = useSelector((state) => state.bank.detail);
 
     useEffect(() => {
         dispatch({
@@ -22,16 +22,16 @@ export default ({ current, data, onChange, adopted }) => {
 
     if (!config || !bank) return null;
 
-    const getText = type => {
+    const getText = (type) => {
         return type === 'credit' ? '积分' : '现金';
     };
 
-    const getUnit = type => {
+    const getUnit = (type) => {
         const { credit, cash } = config;
         return type === 'credit' ? credit.unit : cash.unit;
     };
 
-    const getKey = type => {
+    const getKey = (type) => {
         return type === 'credit' ? 'credit' : 'cash';
     };
 
@@ -58,7 +58,7 @@ export default ({ current, data, onChange, adopted }) => {
         });
     };
 
-    const onTypeChange = event => {
+    const onTypeChange = (event) => {
         const type = event.target.value;
         const key = getKey(type);
         const { min } = config[key];
@@ -68,7 +68,7 @@ export default ({ current, data, onChange, adopted }) => {
         });
     };
 
-    const getDisabled = type => {
+    const getDisabled = (type) => {
         if (adopted) return true;
         if (!current) return false;
         if (current.type !== 'default' && current.type !== type) {
@@ -98,18 +98,17 @@ export default ({ current, data, onChange, adopted }) => {
                     max={balance > max ? max : balance}
                     precision={precision}
                     value={value}
-                    onChange={value => onValueChange(type, value)}
-                    formatter={value =>
+                    onChange={(value) => onValueChange(type, value)}
+                    formatter={(value) =>
                         `${formatter}${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                     }
-                    parser={value => value.replace(new RegExp(`${formatter}\s?|(,*)`, 'g'), '')}
+                    parser={(value) => value.replace(new RegExp(`${formatter}\s?|(,*)`, 'g'), '')}
                 />
                 &nbsp;&nbsp;，{getText(type)}余额:{formatter}
                 {balance} {getUnit(type)}
             </div>
         );
     };
-    console.log(type);
     return (
         <div className={styles['reward']}>
             {renderCurrent()}
