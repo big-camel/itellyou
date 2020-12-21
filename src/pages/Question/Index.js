@@ -37,7 +37,7 @@ function QuestionIndex({ location: { query }, match: { params } }) {
     const ad = useSelector((state) => state.ad.detail);
 
     if (dataSource && dataSource.data && dataSource.data.length > 3) {
-        if (dataSource.data[2].type !== 'AD' && ad) {
+        if (dataSource.data[2].type !== 'AD' && ad && Object.keys(ad).length > 0) {
             dataSource.data.splice(2, 0, {
                 type: 'AD',
             });

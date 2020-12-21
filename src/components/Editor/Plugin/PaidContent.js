@@ -1,4 +1,4 @@
-const PLUGIN_NAME = 'paid';
+const PLUGIN_NAME = 'paid-content';
 export default {
     initialize: function () {
         // 创建命令

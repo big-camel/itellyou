@@ -11,7 +11,7 @@ export default {
     effects: {
         *create({ payload: { data, type } }, { call }) {
             const response = yield call(create, { ...data, type });
-            if (!response.result) {
+            if (!response.result && payload && payload.onError) {
                 payload.onError(response);
             }
             return response;

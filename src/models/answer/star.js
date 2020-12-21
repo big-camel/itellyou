@@ -14,8 +14,19 @@ export default {
                 payload: { ...response.data, append },
             });
         },
-        *follow({ payload }, { call }) {
+        *follow({ payload }, { call, put }) {
             const response = yield call(follow, payload);
+            if (response.result) {
+                const detail = {
+                    id: payload.id,
+                    use_star: true,
+                    star_count: response.data,
+                };
+                yield put({
+                    type: 'replaceItem',
+                    payload: detail,
+                });
+            }
             return response;
         },
         *unfollow({ payload: { remove, ...payload } }, { call, put }) {

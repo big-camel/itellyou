@@ -264,7 +264,7 @@ function Editor(
         if (isBrowser()) {
             return (
                 <EditorType
-                    defaultValue={null}
+                    //defaultValue={null}
                     onSave={onUserSave}
                     onChange={onEditorChange}
                     onLoad={onEditorLoaded}

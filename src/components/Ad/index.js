@@ -29,7 +29,7 @@ export default ({ className, type = 'rectangle', width, height, ...props }) => {
     height = height || (rectsData ? rectsData.height : 0);
 
     const ad = useSelector((state) => state.ad.detail);
-    if (!ad || !width || !height) return null;
+    if (!ad || Object.keys(ad).length === 0 || !width || !height) return null;
 
     const style = {};
     if (rectsData && rectsData.width !== width) style['width'] = width;

@@ -24,12 +24,7 @@ export default ({ id, use_star, allow_star, size }) => {
     };
 
     return (
-        <FavoriteButton
-            disabled={!allow_star}
-            //loading={following}
-            onClick={onStar}
-            size={size}
-        >
+        <FavoriteButton disabled={!allow_star} loading={following} onClick={onStar} size={size}>
             {useStar ? '取消收藏' : '收藏'}
         </FavoriteButton>
     );

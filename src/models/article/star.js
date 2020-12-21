@@ -23,6 +23,10 @@ export default {
                     star_count: response.data,
                 };
                 yield put({
+                    type: 'replaceItem',
+                    payload: detail,
+                });
+                yield put({
                     type: 'article/updateDetail',
                     payload: detail,
                 });

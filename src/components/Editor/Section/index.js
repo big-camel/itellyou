@@ -1,3 +1,3 @@
-import PaidSection from './Paid';
+import PaidContent from './paidcontent';
 
-export { PaidSection };
+export { PaidContent };

@@ -1,6 +1,6 @@
 import { dynamic } from 'umi';
 import { Skeleton } from 'antd';
-import { PaidPlugin } from './Plugin';
+import { PaidContent } from './Plugin';
 import Loading from '../Loading';
 
 export default dynamic({
@@ -14,12 +14,12 @@ export default dynamic({
 });
 
 const initPlugin = async (Engine) => {
-    const { PaidSection } = await import(
+    const section = await import(
         /* webpackChunkName: "async-itellyou-editor-section" */ './Section'
     );
 
-    Engine.section.add('paid', PaidSection);
-    Engine.plugin.add('paid', PaidPlugin);
+    Engine.section.add('paid-content', section.PaidContent);
+    Engine.plugin.add('paid-content', PaidContent);
 };
 
 const LineEditor = dynamic({

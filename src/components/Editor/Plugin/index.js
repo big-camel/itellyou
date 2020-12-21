@@ -1,3 +1,3 @@
-import PaidPlugin from './Paid';
+import PaidContent from './PaidContent';
 
-export { PaidPlugin };
+export { PaidContent };
