@@ -22,6 +22,9 @@ export default ({ content, html, onLoad, genAnchor, ...props }) => {
                     display: 'block',
                     align: 'center',
                 }}
+                lockedtext={{
+                    action: '/api/crypto',
+                }}
                 video={{
                     action: {
                         query: '/api/upload/video/query',
