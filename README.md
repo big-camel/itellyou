@@ -1,5 +1,5 @@
 ### ITELLYOU 前端
-UmiJs[ITELLYOU 官网](https://www.itellyou.com)
+UmiJs[ITELLYOU 官网](https://www.aomao.com)
 ### ITELLYOU 前端 SSR
 NodeJs [itellyou-ssr](https://github.com/itellyou-com/itellyou-ssr)
 ### ITELLYOU 后台管理
@@ -31,7 +31,7 @@ NodeJs [itellyou-editor-server](https://github.com/itellyou-com/itellyou-editor-
 
 ### 本地启动
 
-在 config/config.js 中配置后端 api，http://g.itellyou.com/ 是编辑器中 文本绘图 功能的后端支持，项目在 drawing.itellyou.com
+在 config/config.js 中配置后端 api，http://g.aomao.com/ 是编辑器中 文本绘图 功能的后端支持，项目在 drawing.itellyou.com
 
 ```
 proxy: {
