@@ -24,11 +24,11 @@ const Oauth = ({ location }) => {
     const [submit, setSubmit] = useState({});
     const dispatch = useDispatch();
 
-    const settings = useSelector(state => state.settings);
+    const settings = useSelector((state) => state.settings);
 
-    const sendMobileCaptcha = e => {
+    const sendMobileCaptcha = (e) => {
         e.preventDefault();
-        form.validateFields(['mobile']).then(values => {
+        form.validateFields(['mobile']).then((values) => {
             setCaptcha({ sending: true });
             sendCaptcha({
                 action: 'login/oauth',
@@ -41,7 +41,7 @@ const Oauth = ({ location }) => {
                         setMobileHelp({
                             trigger: 'blur',
                             visible: true,
-                            content: value => {
+                            content: (value) => {
                                 if (value !== data.mobile) return null;
                                 return (
                                     <span>
@@ -65,7 +65,7 @@ const Oauth = ({ location }) => {
                         message.error(res.message);
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     setCaptcha({ sending: false });
                     if (!error) return;
                     setSubmit({
@@ -76,7 +76,7 @@ const Oauth = ({ location }) => {
         });
     };
 
-    const handleSubmit = values => {
+    const handleSubmit = (values) => {
         if (submit.loading) return;
         setSubmit({
             loading: true,
@@ -99,7 +99,7 @@ const Oauth = ({ location }) => {
             if (!result) {
                 switch (status) {
                     case 1001:
-                        setFiledErrors(value => {
+                        setFiledErrors((value) => {
                             return {
                                 ...value,
                                 code: res.message,
@@ -124,7 +124,7 @@ const Oauth = ({ location }) => {
 
     return (
         <>
-            <Script url="https://cdn-object.itellyou.com/geetest/gt.js" />
+            <Script url="https://cdn-object.yanmao.cc/geetest/gt.js" />
             <div className={styles.title}>
                 验证成功
                 <div className={styles['sub']}>绑定手机号立即登录</div>
@@ -136,7 +136,7 @@ const Oauth = ({ location }) => {
                     autoComplete="off"
                     maxLength={11}
                     errors={filedErrors['mobile']}
-                    onBlur={e => {
+                    onBlur={(e) => {
                         if (e.change) setFiledErrors({ ...filedErrors, mobile: null });
                     }}
                     help={mobileHelp}
@@ -145,12 +145,12 @@ const Oauth = ({ location }) => {
                     name="code"
                     autoComplete="off"
                     onSend={sendMobileCaptcha}
-                    onPressEnter={e => {
+                    onPressEnter={(e) => {
                         e.target.blur();
                         form.submit();
                     }}
                     errors={filedErrors['code']}
-                    onBlur={e => {
+                    onBlur={(e) => {
                         if (e.change) setFiledErrors({ ...filedErrors, code: null });
                     }}
                     {...captcha}
@@ -161,7 +161,7 @@ const Oauth = ({ location }) => {
                     <a
                         target="_blank"
                         href={
-                            (site || { user_agreement_link: 'https://www.itellyou.com' })
+                            (site || { user_agreement_link: 'https://www.yanmao.cc' })
                                 .user_agreement_link
                         }
                     >

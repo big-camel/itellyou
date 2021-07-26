@@ -37,7 +37,7 @@ export default {
             placeholder: '密码',
         },
         help: {
-            content: value => {
+            content: (value) => {
                 let spaceError = false;
                 if (value && value.match(/\s+/)) {
                     spaceError = true;
@@ -154,7 +154,7 @@ export default {
     },
     Path: {
         props: {
-            addonBefore: 'https://www.itellyou.com/',
+            addonBefore: 'https://www.yanmao.cc/',
         },
         rules: [
             {

@@ -26,7 +26,7 @@ const Login = () => {
 
     const dispatch = useDispatch();
 
-    const sendMobileCaptcha = e => {
+    const sendMobileCaptcha = (e) => {
         e.preventDefault();
         form.validateFields(['mobile'])
             .then(() => {
@@ -43,7 +43,7 @@ const Login = () => {
                             setMobileHelp({
                                 trigger: 'blur',
                                 visible: true,
-                                content: value => {
+                                content: (value) => {
                                     if (value !== data.mobile) return null;
                                     return (
                                         <span>
@@ -60,7 +60,7 @@ const Login = () => {
                                 },
                             });
                         } else if (status === 1002) {
-                            setFiledErrors(value => {
+                            setFiledErrors((value) => {
                                 return {
                                     ...value,
                                     mobile: (
@@ -75,7 +75,7 @@ const Login = () => {
                             message.error(res.message);
                         }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         if (!error) return;
                         setCaptcha({ sending: false });
                         setSubmit({
@@ -112,7 +112,7 @@ const Login = () => {
                             case 1002:
                             case 1003:
                                 const type = status === 1002 ? '手机号' : '邮箱';
-                                setFiledErrors(value => {
+                                setFiledErrors((value) => {
                                     return {
                                         ...value,
                                         username: (
@@ -127,7 +127,7 @@ const Login = () => {
                                 });
                                 break;
                             case 1004:
-                                setFiledErrors(value => {
+                                setFiledErrors((value) => {
                                     return {
                                         ...value,
                                         username: res.message,
@@ -135,7 +135,7 @@ const Login = () => {
                                 });
                                 break;
                             case 1005:
-                                setFiledErrors(value => {
+                                setFiledErrors((value) => {
                                     return {
                                         ...value,
                                         password: res.message,
@@ -148,7 +148,7 @@ const Login = () => {
                     }
                 });
             })
-            .catch(error => {
+            .catch((error) => {
                 if (!error) return;
                 setSubmit({
                     loading: false,
@@ -170,7 +170,7 @@ const Login = () => {
             if (!result) {
                 switch (status) {
                     case 1001:
-                        setFiledErrors(value => {
+                        setFiledErrors((value) => {
                             return {
                                 ...value,
                                 code: res.message,
@@ -178,7 +178,7 @@ const Login = () => {
                         });
                         break;
                     case 1002:
-                        setFiledErrors(value => {
+                        setFiledErrors((value) => {
                             return {
                                 ...value,
                                 mobile: (
@@ -197,7 +197,7 @@ const Login = () => {
         });
     };
 
-    const handleSubmit = values => {
+    const handleSubmit = (values) => {
         if (submit.loading) return;
         setSubmit({
             loading: true,
@@ -220,7 +220,7 @@ const Login = () => {
 
     return (
         <>
-            <Script url="https://cdn-object.itellyou.com/geetest/gt.js" />
+            <Script url="https://cdn-object.yanmao.cc/geetest/gt.js" />
             <div className={styles.title}>登录</div>
             <Form
                 className={styles['login-form']}
@@ -228,7 +228,7 @@ const Login = () => {
                 onSubmit={handleSubmit}
                 defaultActiveKey={tab}
                 activeKey={tab}
-                onChange={tab => setTab(tab)}
+                onChange={(tab) => setTab(tab)}
             >
                 <Tab key="account" tab="账号密码登录">
                     {renderErrorMessage()}
@@ -236,7 +236,7 @@ const Login = () => {
                         name="username"
                         autoComplete="off"
                         errors={filedErrors['username']}
-                        onBlur={e => {
+                        onBlur={(e) => {
                             if (e.change) setFiledErrors({ ...filedErrors, username: null });
                         }}
                     />
@@ -244,10 +244,10 @@ const Login = () => {
                         name="password"
                         autoComplete="off"
                         errors={filedErrors['password']}
-                        onBlur={e => {
+                        onBlur={(e) => {
                             if (e.change) setFiledErrors({ ...filedErrors, password: null });
                         }}
-                        onPressEnter={e => {
+                        onPressEnter={(e) => {
                             e.target.blur();
                             form.submit();
                         }}
@@ -260,7 +260,7 @@ const Login = () => {
                         autoComplete="off"
                         maxLength={11}
                         errors={filedErrors['mobile']}
-                        onBlur={e => {
+                        onBlur={(e) => {
                             if (e.change) setFiledErrors({ ...filedErrors, mobile: null });
                         }}
                         help={mobileHelp}
@@ -269,12 +269,12 @@ const Login = () => {
                         name="code"
                         autoComplete="off"
                         onSend={sendMobileCaptcha}
-                        onPressEnter={e => {
+                        onPressEnter={(e) => {
                             e.target.blur();
                             form.submit();
                         }}
                         errors={filedErrors['code']}
-                        onBlur={e => {
+                        onBlur={(e) => {
                             if (e.change) setFiledErrors({ ...filedErrors, code: null });
                         }}
                         {...captcha}

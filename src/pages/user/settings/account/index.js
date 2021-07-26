@@ -15,8 +15,8 @@ function Account() {
     const [emailVisible, setEmailVisible] = useState(false);
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [pathVisible, setPathVisible] = useState(false);
-    const me = useSelector(state => state.user.me);
-    const loadingState = useSelector(state => state.loading);
+    const me = useSelector((state) => state.user.me);
+    const loadingState = useSelector((state) => state.loading);
     const loading = loadingState.effects['user/fetchAccount'];
     if (!me || loading) return <Loading />;
 
@@ -45,7 +45,7 @@ function Account() {
                     <Card.Meta
                         title="个人路径"
                         description={
-                            <span>{path ? `https://www.itellyou.com/${path}` : '未设置'}</span>
+                            <span>{path ? `https://www.yanmao.cc/${path}` : '未设置'}</span>
                         }
                     />
                     <a onClick={() => setPathVisible(true)}>{path ? '更改' : '设置'}</a>

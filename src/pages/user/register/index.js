@@ -22,10 +22,10 @@ const Register = () => {
 
     const [submit, setSubmit] = useState({});
 
-    const loadingState = useSelector(state => state.loading);
+    const loadingState = useSelector((state) => state.loading);
     const submiting = loadingState.effects['register/submit'];
 
-    const settings = useSelector(state => state.settings);
+    const settings = useSelector((state) => state.settings);
 
     const dispatch = useDispatch();
 
@@ -36,9 +36,9 @@ const Register = () => {
         </span>
     );
 
-    const sendMobileCaptcha = e => {
+    const sendMobileCaptcha = (e) => {
         e.preventDefault();
-        form.validateFields(['mobile']).then(values => {
+        form.validateFields(['mobile']).then((values) => {
             setCaptcha({ sending: true });
             sendCaptcha({
                 action: 'register',
@@ -51,7 +51,7 @@ const Register = () => {
                         setMobileHelp({
                             trigger: 'blur',
                             visible: true,
-                            content: value => {
+                            content: (value) => {
                                 if (value !== data.mobile) return null;
                                 return (
                                     <span>
@@ -75,7 +75,7 @@ const Register = () => {
                         message.error(res.message);
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     setCaptcha({ sending: false });
                     if (!error) return;
 
@@ -87,7 +87,7 @@ const Register = () => {
         });
     };
 
-    const handleSubmit = values => {
+    const handleSubmit = (values) => {
         setSubmit({
             status: true,
             message: null,
@@ -103,13 +103,13 @@ const Register = () => {
                 mobile: values['mobile'],
                 code: values['code'],
             },
-        }).then(res => {
+        }).then((res) => {
             if (res.result === true) {
                 history.push('/login');
             } else if (res.result === false) {
                 switch (res.status) {
                     case 1001:
-                        setFiledErrors(value => {
+                        setFiledErrors((value) => {
                             return {
                                 ...value,
                                 code: res.message,
@@ -117,7 +117,7 @@ const Register = () => {
                         });
                         break;
                     case 1002:
-                        setFiledErrors(value => {
+                        setFiledErrors((value) => {
                             return {
                                 ...value,
                                 mobile: renderMobileError(),
@@ -125,7 +125,7 @@ const Register = () => {
                         });
                         break;
                     case 1003:
-                        setFiledErrors(value => {
+                        setFiledErrors((value) => {
                             return {
                                 ...value,
                                 name: res.message,
@@ -153,16 +153,16 @@ const Register = () => {
 
     return (
         <>
-            <Script url="https://cdn-object.itellyou.com/geetest/gt.js" />
+            <Script url="https://cdn-object.yanmao.cc/geetest/gt.js" />
             <div className={styles.title}>注册</div>
             <Form onSubmit={handleSubmit} className={styles['form']} form={form}>
                 {renderErrorMessage()}
                 <Name
                     name="name"
                     errors={filedErrors['name']}
-                    onBlur={e => {
+                    onBlur={(e) => {
                         if (e.change)
-                            setFiledErrors(value => {
+                            setFiledErrors((value) => {
                                 return {
                                     ...value,
                                     name: null,
@@ -177,7 +177,7 @@ const Register = () => {
                                 payload: {
                                     name: value,
                                 },
-                            }).then(res => {
+                            }).then((res) => {
                                 if (res.result) return resolve();
                                 reject(res.message);
                             });
@@ -190,9 +190,9 @@ const Register = () => {
                     autoComplete="off"
                     maxLength={11}
                     errors={filedErrors['mobile']}
-                    onBlur={e => {
+                    onBlur={(e) => {
                         if (e.change)
-                            setFiledErrors(value => {
+                            setFiledErrors((value) => {
                                 return {
                                     ...value,
                                     mobile: null,
@@ -207,9 +207,9 @@ const Register = () => {
                     onSend={sendMobileCaptcha}
                     onPressEnter={form.submit}
                     errors={filedErrors['code']}
-                    onBlur={e => {
+                    onBlur={(e) => {
                         if (e.change)
-                            setFiledErrors(value => {
+                            setFiledErrors((value) => {
                                 return {
                                     ...value,
                                     code: null,
@@ -228,7 +228,7 @@ const Register = () => {
                     <a
                         target="_blank"
                         href={
-                            (site || { user_agreement_link: 'https://www.itellyou.com' })
+                            (site || { user_agreement_link: 'https://www.yanmao.cc' })
                                 .user_agreement_link
                         }
                     >

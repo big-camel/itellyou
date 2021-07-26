@@ -33,7 +33,7 @@ function Verify({ defaultValue, onClose, onSucceed, children, ...props }) {
     const [form] = Form.useForm(props.form);
 
     const dispatch = useDispatch();
-    const me = useSelector(state => state.user.me) || {};
+    const me = useSelector((state) => state.user.me) || {};
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -70,7 +70,7 @@ function Verify({ defaultValue, onClose, onSucceed, children, ...props }) {
         });
     }
 
-    const onTypeChange = value => {
+    const onTypeChange = (value) => {
         setType(value);
     };
 
@@ -84,7 +84,7 @@ function Verify({ defaultValue, onClose, onSucceed, children, ...props }) {
             break;
     }
 
-    const sendMobileCaptcha = e => {
+    const sendMobileCaptcha = (e) => {
         e.preventDefault();
         setCaptcha({ sending: true });
         sendCaptcha({
@@ -104,7 +104,7 @@ function Verify({ defaultValue, onClose, onSucceed, children, ...props }) {
                     message.error(res.message);
                 }
             })
-            .catch(error => {
+            .catch((error) => {
                 setCaptcha({ sending: false });
                 if (!error) return;
             });
@@ -113,7 +113,7 @@ function Verify({ defaultValue, onClose, onSucceed, children, ...props }) {
     const onVerify = () => {
         setLoading(true);
         form.validateFields(['code'])
-            .then(values => {
+            .then((values) => {
                 const verify = type === 'mobile' ? mobile : email;
                 verify(values).then(({ result, status, data, ...res }) => {
                     setLoading(false);
@@ -156,7 +156,7 @@ function Verify({ defaultValue, onClose, onSucceed, children, ...props }) {
                                 onChange={onTypeChange}
                                 size="large"
                             >
-                                {dataSource.map(item => (
+                                {dataSource.map((item) => (
                                     <Option key={item.key}>{item.title}</Option>
                                 ))}
                             </Select>
@@ -165,7 +165,7 @@ function Verify({ defaultValue, onClose, onSucceed, children, ...props }) {
                             name="code"
                             autoComplete="off"
                             errors={codeErrors}
-                            onBlur={e => {
+                            onBlur={(e) => {
                                 if (e.change) setCodeErrors(null);
                             }}
                             help={codeHelp}
@@ -186,7 +186,7 @@ function Verify({ defaultValue, onClose, onSucceed, children, ...props }) {
 
     return (
         <>
-            <Script url="https://cdn-object.itellyou.com/geetest/gt.js" />
+            <Script url="https://cdn-object.yanmao.cc/geetest/gt.js" />
             <Modal
                 title="身份验证"
                 visible={visible}

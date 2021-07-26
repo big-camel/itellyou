@@ -32,13 +32,13 @@ function Apply() {
         });
     };
 
-    const onTagsChange = values => {
+    const onTagsChange = (values) => {
         setTags(values);
     };
 
-    const handleSubmit = values => {
+    const handleSubmit = (values) => {
         setSubmiting(true);
-        const tags = values['tags'].map(v => {
+        const tags = values['tags'].map((v) => {
             return v.id;
         });
         dispatch({
@@ -88,7 +88,7 @@ function Apply() {
                         <ul>
                             <li>专栏须由本人申请，不可代为申请</li>
                             <li>
-                                申请帐号的用户信息需符合《ITELLYOU用户信息管理规范》；https://www.itellyou.com/dis
+                                申请帐号的用户信息需符合《ITELLYOU用户信息管理规范》；https://www.yanmao.cc/dis
                             </li>
                         </ul>
                     </Paragraph>
@@ -116,7 +116,7 @@ function Apply() {
                         name="name"
                         autoComplete="off"
                         errors={nameErrors}
-                        onBlur={e => {
+                        onBlur={(e) => {
                             if (e.change) setNameErrors(null);
                         }}
                         asyncValidator={queryName}
@@ -127,7 +127,7 @@ function Apply() {
                         name="description"
                         autoComplete="off"
                         errors={descErrors}
-                        onBlur={e => {
+                        onBlur={(e) => {
                             if (e.change) setDescErrors(null);
                         }}
                     />
