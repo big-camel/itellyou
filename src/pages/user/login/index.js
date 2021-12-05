@@ -220,7 +220,7 @@ const Login = () => {
 
     return (
         <>
-            <Script url="https://cdn-object.yanmao.cc/geetest/gt.js" />
+            <Script url="https://cdn-object.aomao.com/geetest/gt.js" />
             <div className={styles.title}>登录</div>
             <Form
                 className={styles['login-form']}

@@ -186,7 +186,7 @@ function Verify({ defaultValue, onClose, onSucceed, children, ...props }) {
 
     return (
         <>
-            <Script url="https://cdn-object.yanmao.cc/geetest/gt.js" />
+            <Script url="https://cdn-object.aomao.com/geetest/gt.js" />
             <Modal
                 title="身份验证"
                 visible={visible}

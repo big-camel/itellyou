@@ -88,7 +88,7 @@ function Apply() {
                         <ul>
                             <li>专栏须由本人申请，不可代为申请</li>
                             <li>
-                                申请帐号的用户信息需符合《ITELLYOU用户信息管理规范》；https://www.yanmao.cc/dis
+                                申请帐号的用户信息需符合《ITELLYOU用户信息管理规范》；https://www.aomao.com/dis
                             </li>
                         </ul>
                     </Paragraph>

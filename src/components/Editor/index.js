@@ -272,7 +272,7 @@ function Editor(
                     save={save}
                     toolbar={toolbar}
                     emoji={{
-                        action: 'https://cdn-object.yanmao.cc/emoji/',
+                        action: 'https://cdn-object.aomao.com/emoji/',
                     }}
                     toc={props.toc === undefined ? true : props.toc}
                     markdown={{
@@ -326,10 +326,10 @@ function Editor(
 
     return (
         <div className={className}>
-            <Script url="https://cdn-object.yanmao.cc/ali-sdk/aliyun-oss-sdk-5.3.1.min.js" />
+            <Script url="https://cdn-object.aomao.com/ali-sdk/aliyun-oss-sdk-5.3.1.min.js" />
             <Script
                 onLoad={() => setLoadScripts(false)}
-                url="https://cdn-object.yanmao.cc/ali-sdk/aliyun-upload-sdk-1.5.0.min.js"
+                url="https://cdn-object.aomao.com/ali-sdk/aliyun-upload-sdk-1.5.0.min.js"
             />
             {editorLoaded && (
                 <Collab

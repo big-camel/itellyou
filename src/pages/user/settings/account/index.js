@@ -45,7 +45,7 @@ function Account() {
                     <Card.Meta
                         title="个人路径"
                         description={
-                            <span>{path ? `https://www.yanmao.cc/${path}` : '未设置'}</span>
+                            <span>{path ? `https://www.aomao.com/${path}` : '未设置'}</span>
                         }
                     />
                     <a onClick={() => setPathVisible(true)}>{path ? '更改' : '设置'}</a>

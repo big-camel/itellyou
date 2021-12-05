@@ -124,7 +124,7 @@ const Oauth = ({ location }) => {
 
     return (
         <>
-            <Script url="https://cdn-object.yanmao.cc/geetest/gt.js" />
+            <Script url="https://cdn-object.aomao.com/geetest/gt.js" />
             <div className={styles.title}>
                 验证成功
                 <div className={styles['sub']}>绑定手机号立即登录</div>
@@ -161,7 +161,7 @@ const Oauth = ({ location }) => {
                     <a
                         target="_blank"
                         href={
-                            (site || { user_agreement_link: 'https://www.yanmao.cc' })
+                            (site || { user_agreement_link: 'https://www.aomao.com' })
                                 .user_agreement_link
                         }
                     >

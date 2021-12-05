@@ -153,7 +153,7 @@ const Register = () => {
 
     return (
         <>
-            <Script url="https://cdn-object.yanmao.cc/geetest/gt.js" />
+            <Script url="https://cdn-object.aomao.com/geetest/gt.js" />
             <div className={styles.title}>注册</div>
             <Form onSubmit={handleSubmit} className={styles['form']} form={form}>
                 {renderErrorMessage()}
@@ -228,7 +228,7 @@ const Register = () => {
                     <a
                         target="_blank"
                         href={
-                            (site || { user_agreement_link: 'https://www.yanmao.cc' })
+                            (site || { user_agreement_link: 'https://www.aomao.com' })
                                 .user_agreement_link
                         }
                     >

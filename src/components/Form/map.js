@@ -154,7 +154,7 @@ export default {
     },
     Path: {
         props: {
-            addonBefore: 'https://www.yanmao.cc/',
+            addonBefore: 'https://www.aomao.com/',
         },
         rules: [
             {

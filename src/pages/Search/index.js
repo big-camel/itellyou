@@ -203,7 +203,7 @@ function Search({ location: { query } }) {
                                 <li>
                                     <a
                                         target="_blank"
-                                        href={`https://www.baidu.com/s?wd=site:yanmao.cc ${word}`}
+                                        href={`https://www.baidu.com/s?wd=site:aomao.com ${word}`}
                                     >
                                         在 百度 中搜索
                                     </a>
@@ -211,7 +211,7 @@ function Search({ location: { query } }) {
                                 <li>
                                     <a
                                         target="_blank"
-                                        href={`https://www.google.com/?gws_rd=ssl#newwindow=1&q=site:yanmao.cc+${word}`}
+                                        href={`https://www.google.com/?gws_rd=ssl#newwindow=1&q=site:aomao.com+${word}`}
                                     >
                                         在 Google 中搜索
                                     </a>

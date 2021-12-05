@@ -1,13 +1,13 @@
 ### ITELLYOU 前端
 UmiJs[ITELLYOU 官网](https://www.aomao.com)
 ### ITELLYOU 前端 SSR
-NodeJs [itellyou-ssr](https://github.com/itellyou-com/itellyou-ssr)
+NodeJs [itellyou-ssr](https://github.com/yanmao-cc/itellyou-ssr)
 ### ITELLYOU 后台管理
-UmiJs [itellyou-admin](https://github.com/itellyou-com/itellyou-admin)
+UmiJs [itellyou-admin](https://github.com/yanmao-cc/itellyou-admin)
 ### ITELLYOU API
-SpringBoot2 [itellyou-api](https://github.com/itellyou-com/itellyou-api)
+SpringBoot2 [itellyou-api](https://github.com/yanmao-cc/itellyou-api)
 ### ITELLYOU 协同编辑服务端
-NodeJs [itellyou-editor-server](https://github.com/itellyou-com/itellyou-editor-server)
+NodeJs [itellyou-editor-server](https://github.com/yanmao-cc/itellyou-editor-server)
 
 ### 基本功能
 #### 标签模块
