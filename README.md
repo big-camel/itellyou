@@ -73,7 +73,7 @@ NodeJs [itellyou-editor-server](https://github.com/itellyou-com/itellyou-editor-
 ```
 proxy: {
     '/api/(latex|puml|graphviz|flowchart|mermaid)': {
-        target: 'http://g.yanmao.cc/',
+        target: 'http://g.aomao.com/',
         changeOrigin: true,
         pathRewrite: { '^/api': '' },
     },
