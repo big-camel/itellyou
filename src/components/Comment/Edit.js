@@ -87,6 +87,9 @@ function CommentEdit({ defaultValue, onSubmit }) {
                         <LineEditor
                             defaultValue={defaultValue}
                             onLoad={onEditorLoad}
+                            emoji={{
+                                action: 'https://cdn-object.aomao.com/emoji/',
+                            }}
                             onChange={onEditorChange}
                             toolbar={isMobile ? [] : [['emoji']]}
                             onFoucs={() => {
