@@ -68,7 +68,7 @@ NodeJs [itellyou-editor-server](https://github.com/yanmao-cc/itellyou-editor-ser
 
 ### 本地启动
 
-在 config/config.js 中配置后端 api，http://g.aomao.com/ 是编辑器中 文本绘图 功能的后端支持，项目在 drawing.itellyou.com
+在 config/config.js 中配置后端 api，http://g.aomao.com/ 是编辑器中 文本绘图 功能的后端支持，项目在 drawing.aomao.com
 
 ```
 proxy: {
