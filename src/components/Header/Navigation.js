@@ -17,32 +17,40 @@ const menus = [
         key: 'article',
         title: '文章',
     },
+    // {
+    //     key: 'knowledge',
+    //     title: '知识',
+    // },
     {
-        key: 'knowledge',
-        title: '知识',
+        key: 'column',
+        title: '专栏',
+    },
+    {
+        key: 'tag',
+        title: '标签',
     },
     {
         key: 'download',
         title: '下载',
     },
-    {
-        key: 'find',
-        title: '发现',
-        child: [
-            {
-                key: 'column',
-                title: '专栏',
-            },
-            {
-                key: 'tag',
-                title: '标签',
-            },
-            {
-                key: 'yun',
-                title: '云服务',
-            },
-        ],
-    },
+    // {
+    //     key: 'find',
+    //     title: '发现',
+    //     child: [
+    //         {
+    //             key: 'column',
+    //             title: '专栏',
+    //         },
+    //         {
+    //             key: 'tag',
+    //             title: '标签',
+    //         },
+    //         {
+    //             key: 'yun',
+    //             title: '云服务',
+    //         },
+    //     ],
+    // },
 ];
 
 export default ({ location: { pathname }, isMobile, onChange }) => {

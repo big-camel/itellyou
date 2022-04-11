@@ -12,8 +12,8 @@ export default (map) => {
             //为了避免项目太多改动，这里手动排除 Form.Item 的属性作为Element的属性，Form.Item 属性：https://ant.design/components/form-cn/#Form.Item
             const itemKeys = [
                 'colon',
-                ' dependencies',
-                ' extra',
+                'dependencies',
+                'extra',
                 'getValueFromEvent',
                 'getValueProps',
                 'hasFeedback',
